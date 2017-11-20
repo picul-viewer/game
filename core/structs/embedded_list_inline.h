@@ -9,6 +9,8 @@ embedded_list<T, Next>::embedded_list( ) :
 template<typename T, T* (T::*Next)>
 void embedded_list<T, Next>::insert( T* object )
 {
+	ASSERT( object );
+
 	object->*Next	= m_first;
 	m_first			= object;
 }
@@ -62,6 +64,8 @@ T* embedded_list<T, Next>::first( ) const
 template<typename T, T* (T::*Next)>
 T* embedded_list<T, Next>::get_next( T* object ) const
 {
+	ASSERT( object );
+
 	return object->*Next;
 }
 
@@ -97,6 +101,8 @@ void embedded_list<T, Next>::for_each( const_for_each_method_type functor ) cons
 template<typename T, T* (T::*Prev), T* (T::*Next)>
 void embedded_twosided_list<T, Prev, Next>::insert( T* object )
 {
+	ASSERT( object );
+
 	object->*Next		= m_first;
 	if ( m_first )
 		m_first->*Prev	= object;
@@ -107,6 +113,8 @@ void embedded_twosided_list<T, Prev, Next>::insert( T* object )
 template<typename T, T* (T::*Prev), T* (T::*Next)>
 void embedded_twosided_list<T, Prev, Next>::remove( T* object )
 {
+	ASSERT( object );
+
 	if ( object->*Prev )
 		object->*Prev->*Next	= object->*Next;
 	else
@@ -126,6 +134,8 @@ embedded_twosided_reversable_list<T, Prev, Next>::embedded_twosided_reversable_l
 template<typename T, T* (T::*Prev), T* (T::*Next)>
 void embedded_twosided_reversable_list<T, Prev, Next>::insert( T* object )
 {
+	ASSERT( object );
+
 	object->*Next		= m_first;
 	if ( m_first )
 		m_first->*Prev	= object;
@@ -138,6 +148,8 @@ void embedded_twosided_reversable_list<T, Prev, Next>::insert( T* object )
 template<typename T, T* (T::*Prev), T* (T::*Next)>
 void embedded_twosided_reversable_list<T, Prev, Next>::remove( T* object )
 {
+	ASSERT( object );
+
 	if ( object->*Prev )
 		object->*Prev->*Next	= object->*Next;
 	else
