@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="dx">
+      <UniqueIdentifier>{e51c383d-1a04-4499-b836-cc44ead02f9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dx\buffers">
+      <UniqueIdentifier>{c06b87df-219a-4078-9784-5cd8eb449881}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dx\buffers\constant_buffers">
+      <UniqueIdentifier>{195da88b-79bc-4cf5-a169-92eabd9a3068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dx\textures">
+      <UniqueIdentifier>{38f4217e-2009-4283-9345-da0a342f6e8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dx\shaders">
+      <UniqueIdentifier>{8da9df3c-45ea-474f-ac1a-75d7bfa96a50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dx\samplers">
+      <UniqueIdentifier>{75582400-4a11-4e8e-86f3-4e44d82bc51c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dx\pipeline_states">
+      <UniqueIdentifier>{39c278d2-ec4d-497b-a0dd-fd497ce3ee85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{1315ec75-c871-426e-85a0-c3c112c692cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\input_layout">
+      <UniqueIdentifier>{ed10ca64-0681-428c-89ce-096aef007663}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\collections">
+      <UniqueIdentifier>{13f47db1-9546-4e51-9674-1cf053d1a9ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\effect">
+      <UniqueIdentifier>{c65cf6f1-6559-4e03-942d-0c4b541d5cf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\collections\mesh_collection">
+      <UniqueIdentifier>{e3d2d044-a56a-4c38-a44e-e2d593d6af2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\resource_pool">
+      <UniqueIdentifier>{536c8528-fad1-4329-9683-932d1c8b41ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\collections\sampler_collection">
+      <UniqueIdentifier>{914fe4b4-9675-4e13-912b-0f264abaa6be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\render_target">
+      <UniqueIdentifier>{979b6059-b267-4258-8dfd-7b395ab2bc7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dx\resource_views">
+      <UniqueIdentifier>{36c7e70a-97ab-49dd-b28b-fb5aa1462b27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer">
+      <UniqueIdentifier>{e6497ef8-4add-4ef2-afe5-ee3441bfe369}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="effects">
+      <UniqueIdentifier>{c7081ffc-b54f-4eb1-b743-ee702899c4b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="effects\forward_default">
+      <UniqueIdentifier>{fccdd4d1-9c7d-49c3-b0a1-46ddcb893db7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\stages">
+      <UniqueIdentifier>{6b425e7d-630f-4f17-b377-bbdf4b5a6ace}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\stages\stage_prepare_objects">
+      <UniqueIdentifier>{8a1818f9-340e-4452-b0d9-701b8ea2d1be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\stages\stage_forward_default">
+      <UniqueIdentifier>{7f4964f9-35e6-46ee-b824-79cda62804b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\render_object">
+      <UniqueIdentifier>{526509c8-6a01-49ee-89c8-d91b57821df3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\render_object\render_objects">
+      <UniqueIdentifier>{b1f208cd-18d8-46d6-a67b-846fc231bcd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\render_object\render_objects\mesh">
+      <UniqueIdentifier>{7d72011f-3a23-40b6-8736-f7009806af6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\render_object\render_objects\point_light">
+      <UniqueIdentifier>{5609ff8c-ca3e-4c8a-94b3-aa23e4158c6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\render_object\render_objects\direct_light">
+      <UniqueIdentifier>{c2a3f8e8-c5fa-46ed-8170-7e6411a8b77e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="buffer.cpp">
+      <Filter>dx\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="constant_buffers.cpp">
+      <Filter>dx\buffers\constant_buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="render_core.cpp" />
+    <ClCompile Include="input_layout.cpp">
+      <Filter>resources\input_layout</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>dx\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="texture_loader.cpp">
+      <Filter>dx\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>dx\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="sampler.cpp">
+      <Filter>dx\samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="pipeline_state.cpp">
+      <Filter>dx\pipeline_states</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_collection.cpp">
+      <Filter>resources\collections\mesh_collection</Filter>
+    </ClCompile>
+    <ClCompile Include="effect.cpp">
+      <Filter>resources\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="pipeline_state_pool.cpp">
+      <Filter>resources\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="sampler_colletion.cpp">
+      <Filter>resources\collections\sampler_collection</Filter>
+    </ClCompile>
+    <ClCompile Include="shader_pool.cpp">
+      <Filter>resources\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="resource_views.cpp">
+      <Filter>dx\resource_views</Filter>
+    </ClCompile>
+    <ClCompile Include="render_targets.cpp">
+      <Filter>resources\render_target</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="render_parameters.cpp">
+      <Filter>renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="render_api.cpp">
+      <Filter>renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="render_resources.cpp">
+      <Filter>renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="render_scene.cpp">
+      <Filter>renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="render_object_mesh.cpp">
+      <Filter>resources\render_object\render_objects\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="forward_default_effect.cpp">
+      <Filter>effects\forward_default</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_prepare_objects.cpp">
+      <Filter>renderer\stages\stage_prepare_objects</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_forward_default.cpp">
+      <Filter>renderer\stages\stage_forward_default</Filter>
+    </ClCompile>
+    <ClCompile Include="render_object.cpp">
+      <Filter>resources\render_object</Filter>
+    </ClCompile>
+    <ClCompile Include="game_object.cpp">
+      <Filter>resources\render_object</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dx_include.h" />
+    <ClInclude Include="buffer.h">
+      <Filter>dx\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_buffer.h">
+      <Filter>dx\buffers\constant_buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_buffer_inline.h">
+      <Filter>dx\buffers\constant_buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="per_frame_constant_buffer.h">
+      <Filter>dx\buffers\constant_buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="per_instance_constant_buffer.h">
+      <Filter>dx\buffers\constant_buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_buffers.h">
+      <Filter>dx\buffers\constant_buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="render_core.h" />
+    <ClInclude Include="input_layout.h">
+      <Filter>resources\input_layout</Filter>
+    </ClInclude>
+    <ClInclude Include="miscellaneous_constant_buffer.h">
+      <Filter>dx\buffers\constant_buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>dx\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>dx\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="sampler.h">
+      <Filter>dx\samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="pipeline_state.h">
+      <Filter>dx\pipeline_states</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_pool.h">
+      <Filter>resources\resource_pool</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_pool_inline.h">
+      <Filter>resources\resource_pool</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_collection.h">
+      <Filter>resources\collections\mesh_collection</Filter>
+    </ClInclude>
+    <ClInclude Include="effect.h">
+      <Filter>resources\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="pipeline_state_pool.h">
+      <Filter>resources\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="sampler_colletion.h">
+      <Filter>resources\collections\sampler_collection</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_pool.h">
+      <Filter>resources\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_box.h">
+      <Filter>resources\collections\mesh_collection</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_quad.h">
+      <Filter>resources\collections\mesh_collection</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_views.h">
+      <Filter>dx\resource_views</Filter>
+    </ClInclude>
+    <ClInclude Include="render_targets.h">
+      <Filter>resources\render_target</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="render_parameters.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="render_api.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="render_resources.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="render_scene.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="render_object_mesh.h">
+      <Filter>resources\render_object\render_objects\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="forward_default_effect.h">
+      <Filter>effects\forward_default</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_prepare_objects.h">
+      <Filter>renderer\stages\stage_prepare_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_forward_default.h">
+      <Filter>renderer\stages\stage_forward_default</Filter>
+    </ClInclude>
+    <ClInclude Include="stages.h">
+      <Filter>renderer\stages</Filter>
+    </ClInclude>
+    <ClInclude Include="render_object.h">
+      <Filter>resources\render_object</Filter>
+    </ClInclude>
+    <ClInclude Include="game_object.h">
+      <Filter>resources\render_object</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

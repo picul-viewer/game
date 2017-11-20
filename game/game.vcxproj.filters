@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="game_object.cpp">
+      <Filter>resources\object</Filter>
+    </ClCompile>
+    <ClCompile Include="game_world.cpp">
+      <Filter>resources\world</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="resources">
+      <UniqueIdentifier>{c3111646-06b1-4a58-b32a-96479365b544}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\object">
+      <UniqueIdentifier>{89775d93-cdf7-4f0c-be20-f8b9e93f0230}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\world">
+      <UniqueIdentifier>{e5ac5877-51b2-4602-bef2-012a4ecc82fc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="game_object.h">
+      <Filter>resources\object</Filter>
+    </ClInclude>
+    <ClInclude Include="game_world.h">
+      <Filter>resources\world</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

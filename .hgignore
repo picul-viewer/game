@@ -1,0 +1,9 @@
+syntax: glob
+
+.vs
+build
+*.vcxproj.user
+*/trash
+*.VC.db
+*.VC.opendb
+render/shader_compiler/obj
