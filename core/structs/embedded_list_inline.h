@@ -14,6 +14,28 @@ void embedded_list<T, Next>::insert( T* object )
 }
 
 template<typename T, T* (T::*Next)>
+void embedded_list<T, Next>::remove( T* object )
+{
+	ASSERT( object );
+
+	if ( object == m_first )
+	{
+		m_first		= m_first->*Next;
+		return;
+	}
+
+	T* current		= m_first;
+	ASSERT			( current );
+
+	while ( current->*Next != object )
+	{
+		current		= current->*Next;
+		ASSERT		( current );
+	}
+	current->*Next	= object->*Next;
+}
+
+template<typename T, T* (T::*Next)>
 void embedded_list<T, Next>::clear( )
 {
 	m_first = nullptr;

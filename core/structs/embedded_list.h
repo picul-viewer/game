@@ -9,6 +9,7 @@ public:
 	~embedded_list( ) = default;
 
 	void insert( T* object );
+	void remove( T* object );
 	void clear( );
 
 	T* begin( ) const;
