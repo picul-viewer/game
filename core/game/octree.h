@@ -21,7 +21,7 @@ protected:
 	buffer_array<T> m_objects;
 };*/
 
-template<typename T, T* (T::*Prev), T* (T::*Next), pointer* (T::*NodePtr), template<typename T> typename NodeHeap>
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
 class octree
 {
 public:
@@ -38,7 +38,7 @@ protected:
 	struct node
 	{
 		node* nodes[8] = { };
-		embedded_twosided_list<T, Prev, Next> objects;
+		NodeObjectContainer<T> objects;
 	};
 
 	typename node* new_node( );
