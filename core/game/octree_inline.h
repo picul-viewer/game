@@ -16,7 +16,7 @@ typename octree<T, NodeObjectContainer, NodeHeap, NodePtr>::node* octree<T, Node
 }
 
 template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned const& box )
+void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::calculate_bounds( aabb_aligned const& box )
 {
 	__m128 l = _mm_load_ps( box.min.data );
 	__m128 h = _mm_load_ps( box.max.data );
@@ -29,8 +29,26 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned con
 
 	_mm_store_ps( m_box_center.data, c );
 	_mm_store_ps( m_box_half_radius.data, hr );
+}
 
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
+void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned const& box, u32 max_depth )
+{
+	calculate_bounds( box );
 	m_root = new_node( );
+	this->max_depth = max_depth;
+}
+
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
+void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned const& box, float max_node_radius )
+{
+	calculate_bounds( box );
+	m_root = new_node( );
+
+	float const radius_rcp = 1.0f / max_node_radius;
+	math::float3 const& radius_scaled = m_box_half_radius * max_node_radius;
+	math::float3 const& depth( log2f( radius_scaled.x ), log2f( radius_scaled.y ), log2f( radius_scaled.z ) );
+	max_depth = (u32)(int)math::max( math::max( depth.x, depth.y ), depth.z ) + 1;
 }
 
 template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
@@ -58,7 +76,7 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::insert( T* object )
 	__m128 obj_box_diff_test = _mm_xor_ps( obj_box_min_diff, obj_box_max_diff );
 	__m128 msb_mask = _mm_castsi128_ps( _mm_setr_epi32( INT_MIN, INT_MIN, INT_MIN, 0 ) );
 	
-	while ( _mm_testz_ps( obj_box_diff_test, msb_mask ) )
+	for ( u32 i = 0; _mm_testz_ps( obj_box_diff_test, msb_mask ) && ( i < max_depth ); ++i )
 	{
 		u32 octant = _mm_movemask_ps( obj_box_min_diff );
 
