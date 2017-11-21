@@ -15,7 +15,6 @@ struct matrix
 {
 	__m128 data[4];
 
-	inline operator __m128*( ) { return data; }
 	inline __m128& operator[]( u32 i ) { ASSERT( i < 4 ); return data[i]; }
 	inline __m128 operator[]( u32 i ) const { ASSERT( i < 4 ); return data[i]; }
 };
