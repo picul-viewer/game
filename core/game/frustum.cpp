@@ -16,7 +16,7 @@ void frustum::set_from_matrix( math::float4x4 const& m )
 }
 
 // true, if AABB is fully inside the frustum
-bool frustum::plane::test_aabb_inside( aabb const& box )
+bool frustum::plane::test_aabb_inside( aabb const& box ) const
 {
 	math::float3 const max_v( ( n.x < 0 ) ? box.min.x : box.max.x,
 							  ( n.y < 0 ) ? box.min.y : box.max.y, 
@@ -28,7 +28,7 @@ bool frustum::plane::test_aabb_inside( aabb const& box )
 }
 
 // true, if AABB is fully outside the frustum
-bool frustum::plane::test_aabb_ouside( aabb const& box )
+bool frustum::plane::test_aabb_outside( aabb const& box ) const
 {
 	math::float3 const min_v( ( n.x > 0 ) ? box.min.x : box.max.x,
 							  ( n.y > 0 ) ? box.min.y : box.max.y, 
@@ -39,7 +39,7 @@ bool frustum::plane::test_aabb_ouside( aabb const& box )
 	return dot > -d;
 }
 
-intersection frustum::plane::test_aabb( aabb const& box )
+intersection frustum::plane::test_aabb( aabb const& box ) const
 {
 	math::float3 const min_v( ( n.x > 0 ) ? box.min.x : box.max.x,
 							  ( n.y > 0 ) ? box.min.y : box.max.y, 
@@ -63,7 +63,7 @@ intersection frustum::plane::test_aabb( aabb const& box )
 }
 
 // true, if AABB is fully inside the frustum
-bool frustum::test_aabb_inside( aabb const& box )
+bool frustum::test_aabb_inside( aabb const& box ) const
 {
 	for ( u32 i = 0; i < plane_count; ++i )
 	{
@@ -75,18 +75,18 @@ bool frustum::test_aabb_inside( aabb const& box )
 }
 
 // true, if AABB is fully outside the frustum
-bool frustum::test_aabb_ouside( aabb const& box )
+bool frustum::test_aabb_outside( aabb const& box ) const
 {
 	for ( u32 i = 0; i < plane_count; ++i )
 	{
-		if ( planes[i].test_aabb_ouside( box ) )
+		if ( planes[i].test_aabb_outside( box ) )
 			return true;
 	}
 
 	return false;
 }
 
-intersection frustum::test_aabb( aabb const& box )
+intersection frustum::test_aabb( aabb const& box ) const
 {
 	u32 intersected = 0;
 
@@ -122,7 +122,7 @@ void frustum_aligned::set_from_matrix( math::float4x4 const& m )
 }
 
 // true, if AABB is fully inside the frustum
-bool frustum_aligned::test_aabb_inside( aabb_aligned const& box )
+bool frustum_aligned::test_aabb_inside( aabb_aligned const& box ) const
 {
 	ASSERT( aligned( &box, 16 ) );
 
@@ -177,7 +177,7 @@ bool frustum_aligned::test_aabb_inside( aabb_aligned const& box )
 }
 
 // true, if AABB is fully outside the frustum
-bool frustum_aligned::test_aabb_ouside( aabb_aligned const& box )
+bool frustum_aligned::test_aabb_outside( aabb_aligned const& box ) const
 {
 	ASSERT( aligned( &box, 16 ) );
 
@@ -230,7 +230,7 @@ bool frustum_aligned::test_aabb_ouside( aabb_aligned const& box )
 	}
 }
 
-intersection frustum_aligned::test_aabb( aabb_aligned const& box )
+intersection frustum_aligned::test_aabb( aabb_aligned const& box ) const
 {
 	ASSERT( aligned( &box, 16 ) );
 

@@ -18,10 +18,10 @@ class frustum
 public:
 	void set_from_matrix( math::float4x4 const& m );
 
-	bool test_aabb_inside( aabb const& box );
-	bool test_aabb_ouside( aabb const& box );
+	bool test_aabb_inside( aabb const& box ) const;
+	bool test_aabb_outside( aabb const& box ) const;
 
-	intersection test_aabb( aabb const& box );
+	intersection test_aabb( aabb const& box ) const;
 
 protected:
 	struct plane
@@ -38,10 +38,10 @@ protected:
 
 		plane( );
 
-		bool test_aabb_inside( aabb const& box );
-		bool test_aabb_ouside( aabb const& box );
+		bool test_aabb_inside( aabb const& box ) const;
+		bool test_aabb_outside( aabb const& box ) const;
 
-		intersection test_aabb( aabb const& box );
+		intersection test_aabb( aabb const& box ) const;
 	};
 
 	enum plane_id
@@ -66,10 +66,10 @@ public:
 
 	void set_from_matrix( math::float4x4 const& m );
 
-	bool test_aabb_inside( aabb_aligned const& box );
-	bool test_aabb_ouside( aabb_aligned const& box );
+	bool test_aabb_inside( aabb_aligned const& box ) const;
+	bool test_aabb_outside( aabb_aligned const& box ) const;
 
-	intersection test_aabb( aabb_aligned const& box );
+	intersection test_aabb( aabb_aligned const& box ) const;
 
 protected:
 	math::float4x4 matrix;
