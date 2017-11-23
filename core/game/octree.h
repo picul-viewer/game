@@ -35,6 +35,9 @@ public:
 	void move( T* object );
 	void remove( T* object );
 
+	template<typename Callback>
+	void query_visibility( frustum_aligned const& frustum, Callback callback );
+
 protected:
 	struct node
 	{
@@ -45,6 +48,11 @@ protected:
 	typename node* new_node( );
 	void calculate_bounds( aabb_aligned const& box );
 	
+	template<typename Callback>
+	void query_visibility_impl_inside( node* n, Callback callback );
+	template<typename Callback>
+	void query_visibility_impl( node* n, __m128 const& node_center, __m128 const& node_half_radius, frustum_aligned const& frustum, Callback callback );
+
 	math::float4 m_box_center;
 	math::float4 m_box_half_radius;
 	NodeHeap<node> m_nodes;

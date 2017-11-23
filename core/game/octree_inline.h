@@ -113,4 +113,114 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::remove( T* object )
 	n->objects.remove( object );
 }
 
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
+template<typename Callback>
+void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::query_visibility( frustum_aligned const& frustum, Callback callback )
+{
+	ASSERT( aligned( this, 16 ) );
+
+	if ( !m_root ) return;
+
+	__m128 center		= _mm_load_ps( m_box_center.data );
+	__m128 half_radius	= _mm_load_ps( m_box_half_radius.data );
+
+	query_visibility_impl( m_root, center, half_radius, frustum, callback );
+}
+
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
+template<typename Callback>
+void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::query_visibility_impl_inside( node* n, Callback callback )
+{
+	for ( u32 i = 0; i < 8; ++i )
+		if ( n->nodes[i] )
+			query_visibility_impl_inside( n->nodes[i], callback );
+
+	n->objects.for_each( [callback]( T* current )
+	{
+		callback( current );
+	} );
+}
+
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
+template<typename Callback>
+void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::query_visibility_impl( node* n, __m128 const& node_center, __m128 const& node_half_radius, frustum_aligned const& frustum, Callback callback )
+{
+	aabb_aligned node_aabb;
+	node_aabb.set_center_radius( node_center, _mm_add_ps( node_half_radius, node_half_radius ) );
+
+	switch ( frustum.test_aabb( node_aabb ) )
+	{
+	case inside:
+		query_visibility_impl_inside( n, callback );
+		return;
+	case intersect:
+		break;
+	case outside:
+		return;
+	default:
+		UNREACHABLE_CODE
+	}
+	
+	__m128 node_neg_half_radius = _mm_xor_ps( node_half_radius, _mm_castsi128_ps( _mm_setr_epi32( 0x80000000, 0x80000000, 0x80000000, 0x0 ) ) );
+
+	__m128 octant_half_radius = _mm_mul_ps( node_half_radius, _mm_set1_ps( 0.5f ) );
+
+	// Test all octants
+	{
+		if ( n->nodes[0] )
+		{
+			__m128 octant_center = _mm_sub_ps( node_center, node_half_radius );
+			query_visibility_impl( n->nodes[0], octant_center, octant_half_radius, frustum, callback );
+		}
+
+		if ( n->nodes[1] )
+		{
+			__m128 octant_center = _mm_add_ps( node_center, _mm_blend_ps( node_neg_half_radius, node_half_radius, 1 ) );
+			query_visibility_impl( n->nodes[1], octant_center, octant_half_radius, frustum, callback );
+		}
+
+		if ( n->nodes[2] )
+		{
+			__m128 octant_center = _mm_add_ps( node_center, _mm_blend_ps( node_neg_half_radius, node_half_radius, 2 ) );
+			query_visibility_impl( n->nodes[2], octant_center, octant_half_radius, frustum, callback );
+		}
+
+		if ( n->nodes[3] )
+		{
+			__m128 octant_center = _mm_add_ps( node_center, _mm_blend_ps( node_neg_half_radius, node_half_radius, 3 ) );
+			query_visibility_impl( n->nodes[3], octant_center, octant_half_radius, frustum, callback );
+		}
+
+		if ( n->nodes[4] )
+		{
+			__m128 octant_center = _mm_add_ps( node_center, _mm_blend_ps( node_neg_half_radius, node_half_radius, 4 ) );
+			query_visibility_impl( n->nodes[4], octant_center, octant_half_radius, frustum, callback );
+		}
+
+		if ( n->nodes[5] )
+		{
+			__m128 octant_center = _mm_add_ps( node_center, _mm_blend_ps( node_neg_half_radius, node_half_radius, 5 ) );
+			query_visibility_impl( n->nodes[5], octant_center, octant_half_radius, frustum, callback );
+		}
+
+		if ( n->nodes[6] )
+		{
+			__m128 octant_center = _mm_add_ps( node_center, _mm_blend_ps( node_neg_half_radius, node_half_radius, 6 ) );
+			query_visibility_impl( n->nodes[6], octant_center, octant_half_radius, frustum, callback );
+		}
+		
+		if ( n->nodes[7] )
+		{
+			__m128 octant_center = _mm_add_ps( node_center, node_half_radius );
+			query_visibility_impl( n->nodes[7], octant_center, octant_half_radius, frustum, callback );
+		}
+	}
+
+	n->objects.for_each( [&frustum, callback]( T* current )
+	{
+		if ( !frustum.test_aabb_outside( current->get_aabb( ) ) )
+			callback( current );
+	} );
+}
+
 #endif // #ifndef __core_octree_inline_h_included_
