@@ -47,7 +47,7 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned con
 
 	float const radius_rcp = 1.0f / max_node_radius;
 	math::float3 const& radius_scaled = m_box_half_radius * max_node_radius;
-	math::float3 const& depth( log2f( radius_scaled.x ), log2f( radius_scaled.y ), log2f( radius_scaled.z ) );
+	math::float3 const depth( log2f( radius_scaled.x ), log2f( radius_scaled.y ), log2f( radius_scaled.z ) );
 	max_depth = (u32)(int)math::max( math::max( depth.x, depth.y ), depth.z ) + 1;
 }
 
@@ -64,11 +64,11 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::insert( T* object )
 
 	aabb_aligned const& obj_box = object->get_aabb( );
 	
-	__m128 obj_box_min = _mm_load_ps( object_box.min.data );
-	__m128 obj_box_max = _mm_load_ps( object_box.max.data );
+	__m128 obj_box_min = _mm_load_ps( obj_box.min.data );
+	__m128 obj_box_max = _mm_load_ps( obj_box.max.data );
 	
-	__m128 tree_box_center = _mm_load_ps( m_box_center.min.data );
-	__m128 tree_box_radius = _mm_load_ps( m_box_half_radius.max.data );
+	__m128 tree_box_center = _mm_load_ps( m_box_center.data );
+	__m128 tree_box_radius = _mm_load_ps( m_box_half_radius.data );
 
 	__m128 obj_box_min_diff = _mm_sub_ps( tree_box_center, obj_box_min );
 	__m128 obj_box_max_diff = _mm_sub_ps( tree_box_center, obj_box_max );
@@ -110,7 +110,7 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::remove( T* object )
 	node* n = object->*NodePtr;
 	object->*NodePtr = nullptr;
 
-	n->objects->remove( object );
+	n->objects.remove( object );
 }
 
 #endif // #ifndef __core_octree_inline_h_included_
