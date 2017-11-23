@@ -121,6 +121,7 @@ struct typed_memory_helper
 
 struct pointer
 {
+	inline pointer( ) { }
 	inline pointer( pvoid data ) { this->data = data; }
 
 	template<typename T>
