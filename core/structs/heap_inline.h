@@ -9,6 +9,7 @@ array_heap<T, BatchSize, Allocator>::array_heap( )
 	ASSERT			( sizeof(T) >= sizeof(T*) );
 	m_data			= (memory_batch*)Allocator::allocate( sizeof(memory_batch) );
 	m_push_pointer	= nullptr;
+	m_last_pointer	= (T*)m_data->data;
 }
 
 template<typename T, u32 BatchSize, typename Allocator>
