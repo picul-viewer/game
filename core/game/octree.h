@@ -21,7 +21,7 @@ protected:
 	buffer_array<T> m_objects;
 };*/
 
-template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 class octree
 {
 public:

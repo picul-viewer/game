@@ -1,13 +1,13 @@
 #ifndef __core_octree_inline_h_included_
 #define __core_octree_inline_h_included_
 
-template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 octree<T, NodeObjectContainer, NodeHeap, NodePtr>::octree( )
 {
 	ASSERT( aligned( this, 16 ) );
 }
 
-template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 typename octree<T, NodeObjectContainer, NodeHeap, NodePtr>::node* octree<T, NodeObjectContainer, NodeHeap, NodePtr>::new_node( )
 {
 	node* n = m_nodes.allocate( );
@@ -15,7 +15,7 @@ typename octree<T, NodeObjectContainer, NodeHeap, NodePtr>::node* octree<T, Node
 	return n;
 }
 
-template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::calculate_bounds( aabb_aligned const& box )
 {
 	__m128 l = _mm_load_ps( box.min.data );
@@ -31,7 +31,7 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::calculate_bounds( aabb_a
 	_mm_store_ps( m_box_half_radius.data, hr );
 }
 
-template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned const& box, u32 max_depth )
 {
 	calculate_bounds( box );
@@ -39,7 +39,7 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned con
 	this->max_depth = max_depth;
 }
 
-template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned const& box, float max_node_radius )
 {
 	calculate_bounds( box );
@@ -51,13 +51,13 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned con
 	max_depth = (u32)(int)math::max( math::max( depth.x, depth.y ), depth.z ) + 1;
 }
 
-template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::destroy( )
 {
 	m_nodes.destroy( );
 }
 
-template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::insert( T* object )
 {
 	node* n = m_root;
@@ -97,14 +97,14 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::insert( T* object )
 	object->*NodePtr = n;
 }
 
-template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::move( T* object )
 {
 	remove( object );
 	insert( object );
 }
 
-template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer* (T::*NodePtr)>
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::remove( T* object )
 {
 	node* n = object->*NodePtr;
