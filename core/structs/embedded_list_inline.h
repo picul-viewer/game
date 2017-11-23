@@ -70,31 +70,11 @@ T* embedded_list<T, Next>::get_next( T* object ) const
 }
 
 template<typename T, T* (T::*Next)>
-void embedded_list<T, Next>::for_each( for_each_functor_type functor )
+template<typename Pred>
+void embedded_list<T, Next>::for_each( Pred const& functor )
 {
 	for ( auto i = first( ); i != nullptr; i = get_next( i ) )
 		functor( i );
-}
-
-template<typename T, T* (T::*Next)>
-void embedded_list<T, Next>::for_each( const_for_each_functor_type functor ) const
-{
-	for ( auto i = first( ); i != nullptr; i = get_next( i ) )
-		functor( i );
-}
-
-template<typename T, T* (T::*Next)>
-void embedded_list<T, Next>::for_each( for_each_method_type functor )
-{
-	for ( auto i = first( ); i != nullptr; i = get_next( i ) )
-		( i->*functor )( );
-}
-
-template<typename T, T* (T::*Next)>
-void embedded_list<T, Next>::for_each( const_for_each_method_type functor ) const
-{
-	for ( auto i = first( ); i != nullptr; i = get_next( i ) )
-		( i->*functor )( );
 }
 
 
@@ -193,31 +173,11 @@ T* embedded_twosided_reversable_list<T, Prev, Next>::get_prev( T* object ) const
 }
 
 template<typename T, T* (T::*Prev), T* (T::*Next)>
-void embedded_twosided_reversable_list<T, Prev, Next>::reverse_for_each( for_each_functor_type functor )
+template<typename Pred>
+void embedded_twosided_reversable_list<T, Prev, Next>::reverse_for_each( Pred const& functor )
 {
 	for ( auto i = last( ); i != nullptr; i = get_prev( i ) )
 		functor( i );
-}
-
-template<typename T, T* (T::*Prev), T* (T::*Next)>
-void embedded_twosided_reversable_list<T, Prev, Next>::reverse_for_each( const_for_each_functor_type functor ) const
-{
-	for ( auto i = last( ); i != nullptr; i = get_prev( i ) )
-		functor( i );
-}
-
-template<typename T, T* (T::*Prev), T* (T::*Next)>
-void embedded_twosided_reversable_list<T, Prev, Next>::reverse_for_each( for_each_method_type functor )
-{
-	for ( auto i = last( ); i != nullptr; i = get_prev( i ) )
-		( i->*functor )( );
-}
-
-template<typename T, T* (T::*Prev), T* (T::*Next)>
-void embedded_twosided_reversable_list<T, Prev, Next>::reverse_for_each( const_for_each_method_type functor ) const
-{
-	for ( auto i = last( ); i != nullptr; i = get_prev( i ) )
-		( i->*functor )( );
 }
 
 #endif // #ifndef __core_embedded_list_inline_h_included_

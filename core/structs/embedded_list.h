@@ -18,15 +18,8 @@ public:
 	T* first( ) const;
 	T* get_next( T* object ) const;
 
-	typedef void( *for_each_functor_type )( T* );
-	typedef void( *const_for_each_functor_type )( T const* );
-	typedef void( T::*for_each_method_type )( );
-	typedef void( T::*const_for_each_method_type )( )const;
-
-	void for_each( for_each_functor_type functor );
-	void for_each( const_for_each_functor_type functor ) const;
-	void for_each( for_each_method_type functor );
-	void for_each( const_for_each_method_type functor ) const;
+	template<typename Pred>
+	void for_each( Pred const& functor );
 
 protected:
 	T* m_first;
@@ -41,7 +34,6 @@ public:
 
 	void insert( T* object );
 	void remove( T* object );
-
 };
 
 template<typename T, T* (T::*Prev), T* (T::*Next)>
@@ -61,10 +53,8 @@ public:
 	T* last( ) const;
 	T* get_prev( T* object ) const;
 	
-	void reverse_for_each( for_each_functor_type functor );
-	void reverse_for_each( const_for_each_functor_type functor ) const;
-	void reverse_for_each( for_each_method_type functor );
-	void reverse_for_each( const_for_each_method_type functor ) const;
+	template<typename Pred>
+	void reverse_for_each( Pred const& functor );
 
 protected:
 	T* m_first;
