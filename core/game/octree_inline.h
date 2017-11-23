@@ -40,15 +40,14 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned con
 }
 
 template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned const& box, float max_node_radius )
+void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned const& box, float node_min_radius )
 {
 	calculate_bounds( box );
 	m_root = new_node( );
 
-	float const radius_rcp = 1.0f / max_node_radius;
-	math::float3 const& radius_scaled = m_box_half_radius * max_node_radius;
+	math::float3 const& radius_scaled = m_box_half_radius * ( 1.0f / node_min_radius );
 	math::float3 const depth( log2f( radius_scaled.x ), log2f( radius_scaled.y ), log2f( radius_scaled.z ) );
-	max_depth = (u32)(int)math::max( math::max( depth.x, depth.y ), depth.z ) + 1;
+	max_depth = (u32)(int)math::max( math::max( depth.x, depth.y ), depth.z );
 }
 
 template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>

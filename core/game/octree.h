@@ -28,7 +28,7 @@ public:
 	octree( );
 
 	void create( aabb_aligned const& box, u32 max_depth = -1 );
-	void create( aabb_aligned const& box, float max_node_radius );
+	void create( aabb_aligned const& box, float node_min_radius );
 	void destroy( );
 
 	void insert( T* object );
