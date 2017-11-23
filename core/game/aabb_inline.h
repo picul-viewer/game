@@ -45,8 +45,7 @@ void aabb_aligned::set_min_max( math::float4 const& min, math::float4 const& max
 	ASSERT( min.w == 1.0f );
 	ASSERT( max.w == 1.0f );
 
-	_mm_store_ps( this->min.data, _mm_load_ps( min.data ) );
-	_mm_store_ps( this->max.data, _mm_load_ps( max.data ) );
+	set_min_max( _mm_load_ps( min.data ), _mm_load_ps( max.data ) );
 }
 
 void aabb_aligned::set_center_radius( math::float4 const& center, math::float4 const& radius )
@@ -58,11 +57,19 @@ void aabb_aligned::set_center_radius( math::float4 const& center, math::float4 c
 	ASSERT( center.w == 1.0f );
 	ASSERT( radius.w == 0.0f );
 	
-	__m128 c = _mm_load_ps( center.data );
-	__m128 r = _mm_load_ps( radius.data );
+	set_center_radius( _mm_load_ps( center.data ), _mm_load_ps( radius.data ) );
+}
 
-	_mm_store_ps( min.data, _mm_sub_ps( c, r ) );
-	_mm_store_ps( max.data, _mm_add_ps( c, r ) );
+void aabb_aligned::set_min_max( __m128 const& min, __m128 const& max )
+{
+	_mm_store_ps( this->min.data, min );
+	_mm_store_ps( this->max.data, max );
+}
+
+void aabb_aligned::set_center_radius( __m128 const& center, __m128 const& radius )
+{
+	_mm_store_ps( min.data, _mm_sub_ps( center, radius ) );
+	_mm_store_ps( max.data, _mm_add_ps( center, radius ) );
 }
 
 math::float4 aabb_aligned::center( ) const
@@ -98,16 +105,24 @@ void aabb_aligned::get_center_radius( math::float4& center, math::float4& radius
 	ASSERT( aligned( &center, 16 ) );
 	ASSERT( aligned( &radius, 16 ) );
 
+	__m128 c;
+	__m128 r;
+
+	get_center_radius( c, r );
+
+	_mm_store_ps( center.data, c );
+	_mm_store_ps( radius.data, r );
+}
+
+void aabb_aligned::get_center_radius( __m128& center, __m128& radius )
+{
 	__m128 l = _mm_load_ps( min.data );
 	__m128 h = _mm_load_ps( max.data );
 	
 	__m128 sum = _mm_add_ps( l, h );
 
-	__m128 c = _mm_mul_ps( sum, _mm_set1_ps( 0.5f ) );
-	__m128 r = _mm_sub_ps( h, c );
-
-	_mm_store_ps( center.data, c );
-	_mm_store_ps( radius.data, r );
+	center = _mm_mul_ps( sum, _mm_set1_ps( 0.5f ) );
+	radius = _mm_sub_ps( h, center );
 }
 
 void aabb_aligned::modify( math::float4 const& transform )

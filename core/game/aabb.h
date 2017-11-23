@@ -31,10 +31,14 @@ public:
 	inline void set_min_max( math::float4 const& min, math::float4 const& max );
 	inline void set_center_radius( math::float4 const& center, math::float4 const& radius );
 	
+	inline void set_min_max( __m128 const& min, __m128 const& max );
+	inline void set_center_radius( __m128 const& center, __m128 const& radius );
+	
 	inline math::float4 center( ) const;
 	inline math::float4 radius( ) const;
 	
 	inline void get_center_radius( math::float4& center, math::float4& radius );
+	inline void get_center_radius( __m128& center, __m128& radius );
 	
 	inline	void modify( math::float4 const& transform );
 			void modify( math::float4x3 const& transform );
