@@ -21,7 +21,7 @@ protected:
 	buffer_array<T> m_objects;
 };*/
 
-template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
+template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
 class octree
 {
 public:
@@ -42,7 +42,7 @@ protected:
 	struct node
 	{
 		node* nodes[8] = { };
-		NodeObjectContainer<T> objects;
+		NodeObjectContainer objects;
 	};
 
 	typename node* new_node( );
@@ -57,9 +57,15 @@ protected:
 
 	math::float4 m_box_center;
 	math::float4 m_box_half_radius;
-	NodeHeap<node>* m_nodes;
+	NodeHeap* m_nodes;
 	node* m_root;
 	u32 max_depth;
+};
+
+template<typename NodeObjectContainer>
+struct octree_node_size
+{
+	static const uptr value = 8 * sizeof(pointer) + sizeof(NodeObjectContainer);
 };
 
 #include "octree_inline.h"
