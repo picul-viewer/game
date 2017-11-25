@@ -43,7 +43,7 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( NodeHeap& node_h
 template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
 void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( NodeHeap& node_heap, aabb_aligned const& box, float node_min_radius )
 {
-	this->m_nodes = node_heap;
+	this->m_nodes = &node_heap;
 	calculate_bounds( box );
 	m_root = new_node( );
 
