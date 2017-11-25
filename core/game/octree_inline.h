@@ -10,7 +10,7 @@ octree<T, NodeObjectContainer, NodeHeap, NodePtr>::octree( )
 template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 typename octree<T, NodeObjectContainer, NodeHeap, NodePtr>::node* octree<T, NodeObjectContainer, NodeHeap, NodePtr>::new_node( )
 {
-	node* n = m_nodes.allocate( );
+	node* n = m_nodes->allocate( );
 	memset( n, 0, sizeof(node) );
 	return n;
 }
@@ -32,16 +32,18 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::calculate_bounds( aabb_a
 }
 
 template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned const& box, u32 max_depth )
+void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( NodeHeap& node_heap, aabb_aligned const& box, u32 max_depth )
 {
+	this->m_nodes = node_heap;
 	calculate_bounds( box );
 	m_root = new_node( );
 	this->max_depth = max_depth;
 }
 
 template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned const& box, float node_min_radius )
+void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( NodeHeap& node_heap, aabb_aligned const& box, float node_min_radius )
 {
+	this->m_nodes = node_heap;
 	calculate_bounds( box );
 	m_root = new_node( );
 
@@ -53,7 +55,7 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( aabb_aligned con
 template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::destroy( )
 {
-	m_nodes.destroy( );
+
 }
 
 template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>

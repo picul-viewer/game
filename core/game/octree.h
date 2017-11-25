@@ -27,8 +27,8 @@ class octree
 public:
 	octree( );
 
-	void create( aabb_aligned const& box, u32 max_depth = -1 );
-	void create( aabb_aligned const& box, float node_min_radius );
+	void create( NodeHeap& node_heap, aabb_aligned const& box, u32 max_depth = -1 );
+	void create( NodeHeap& node_heap, aabb_aligned const& box, float node_min_radius );
 	void destroy( );
 
 	void insert( T* object );
@@ -55,7 +55,7 @@ protected:
 
 	math::float4 m_box_center;
 	math::float4 m_box_half_radius;
-	NodeHeap<node> m_nodes;
+	NodeHeap<node>* m_nodes;
 	node* m_root;
 	u32 max_depth;
 };
