@@ -4,23 +4,6 @@
 #include <core/types.h>
 #include <core/structs.h>
 
-/*template<typename T, typename Allocator = mem_allocator>
-class static_octree
-{
-public:
-	void create( buffer_array<T> const& objects );
-
-protected:
-	struct node
-	{
-		u32 start_node_index, end_node_index;
-		u32 start_object_index, end_object_index;
-	};
-
-	buffer_array<node> m_nodes;
-	buffer_array<T> m_objects;
-};*/
-
 template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
 class octree
 {
