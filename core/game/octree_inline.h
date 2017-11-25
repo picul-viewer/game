@@ -53,9 +53,20 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( NodeHeap& node_h
 }
 
 template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
+void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::destroy_impl( node* n )
+{
+	for ( u32 i = 0; i < 8; ++i )
+		if ( n->nodes[i] )
+			destroy_impl( n->nodes[i] );
+
+	m_nodes->deallocate( n );
+}
+
+template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::destroy( )
 {
-
+	if ( m_root )
+		destroy_impl( m_root );
 }
 
 template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>

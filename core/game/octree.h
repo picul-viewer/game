@@ -53,6 +53,8 @@ protected:
 	template<typename Callback>
 	void query_visibility_impl( node* n, __m128 const& node_center, __m128 const& node_half_radius, frustum_aligned const& frustum, Callback callback );
 
+	void destroy_impl( node* n );
+
 	math::float4 m_box_center;
 	math::float4 m_box_half_radius;
 	NodeHeap<node>* m_nodes;
