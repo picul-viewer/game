@@ -5,15 +5,15 @@
 
 struct mem_allocator
 {
-	static inline pointer allocate( uptr size );
-	static inline void deallocate( pointer p );
+	inline pointer allocate( uptr size );
+	inline void deallocate( pointer p );
 };
 
 template<uptr alignment>
 struct aligned_mem_allocator
 {
-	static inline pointer allocate( uptr size );
-	static inline void deallocate( pointer p );
+	inline pointer allocate( uptr size );
+	inline void deallocate( pointer p );
 };
 
 #include "allocator_inline.h"

@@ -4,162 +4,148 @@
 #include <core/types.h>
 #include <core/structs/allocator.h>
 
-template<typename T, u32 BatchSize, typename Allocator = mem_allocator>
+template<uptr ElemSize, uptr BatchSize, typename Allocator = mem_allocator>
 struct array_heap
 {
 public:
-	array_heap( );
+	array_heap( Allocator* allocator = nullptr );
 	~array_heap( );
 
 	void destroy( );
 
-	T* allocate( );
-	void deallocate( T* pointer );
+	pointer allocate( uptr size );
+	void deallocate( pointer p );
 
 protected:
-	typedef typed_memory_helper<sizeof(T), T> Thelp;
-
 	struct memory_batch
 	{
-		Thelp data[BatchSize];
+		byte data[ElemSize * BatchSize];
 	};
 
 	memory_batch*	m_data;
-	T*				m_push_pointer;
-	T*				m_last_pointer;
+	pointer			m_push_pointer;
+	pointer			m_last_pointer;
+	Allocator*		m_allocator;
 };
 
-template<typename T, u32 BatchSize, typename Allocator = mem_allocator>
+template<uptr ElemSize, uptr BatchSize, typename Allocator = mem_allocator>
 struct array_allocation_heap
 {
 public:
-	array_allocation_heap();
-	~array_allocation_heap();
+	array_allocation_heap( Allocator* allocator = nullptr );
+	~array_allocation_heap( );
 
-	void destroy();
+	void destroy( );
 
-	T* allocate();
+	pointer allocate( uptr size );
 
 protected:
-	typedef typed_memory_helper<sizeof(T), T> Thelp;
-
 	struct memory_batch
 	{
-		Thelp data[BatchSize];
+		byte data[ElemSize * BatchSize];
 	};
 
 	memory_batch*	m_data;
-	T*				m_push_pointer;
+	pointer			m_push_pointer;
+	Allocator*		m_allocator;
 };
 
-template<typename T, u32 BatchSize, typename Allocator = mem_allocator>
+template<uptr ElemSize, uptr BatchSize, typename Allocator = mem_allocator>
 struct dynamic_array_heap
 {
 public:
-	dynamic_array_heap( );
+	dynamic_array_heap( Allocator* allocator = nullptr );
 	~dynamic_array_heap( );
 
 	void destroy( );
-
-	T* allocate( );
-	void deallocate( T* pointer );
+	
+	pointer allocate( uptr size );
+	void deallocate( pointer p );
 
 protected:
-	typedef typed_memory_helper<sizeof(T), T> Thelp;
-
 	struct memory_batch
 	{
-		Thelp			data[BatchSize];
+		byte			data[ElemSize * BatchSize];
 		memory_batch*	prev;
 	};
 
 	memory_batch*	m_data;
-	T*				m_push_pointer;
-	T*				m_last_pointer;
+	pointer			m_push_pointer;
+	pointer			m_last_pointer;
+	Allocator*		m_allocator;
 };
 
-template<typename T, u32 BatchSize, typename Allocator = mem_allocator>
+template<uptr ElemSize, uptr BatchSize, typename Allocator = mem_allocator>
 struct dynamic_array_allocation_heap
 {
 public:
-	dynamic_array_allocation_heap( );
+	dynamic_array_allocation_heap( Allocator* allocator = nullptr );
 	~dynamic_array_allocation_heap( );
 
 	void destroy( );
-
-	T* allocate( );
+	
+	pointer allocate( uptr size );
 
 protected:
-	typedef typed_memory_helper<sizeof(T), T> Thelp;
-
 	struct memory_batch
 	{
-		Thelp			data[BatchSize];
+		byte			data[ElemSize * BatchSize];
 		memory_batch*	prev;
 	};
 
 	memory_batch*	m_data;
-	T*				m_push_pointer;
+	pointer			m_push_pointer;
+	Allocator*		m_allocator;
 };
 
-template<u32 SizeMin, u32 SizeMax, u32 SizeStep, u32 PageSize, typename Allocator = mem_allocator>
+template<uptr SizeMin, uptr SizeMax, uptr SizeStep, uptr PageSize, typename Allocator = mem_allocator>
 struct dynamic_heap
 {
 public:
-	dynamic_heap( );
+	dynamic_heap( Allocator* allocator = nullptr );
 	~dynamic_heap( );
 
 	void destroy( );
 
-	template<typename T>
-	T* allocate( );
-	template<typename T>
-	void allocate( T*& pointer );
-	template<typename T>
-	void deallocate( T* pointer );
+	pointer allocate( uptr size );
+	void deallocate( pointer p, uptr size );
 	
-	void* allocate_size( u32 size );
-	void deallocate_size( void* pointer, u32 size );
-
 protected:
 	enum { push_pointers_count = ( SizeMax - SizeMin ) / SizeStep };
 
 	struct memory_batch
 	{
-		char			data[PageSize];
+		byte			data[PageSize];
 		memory_batch*	prev;
 	};
 
 	memory_batch*	m_data;
-	char*			m_push_pointers[push_pointers_count];
-	char*			m_last_pointer;
+	pointer			m_push_pointers[push_pointers_count];
+	pointer			m_last_pointer;
+	Allocator*		m_allocator;
 };
 
-template<u32 PageSize, typename Allocator = mem_allocator>
+template<uptr PageSize, typename Allocator = mem_allocator>
 struct dynamic_allocation_heap
 {
 public:
-	dynamic_allocation_heap( );
+	dynamic_allocation_heap( Allocator* allocator = nullptr );
 	~dynamic_allocation_heap( );
 
 	void destroy( );
 
-	template<typename T>
-	T* allocate( );
-	template<typename T>
-	void allocate( T*& pointer );
-	
-	void* allocate_size( uptr size );
+	pointer allocate( uptr size );
 
 protected:
 	struct memory_batch
 	{
-		char			data[PageSize];
+		byte			data[PageSize];
 		memory_batch*	prev;
 	};
 
 	memory_batch*	m_data;
-	char*			m_last_pointer;
+	pointer			m_last_pointer;
+	Allocator*		m_allocator;
 };
 
 template<u32 PageSize, typename Allocator, typename ... TList>
@@ -182,7 +168,7 @@ public:
 template<u32 PageSize, typename Allocator, typename T, typename ... TList>
 struct multi_heap<PageSize, Allocator, T, TList ...> :
 	protected multi_heap<PageSize, Allocator, TList ...>,
-	protected array_heap<T, PageSize / sizeof(T), Allocator>
+	protected array_heap<sizeof(T), PageSize / sizeof(T), Allocator>
 {
 public:
 	multi_heap( );

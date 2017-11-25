@@ -54,7 +54,7 @@ public:
 
 private:
 	std::_Container_proxy container_proxy_data;
-	dynamic_array_heap<T, HeapPageSize, BasicAllocator> heap;
+	dynamic_array_heap<sizeof(T), HeapPageSize, BasicAllocator> heap;
 };
 
 template <typename L, typename R, u32 LHeapPageSize, u32 RHeapPageSize, typename LBasicAllocator, typename RBasicAllocator>

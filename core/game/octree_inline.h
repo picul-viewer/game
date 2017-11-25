@@ -10,7 +10,7 @@ octree<T, NodeObjectContainer, NodeHeap, NodePtr>::octree( )
 template<typename T, template<typename T> typename NodeObjectContainer, template<typename T> typename NodeHeap, pointer (T::*NodePtr)>
 typename octree<T, NodeObjectContainer, NodeHeap, NodePtr>::node* octree<T, NodeObjectContainer, NodeHeap, NodePtr>::new_node( )
 {
-	node* n = m_nodes->allocate( );
+	node* n = m_nodes->allocate( sizeof(node) );
 	memset( n, 0, sizeof(node) );
 	return n;
 }

@@ -3,240 +3,246 @@
 
 #include <core/macros.h>
 
-template<typename T, u32 BatchSize, typename Allocator>
-array_heap<T, BatchSize, Allocator>::array_heap( )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+array_heap<ElemSize, BatchSize, Allocator>::array_heap( Allocator* allocator )
 {
-	ASSERT			( sizeof(T) >= sizeof(T*) );
-	m_data			= (memory_batch*)Allocator::allocate( sizeof(memory_batch) );
+	ASSERT			( ElemSize >= sizeof(pointer) );
+	m_allocator		= allocator;
+	m_data			= (memory_batch*)m_allocator->allocate( sizeof(memory_batch) );
 	m_push_pointer	= nullptr;
-	m_last_pointer	= (T*)m_data->data;
+	m_last_pointer	= m_data->data;
 }
 
-template<typename T, u32 BatchSize, typename Allocator>
-array_heap<T, BatchSize, Allocator>::~array_heap( )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+array_heap<ElemSize, BatchSize, Allocator>::~array_heap( )
 {
 	destroy( );
 }
 
-template<typename T, u32 BatchSize, typename Allocator>
-void array_heap<T, BatchSize, Allocator>::destroy( )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+void array_heap<ElemSize, BatchSize, Allocator>::destroy( )
 {
-	Allocator::deallocate( m_data );
+	m_allocator->deallocate( m_data );
 	m_data = nullptr;
 }
 
-template<typename T, u32 BatchSize, typename Allocator>
-T* array_heap<T, BatchSize, Allocator>::allocate( )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+pointer array_heap<ElemSize, BatchSize, Allocator>::allocate( uptr size )
 {
-	T* result = nullptr;
+	ASSERT				( size == ElemSize );
+
+	pointer result		= nullptr;
+
 	if ( m_push_pointer == nullptr )
 	{
-		ASSERT			( m_last_pointer < (T*)m_data->data + BatchSize ); // heap is full
+		ASSERT			( m_last_pointer < m_data->data + ElemSize * BatchSize ); // heap is full
 		result			= m_last_pointer;
-		++m_last_pointer;
+		m_last_pointer	+= ElemSize;
 	}
 	else
 	{
 		result			= m_push_pointer;
-		m_push_pointer	= *(T**)m_push_pointer;
+		m_push_pointer	= *(pointer*)m_push_pointer;
 	}
 	return result;
 }
 
-template<typename T, u32 BatchSize, typename Allocator>
-void array_heap<T, BatchSize, Allocator>::deallocate( T* pointer )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+void array_heap<ElemSize, BatchSize, Allocator>::deallocate( pointer p )
 {
-	ASSERT			( pointer );
-	*(T**)pointer	= m_push_pointer;
-	m_push_pointer	= pointer;
+	ASSERT				( p );
+	*(pointer*)pointer	= m_push_pointer;
+	m_push_pointer		= p;
 }
 
 
-template<typename T, u32 BatchSize, typename Allocator>
-array_allocation_heap<T, BatchSize, Allocator>::array_allocation_heap( )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+array_allocation_heap<ElemSize, BatchSize, Allocator>::array_allocation_heap( Allocator* allocator )
 {
-	m_data			= (memory_batch*)Allocator::allocate( sizeof(memory_batch) );
-	m_push_pointer	= (T*)m_data->data;
+	m_allocator		= allocator;
+	m_data			= (memory_batch*)m_allocator->allocate( sizeof(memory_batch) );
+	m_push_pointer	= m_data->data;
 }
 
-template<typename T, u32 BatchSize, typename Allocator>
-array_allocation_heap<T, BatchSize, Allocator>::~array_allocation_heap()
-{
-	destroy();
-}
-
-template<typename T, u32 BatchSize, typename Allocator>
-void array_allocation_heap<T, BatchSize, Allocator>::destroy()
-{
-	Allocator::deallocate(m_data);
-	m_data = nullptr;
-}
-
-template<typename T, u32 BatchSize, typename Allocator>
-T* array_allocation_heap<T, BatchSize, Allocator>::allocate()
-{
-	ASSERT		( m_push_pointer < (T*)m_data->data + BatchSize ); // heap is full
-	T* result	= m_push_pointer;
-	++m_push_pointer;
-	return		result;
-}
-
-
-template<typename T, u32 BatchSize, typename Allocator>
-dynamic_array_heap<T, BatchSize, Allocator>::dynamic_array_heap( )
-{
-	ASSERT			( sizeof(T) >= sizeof(T*) );
-	m_data			= nullptr;
-	m_data->prev	= nullptr;
-	m_push_pointer	= nullptr;
-	m_last_pointer	= (T*)m_data->data + BatchSize - 1;
-}
-
-template<typename T, u32 BatchSize, typename Allocator>
-dynamic_array_heap<T, BatchSize, Allocator>::~dynamic_array_heap( )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+array_allocation_heap<ElemSize, BatchSize, Allocator>::~array_allocation_heap( )
 {
 	destroy( );
 }
 
-template<typename T, u32 BatchSize, typename Allocator>
-void dynamic_array_heap<T, BatchSize, Allocator>::destroy( )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+void array_allocation_heap<ElemSize, BatchSize, Allocator>::destroy( )
+{
+	m_allocator->deallocate( m_data );
+	m_data = nullptr;
+}
+
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+pointer array_allocation_heap<ElemSize, BatchSize, Allocator>::allocate( uptr size )
+{
+	ASSERT			( size == ElemSize );
+	ASSERT			( m_push_pointer < m_data->data + ElemSize * BatchSize ); // heap is full
+	pointer result	= m_push_pointer;
+	m_push_pointer	+= ElemSize;
+	return			result;
+}
+
+
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+dynamic_array_heap<ElemSize, BatchSize, Allocator>::dynamic_array_heap( Allocator* allocator )
+{
+	ASSERT			( ElemSize >= sizeof(pointer) );
+	m_allocator		= allocator;
+	m_data			= nullptr;
+	m_data->prev	= nullptr;
+	m_push_pointer	= nullptr;
+	m_last_pointer	= m_data->data + ElemSize * BatchSize;
+}
+
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+dynamic_array_heap<ElemSize, BatchSize, Allocator>::~dynamic_array_heap( )
+{
+	destroy( );
+}
+
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+void dynamic_array_heap<ElemSize, BatchSize, Allocator>::destroy( )
 {
 	memory_batch* mem = m_data;
 	while ( mem )
 	{
 		memory_batch* prev = mem->prev;
-		Allocator::deallocate( mem );
+		m_allocator->deallocate( mem );
 		mem = prev;
 	}
 	m_data = nullptr;
 }
 
-template<typename T, u32 BatchSize, typename Allocator>
-T* dynamic_array_heap<T, BatchSize, Allocator>::allocate( )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+pointer dynamic_array_heap<ElemSize, BatchSize, Allocator>::allocate( uptr size )
 {
+	ASSERT( size == ElemSize );
+
+	pointer result = nullptr;
+
 	if ( m_push_pointer == nullptr )
 	{
-		if ( m_last_pointer != (T*)m_data->data + BatchSize - 1 )
+		if ( m_last_pointer != m_data->data + ElemSize * BatchSize )
 		{
-			++m_last_pointer;
-			return m_last_pointer;
+			pointer result		= m_last_pointer;
+			m_last_pointer		+= ElemSize;
+			return result;
 		}
 		else
 		{
 			memory_batch* mem	= m_data;
-			m_data				= (memory_batch*)Allocator::allocate( sizeof(memory_batch) );
+			m_data				= (memory_batch*)m_allocator->allocate( sizeof(memory_batch) );
 			m_data->prev		= mem;
-			m_last_pointer		= (T*)m_data->data;
-			return m_last_pointer;
+			m_last_pointer		= m_data->data + ElemSize;
+			return m_data->data;
 		}
 	}
 	else
 	{
-		T* result		= m_push_pointer;
-		m_push_pointer	= *(T**)m_push_pointer;
+		pointer result			= m_push_pointer;
+		m_push_pointer			= *(pointer*)m_push_pointer;
 		return result;
 	}
 }
 
-template<typename T, u32 BatchSize, typename Allocator>
-void dynamic_array_heap<T, BatchSize, Allocator>::deallocate( T* pointer )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+void dynamic_array_heap<ElemSize, BatchSize, Allocator>::deallocate( pointer p )
 {
-	ASSERT			( pointer );
-	*(T**)pointer	= m_push_pointer;
-	m_push_pointer	= pointer;
+	ASSERT				( p );
+	*(pointer*)p		= m_push_pointer;
+	m_push_pointer		= p;
 }
 
 
-template<typename T, u32 BatchSize, typename Allocator>
-dynamic_array_allocation_heap<T, BatchSize, Allocator>::dynamic_array_allocation_heap( )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+dynamic_array_allocation_heap<ElemSize, BatchSize, Allocator>::dynamic_array_allocation_heap( Allocator* allocator )
 {
+	m_allocator		= allocator;
 	m_data			= nullptr;
 	m_data->prev	= nullptr;
-	m_push_pointer	= (T*)m_data->data + Batchsize - 1;
+	m_push_pointer	= m_data->data + ElemSize * BatchSize;
 }
 
-template<typename T, u32 BatchSize, typename Allocator>
-dynamic_array_allocation_heap<T, BatchSize, Allocator>::~dynamic_array_allocation_heap( )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+dynamic_array_allocation_heap<ElemSize, BatchSize, Allocator>::~dynamic_array_allocation_heap( )
 {
 	destroy( );
 }
 
-template<typename T, u32 BatchSize, typename Allocator>
-void dynamic_array_allocation_heap<T, BatchSize, Allocator>::destroy( )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+void dynamic_array_allocation_heap<ElemSize, BatchSize, Allocator>::destroy( )
 {
 	memory_batch* mem = m_data;
 	while ( mem )
 	{
 		memory_batch* prev = mem->prev;
-		Allocator::deallocate( mem );
+		m_allocator->deallocate( mem );
 		mem = prev;
 	}
 	m_data = nullptr;
 }
 
-template<typename T, u32 BatchSize, typename Allocator>
-T* dynamic_array_allocation_heap<T, BatchSize, Allocator>::allocate( )
+template<uptr ElemSize, uptr BatchSize, typename Allocator>
+pointer dynamic_array_allocation_heap<ElemSize, BatchSize, Allocator>::allocate( uptr size )
 {
-	if ( m_push_pointer != (T*)m_data->data + BatchSize - 1 )
-		++m_push_pointer;
+	ASSERT( size == ElemSize );
+
+	if ( m_push_pointer != m_data->data + ElemSize * BatchSize )
+	{
+		pointer result		= m_push_pointer;
+		m_push_pointer		+= ElemSize;
+		return result;
+	}
 	else
 	{
 		memory_batch* mem	= m_data;
-		m_data				= (memory_batch*)Allocator::allocate( sizeof(memory_batch) );
+		m_data				= (memory_batch*)m_allocator->allocate( sizeof(memory_batch) );
 		m_data->prev		= mem;
-		m_push_pointer		= (T*)m_data->data;
+		m_push_pointer		= m_data->data + ElemSize;
+		return m_data->data; 
 	}
-	return m_push_pointer;
 }
 
 
-template<u32 SizeMin, u32 SizeMax, u32 SizeStep, u32 PageSize, typename Allocator>
-dynamic_heap<SizeMin, SizeMax, SizeStep, PageSize, Allocator>::dynamic_heap( )
+template<uptr SizeMin, uptr SizeMax, uptr SizeStep, uptr PageSize, typename Allocator>
+dynamic_heap<SizeMin, SizeMax, SizeStep, PageSize, Allocator>::dynamic_heap( Allocator* allocator )
 {
-	ASSERT			( SizeMin >= sizeof(char*) );
+	ASSERT			( SizeMin >= sizeof(pointer) );
 	ASSERT			( SizeMax <= PageSize );
 	ASSERT			( ( SizeMax - SizeMin ) % SizeStep != 0 );
+	m_allocator		= allocator;
 	m_data			= nullptr;
 	m_data->prev	= nullptr;
-	memset( m_push_pointers, 0, sizeof(char*) * push_pointers_count );
+	memset			( m_push_pointers, 0, sizeof(pointer) * push_pointers_count );
 	m_last_pointer	= m_data->data + PageSize;
 }
 
-template<u32 SizeMin, u32 SizeMax, u32 SizeStep, u32 PageSize, typename Allocator>
+template<uptr SizeMin, uptr SizeMax, uptr SizeStep, uptr PageSize, typename Allocator>
 dynamic_heap<SizeMin, SizeMax, SizeStep, PageSize, Allocator>::~dynamic_heap( )
 {
 	destroy( );
 }
 
-template<u32 SizeMin, u32 SizeMax, u32 SizeStep, u32 PageSize, typename Allocator>
+template<uptr SizeMin, uptr SizeMax, uptr SizeStep, uptr PageSize, typename Allocator>
 void dynamic_heap<SizeMin, SizeMax, SizeStep, PageSize, Allocator>::destroy( )
 {
 	memory_batch* mem = m_data;
 	while ( mem )
 	{
 		memory_batch* prev = mem->prev;
-		Allocator::deallocate( mem );
+		m_allocator->deallocate( mem );
 		mem = prev;
 	}
 	m_data = nullptr;
 }
 
-template<u32 SizeMin, u32 SizeMax, u32 SizeStep, u32 PageSize, typename Allocator>
-template<typename T>
-T* dynamic_heap<SizeMin, SizeMax, SizeStep, PageSize, Allocator>::allocate( )
-{
-	return (T*)allocate_size( sizeof(T) );
-}
-
-template<u32 SizeMin, u32 SizeMax, u32 SizeStep, u32 PageSize, typename Allocator>
-template<typename T>
-void dynamic_heap<SizeMin, SizeMax, SizeStep, PageSize, Allocator>::allocate( T*& pointer )
-{
-	pointer = (T*)allocate_size( sizeof(T) );
-}
-
-template<u32 SizeMin, u32 SizeMax, u32 SizeStep, u32 PageSize, typename Allocator>
-void* dynamic_heap<SizeMin, SizeMax, SizeStep, PageSize, Allocator>::allocate_size( u32 size )
+template<uptr SizeMin, uptr SizeMax, uptr SizeStep, uptr PageSize, typename Allocator>
+pointer dynamic_heap<SizeMin, SizeMax, SizeStep, PageSize, Allocator>::allocate( uptr size )
 {
 	ASSERT						( size < SizeMin );
 	ASSERT						( size > SizeMax );
@@ -247,14 +253,14 @@ void* dynamic_heap<SizeMin, SizeMax, SizeStep, PageSize, Allocator>::allocate_si
 	{
 		if ( m_last_pointer + size <= m_data->data + PageSize )
 		{
-			void* result		= m_last_pointer;
+			pointer result		= m_last_pointer;
 			m_last_pointer		+= size;
 			return result;
 		}
 		else
 		{
 			memory_batch* mem	= m_data;
-			m_data				= (memory_batch*)Allocator::allocate( sizeof(memory_batch) );
+			m_data				= (memory_batch*)m_allocator->allocate( sizeof(memory_batch) );
 			m_data->prev		= mem;
 			m_last_pointer		= m_data->data + size;
 			return m_data->data;
@@ -262,89 +268,68 @@ void* dynamic_heap<SizeMin, SizeMax, SizeStep, PageSize, Allocator>::allocate_si
 	}
 	else
 	{
-		void* result			= m_push_pointers[index];
-		m_push_pointers[index]	= *(char**)m_push_pointers[index];
+		pointer result			= m_push_pointers[index];
+		m_push_pointers[index]	= *(pointer*)m_push_pointers[index];
 		return result;
 	}
 }
 
-// NOTE - static type resolve!!
-template<u32 SizeMin, u32 SizeMax, u32 SizeStep, u32 PageSize, typename Allocator>
-template<typename T>
-void dynamic_heap<SizeMin, SizeMax, SizeStep, PageSize, Allocator>::deallocate( T* pointer )
+template<uptr SizeMin, uptr SizeMax, uptr SizeStep, uptr PageSize, typename Allocator>
+void dynamic_heap<SizeMin, SizeMax, SizeStep, PageSize, Allocator>::deallocate( pointer p, uptr size )
 {
-	deallocate_size( pointer, sizeof(T) );
-}
-
-template<u32 SizeMin, u32 SizeMax, u32 SizeStep, u32 PageSize, typename Allocator>
-void dynamic_heap<SizeMin, SizeMax, SizeStep, PageSize, Allocator>::deallocate_size( void* pointer, u32 size )
-{
-	ASSERT					( pointer );
+	ASSERT					( p );
 
 	ASSERT					( size < SizeMin );
 	ASSERT					( size > SizeMin );
 	ASSERT					( ( size - SizeMin ) % SizeStep );
 	u32 const index			= ( size - SizeMin ) / SizeStep;
 
-	*(char**)pointer		= m_push_pointers[index];
-	m_push_pointer[index]	= pointer;
+	*(pointer*)p			= m_push_pointers[index];
+	m_push_pointer[index]	= p;
 }
 
 
-template<u32 PageSize, typename Allocator>
-dynamic_allocation_heap<PageSize, Allocator>::dynamic_allocation_heap( )
+template<uptr PageSize, typename Allocator>
+dynamic_allocation_heap<PageSize, Allocator>::dynamic_allocation_heap( Allocator* allocator )
 {
+	m_allocator		= allocator;
 	m_data			= nullptr;
 	m_data->prev	= nullptr;
 	m_last_pointer	= m_data->data + PageSize;
 }
 
-template<u32 PageSize, typename Allocator>
+template<uptr PageSize, typename Allocator>
 dynamic_allocation_heap<PageSize, Allocator>::~dynamic_allocation_heap( )
 {
 	destroy( );
 }
 
-template<u32 PageSize, typename Allocator>
+template<uptr PageSize, typename Allocator>
 void dynamic_allocation_heap<PageSize, Allocator>::destroy( )
 {
 	memory_batch* mem = m_data;
 	while ( mem )
 	{
 		memory_batch* prev = mem->prev;
-		Allocator::deallocate( mem );
+		m_allocator->deallocate( mem );
 		mem = prev;
 	}
 	m_data = nullptr;
 }
 
-template<u32 PageSize, typename Allocator>
-template<typename T>
-T* dynamic_allocation_heap<PageSize, Allocator>::allocate( )
-{
-	return allocate_size( sizeof(T) );
-}
-
-template<u32 PageSize, typename Allocator>
-template<typename T>
-void dynamic_allocation_heap<PageSize, Allocator>::allocate( T*& pointer )
-{
-	pointer = allocate_size( sizeof(T) );
-}
-
-template<u32 PageSize, typename Allocator>
-void* dynamic_allocation_heap<PageSize, Allocator>::allocate_size( uptr size )
+template<uptr PageSize, typename Allocator>
+pointer dynamic_allocation_heap<PageSize, Allocator>::allocate( uptr size )
 {
 	if ( m_last_pointer + size <= m_data->data + PageSize )
 	{
-		void* result		= m_last_pointer;
+		pointer result		= m_last_pointer;
 		m_last_pointer		+= size;
 		return result;
 	}
 	else
 	{
 		memory_batch* mem	= m_data;
-		m_data				= (memory_batch*)Allocator::allocate( sizeof(memory_batch) );
+		m_data				= (memory_batch*)m_allocator->allocate( sizeof(memory_batch) );
 		m_data->prev		= mem;
 		m_last_pointer		= m_data->data + size;
 		return m_data->data;
