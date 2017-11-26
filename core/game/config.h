@@ -2,7 +2,7 @@
 #define __core_config_h_included_
 
 #include <core/types.h>
-#include <core/structs.h>
+#include <core/std.h>
 
 class config
 {

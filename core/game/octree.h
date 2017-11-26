@@ -2,7 +2,7 @@
 #define __core_octree_h_included_
 
 #include <core/types.h>
-#include <core/structs.h>
+#include <core/std.h>
 
 template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
 class octree

@@ -2,7 +2,7 @@
 #define __fs_fs_core_inline_h_included_
 
 #include <core/macros.h>
-#include <core/structs.h>
+#include <core/std.h>
 #include <Windows.h>
 
 namespace fs {

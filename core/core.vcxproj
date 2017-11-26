@@ -177,7 +177,7 @@
     <ClInclude Include="math\matrix.h" />
     <ClInclude Include="math\quaternion.h" />
     <ClInclude Include="math\vector.h" />
-    <ClInclude Include="structs.h" />
+    <ClInclude Include="std.h" />
     <ClInclude Include="structs\allocator.h" />
     <ClInclude Include="structs\allocator_inline.h" />
     <ClInclude Include="structs\alloc_string.h" />
