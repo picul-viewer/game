@@ -37,20 +37,20 @@
     <Filter Include="std">
       <UniqueIdentifier>{39fdb027-407f-4fc2-b8e2-0b3d835e11ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="std\string">
-      <UniqueIdentifier>{3cdb0e93-0c75-4eaf-abf6-b6903025c0b6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="std\map">
-      <UniqueIdentifier>{866e97cc-9238-45cc-862a-cc0c2e1fb4f5}</UniqueIdentifier>
+    <Filter Include="std\array">
+      <UniqueIdentifier>{b64a8e45-d7ad-470a-b5fe-3ddf7abb14ae}</UniqueIdentifier>
     </Filter>
     <Filter Include="std\list">
-      <UniqueIdentifier>{de59356c-7fc2-4e13-a77a-b70106dfd1f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="std\array">
-      <UniqueIdentifier>{f365ffde-71f7-47ca-ab92-d3b21cb4af27}</UniqueIdentifier>
+      <UniqueIdentifier>{03952e0e-8043-47b5-aac6-a90f41986dbc}</UniqueIdentifier>
     </Filter>
     <Filter Include="std\memory">
-      <UniqueIdentifier>{a9833a9e-6a82-463b-9985-54241350fb0a}</UniqueIdentifier>
+      <UniqueIdentifier>{f87a1be5-6340-4c44-9d7e-2dd09a085ae6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="std\string">
+      <UniqueIdentifier>{4be3fcf9-f9e0-498f-b571-c0836a163d53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="std\map">
+      <UniqueIdentifier>{025c1471-0106-4c7a-8939-2851d44491be}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -62,36 +62,6 @@
     <ClInclude Include="threads\thread.h">
       <Filter>threads</Filter>
     </ClInclude>
-    <ClInclude Include="structs\fixed_string.h">
-      <Filter>std\string</Filter>
-    </ClInclude>
-    <ClInclude Include="structs\fixed_string_inline.h">
-      <Filter>std\string</Filter>
-    </ClInclude>
-    <ClInclude Include="structs\allocator.h">
-      <Filter>std\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="structs\allocator_inline.h">
-      <Filter>std\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="structs\alloc_string.h">
-      <Filter>std\string</Filter>
-    </ClInclude>
-    <ClInclude Include="structs\alloc_string_inline.h">
-      <Filter>std\string</Filter>
-    </ClInclude>
-    <ClInclude Include="structs\std_map.h">
-      <Filter>std\map</Filter>
-    </ClInclude>
-    <ClInclude Include="structs\std_map_inline.h">
-      <Filter>std\map</Filter>
-    </ClInclude>
-    <ClInclude Include="structs\basic_string.h">
-      <Filter>std\string</Filter>
-    </ClInclude>
-    <ClInclude Include="structs\weak_string.h">
-      <Filter>std\string</Filter>
-    </ClInclude>
     <ClInclude Include="threads\task_queue.h">
       <Filter>threads\task_queue</Filter>
     </ClInclude>
@@ -100,12 +70,6 @@
     </ClInclude>
     <ClInclude Include="threads.h">
       <Filter>threads</Filter>
-    </ClInclude>
-    <ClInclude Include="structs\embedded_list.h">
-      <Filter>std\list</Filter>
-    </ClInclude>
-    <ClInclude Include="structs\embedded_list_inline.h">
-      <Filter>std\list</Filter>
     </ClInclude>
     <ClInclude Include="math\math_3d.h">
       <Filter>math</Filter>
@@ -131,12 +95,6 @@
     <ClInclude Include="game.h">
       <Filter>game</Filter>
     </ClInclude>
-    <ClInclude Include="structs\array.h">
-      <Filter>std\array</Filter>
-    </ClInclude>
-    <ClInclude Include="structs\array_inline.h">
-      <Filter>std\array</Filter>
-    </ClInclude>
     <ClInclude Include="game\config.h">
       <Filter>game\config</Filter>
     </ClInclude>
@@ -161,14 +119,56 @@
     <ClInclude Include="game\octree_inline.h">
       <Filter>game\collision\octree</Filter>
     </ClInclude>
-    <ClInclude Include="structs\heap.h">
-      <Filter>std\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="structs\heap_inline.h">
-      <Filter>std\memory</Filter>
-    </ClInclude>
     <ClInclude Include="std.h">
       <Filter>std</Filter>
+    </ClInclude>
+    <ClInclude Include="std\array.h">
+      <Filter>std\array</Filter>
+    </ClInclude>
+    <ClInclude Include="std\array_inline.h">
+      <Filter>std\array</Filter>
+    </ClInclude>
+    <ClInclude Include="std\embedded_list.h">
+      <Filter>std\list</Filter>
+    </ClInclude>
+    <ClInclude Include="std\embedded_list_inline.h">
+      <Filter>std\list</Filter>
+    </ClInclude>
+    <ClInclude Include="std\allocator.h">
+      <Filter>std\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="std\allocator_inline.h">
+      <Filter>std\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="std\heap.h">
+      <Filter>std\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="std\heap_inline.h">
+      <Filter>std\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="std\std_map.h">
+      <Filter>std\map</Filter>
+    </ClInclude>
+    <ClInclude Include="std\std_map_inline.h">
+      <Filter>std\map</Filter>
+    </ClInclude>
+    <ClInclude Include="std\alloc_string.h">
+      <Filter>std\string</Filter>
+    </ClInclude>
+    <ClInclude Include="std\alloc_string_inline.h">
+      <Filter>std\string</Filter>
+    </ClInclude>
+    <ClInclude Include="std\basic_string.h">
+      <Filter>std\string</Filter>
+    </ClInclude>
+    <ClInclude Include="std\fixed_string.h">
+      <Filter>std\string</Filter>
+    </ClInclude>
+    <ClInclude Include="std\fixed_string_inline.h">
+      <Filter>std\string</Filter>
+    </ClInclude>
+    <ClInclude Include="std\weak_string.h">
+      <Filter>std\string</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -177,15 +177,6 @@
     </ClCompile>
     <ClCompile Include="threads\task_queue.cpp">
       <Filter>threads\task_queue</Filter>
-    </ClCompile>
-    <ClCompile Include="structs\basic_string.cpp">
-      <Filter>std\string</Filter>
-    </ClCompile>
-    <ClCompile Include="structs\weak_string.cpp">
-      <Filter>std\string</Filter>
-    </ClCompile>
-    <ClCompile Include="structs\alloc_string.cpp">
-      <Filter>std\string</Filter>
     </ClCompile>
     <ClCompile Include="game\camera.cpp">
       <Filter>game\camera</Filter>
@@ -201,6 +192,15 @@
     </ClCompile>
     <ClCompile Include="game\frustum.cpp">
       <Filter>game\collision\frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="std\alloc_string.cpp">
+      <Filter>std\string</Filter>
+    </ClCompile>
+    <ClCompile Include="std\basic_string.cpp">
+      <Filter>std\string</Filter>
+    </ClCompile>
+    <ClCompile Include="std\weak_string.cpp">
+      <Filter>std\string</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
