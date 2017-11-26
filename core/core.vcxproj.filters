@@ -170,6 +170,9 @@
     <ClInclude Include="std\weak_string.h">
       <Filter>std\string</Filter>
     </ClInclude>
+    <ClInclude Include="std\algorithms.h">
+      <Filter>std</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="threads\thread.cpp">

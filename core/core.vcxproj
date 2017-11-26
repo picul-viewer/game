@@ -178,6 +178,7 @@
     <ClInclude Include="math\quaternion.h" />
     <ClInclude Include="math\vector.h" />
     <ClInclude Include="std.h" />
+    <ClInclude Include="std\algorithms.h" />
     <ClInclude Include="std\allocator.h" />
     <ClInclude Include="std\allocator_inline.h" />
     <ClInclude Include="std\alloc_string.h" />
