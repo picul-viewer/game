@@ -163,6 +163,8 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="game\aabb.h" />
     <ClInclude Include="game\aabb_inline.h" />
+    <ClInclude Include="game\bvh.h" />
+    <ClInclude Include="game\bvh_inline.h" />
     <ClInclude Include="game\camera.h" />
     <ClInclude Include="game\config.h" />
     <ClInclude Include="game\frustum.h" />

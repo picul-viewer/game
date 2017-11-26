@@ -52,6 +52,9 @@
     <Filter Include="std\map">
       <UniqueIdentifier>{025c1471-0106-4c7a-8939-2851d44491be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\collision\bvh">
+      <UniqueIdentifier>{8549c605-189d-48d1-9f64-6cedb7d34d91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -172,6 +175,12 @@
     </ClInclude>
     <ClInclude Include="std\algorithms.h">
       <Filter>std</Filter>
+    </ClInclude>
+    <ClInclude Include="game\bvh.h">
+      <Filter>game\collision\bvh</Filter>
+    </ClInclude>
+    <ClInclude Include="game\bvh_inline.h">
+      <Filter>game\collision\bvh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
