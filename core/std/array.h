@@ -32,8 +32,8 @@ public:
 	T& operator[]( uptr index );
 	Tcref operator[]( uptr index ) const;
 	
-	void for_each( void( *functor )( T* ) );
-	void for_each( void( *functor )( T const* ) ) const;
+	template<typename Pred>
+	void for_each( Pred const& functor );
 
 protected:
 	T*	m_begin;
