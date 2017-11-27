@@ -4,14 +4,14 @@
 #include <core/types.h>
 #include <core/std.h>
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
 class octree
 {
 public:
 	octree( );
 
-	void create( NodeHeap& node_heap, aabb_aligned const& box, u32 max_depth = -1 );
-	void create( NodeHeap& node_heap, aabb_aligned const& box, float node_min_radius );
+	void create( NodeAllocator& node_heap, aabb_aligned const& box, u32 max_depth = -1 );
+	void create( NodeAllocator& node_heap, aabb_aligned const& box, float node_min_radius );
 	void destroy( );
 
 	void insert( T* object );
@@ -40,7 +40,7 @@ protected:
 
 	math::float4 m_box_center;
 	math::float4 m_box_half_radius;
-	NodeHeap* m_nodes;
+	NodeAllocator* m_nodes;
 	node* m_root;
 	u32 max_depth;
 };

@@ -1,22 +1,22 @@
 #ifndef __core_octree_inline_h_included_
 #define __core_octree_inline_h_included_
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
-octree<T, NodeObjectContainer, NodeHeap, NodePtr>::octree( )
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
+octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::octree( )
 {
 	ASSERT( aligned( this, 16 ) );
 }
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
-typename octree<T, NodeObjectContainer, NodeHeap, NodePtr>::node* octree<T, NodeObjectContainer, NodeHeap, NodePtr>::new_node( )
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
+typename octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::node* octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::new_node( )
 {
 	node* n = m_nodes->allocate( sizeof(node) );
 	memset( n, 0, sizeof(node) );
 	return n;
 }
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::calculate_bounds( aabb_aligned const& box )
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::calculate_bounds( aabb_aligned const& box )
 {
 	__m128 l = _mm_load_ps( box.min.data );
 	__m128 h = _mm_load_ps( box.max.data );
@@ -31,8 +31,8 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::calculate_bounds( aabb_a
 	_mm_store_ps( m_box_half_radius.data, hr );
 }
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( NodeHeap& node_heap, aabb_aligned const& box, u32 max_depth )
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::create( NodeAllocator& node_heap, aabb_aligned const& box, u32 max_depth )
 {
 	this->m_nodes = node_heap;
 	calculate_bounds( box );
@@ -40,8 +40,8 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( NodeHeap& node_h
 	this->max_depth = max_depth;
 }
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( NodeHeap& node_heap, aabb_aligned const& box, float node_min_radius )
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::create( NodeAllocator& node_heap, aabb_aligned const& box, float node_min_radius )
 {
 	this->m_nodes = &node_heap;
 	calculate_bounds( box );
@@ -52,8 +52,8 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::create( NodeHeap& node_h
 	max_depth = (u32)(int)math::max( math::max( depth.x, depth.y ), depth.z );
 }
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::destroy_impl( node* n )
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::destroy_impl( node* n )
 {
 	for ( u32 i = 0; i < 8; ++i )
 		if ( n->nodes[i] )
@@ -62,15 +62,15 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::destroy_impl( node* n )
 	m_nodes->deallocate( n );
 }
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::destroy( )
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::destroy( )
 {
 	if ( m_root )
 		destroy_impl( m_root );
 }
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::insert( T* object )
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::insert( T* object )
 {
 	node* n = m_root;
 
@@ -109,15 +109,15 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::insert( T* object )
 	object->*NodePtr = n;
 }
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::move( T* object )
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::move( T* object )
 {
 	remove( object );
 	insert( object );
 }
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::remove( T* object )
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::remove( T* object )
 {
 	node* n = object->*NodePtr;
 	object->*NodePtr = nullptr;
@@ -125,9 +125,9 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::remove( T* object )
 	n->objects.remove( object );
 }
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
 template<typename Callback>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::query_visibility( frustum_aligned const& frustum, Callback callback )
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::query_visibility( frustum_aligned const& frustum, Callback callback )
 {
 	ASSERT( aligned( this, 16 ) );
 
@@ -139,9 +139,9 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::query_visibility( frustu
 	query_visibility_impl( m_root, center, half_radius, frustum, callback );
 }
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
 template<typename Callback>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::query_visibility_impl_inside( node* n, Callback callback )
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::query_visibility_impl_inside( node* n, Callback callback )
 {
 	for ( u32 i = 0; i < 8; ++i )
 		if ( n->nodes[i] )
@@ -153,9 +153,9 @@ void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::query_visibility_impl_in
 	} );
 }
 
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
 template<typename Callback>
-void octree<T, NodeObjectContainer, NodeHeap, NodePtr>::query_visibility_impl( node* n, __m128 const& node_center, __m128 const& node_half_radius, frustum_aligned const& frustum, Callback callback )
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::query_visibility_impl( node* n, __m128 const& node_center, __m128 const& node_half_radius, frustum_aligned const& frustum, Callback callback )
 {
 	aabb_aligned node_aabb;
 	node_aabb.set_center_radius( node_center, _mm_add_ps( node_half_radius, node_half_radius ) );
