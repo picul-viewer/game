@@ -64,7 +64,7 @@ class frustum_aligned
 public:
 	frustum_aligned( );
 
-	void set_from_matrix( math::float4x4 const& m );
+	void set_from_matrix( math::sse::matrix const& m );
 
 	bool test_aabb_inside( aabb_aligned const& box ) const;
 	bool test_aabb_outside( aabb_aligned const& box ) const;
@@ -72,7 +72,7 @@ public:
 	intersection test_aabb( aabb_aligned const& box ) const;
 
 protected:
-	math::float4x4 matrix;
+	math::sse::matrix m;
 };
 
 #endif // #ifndef __core_frustum_h_included_

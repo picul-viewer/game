@@ -79,33 +79,22 @@ void aabb::modify( math::float4x3 const& transform )
 }
 
 
-void aabb_aligned::modify( math::float4x3 const& transform )
+void aabb_aligned::modify( math::sse::matrix3 const& transform )
 {
-	ASSERT( aligned( &transform, 16 ) );
-
-	__m128 l = _mm_load_ps( min.data );
-	__m128 h = _mm_load_ps( max.data );
-
-	__m128 l0 = _mm_load_ps( transform.l0.data );
-
-	__m128 l0_l = _mm_mul_ps( l0, l );
-	__m128 l0_h = _mm_mul_ps( l0, h );
+	__m128 l0_l = _mm_mul_ps( transform[0], min );
+	__m128 l0_h = _mm_mul_ps( transform[0], max );
 
 	__m128 l0_min = _mm_min_ps( l0_l, l0_h );
 	__m128 l0_max = _mm_max_ps( l0_l, l0_h );
 
-	__m128 l1 = _mm_load_ps( transform.l1.data );
-
-	__m128 l1_l = _mm_mul_ps( l1, l );
-	__m128 l1_h = _mm_mul_ps( l1, h );
+	__m128 l1_l = _mm_mul_ps( transform[1], min );
+	__m128 l1_h = _mm_mul_ps( transform[1], max );
 
 	__m128 l1_min = _mm_min_ps( l1_l, l1_h );
 	__m128 l1_max = _mm_max_ps( l1_l, l1_h );
 	
-	__m128 l2 = _mm_load_ps( transform.l2.data );
-
-	__m128 l2_l = _mm_mul_ps( l2, l );
-	__m128 l2_h = _mm_mul_ps( l2, h );
+	__m128 l2_l = _mm_mul_ps( transform[2], min );
+	__m128 l2_h = _mm_mul_ps( transform[2], max );
 
 	__m128 l2_min = _mm_min_ps( l2_l, l2_h );
 	__m128 l2_max = _mm_max_ps( l2_l, l2_h );
@@ -127,9 +116,6 @@ void aabb_aligned::modify( math::float4x3 const& transform )
 	__m128 mask1 = _mm_castsi128_ps( _mm_setr_epi32( 0, 0, 0, 0x3F800000 ) );
 
 	// Set w-component to 1.0f
-	new_min = _mm_or_ps( _mm_and_ps( new_min, mask0 ), mask1 );
-	new_max = _mm_or_ps( _mm_and_ps( new_max, mask0 ), mask1 );
-
-	_mm_store_ps( min.data, new_min );
-	_mm_store_ps( max.data, new_max );
+	min = _mm_or_ps( _mm_and_ps( new_min, mask0 ), mask1 );
+	max = _mm_or_ps( _mm_and_ps( new_max, mask0 ), mask1 );
 }
