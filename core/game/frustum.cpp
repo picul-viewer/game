@@ -129,25 +129,21 @@ bool frustum_aligned::test_aabb_inside( aabb_aligned const& box ) const
 	__m128 aabb_min_l0 = _mm_mul_ps( _mm_shuffle_ps( aabb_min, aabb_min, _MM_SHUFFLE( 0, 0, 0, 0 ) ), m[0] );
 	__m128 aabb_min_l1 = _mm_mul_ps( _mm_shuffle_ps( aabb_min, aabb_min, _MM_SHUFFLE( 1, 1, 1, 1 ) ), m[1] );
 	__m128 aabb_min_l2 = _mm_mul_ps( _mm_shuffle_ps( aabb_min, aabb_min, _MM_SHUFFLE( 2, 2, 2, 2 ) ), m[2] );
-	__m128 aabb_min_l3 = _mm_mul_ps( _mm_shuffle_ps( aabb_min, aabb_min, _MM_SHUFFLE( 3, 3, 3, 3 ) ), m[3] );
 	
 	__m128 aabb_max_l0 = _mm_mul_ps( _mm_shuffle_ps( aabb_max, aabb_max, _MM_SHUFFLE( 0, 0, 0, 0 ) ), m[0] );
 	__m128 aabb_max_l1 = _mm_mul_ps( _mm_shuffle_ps( aabb_max, aabb_max, _MM_SHUFFLE( 1, 1, 1, 1 ) ), m[1] );
 	__m128 aabb_max_l2 = _mm_mul_ps( _mm_shuffle_ps( aabb_max, aabb_max, _MM_SHUFFLE( 2, 2, 2, 2 ) ), m[2] );
-	__m128 aabb_max_l3 = _mm_mul_ps( _mm_shuffle_ps( aabb_max, aabb_max, _MM_SHUFFLE( 3, 3, 3, 3 ) ), m[3] );
 
 	__m128 min_l0 = _mm_min_ps( aabb_min_l0, aabb_max_l0 );
 	__m128 min_l1 = _mm_min_ps( aabb_min_l1, aabb_max_l1 );
 	__m128 min_l2 = _mm_min_ps( aabb_min_l2, aabb_max_l2 );
-	__m128 min_l3 = _mm_min_ps( aabb_min_l3, aabb_max_l3 );
 	
 	__m128 max_l0 = _mm_max_ps( aabb_min_l0, aabb_max_l0 );
 	__m128 max_l1 = _mm_max_ps( aabb_min_l1, aabb_max_l1 );
 	__m128 max_l2 = _mm_max_ps( aabb_min_l2, aabb_max_l2 );
-	__m128 max_l3 = _mm_max_ps( aabb_min_l3, aabb_max_l3 );
-
-	__m128 min_dots = _mm_add_ps( _mm_add_ps( min_l0, min_l1 ), _mm_add_ps( min_l2, min_l3 ) );
-	__m128 max_dots = _mm_add_ps( _mm_add_ps( max_l0, max_l1 ), _mm_add_ps( max_l2, max_l3 ) );
+	
+	__m128 min_dots = _mm_add_ps( _mm_add_ps( min_l0, min_l1 ), _mm_add_ps( min_l2, m[3] ) );
+	__m128 max_dots = _mm_add_ps( _mm_add_ps( max_l0, max_l1 ), _mm_add_ps( max_l2, m[3] ) );
 
 	__m128 max_dot_c3 = _mm_shuffle_ps( max_dots, max_dots, _MM_SHUFFLE( 3, 3, 3, 3 ) );
 
@@ -179,25 +175,21 @@ bool frustum_aligned::test_aabb_outside( aabb_aligned const& box ) const
 	__m128 aabb_min_l0 = _mm_mul_ps( _mm_shuffle_ps( aabb_min, aabb_min, _MM_SHUFFLE( 0, 0, 0, 0 ) ), m[0] );
 	__m128 aabb_min_l1 = _mm_mul_ps( _mm_shuffle_ps( aabb_min, aabb_min, _MM_SHUFFLE( 1, 1, 1, 1 ) ), m[1] );
 	__m128 aabb_min_l2 = _mm_mul_ps( _mm_shuffle_ps( aabb_min, aabb_min, _MM_SHUFFLE( 2, 2, 2, 2 ) ), m[2] );
-	__m128 aabb_min_l3 = _mm_mul_ps( _mm_shuffle_ps( aabb_min, aabb_min, _MM_SHUFFLE( 3, 3, 3, 3 ) ), m[3] );
 	
 	__m128 aabb_max_l0 = _mm_mul_ps( _mm_shuffle_ps( aabb_max, aabb_max, _MM_SHUFFLE( 0, 0, 0, 0 ) ), m[0] );
 	__m128 aabb_max_l1 = _mm_mul_ps( _mm_shuffle_ps( aabb_max, aabb_max, _MM_SHUFFLE( 1, 1, 1, 1 ) ), m[1] );
 	__m128 aabb_max_l2 = _mm_mul_ps( _mm_shuffle_ps( aabb_max, aabb_max, _MM_SHUFFLE( 2, 2, 2, 2 ) ), m[2] );
-	__m128 aabb_max_l3 = _mm_mul_ps( _mm_shuffle_ps( aabb_max, aabb_max, _MM_SHUFFLE( 3, 3, 3, 3 ) ), m[3] );
 
 	__m128 min_l0 = _mm_min_ps( aabb_min_l0, aabb_max_l0 );
 	__m128 min_l1 = _mm_min_ps( aabb_min_l1, aabb_max_l1 );
 	__m128 min_l2 = _mm_min_ps( aabb_min_l2, aabb_max_l2 );
-	__m128 min_l3 = _mm_min_ps( aabb_min_l3, aabb_max_l3 );
 	
 	__m128 max_l0 = _mm_max_ps( aabb_min_l0, aabb_max_l0 );
 	__m128 max_l1 = _mm_max_ps( aabb_min_l1, aabb_max_l1 );
 	__m128 max_l2 = _mm_max_ps( aabb_min_l2, aabb_max_l2 );
-	__m128 max_l3 = _mm_max_ps( aabb_min_l3, aabb_max_l3 );
 
-	__m128 min_dots = _mm_add_ps( _mm_add_ps( min_l0, min_l1 ), _mm_add_ps( min_l2, min_l3 ) );
-	__m128 max_dots = _mm_add_ps( _mm_add_ps( max_l0, max_l1 ), _mm_add_ps( max_l2, max_l3 ) );
+	__m128 min_dots = _mm_add_ps( _mm_add_ps( min_l0, min_l1 ), _mm_add_ps( min_l2, m[3] ) );
+	__m128 max_dots = _mm_add_ps( _mm_add_ps( max_l0, max_l1 ), _mm_add_ps( max_l2, m[3] ) );
 
 	__m128 min_dot_c3 = _mm_shuffle_ps( min_dots, min_dots, _MM_SHUFFLE( 3, 3, 3, 3 ) );
 
@@ -227,25 +219,21 @@ intersection frustum_aligned::test_aabb( aabb_aligned const& box ) const
 	__m128 aabb_min_l0 = _mm_mul_ps( _mm_shuffle_ps( aabb_min, aabb_min, _MM_SHUFFLE( 0, 0, 0, 0 ) ), m[0] );
 	__m128 aabb_min_l1 = _mm_mul_ps( _mm_shuffle_ps( aabb_min, aabb_min, _MM_SHUFFLE( 1, 1, 1, 1 ) ), m[1] );
 	__m128 aabb_min_l2 = _mm_mul_ps( _mm_shuffle_ps( aabb_min, aabb_min, _MM_SHUFFLE( 2, 2, 2, 2 ) ), m[2] );
-	__m128 aabb_min_l3 = _mm_mul_ps( _mm_shuffle_ps( aabb_min, aabb_min, _MM_SHUFFLE( 3, 3, 3, 3 ) ), m[3] );
 	
 	__m128 aabb_max_l0 = _mm_mul_ps( _mm_shuffle_ps( aabb_max, aabb_max, _MM_SHUFFLE( 0, 0, 0, 0 ) ), m[0] );
 	__m128 aabb_max_l1 = _mm_mul_ps( _mm_shuffle_ps( aabb_max, aabb_max, _MM_SHUFFLE( 1, 1, 1, 1 ) ), m[1] );
 	__m128 aabb_max_l2 = _mm_mul_ps( _mm_shuffle_ps( aabb_max, aabb_max, _MM_SHUFFLE( 2, 2, 2, 2 ) ), m[2] );
-	__m128 aabb_max_l3 = _mm_mul_ps( _mm_shuffle_ps( aabb_max, aabb_max, _MM_SHUFFLE( 3, 3, 3, 3 ) ), m[3] );
 
 	__m128 min_l0 = _mm_min_ps( aabb_min_l0, aabb_max_l0 );
 	__m128 min_l1 = _mm_min_ps( aabb_min_l1, aabb_max_l1 );
 	__m128 min_l2 = _mm_min_ps( aabb_min_l2, aabb_max_l2 );
-	__m128 min_l3 = _mm_min_ps( aabb_min_l3, aabb_max_l3 );
 	
 	__m128 max_l0 = _mm_max_ps( aabb_min_l0, aabb_max_l0 );
 	__m128 max_l1 = _mm_max_ps( aabb_min_l1, aabb_max_l1 );
 	__m128 max_l2 = _mm_max_ps( aabb_min_l2, aabb_max_l2 );
-	__m128 max_l3 = _mm_max_ps( aabb_min_l3, aabb_max_l3 );
-
-	__m128 min_dots = _mm_add_ps( _mm_add_ps( _mm_add_ps( min_l0, min_l1 ), min_l2 ), min_l3 );
-	__m128 max_dots = _mm_add_ps( _mm_add_ps( _mm_add_ps( max_l0, max_l1 ), max_l2 ), max_l3 );
+	
+	__m128 min_dots = _mm_add_ps( _mm_add_ps( min_l0, min_l1 ), _mm_add_ps( min_l2, m[3] ) );
+	__m128 max_dots = _mm_add_ps( _mm_add_ps( max_l0, max_l1 ), _mm_add_ps( max_l2, m[3] ) );
 
 	__m128 min_dot_c3 = _mm_shuffle_ps( min_dots, min_dots, _MM_SHUFFLE( 3, 3, 3, 3 ) );
 	__m128 max_dot_c3 = _mm_shuffle_ps( max_dots, max_dots, _MM_SHUFFLE( 3, 3, 3, 3 ) );
