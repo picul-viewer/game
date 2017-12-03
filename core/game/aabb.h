@@ -16,10 +16,14 @@ public:
 	inline math::float3 center( ) const;
 	inline math::float3 radius( ) const;
 	
+	inline void extrude( math::float3 const& point );
+	inline void extrude( aabb const& box );
+
 	inline	void modify( math::float3 const& transform );
 			void modify( math::float3x3 const& transform );
 			void modify( math::float4x3 const& transform );
 	
+	inline float surface_area( ) const;
 public:
 	math::float3 min;
 	math::float3 max;
@@ -42,9 +46,13 @@ public:
 	
 	inline void get_center_radius( math::sse::vector& center, math::sse::vector& radius );
 	
+	inline void extrude( math::sse::vector const& point );
+	inline void extrude( aabb_aligned const& box );
+
 	inline	void modify( math::sse::vector const& transform );
 			void modify( math::sse::matrix3 const& transform );
-	
+
+	inline float surface_area( ) const;
 public:
 	math::sse::vector min;
 	math::sse::vector max;
