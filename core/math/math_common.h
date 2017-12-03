@@ -18,6 +18,18 @@ inline T min( T a, T b )
 	return ( a < b ) ? a : b;
 }
 
+template<template<typename> typename V, typename T>
+inline V<T> min( V<T> const& a, V<T> const& b )
+{
+	return V<T>( min( a.vx, b.vx ), ( a.vy < b.vy ) ? a.vy : b.vy );
+}
+
+template<template<typename> typename V, typename T>
+inline V<T> max( V<T> const& a, V<T> const& b )
+{
+	return V<T>( max( a.vx, b.vx ), ( a.vy > b.vy ) ? a.vy : b.vy );
+}
+
 inline float abs( float n )
 {
 	u32 res = *(u32*)&n & 0x7FFFFFFF;
