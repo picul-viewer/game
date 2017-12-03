@@ -194,6 +194,7 @@
     <ClInclude Include="std\fixed_string_inline.h" />
     <ClInclude Include="std\heap.h" />
     <ClInclude Include="std\heap_inline.h" />
+    <ClInclude Include="std\memory.h" />
     <ClInclude Include="std\std_map.h" />
     <ClInclude Include="std\std_map_inline.h" />
     <ClInclude Include="std\weak_string.h" />

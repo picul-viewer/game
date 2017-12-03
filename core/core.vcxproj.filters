@@ -182,6 +182,9 @@
     <ClInclude Include="game\bvh_inline.h">
       <Filter>game\collision\bvh</Filter>
     </ClInclude>
+    <ClInclude Include="std\memory.h">
+      <Filter>std\memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="threads\thread.cpp">

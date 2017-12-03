@@ -3,6 +3,7 @@
 
 #include "types.h"
 
+#include "std/memory.h"
 #include "std/allocator.h"
 #include "std/heap.h"
 
