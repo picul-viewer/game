@@ -1,6 +1,16 @@
 #ifndef __core_aabb_inline_h_included_
 #define __core_aabb_inline_h_included_
 
+aabb& aabb::get_box( )
+{
+	return *this;
+}
+
+aabb const& aabb::get_box( ) const
+{
+	return *this;
+}
+
 void aabb::set_min_max( math::float3 const& min, math::float3 const& max )
 {
 	this->min = min;
@@ -34,6 +44,16 @@ void aabb::modify( math::float3 const& transform )
 aabb_aligned::aabb_aligned( )
 {
 	ASSERT( aligned( this, 16 ) );
+}
+
+aabb& aabb_aligned::get_box( )
+{
+	return *(aabb*)this;
+}
+
+aabb const& aabb_aligned::get_box( ) const
+{
+	return *(aabb const*)this;
 }
 
 void aabb_aligned::set_min_max( math::sse::vector const& min, math::sse::vector const& max )

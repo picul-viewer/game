@@ -7,6 +7,9 @@
 struct aabb
 {
 public:
+	inline aabb& get_box( );
+	inline aabb const& get_box( ) const;
+
 	inline void set_min_max( math::float3 const& min, math::float3 const& max );
 	inline void set_center_radius( math::float3 const& center, math::float3 const& radius );
 	
@@ -28,6 +31,9 @@ struct aabb_aligned
 public:
 	inline aabb_aligned( );
 	
+	inline aabb& get_box( );
+	inline aabb const& get_box( ) const;
+
 	inline void set_min_max( math::sse::vector const& min, math::sse::vector const& max );
 	inline void set_center_radius( math::sse::vector const& center, math::sse::vector const& radius );
 	
