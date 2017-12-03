@@ -1,6 +1,16 @@
 #ifndef __core_aabb_inline_h_included_
 #define __core_aabb_inline_h_included_
 
+aabb& aabb::get_box( )
+{
+	return *this;
+}
+
+aabb const& aabb::get_box( ) const
+{
+	return *this;
+}
+
 void aabb::set_min_max( math::float3 const& min, math::float3 const& max )
 {
 	this->min = min;
@@ -24,10 +34,29 @@ math::float3 aabb::radius( ) const
 	return ( max - min ) * 0.5f;
 }
 
+void aabb::extrude( math::float3 const& point )
+{
+	min = math::min( min, point );
+	max = math::max( max, point );
+}
+
+void aabb::extrude( aabb const& box )
+{
+	min = math::min( min, box.min );
+	max = math::max( max, box.max );
+}
+
 void aabb::modify( math::float3 const& transform )
 {
 	min += transform;
 	max += transform;
+}
+
+float aabb::surface_area( ) const
+{
+	math::float3 v = max - min;
+
+	return 2 * ( v.x * v.y + v.y * v.z + v.z * v.x );
 }
 
 
@@ -36,108 +65,88 @@ aabb_aligned::aabb_aligned( )
 	ASSERT( aligned( this, 16 ) );
 }
 
-void aabb_aligned::set_min_max( math::float4 const& min, math::float4 const& max )
+aabb& aabb_aligned::get_box( )
 {
-	ASSERT( aligned( &min, 16 ) );
-	ASSERT( aligned( &max, 16 ) );
+	return *(aabb*)this;
+}
+
+aabb const& aabb_aligned::get_box( ) const
+{
+	return *(aabb const*)this;
+}
+
+void aabb_aligned::set_min_max( math::sse::vector const& min, math::sse::vector const& max )
+{
+	ASSERT( min.data.m128_f32[3] == 1.0f );
+	ASSERT( max.data.m128_f32[3] == 1.0f );
+
+	this->min = min;
+	this->max = max;
+}
+
+void aabb_aligned::set_center_radius( math::sse::vector const& center, math::sse::vector const& radius )
+{
+	ASSERT( center.data.m128_f32[3] == 1.0f );
+	ASSERT( radius.data.m128_f32[3] == 0.0f );
 	
-	// unused variables should be equal to 1.0f
-	ASSERT( min.w == 1.0f );
-	ASSERT( max.w == 1.0f );
-
-	set_min_max( _mm_load_ps( min.data ), _mm_load_ps( max.data ) );
+	min = _mm_sub_ps( center, radius );
+	max = _mm_add_ps( center, radius );
 }
 
-void aabb_aligned::set_center_radius( math::float4 const& center, math::float4 const& radius )
+math::sse::vector aabb_aligned::center( ) const
 {
-	ASSERT( aligned( &center, 16 ) );
-	ASSERT( aligned( &radius, 16 ) );
-	
-	// unused variables should be equal to 1.0f
-	ASSERT( center.w == 1.0f );
-	ASSERT( radius.w == 0.0f );
-	
-	set_center_radius( _mm_load_ps( center.data ), _mm_load_ps( radius.data ) );
-}
-
-void aabb_aligned::set_min_max( __m128 const& min, __m128 const& max )
-{
-	_mm_store_ps( this->min.data, min );
-	_mm_store_ps( this->max.data, max );
-}
-
-void aabb_aligned::set_center_radius( __m128 const& center, __m128 const& radius )
-{
-	_mm_store_ps( min.data, _mm_sub_ps( center, radius ) );
-	_mm_store_ps( max.data, _mm_add_ps( center, radius ) );
-}
-
-math::float4 aabb_aligned::center( ) const
-{
-	__m128 l = _mm_load_ps( min.data );
-	__m128 h = _mm_load_ps( max.data );
-
-	__m128 sum = _mm_add_ps( l, h );
-	__m128 c = _mm_mul_ps( sum, _mm_set1_ps( 0.5f ) );
-
-	mem_align(16) math::float4 res;
-	_mm_store_ps( res.data, c );
+	__m128 sum = _mm_add_ps( min, max );
+	__m128 res = _mm_mul_ps( sum, _mm_set1_ps( 0.5f ) );
 
 	return res;
 }
 
-math::float4 aabb_aligned::radius( ) const
+math::sse::vector aabb_aligned::radius( ) const
 {
-	__m128 l = _mm_load_ps( min.data );
-	__m128 h = _mm_load_ps( max.data );
-
-	__m128 dif = _mm_sub_ps( h, l );
-	__m128 r = _mm_mul_ps( dif, _mm_set1_ps( 0.5f ) );
-
-	mem_align(16) math::float4 res;
-	_mm_store_ps( res.data, r );
+	__m128 dif = _mm_sub_ps( max, min );
+	__m128 res = _mm_mul_ps( dif, _mm_set1_ps( 0.5f ) );
 
 	return res;
 }
 
-void aabb_aligned::get_center_radius( math::float4& center, math::float4& radius )
+void aabb_aligned::get_center_radius( math::sse::vector& center, math::sse::vector& radius )
 {
-	ASSERT( aligned( &center, 16 ) );
-	ASSERT( aligned( &radius, 16 ) );
-
-	__m128 c;
-	__m128 r;
-
-	get_center_radius( c, r );
-
-	_mm_store_ps( center.data, c );
-	_mm_store_ps( radius.data, r );
-}
-
-void aabb_aligned::get_center_radius( __m128& center, __m128& radius )
-{
-	__m128 l = _mm_load_ps( min.data );
-	__m128 h = _mm_load_ps( max.data );
-	
-	__m128 sum = _mm_add_ps( l, h );
+	__m128 sum = _mm_add_ps( min, max );
 
 	center = _mm_mul_ps( sum, _mm_set1_ps( 0.5f ) );
-	radius = _mm_sub_ps( h, center );
+	radius = _mm_sub_ps( max, center );
 }
 
-void aabb_aligned::modify( math::float4 const& transform )
+void aabb_aligned::extrude( math::sse::vector const& point )
 {
-	ASSERT( aligned( &transform, 16 ) );
+	min = _mm_min_ps( min, point );
+	max = _mm_max_ps( max, point );
+}
 
+void aabb_aligned::extrude( aabb_aligned const& box )
+{
+	min = _mm_min_ps( min, box.min );
+	max = _mm_max_ps( max, box.max );
+}
+
+void aabb_aligned::modify( math::sse::vector const& transform )
+{
 	// Do not modify unused variables
-	ASSERT( transform.w == 0.0f );
+	ASSERT( transform.data.m128_f32[3] == 0.0f );
 
-	__m128 t = _mm_load_ps( transform.data );
-	__m128 l = _mm_load_ps( min.data );
-	__m128 h = _mm_load_ps( max.data );
-	
-	_mm_store_ps( min.data, _mm_add_ps( l, t ) );
-	_mm_store_ps( max.data, _mm_add_ps( h, t ) );
+	min = _mm_add_ps( min, transform );
+	max = _mm_add_ps( max, transform );
+}
+
+float aabb_aligned::surface_area( ) const
+{
+	__m128 bones = _mm_sub_ps( max, min );
+	__m128 mbones = _mm_shuffle_ps( bones, bones, _MM_SHUFFLE( 3, 0, 2, 1 ) );
+
+	__m128 squares = _mm_mul_ps( bones, mbones );
+	__m128 sq1 = _mm_shuffle_ps( squares, squares, _MM_SHUFFLE( 1, 1, 1, 1 ) );
+	__m128 sq2 = _mm_shuffle_ps( squares, squares, _MM_SHUFFLE( 2, 2, 2, 2 ) );
+	return _mm_mul_ss( _mm_add_ss( _mm_add_ss( squares, sq1 ), sq2 ), _mm_set_ss( 2.0f ) ).m128_f32[0];
 }
 
 #endif // #ifndef __core_aabb_inline_h_included_

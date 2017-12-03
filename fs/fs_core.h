@@ -2,7 +2,7 @@
 #define __fs_fs_core_h_included_
 
 #include <core/types.h>
-#include <core/structs.h>
+#include <core/std.h>
 #include <core/threads.h>
 
 namespace fs {

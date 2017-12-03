@@ -2,7 +2,7 @@
 #define __core_task_queue_h_inlcuded_
 
 #include <core/types.h>
-#include <core/structs.h>
+#include <core/std.h>
 #include "thread.h"
 #include "interlocked.h"
 
