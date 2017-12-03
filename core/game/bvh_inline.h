@@ -218,7 +218,7 @@ template<typename T>
 template<typename Callback>
 void static_bvh<T>::query_visibility_impl_inside( node* n, Callback callback )
 {
-	if ( n->left && n->right )
+	if ( n->right )
 	{
 		query_visibility_impl_inside( n->left, callback );
 		query_visibility_impl_inside( n->right, callback );
@@ -231,7 +231,7 @@ template<typename T>
 template<typename Callback>
 void static_bvh<T>::query_visibility_impl( node* n, frustum_aligned const& frustum, Callback callback )
 {
-	if ( n->left && n->right )
+	if ( n->right )
 	{
 		intersection result = frustum.test_aabb( n->box );
 
