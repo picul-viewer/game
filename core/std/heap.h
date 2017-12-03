@@ -2,7 +2,7 @@
 #define __core_heap_h_included_
 
 #include <core/types.h>
-#include <core/structs/allocator.h>
+#include "allocator.h"
 
 template<uptr ElemSize, uptr BatchSize, typename Allocator = mem_allocator>
 struct array_heap

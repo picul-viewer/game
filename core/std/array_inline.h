@@ -89,14 +89,16 @@ Tcref buffer_array<T, Tcref>::operator[]( uptr index ) const
 }
 
 template<typename T, typename Tcref>
-void buffer_array<T, Tcref>::for_each( void( *functor )( T* ) )
+template<typename Pred>
+void buffer_array<T, Tcref>::for_each( Pred const& functor )
 {
 	for ( T* i = m_begin; i != m_end; ++i )
 		functor( i );
 }
 
 template<typename T, typename Tcref>
-void buffer_array<T, Tcref>::for_each( void( *functor )( T const* ) ) const
+template<typename Pred>
+void buffer_array<T, Tcref>::for_each( Pred const& functor ) const
 {
 	for ( T* i = m_begin; i != m_end; ++i )
 		functor( i );

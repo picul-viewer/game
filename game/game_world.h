@@ -3,7 +3,7 @@
 
 #include <core/types.h>
 #include <core/math.h>
-#include <core/structs.h>
+#include <core/std.h>
 #include <core/game.h>
 
 #include "game_object.h"

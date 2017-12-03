@@ -2,7 +2,7 @@
 #define __core_std_map_h_included_
 
 #include <map>
-#include <core/structs/heap.h>
+#include "heap.h"
 
 enum { stl_map_allocator_default_heap_page_size = 4096 };
 

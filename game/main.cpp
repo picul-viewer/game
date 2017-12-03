@@ -4,6 +4,29 @@
 
 static u32 g = 0;
 
+struct Obj
+{
+	aabb_aligned aabb;
+
+	Obj* prev;
+	Obj* next;
+
+	pointer node;
+
+	aabb_aligned const& get_aabb( ) const { return aabb; }
+};
+
+using node_container = embedded_twosided_list<Obj, &Obj::prev, &Obj::next>;
+
+using node_heap = array_heap<octree_node_size<node_container>::value, 1024, aligned_mem_allocator<64>>;
+
+octree<Obj, node_container, node_heap, &Obj::node> tree;
+
+void callback(Obj*)
+{
+	printf("Hello!\n");
+}
+
 int main( )
 {
 	mem_align(16)
@@ -15,13 +38,13 @@ int main( )
 	math::float4x4 matrix = math::matrix_perspective( 65.0f * math::c_radians, 1.3333f, 1.0f, 100.0f );
 
 	mem_align(16)
-	math::float4 aabb_min0( -1.0f, -2.0f, -3.0f, 1.0f );
+	math::float4 aabb_min0( -10.0f, -20.0f, -30.0f, 1.0f );
 	mem_align(16)
-	math::float4 aabb_max0( 3.0f, 2.0f, 1.0f, 1.0f );
+	math::float4 aabb_max0( 30.0f, 20.0f, 10.0f, 1.0f );
 	mem_align(16)
-	math::float4 aabb_min1( 0.0f, 0.0f, 50.0f, 1.0f );
+	math::float4 aabb_min1( -1.0f, -1.0f, -1.0f, 1.0f );
 	mem_align(16)
-	math::float4 aabb_max1( 1.0f, 1.0f, 51.0f, 1.0f );
+	math::float4 aabb_max1( 1.0f, 1.0f, 1.0f, 1.0f );
 	mem_align(16)
 	math::float4 aabb_min2( -1.0f, -2.0f, -3.0f, 1.0f );
 	mem_align(16)
@@ -39,6 +62,15 @@ int main( )
 
 	f0.set_from_matrix( matrix );
 	f1.set_from_matrix( matrix );
+
+	node_heap h;
+	tree.create( h, b[0], 1.0f );
+	Obj* o = new Obj( );
+	o->aabb = b[1];
+	tree.insert( o );
+	tree.remove( o );
+	
+	tree.query_visibility( f1, &callback );
 
 	timer t;
 	u64 time;

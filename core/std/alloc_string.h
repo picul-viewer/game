@@ -2,7 +2,7 @@
 #define __core_alloc_string_h_included_
 
 #include <core/types.h>
-#include <core/structs/heap.h>
+#include "heap.h"
 #include "basic_string.h"
 
 static const uptr alloc_string_heap_page_size = 8192;

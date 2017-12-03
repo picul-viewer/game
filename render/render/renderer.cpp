@@ -1,6 +1,6 @@
 #include "renderer.h"
 
-#include <core/structs.h>
+#include <core/std.h>
 
 #include "render_api.h"
 

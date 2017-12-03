@@ -2,33 +2,16 @@
 #define __core_octree_h_included_
 
 #include <core/types.h>
-#include <core/structs.h>
+#include <core/std.h>
 
-/*template<typename T, typename Allocator = mem_allocator>
-class static_octree
-{
-public:
-	void create( buffer_array<T> const& objects );
-
-protected:
-	struct node
-	{
-		u32 start_node_index, end_node_index;
-		u32 start_object_index, end_object_index;
-	};
-
-	buffer_array<node> m_nodes;
-	buffer_array<T> m_objects;
-};*/
-
-template<typename T, typename NodeObjectContainer, typename NodeHeap, pointer (T::*NodePtr)>
+template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
 class octree
 {
 public:
 	octree( );
 
-	void create( NodeHeap& node_heap, aabb_aligned const& box, u32 max_depth = -1 );
-	void create( NodeHeap& node_heap, aabb_aligned const& box, float node_min_radius );
+	void create( NodeAllocator& node_heap, aabb_aligned const& box, u32 max_depth = -1 );
+	void create( NodeAllocator& node_heap, aabb_aligned const& box, float node_min_radius );
 	void destroy( );
 
 	void insert( T* object );
@@ -57,7 +40,7 @@ protected:
 
 	math::float4 m_box_center;
 	math::float4 m_box_half_radius;
-	NodeHeap* m_nodes;
+	NodeAllocator* m_nodes;
 	node* m_root;
 	u32 max_depth;
 };

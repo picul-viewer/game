@@ -7,6 +7,7 @@
 #include "game/aabb.h"
 #include "game/frustum.h"
 #include "game/octree.h"
+#include "game/bvh.h"
 
 #include "game/timer.h"
 

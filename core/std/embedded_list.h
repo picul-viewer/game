@@ -20,6 +20,8 @@ public:
 
 	template<typename Pred>
 	void for_each( Pred const& functor );
+	template<typename Pred>
+	void for_each( Pred const& functor ) const;
 
 protected:
 	T* m_first;
@@ -55,6 +57,8 @@ public:
 	
 	template<typename Pred>
 	void reverse_for_each( Pred const& functor );
+	template<typename Pred>
+	void reverse_for_each( Pred const& functor ) const;
 
 protected:
 	T* m_first;

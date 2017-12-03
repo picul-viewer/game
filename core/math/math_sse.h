@@ -3,6 +3,8 @@
 
 #include <core/types.h>
 #include <core/macros.h>
+#include "vector.h"
+#include "matrix.h"
 #include <xmmintrin.h>
 
 namespace math {
@@ -11,21 +13,111 @@ namespace sse {
 
 // Assume everything aligned
 
+struct vector
+{
+	__m128 data;
+	
+	vector( ) = default;
+
+	inline vector( __m128 data ) : data( data ) { }
+	inline vector( math::float4 const& data )
+	{
+		ASSERT( aligned( &data, 16 ) );
+		this->data = _mm_load_ps( data.data );
+	}
+
+	inline operator __m128( ) const { return data; }
+	inline operator math::float4( ) const
+	{
+		mem_align(16)
+		math::float4 res;
+
+		_mm_store_ps( res.data, data );
+
+		return res;
+	}
+};
+
+struct matrix;
+
+struct matrix3
+{
+	__m128 data[3];
+
+	matrix3( ) = default;
+
+	inline matrix3( __m128* data ) : data{ data[0], data[1], data[2] } { }
+	inline matrix3( math::float4x3 const& data )
+	{
+		ASSERT( aligned( &data, 16 ) );
+		this->data[0] = _mm_load_ps( data.l0.data );
+		this->data[1] = _mm_load_ps( data.l1.data );
+		this->data[2] = _mm_load_ps( data.l2.data );
+	}
+	inline matrix3( matrix const& m );
+
+	inline operator __m128*( ) { return data; }
+	inline operator math::float4x3( ) const
+	{
+		mem_align(16)
+		math::float4x3 res;
+
+		_mm_store_ps( res.l0.data, data[0] );
+		_mm_store_ps( res.l1.data, data[1] );
+		_mm_store_ps( res.l2.data, data[2] );
+
+		return res;
+	}
+
+	inline __m128& operator[]( u32 i ) { ASSERT( i < 3 ); return data[i]; }
+	inline __m128 operator[]( u32 i ) const { ASSERT( i < 3 ); return data[i]; }
+};
+
 struct matrix
 {
 	__m128 data[4];
 
+	matrix( ) = default;
+
+	inline matrix( __m128* data ) : data{ data[0], data[1], data[2], data[3] } { }
+	inline matrix( math::float4x4 const& data )
+	{
+		ASSERT( aligned( &data, 16 ) );
+		this->data[0] = _mm_load_ps( data.l0.data );
+		this->data[1] = _mm_load_ps( data.l1.data );
+		this->data[2] = _mm_load_ps( data.l2.data );
+		this->data[3] = _mm_load_ps( data.l3.data );
+	}
+
+	inline operator __m128*( ) { return data; }
+	inline operator math::float4x4( ) const
+	{
+		mem_align(16)
+		math::float4x4 res;
+
+		_mm_store_ps( res.l0.data, data[0] );
+		_mm_store_ps( res.l1.data, data[1] );
+		_mm_store_ps( res.l2.data, data[2] );
+		_mm_store_ps( res.l3.data, data[3] );
+
+		return res;
+	}
+
 	inline __m128& operator[]( u32 i ) { ASSERT( i < 4 ); return data[i]; }
 	inline __m128 operator[]( u32 i ) const { ASSERT( i < 4 ); return data[i]; }
 };
+
+matrix3::matrix3( matrix const& m ) : data{ m.data[0], m.data[1], m.data[2] } { }
 
 inline void matrix_transpose( matrix& m )
 {
 	_MM_TRANSPOSE4_PS( m[0], m[1], m[2], m[3] );
 }
 
-inline void matrix_multiply( matrix const& left, matrix const& right, matrix& result )
+inline matrix matrix_multiply( matrix const& left, matrix const& right )
 {
+	matrix result;
+
 	const __m128 l00 = _mm_shuffle_ps( left[0], left[0], 0x00 );
 	const __m128 l01 = _mm_shuffle_ps( left[0], left[0], 0x55 );
 	const __m128 l02 = _mm_shuffle_ps( left[0], left[0], 0xAA );
@@ -65,156 +157,92 @@ inline void matrix_multiply( matrix const& left, matrix const& right, matrix& re
 	result[3] = _mm_add_ps( result[3], _mm_mul_ps( l31, right[1] ) );
 	result[3] = _mm_add_ps( result[3], _mm_mul_ps( l32, right[2] ) );
 	result[3] = _mm_add_ps( result[3], _mm_mul_ps( l33, right[3] ) );
-}
 
-inline void matrix_multiply( float const* left, float const* right, float* result )
-{
-	const __m128 r0 = _mm_load_ps( result + 0 );
-	const __m128 r1 = _mm_load_ps( result + 4 );
-	const __m128 r2 = _mm_load_ps( result + 8 );
-	const __m128 r3 = _mm_load_ps( result + 12 );
-	
-	__m128 res;
-
-	const __m128 l00 = _mm_set1_ps( left[0] );
-	const __m128 l01 = _mm_set1_ps( left[1] );
-	const __m128 l02 = _mm_set1_ps( left[2] );
-	const __m128 l03 = _mm_set1_ps( left[3] );
-
-	res = _mm_mul_ps( l00, r0 );
-	res = _mm_add_ps( res, _mm_mul_ps( l01, r1 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l02, r2 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l03, r3 ) );
-
-	_mm_store_ps( result + 0, res );
-	
-	const __m128 l10 = _mm_set1_ps( left[4] );
-	const __m128 l11 = _mm_set1_ps( left[5] );
-	const __m128 l12 = _mm_set1_ps( left[6] );
-	const __m128 l13 = _mm_set1_ps( left[7] );
-
-	res = _mm_mul_ps( l10, r0 );
-	res = _mm_add_ps( res, _mm_mul_ps( l11, r1 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l12, r2 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l13, r3 ) );
-	
-	_mm_store_ps( result + 4, res );
-	
-	const __m128 l20 = _mm_set1_ps( left[8] );
-	const __m128 l21 = _mm_set1_ps( left[9] );
-	const __m128 l22 = _mm_set1_ps( left[10] );
-	const __m128 l23 = _mm_set1_ps( left[11] );
-
-	res = _mm_mul_ps( l20, r0 );
-	res = _mm_add_ps( res, _mm_mul_ps( l21, r1 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l22, r2 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l23, r3 ) );
-	
-	_mm_store_ps( result + 8, res );
-	
-	const __m128 l30 = _mm_set1_ps( left[12] );
-	const __m128 l31 = _mm_set1_ps( left[13] );
-	const __m128 l32 = _mm_set1_ps( left[14] );
-	const __m128 l33 = _mm_set1_ps( left[15] );
-
-	res = _mm_mul_ps( l30, r0 );
-	res = _mm_add_ps( res, _mm_mul_ps( l31, r1 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l32, r2 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l33, r3 ) );
-
-	_mm_store_ps( result + 12, res );
+	return result;
 }
 
 // Store result in v
-inline void modify_by_transform( float* v, float const* m )
+inline vector modify_by_transform( vector const& v, matrix const& m )
 {
-	__m128 l0 = _mm_load_ps( m + 0 );
-	__m128 l1 = _mm_load_ps( m + 4 );
-	__m128 l2 = _mm_load_ps( m + 8 );
-	__m128 l3 = _mm_load_ps( m + 12 );
+	__m128 l0 = m[0];
+	__m128 l1 = m[1];
+	__m128 l2 = m[2];
+	__m128 l3 = m[3];
 
 	_MM_TRANSPOSE4_PS( l0, l1, l2, l3 );
 
-	__m128 vec = _mm_load_ps( v );
-
-	__m128 vec0 = _mm_shuffle_ps( vec, vec, _MM_SHUFFLE( 0, 0, 0, 0 ) );
-	__m128 vec1 = _mm_shuffle_ps( vec, vec, _MM_SHUFFLE( 1, 1, 1, 1 ) );
-	__m128 vec2 = _mm_shuffle_ps( vec, vec, _MM_SHUFFLE( 2, 2, 2, 2 ) );
-	__m128 vec3 = _mm_shuffle_ps( vec, vec, _MM_SHUFFLE( 3, 3, 3, 3 ) );
+	__m128 vec0 = _mm_shuffle_ps( v, v, _MM_SHUFFLE( 0, 0, 0, 0 ) );
+	__m128 vec1 = _mm_shuffle_ps( v, v, _MM_SHUFFLE( 1, 1, 1, 1 ) );
+	__m128 vec2 = _mm_shuffle_ps( v, v, _MM_SHUFFLE( 2, 2, 2, 2 ) );
+	__m128 vec3 = _mm_shuffle_ps( v, v, _MM_SHUFFLE( 3, 3, 3, 3 ) );
 
 	__m128 res = _mm_add_ps(
 		_mm_add_ps( _mm_mul_ps( l0, vec0 ), _mm_mul_ps( l1, vec1 ) ),
 		_mm_add_ps( _mm_mul_ps( l2, vec2 ), _mm_mul_ps( l3, vec3 ) ) );
 
-	_mm_store_ps( v, res );
+	return res;
 }
 
 // Need four input components in 'v', but assume that w=1
 // Store result in v, only x,y,z are relevant
-inline void modify_position_by_transform( float* v, float const* m )
+inline vector modify_position_by_transform( vector const& v, matrix const& m )
 {
-	__m128 l0 = _mm_load_ps( m + 0 );
-	__m128 l1 = _mm_load_ps( m + 4 );
-	__m128 l2 = _mm_load_ps( m + 8 );
-	__m128 l3 = _mm_load_ps( m + 12 );
+	__m128 l0 = m[0];
+	__m128 l1 = m[1];
+	__m128 l2 = m[2];
+	__m128 l3 = m[3];
 
 	_MM_TRANSPOSE4_PS( l0, l1, l2, l3 );
 
-	__m128 vec = _mm_load_ps( v );
-
-	__m128 vec0 = _mm_shuffle_ps( vec, vec, _MM_SHUFFLE( 0, 0, 0, 0 ) );
-	__m128 vec1 = _mm_shuffle_ps( vec, vec, _MM_SHUFFLE( 1, 1, 1, 1 ) );
-	__m128 vec2 = _mm_shuffle_ps( vec, vec, _MM_SHUFFLE( 2, 2, 2, 2 ) );
+	__m128 vec0 = _mm_shuffle_ps( v, v, _MM_SHUFFLE( 0, 0, 0, 0 ) );
+	__m128 vec1 = _mm_shuffle_ps( v, v, _MM_SHUFFLE( 1, 1, 1, 1 ) );
+	__m128 vec2 = _mm_shuffle_ps( v, v, _MM_SHUFFLE( 2, 2, 2, 2 ) );
 
 	__m128 res = _mm_add_ps(
 		_mm_add_ps( _mm_mul_ps( l0, vec0 ), _mm_mul_ps( l1, vec1 ) ),
 		_mm_add_ps( _mm_mul_ps( l2, vec2 ), l3 ) );
 
-	_mm_store_ps( v, res );
+	return res;
 }
 
 // Only 12 elements are necessary in 'left' and 'right'
 // Only 12 elements are modifying in 'result'
-inline void combine_transforms( float const* left, float const* right, float* result )
+inline matrix3 combine_transforms( matrix3 const& left, matrix3 const& right )
 {
-	const __m128 r0 = _mm_load_ps( result + 0 );
-	const __m128 r1 = _mm_load_ps( result + 4 );
-	const __m128 r2 = _mm_load_ps( result + 8 );
+	const __m128 r0 = right[0];
+	const __m128 r1 = right[1];
+	const __m128 r2 = right[2];
 	
-	__m128 res;
+	matrix3 res;
 
-	const __m128 l00 = _mm_set1_ps( left[0] );
-	const __m128 l01 = _mm_set1_ps( left[1] );
-	const __m128 l02 = _mm_set1_ps( left[2] );
-	const __m128 l03 = _mm_set1_ps( left[3] ); 
+	const __m128 l00 = _mm_shuffle_ps( left[0], left[0], _MM_SHUFFLE( 0, 0, 0, 0 ) );
+	const __m128 l01 = _mm_shuffle_ps( left[0], left[0], _MM_SHUFFLE( 1, 1, 1, 1 ) );
+	const __m128 l02 = _mm_shuffle_ps( left[0], left[0], _MM_SHUFFLE( 2, 2, 2, 2 ) );
+	const __m128 l03 = _mm_shuffle_ps( left[0], left[0], _MM_SHUFFLE( 3, 3, 3, 3 ) );
 
-	res = _mm_add_ps( l03, _mm_mul_ps( l00, r0 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l01, r1 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l02, r2 ) );
+	res[0] = _mm_add_ps( l03, _mm_mul_ps( l00, r0 ) );
+	res[0] = _mm_add_ps( res[0], _mm_mul_ps( l01, r1 ) );
+	res[0] = _mm_add_ps( res[0], _mm_mul_ps( l02, r2 ) );
 
-	_mm_store_ps( result + 0, res );
+	const __m128 l10 = _mm_shuffle_ps( left[1], left[1], _MM_SHUFFLE( 0, 0, 0, 0 ) );
+	const __m128 l11 = _mm_shuffle_ps( left[1], left[1], _MM_SHUFFLE( 1, 1, 1, 1 ) );
+	const __m128 l12 = _mm_shuffle_ps( left[1], left[1], _MM_SHUFFLE( 2, 2, 2, 2 ) );
+	const __m128 l13 = _mm_shuffle_ps( left[1], left[1], _MM_SHUFFLE( 3, 3, 3, 3 ) );
+
+	res[1] = _mm_add_ps( l13, _mm_mul_ps( l10, r0 ) );
+	res[1] = _mm_add_ps( res[1], _mm_mul_ps( l11, r1 ) );
+	res[1] = _mm_add_ps( res[1], _mm_mul_ps( l12, r2 ) );
 	
-	const __m128 l10 = _mm_set1_ps( left[4] );
-	const __m128 l11 = _mm_set1_ps( left[5] );
-	const __m128 l12 = _mm_set1_ps( left[6] );
-	const __m128 l13 = _mm_set1_ps( left[7] );
+	const __m128 l20 = _mm_shuffle_ps( left[2], left[2], _MM_SHUFFLE( 0, 0, 0, 0 ) );
+	const __m128 l21 = _mm_shuffle_ps( left[2], left[2], _MM_SHUFFLE( 1, 1, 1, 1 ) );
+	const __m128 l22 = _mm_shuffle_ps( left[2], left[2], _MM_SHUFFLE( 2, 2, 2, 2 ) );
+	const __m128 l23 = _mm_shuffle_ps( left[2], left[2], _MM_SHUFFLE( 3, 3, 3, 3 ) );
 
-	res = _mm_add_ps( l13, _mm_mul_ps( l10, r0 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l11, r1 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l12, r2 ) );
-	
-	_mm_store_ps( result + 4, res );
-	
-	const __m128 l20 = _mm_set1_ps( left[8] );
-	const __m128 l21 = _mm_set1_ps( left[9] );
-	const __m128 l22 = _mm_set1_ps( left[10] );
-	const __m128 l23 = _mm_set1_ps( left[11] );
+	res[2] = _mm_add_ps( l23, _mm_mul_ps( l20, r0 ) );
+	res[2] = _mm_add_ps( res[2], _mm_mul_ps( l21, r1 ) );
+	res[2] = _mm_add_ps( res[2], _mm_mul_ps( l22, r2 ) );
 
-	res = _mm_add_ps( l23, _mm_mul_ps( l20, r0 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l21, r1 ) );
-	res = _mm_add_ps( res, _mm_mul_ps( l22, r2 ) );
-	
-	_mm_store_ps( result + 8, res );
+	return res;
 }
 
 inline float matrix_determinant( matrix const& m )
@@ -244,7 +272,7 @@ inline float matrix_determinant( matrix const& m )
 	return det;
 }
 
-inline void matrix_inverse( matrix const& m, matrix& result )
+inline matrix matrix_inverse( matrix const& m )
 {
 	// Layout (LtoH): ( s0 s1 s2 s3 ) ( c5 c4 c3 c2 ) ( s4 s5 c1 c0 )
 	__m128 sub_det[3];
@@ -291,6 +319,8 @@ inline void matrix_inverse( matrix const& m, matrix& result )
 	__m128 neg_pattern;
 	neg_pattern		= _mm_castsi128_ps( _mm_setr_epi32( 0x00000000, 0x80000000, 0x00000000, 0x80000000 ) );
 
+	matrix result;
+
 	result[0]		= _mm_mul_ps( m_transp[1], sub_dets[5] );
 	result[0]		= _mm_sub_ps( result[0], _mm_mul_ps( m_transp[2], sub_dets[4] ) );
 	result[0]		= _mm_add_ps( result[0], _mm_mul_ps( m_transp[3], sub_dets[3] ) );
@@ -315,6 +345,8 @@ inline void matrix_inverse( matrix const& m, matrix& result )
 	result[1]		= _mm_mul_ps( result[1], inv_det );
 	result[2]		= _mm_mul_ps( result[2], inv_det );
 	result[3]		= _mm_mul_ps( result[3], inv_det );
+
+	return result;
 }
 
 } // namespace sse

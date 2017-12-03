@@ -2,7 +2,7 @@
 #define __render_resource_pool_h_included_
 
 #include <core/types.h>
-#include <core/structs.h>
+#include <core/std.h>
 
 namespace render {
 
