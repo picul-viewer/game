@@ -10,8 +10,8 @@ class static_bvh
 public:
 	static_bvh( );
 
-	template<typename NodeHeap>
-	void create( NodeHeap& node_heap, buffer_array<T*> const& objects );
+	template<typename NodeAllocator>
+	void create( NodeAllocator& node_allocator, buffer_array<T*>& objects );
 	void destroy( );
 
 	template<typename Callback>
@@ -29,6 +29,9 @@ protected:
 		node* right;
 	};
 	
+	template<typename NodeAllocator>
+	node* build( NodeAllocator& node_allocator, T** first, uptr count, aabb_aligned* aabbs, u32 sorting );
+
 	template<typename Callback>
 	void query_visibility_impl_inside( node* n, Callback callback );
 	template<typename Callback>
