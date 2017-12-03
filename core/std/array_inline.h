@@ -96,4 +96,12 @@ void buffer_array<T, Tcref>::for_each( Pred const& functor )
 		functor( i );
 }
 
+template<typename T, typename Tcref>
+template<typename Pred>
+void buffer_array<T, Tcref>::for_each( Pred const& functor ) const
+{
+	for ( T* i = m_begin; i != m_end; ++i )
+		functor( i );
+}
+
 #endif // #ifndef __core_array_inline_h_included_

@@ -34,6 +34,8 @@ public:
 	
 	template<typename Pred>
 	void for_each( Pred const& functor );
+	template<typename Pred>
+	void for_each( Pred const& functor ) const;
 
 protected:
 	T*	m_begin;

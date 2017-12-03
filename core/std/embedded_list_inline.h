@@ -77,6 +77,14 @@ void embedded_list<T, Next>::for_each( Pred const& functor )
 		functor( i );
 }
 
+template<typename T, T* (T::*Next)>
+template<typename Pred>
+void embedded_list<T, Next>::for_each( Pred const& functor ) const
+{
+	for ( auto i = first( ); i != nullptr; i = get_next( i ) )
+		functor( i );
+}
+
 
 template<typename T, T* (T::*Prev), T* (T::*Next)>
 void embedded_twosided_list<T, Prev, Next>::insert( T* object )
@@ -175,6 +183,14 @@ T* embedded_twosided_reversable_list<T, Prev, Next>::get_prev( T* object ) const
 template<typename T, T* (T::*Prev), T* (T::*Next)>
 template<typename Pred>
 void embedded_twosided_reversable_list<T, Prev, Next>::reverse_for_each( Pred const& functor )
+{
+	for ( auto i = last( ); i != nullptr; i = get_prev( i ) )
+		functor( i );
+}
+
+template<typename T, T* (T::*Prev), T* (T::*Next)>
+template<typename Pred>
+void embedded_twosided_reversable_list<T, Prev, Next>::reverse_for_each( Pred const& functor ) const
 {
 	for ( auto i = last( ); i != nullptr; i = get_prev( i ) )
 		functor( i );
