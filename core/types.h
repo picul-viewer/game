@@ -126,9 +126,13 @@ struct pointer
 
 	template<typename T>
 	inline operator T*( ) { return (T*)data; }
-
+	
+	inline operator bool( ) { return data != nullptr; }
+	
 	template<typename T>
 	inline pointer& operator=( T* data ) { this->data = (pvoid)data; return *this; }
+
+	inline pointer& operator=( nullptr_t data ) { this->data = (pvoid)data; return *this; }
 
 	inline bool operator==( pointer p ) const { return data == p.data; }
 	inline bool operator!=( pointer p ) const { return data != p.data; }
