@@ -196,4 +196,178 @@ void embedded_twosided_reversable_list<T, Prev, Next>::reverse_for_each( Pred co
 		functor( i );
 }
 
+
+embedded_typeless_list::embedded_typeless_list( ) :
+	m_first( nullptr )
+{ }
+
+void embedded_typeless_list::insert( pointer object )
+{
+	ASSERT( object );
+
+	object.get<node>( ).next	= m_first;
+	m_first						= object;
+}
+
+void embedded_typeless_list::remove( pointer object )
+{
+	ASSERT( object );
+
+	if ( object == m_first )
+	{
+		m_first					= m_first.get<node>( ).next;
+		return;
+	}
+
+	pointer current				= m_first;
+	ASSERT						( current );
+
+	while ( current.get<node>( ).next != object )
+	{
+		current					= current.get<node>( ).next;
+		ASSERT					( current );
+	}
+	current.get<node>( ).next	= object.get<node>( ).next;
+}
+
+void embedded_typeless_list::clear( )
+{
+	m_first = nullptr;
+}
+
+pointer embedded_typeless_list::begin( ) const
+{
+	return m_first;
+}
+
+pointer embedded_typeless_list::end( ) const
+{
+	return nullptr;
+}
+
+pointer embedded_typeless_list::first( ) const
+{
+	return m_first;
+}
+
+pointer embedded_typeless_list::get_next( pointer object ) const
+{
+	ASSERT( object );
+
+	return object.get<node>( ).next;
+}
+
+template<typename Pred>
+void embedded_typeless_list::for_each( Pred const& functor )
+{
+	for ( auto i = first( ); i != nullptr; i = get_next( i ) )
+		functor( i );
+}
+
+template<typename Pred>
+void embedded_typeless_list::for_each( Pred const& functor ) const
+{
+	for ( auto i = first( ); i != nullptr; i = get_next( i ) )
+		functor( i );
+}
+
+
+void embedded_typeless_twosided_list::insert( pointer object )
+{
+	ASSERT( object );
+
+	object.get<node>( ).next		= m_first;
+	if ( m_first )
+		m_first.get<node>( ).prev	= object;
+	object.get<node>( ).prev		= nullptr;
+	m_first							= object;
+}
+
+void embedded_typeless_twosided_list::remove( pointer object )
+{
+	ASSERT( object );
+
+	if ( object.get<node>( ).prev )
+		object.get<node>( ).prev.get<node>( ).next	= object.get<node>( ).next;
+	else
+		m_first										= object.get<node>( ).next;
+
+	if ( object.get<node>( ).next )
+		object.get<node>( ).next.get<node>( ).prev	= object.get<node>( ).prev;
+}
+
+
+embedded_typeless_twosided_reversable_list::embedded_typeless_twosided_reversable_list( ) :
+	embedded_typeless_twosided_list	( ),
+	m_last					( nullptr )
+{ }
+
+void embedded_typeless_twosided_reversable_list::insert( pointer object )
+{
+	ASSERT( object );
+
+	object.get<node>( ).next		= m_first;
+	if ( m_first )
+		m_first.get<node>( ).prev	= object;
+	else
+		m_last						= object;
+	object.get<node>( ).prev		= nullptr;
+	m_first							= object;
+}
+
+void embedded_typeless_twosided_reversable_list::remove( pointer object )
+{
+	ASSERT( object );
+
+	if ( object.get<node>( ).prev )
+		object.get<node>( ).prev.get<node>( ).next	= object.get<node>( ).next;
+	else
+		m_first										= object.get<node>( ).next;
+
+	if ( object.get<node>( ).next )
+		object.get<node>( ).next.get<node>( ).prev	= object.get<node>( ).prev;
+	else
+		m_last										= object.get<node>( ).prev;
+}
+
+void embedded_typeless_twosided_reversable_list::clear( )
+{
+	m_first	= nullptr;
+	m_last	= nullptr;
+}
+
+pointer embedded_typeless_twosided_reversable_list::rbegin( ) const
+{
+	return m_last;
+}
+
+pointer embedded_typeless_twosided_reversable_list::rend( ) const
+{
+	return nullptr;
+}
+
+pointer embedded_typeless_twosided_reversable_list::last( ) const
+{
+	return m_last;
+}
+
+pointer embedded_typeless_twosided_reversable_list::get_prev( pointer object ) const
+{
+	return object.get<node>( ).prev;
+}
+
+template<typename Pred>
+void embedded_typeless_twosided_reversable_list::reverse_for_each( Pred const& functor )
+{
+	for ( auto i = last( ); i != nullptr; i = get_prev( i ) )
+		functor( i );
+}
+
+template<typename Pred>
+void embedded_typeless_twosided_reversable_list::reverse_for_each( Pred const& functor ) const
+{
+	for ( auto i = last( ); i != nullptr; i = get_prev( i ) )
+		functor( i );
+}
+
 #endif // #ifndef __core_embedded_list_inline_h_included_
