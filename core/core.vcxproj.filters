@@ -143,12 +143,6 @@
     <ClInclude Include="std\allocator_inline.h">
       <Filter>std\memory</Filter>
     </ClInclude>
-    <ClInclude Include="std\heap.h">
-      <Filter>std\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="std\heap_inline.h">
-      <Filter>std\memory</Filter>
-    </ClInclude>
     <ClInclude Include="std\std_map.h">
       <Filter>std\map</Filter>
     </ClInclude>
@@ -183,6 +177,12 @@
       <Filter>game\collision\bvh</Filter>
     </ClInclude>
     <ClInclude Include="std\memory.h">
+      <Filter>std\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="std\pool.h">
+      <Filter>std\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="std\pool_inline.h">
       <Filter>std\memory</Filter>
     </ClInclude>
   </ItemGroup>
