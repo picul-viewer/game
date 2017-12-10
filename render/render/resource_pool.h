@@ -19,10 +19,11 @@ public:
 
 protected:
 	typedef map<weak_const_string, T> pool_data;
+	typedef dynamic_allocation_multipool<8192, 128> string_pool;
 
-	weak_const_string		m_resource_path;
-	alloc_string_heap<8192>	m_pool_string_heap;
-	pool_data				m_pool_data;
+	weak_const_string	m_resource_path;
+	string_pool			m_string_pool;
+	pool_data			m_pool_data;
 };
 
 } // namespace render

@@ -32,18 +32,18 @@ void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::calculate_bounds( a
 }
 
 template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::create( NodeAllocator& node_heap, aabb_aligned const& box, u32 max_depth )
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::create( NodeAllocator& node_allocator, aabb_aligned const& box, u32 max_depth )
 {
-	this->m_nodes = node_heap;
+	this->m_nodes = &node_allocator;
 	calculate_bounds( box );
 	m_root = new_node( );
 	this->max_depth = max_depth;
 }
 
 template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::create( NodeAllocator& node_heap, aabb_aligned const& box, float node_min_radius )
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::create( NodeAllocator& node_allocator, aabb_aligned const& box, float node_min_radius )
 {
-	this->m_nodes = &node_heap;
+	this->m_nodes = &node_allocator;
 	calculate_bounds( box );
 	m_root = new_node( );
 

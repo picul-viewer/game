@@ -10,8 +10,8 @@ class octree
 public:
 	octree( );
 
-	void create( NodeAllocator& node_heap, aabb_aligned const& box, u32 max_depth = -1 );
-	void create( NodeAllocator& node_heap, aabb_aligned const& box, float node_min_radius );
+	void create( NodeAllocator& node_allocator, aabb_aligned const& box, u32 max_depth = -1 );
+	void create( NodeAllocator& node_allocator, aabb_aligned const& box, float node_min_radius );
 	void destroy( );
 
 	void insert( T* object );

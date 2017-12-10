@@ -60,7 +60,7 @@ public:
 
 protected:
 	template<typename T>
-	using shader_map = map<shader_name_string, T, aligned_mem_allocator<Cache_Line>>;
+	using shader_map = map<shader_name_string, T>;
 
 	template<typename T>
 	T* create_shader( pcstr in_filename, u32 in_configuration, shader_map<T>& in_collection );

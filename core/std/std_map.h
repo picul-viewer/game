@@ -2,11 +2,15 @@
 #define __core_std_map_h_included_
 
 #include <map>
-#include "heap.h"
+#include "pool.h"
 
-enum { stl_map_allocator_default_heap_page_size = 4096 };
+enum
+{
+	stl_map_allocator_default_pool_page_size = 4096,
+	stl_map_allocator_default_pool_page_max_count = 256
+};
 
-template<class T, u32 HeapPageSize, typename BasicAllocator>
+template<typename T, uptr PoolPageSize, uptr PoolPageMaxCount>
 struct stl_map_alocator
 {
 public:
@@ -14,8 +18,8 @@ public:
 
 	stl_map_alocator( ) = default;
 
-	template<typename U, u32 UHeapPageSize, typename UBasicAllocator>
-	stl_map_alocator( const stl_map_alocator<U, UHeapPageSize, UBasicAllocator>& ) noexcept;
+	template<typename U, uptr UPoolPageSize, uptr UPoolPageMaxCount>
+	stl_map_alocator( const stl_map_alocator<U, UPoolPageSize, UPoolPageMaxCount>& ) noexcept;
 
 	T* allocate( std::size_t n );
 	void deallocate( T* p, std::size_t n );
@@ -43,7 +47,7 @@ public:
 	template<typename T>
 	struct rebind
 	{
-		typedef stl_map_alocator<T, HeapPageSize, BasicAllocator> other;
+		typedef stl_map_alocator<T, PoolPageSize, PoolPageMaxCount> other;
 	};
 	
 	template<>
@@ -54,18 +58,18 @@ public:
 
 private:
 	std::_Container_proxy container_proxy_data;
-	dynamic_array_heap<sizeof(T), HeapPageSize, BasicAllocator> heap;
+	dynamic_pool<sizeof(T), PoolPageSize, PoolPageMaxCount> pool;
 };
 
-template <typename L, typename R, u32 LHeapPageSize, u32 RHeapPageSize, typename LBasicAllocator, typename RBasicAllocator>
-bool operator==( const stl_map_alocator<L, LHeapPageSize, LBasicAllocator>&, const stl_map_alocator<R, RHeapPageSize, RBasicAllocator>& );
+template <typename L, typename R, uptr LPoolPageSize, uptr RPoolPageSize, uptr LPoolPageMaxCount, uptr RPoolPageMaxCount>
+bool operator==( const stl_map_alocator<L, LPoolPageSize, LPoolPageMaxCount>&, const stl_map_alocator<R, RPoolPageSize, RPoolPageMaxCount>& );
 
-template <typename L, typename R, u32 LHeapPageSize, u32 RHeapPageSize, typename LBasicAllocator, typename RBasicAllocator>
-bool operator!=( const stl_map_alocator<L, LHeapPageSize, LBasicAllocator>&, const stl_map_alocator<R, RHeapPageSize, RBasicAllocator>& );
+template <typename L, typename R, uptr LPoolPageSize, uptr RPoolPageSize, uptr LPoolPageMaxCount, uptr RPoolPageMaxCount>
+bool operator!=( const stl_map_alocator<L, LPoolPageSize, LPoolPageMaxCount>&, const stl_map_alocator<R, RPoolPageSize, RPoolPageMaxCount>& );
 
 
-template<typename Key, typename Value, typename BasicAllocator = mem_allocator, u32 HeapPageSize = stl_map_allocator_default_heap_page_size>
-using map = std::map<Key, Value, std::less<Key>, stl_map_alocator<std::pair<Key, Value>, HeapPageSize, BasicAllocator>>;
+template<typename Key, typename Value, uptr PoolPageSize = stl_map_allocator_default_pool_page_size, uptr PoolPageMaxCount = stl_map_allocator_default_pool_page_max_count>
+using map = std::map<Key, Value, std::less<Key>, stl_map_alocator<std::pair<Key, Value>, PoolPageSize, PoolPageMaxCount>>;
 
 #include "std_map_inline.h"
 

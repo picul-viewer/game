@@ -29,7 +29,7 @@ namespace resources
 	
 	shader_pool&		get_shader_pool( );
 
-	typedef array_heap<effect, 1024>		effect_allocator;
+	typedef pool<sizeof(effect), 1024>		effect_allocator;
 
 	effect_allocator&	get_effect_allocator( );
 }
