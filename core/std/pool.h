@@ -4,7 +4,7 @@
 #include <core/types.h>
 #include "allocator.h"
 
-template<uptr ElemSize, uptr BatchSize>
+template<uptr ElemSize, uptr PageSize>
 struct pool
 {
 public:
@@ -22,7 +22,7 @@ protected:
 	pointer	m_last_pointer;
 };
 
-template<uptr ElemSize, uptr BatchSize>
+template<uptr ElemSize, uptr PageSize>
 struct allocation_pool
 {
 public:
@@ -38,7 +38,7 @@ protected:
 	pointer	m_last_pointer;
 };
 
-template<uptr ElemSize, uptr BatchSize, uptr PageMaxCount>
+template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 struct dynamic_pool
 {
 public:
@@ -57,7 +57,7 @@ protected:
 	pointer	m_last_pointer;
 };
 
-template<uptr ElemSize, uptr BatchSize, uptr PageMaxCount>
+template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 struct dynamic_allocation_pool
 {
 public:
