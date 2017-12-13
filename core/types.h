@@ -35,7 +35,11 @@ typedef char const*			pcstr;
 typedef void*				pvoid;
 typedef void const*			pcvoid;
 
-enum { Cache_Line = 64 };
+enum
+{
+	Cache_Line = 64,
+	Memory_Page_Size = 4096
+};
 
 class rand32
 {

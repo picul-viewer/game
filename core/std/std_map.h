@@ -6,7 +6,7 @@
 
 enum
 {
-	stl_map_allocator_default_pool_page_size = 4096,
+	stl_map_allocator_default_pool_page_size = Memory_Page_Size,
 	stl_map_allocator_default_pool_page_max_count = 256
 };
 
