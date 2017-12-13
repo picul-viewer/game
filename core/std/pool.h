@@ -13,10 +13,14 @@ public:
 
 	void destroy( );
 
+	void clear( );
+
 	pointer allocate( uptr size );
 	void deallocate( pointer p );
 
 protected:
+	pool( pointer memory );
+
 	pointer	m_data;
 	pointer	m_push_pointer;
 	pointer	m_last_pointer;
@@ -30,10 +34,14 @@ public:
 	~allocation_pool( );
 
 	void destroy( );
+	
+	void clear( );
 
 	pointer allocate( uptr size );
 
 protected:
+	allocation_pool( pointer memory );
+
 	pointer	m_data;
 	pointer	m_last_pointer;
 };
@@ -47,10 +55,14 @@ public:
 
 	void destroy( );
 	
+	void clear( );
+
 	pointer allocate( uptr size );
 	void deallocate( pointer p );
 
 protected:
+	dynamic_pool( pointer memory );
+
 	pointer	m_data;
 	pointer m_page_pointer;
 	pointer	m_push_pointer;
@@ -66,9 +78,13 @@ public:
 
 	void destroy( );
 	
+	void clear( );
+
 	pointer allocate( uptr size );
 
 protected:
+	dynamic_allocation_pool( pointer memory );
+
 	pointer	m_data;
 	pointer m_page_pointer;
 	pointer	m_last_pointer;
@@ -82,10 +98,14 @@ public:
 	~allocation_multipool( );
 
 	void destroy( );
+	
+	void clear( );
 
 	pointer allocate( uptr size );
 
 protected:
+	allocation_multipool( pointer memory );
+
 	pointer	m_data;
 	pointer	m_last_pointer;
 };
@@ -98,10 +118,14 @@ public:
 	~dynamic_allocation_multipool( );
 
 	void destroy( );
+	
+	void clear( );
 
 	pointer allocate( uptr size );
 
 protected:
+	dynamic_allocation_multipool( pointer memory );
+
 	pointer	m_data;
 	pointer	m_page_pointer;
 	pointer	m_last_pointer;
