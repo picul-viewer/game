@@ -123,6 +123,23 @@ struct typed_memory_helper
 	operator T const&( ) const { return *(T*)data; }
 };
 
+
+template<typename ... TList>
+struct type_count;
+
+template<>
+struct type_count<>
+{
+	static const uptr value = 0;
+};
+
+template<typename T, typename ... TList>
+struct type_count<T, TList ...>
+{
+	static const uptr value = 1 + type_count<TList ...>::value;
+};
+
+
 struct pointer
 {
 	inline pointer( ) { }
