@@ -42,6 +42,21 @@ public:
 		Base<sizeof(T), PageSize / sizeof(T)>::deallocate( p );
 	}
 
+	u32 get_object_type( pointer object )
+	{
+#ifdef DEBUG
+		auto f = [&]( )
+		{
+			return
+				( object >= Base<sizeof(T), PageSize / sizeof(T)>::m_data ) &&
+				( object <  Base<sizeof(T), PageSize / sizeof(T)>::m_data + pool_page_size_helper<PageSize>::value );
+		};
+
+		ASSERT( f( ) );
+#endif // #ifdef DEBUG
+		return 0;
+	}
+
 protected:
 	base_poolset( pointer memory ) :
 		Base<sizeof(T), PageSize / sizeof(T)>( memory )
@@ -97,6 +112,21 @@ public:
 	{
 		Base<sizeof(T), PageSize / sizeof(T)>::deallocate( p );
 	}
+	
+	u32 get_object_type( pointer object )
+	{
+#ifdef DEBUG
+		auto f = [&]( )
+		{
+			return
+				( object >= Base<sizeof(T), PageSize / sizeof(T)>::m_data ) &&
+				( object <  Base<sizeof(T), PageSize / sizeof(T)>::m_data + pool_page_size_helper<PageSize>::value * type_count<T, TList ...>::value );
+		};
+
+		ASSERT( f( ) );
+#endif // #ifdef DEBUG
+		return (u32)( ( object - Base<sizeof(T), PageSize / sizeof(T)>::m_data ) / pool_page_size_helper<PageSize>::value );
+	}
 
 protected:
 	base_poolset( pointer memory ) :
@@ -141,6 +171,21 @@ public:
 	void deallocate<T>( T* p )
 	{
 		Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::deallocate( p );
+	}
+	
+	u32 get_object_type( pointer object )
+	{
+#ifdef DEBUG
+		auto f = [&]( )
+		{
+			return
+				( object >= Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::m_data ) &&
+				( object <  Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::m_data + pool_page_size_helper<PageSize>::value * PageMaxCount );
+		};
+
+		ASSERT( f( ) );
+#endif // #ifdef DEBUG
+		return 0;
 	}
 
 protected:
@@ -198,6 +243,21 @@ public:
 	void deallocate<T>( T* p )
 	{
 		Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::deallocate( p );
+	}
+	
+	u32 get_object_type( pointer object )
+	{
+#ifdef DEBUG
+		auto f = [&]( )
+		{
+			return
+				( object >= Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::m_data ) &&
+				( object <  Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::m_data + pool_page_size_helper<PageSize>::value * PageMaxCount * type_count<T, TList ...>::value );
+		};
+
+		ASSERT( f( ) );
+#endif // #ifdef DEBUG
+		return (u32)( ( object - Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::m_data ) / ( pool_page_size_helper<PageSize>::value * PageMaxCount ) );
 	}
 
 protected:
