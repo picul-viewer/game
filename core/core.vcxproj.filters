@@ -55,16 +55,19 @@
     <Filter Include="game\collision\bvh">
       <UniqueIdentifier>{8549c605-189d-48d1-9f64-6cedb7d34d91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="threads\api">
+      <UniqueIdentifier>{23b05134-1f20-4175-b204-00e3dc1ffd55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="threads\api\thread">
+      <UniqueIdentifier>{361eee4f-ab60-45b5-8fa5-1b15070f9057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="threads\api\threading_event">
+      <UniqueIdentifier>{7b694da7-b212-44b9-bf03-fa58d3c0f6bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
     <ClInclude Include="types.h" />
-    <ClInclude Include="threads\interlocked.h">
-      <Filter>threads</Filter>
-    </ClInclude>
-    <ClInclude Include="threads\thread.h">
-      <Filter>threads</Filter>
-    </ClInclude>
     <ClInclude Include="threads\task_queue.h">
       <Filter>threads\task_queue</Filter>
     </ClInclude>
@@ -188,14 +191,20 @@
     <ClInclude Include="std\poolset.h">
       <Filter>std\memory</Filter>
     </ClInclude>
+    <ClInclude Include="std\function.h">
+      <Filter>std</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\thread.h">
+      <Filter>threads\api\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\interlocked.h">
+      <Filter>threads\api</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\threading_event.h">
+      <Filter>threads\api\threading_event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="threads\thread.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
-    <ClCompile Include="threads\task_queue.cpp">
-      <Filter>threads\task_queue</Filter>
-    </ClCompile>
     <ClCompile Include="game\camera.cpp">
       <Filter>game\camera</Filter>
     </ClCompile>
@@ -219,6 +228,12 @@
     </ClCompile>
     <ClCompile Include="std\weak_string.cpp">
       <Filter>std\string</Filter>
+    </ClCompile>
+    <ClCompile Include="threads\thread.cpp">
+      <Filter>threads\api\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="threads\threading_event.cpp">
+      <Filter>threads\api\threading_event</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

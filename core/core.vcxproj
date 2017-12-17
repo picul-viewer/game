@@ -192,6 +192,7 @@
     <ClInclude Include="std\embedded_list_inline.h" />
     <ClInclude Include="std\fixed_string.h" />
     <ClInclude Include="std\fixed_string_inline.h" />
+    <ClInclude Include="std\function.h" />
     <ClInclude Include="std\pool.h" />
     <ClInclude Include="std\poolset.h" />
     <ClInclude Include="std\pool_inline.h" />
@@ -200,6 +201,7 @@
     <ClInclude Include="std\std_map_inline.h" />
     <ClInclude Include="std\weak_string.h" />
     <ClInclude Include="threads.h" />
+    <ClInclude Include="threads\threading_event.h" />
     <ClInclude Include="threads\interlocked.h" />
     <ClInclude Include="threads\task_queue.h" />
     <ClInclude Include="threads\task_queue_inline.h" />
@@ -215,7 +217,7 @@
     <ClCompile Include="std\alloc_string.cpp" />
     <ClCompile Include="std\basic_string.cpp" />
     <ClCompile Include="std\weak_string.cpp" />
-    <ClCompile Include="threads\task_queue.cpp" />
+    <ClCompile Include="threads\threading_event.cpp" />
     <ClCompile Include="threads\thread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
