@@ -3,20 +3,19 @@
 
 #include <core/types.h>
 #include <core/std.h>
-#include "thread.h"
-#include "interlocked.h"
-
-static const uptr c_task_queue_size				= 16 * Kb;
-
-static const uptr c_max_task_parameters_size	= 256;
+#include <core/threads.h>
 
 // Single producer, single consumer
+template<uptr RecordSize>
 class task_queue
 {
 public:
-	typedef void(*functor)( va_list );
+	task_queue( ) = default;
+	~task_queue( ) = default;
 
-	void create( );
+	typedef procedure<RecordSize> functor;
+
+	void create( uptr in_buffer_size );
 	void destroy( );
 
 	template<typename ... Args>
@@ -26,49 +25,20 @@ public:
 	template<typename T, typename ... Args>
 	inline void push( void(T::*in_functor)( Args ... ) const, T const* this_ptr, Args ... args );
 
-	void pop( functor& out_functor, va_list& out_args_list );
+	void pop( functor& out_functor );
 	
 	bool empty( ) const;
-
-	static void empty_func( va_list args );
-
-protected:
-	s8*									m_push_pointer;
-	s8*									m_pop_pointer;
-
-	fixed_array<s8, c_task_queue_size>	m_data;
-	s8*									m_data_end;
-};
-
-// Single producer, single consumer
-class thread_task_queue
-{
-public:
-	typedef void(*functor)( va_list );
-
-	void create( thread* in_thread );
-	void destroy( );
-
-	template<typename ... Args>
-	inline void push( void(*in_functor)( Args ... ), Args ... args );
-	template<typename T, typename ... Args>
-	inline void push( void(T::*in_functor)( Args ... ), T* this_ptr, Args ... args );
-	template<typename T, typename ... Args>
-	inline void push( void(T::*in_functor)( Args ... ) const, T const* this_ptr, Args ... args );
-
-	void pop( functor& out_functor, va_list& out_args_list );
-	
-	bool empty( ) const;
+	bool full( ) const;
 
 protected:
-	s8*									m_push_pointer;
-	s8*									m_pop_pointer;
+	functor*		m_data;
 
-	thread*								m_worker_thread;
-	bool								m_thread_sleeping;
+	mt_u32			m_push_index;
+	mt_u32			m_pop_index;
 
-	fixed_array<s8, c_task_queue_size>	m_data;
-	s8*									m_data_end;
+	u32				m_index_mask;
+
+	threading_event	m_event;
 };
 
 #include "task_queue_inline.h"
