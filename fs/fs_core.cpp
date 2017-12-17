@@ -13,29 +13,25 @@ struct fs_thread_args
 };
 
 thread			m_fs_thread;
-task_queue		m_fs_queue;
+fs_queue		m_fs_queue;
 fs_thread_args	m_fs_thread_args;
 
 void fs_thread_func( void* arg )
 {
 	fs_thread_args *args = (fs_thread_args*)arg;
 	
-	task_queue::functor	functor;
-	va_list				arg_list;
+	fs_queue::functor functor;
 
 	while ( args->keep_alive )
 	{
-		get_fs_queue( ).pop( functor, arg_list );
-
-		functor( arg_list );
+		get_fs_queue( ).pop( functor );
+		functor( );
 	}
 
-	get_fs_queue( ).pop( functor, arg_list );
-
-	while ( functor != task_queue::empty_func )
+	while ( !get_fs_queue( ).empty( ) )
 	{
-		functor( arg_list );
-		get_fs_queue( ).pop( functor, arg_list );
+		get_fs_queue( ).pop( functor );
+		functor( );
 	}
 
 	args->thread_finished = true;
@@ -46,7 +42,7 @@ void create( )
 	m_fs_thread_args.keep_alive			= true;
 	m_fs_thread_args.thread_finished	= false;
 
-	m_fs_queue.create( );
+	m_fs_queue.create( 1 * Mb );
 	m_fs_thread.create( fs_thread_func, 0, &m_fs_thread_args );
 }
 
@@ -61,7 +57,7 @@ void wait_for_destruction( )
 		Sleep( 100 );
 }
 
-task_queue& get_fs_queue( )
+fs_queue& get_fs_queue( )
 {
 	return m_fs_queue;
 }
