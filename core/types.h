@@ -164,11 +164,23 @@ struct pointer
 
 	inline pointer operator+( uptr n ) const { return pointer( (pbyte)data + n ); }
 	inline pointer operator-( uptr n ) const { return pointer( (pbyte)data - n ); }
+	inline pointer operator+( ptr n ) const { return pointer( (pbyte)data + n ); }
+	inline pointer operator-( ptr n ) const { return pointer( (pbyte)data - n ); }
+	inline pointer operator+( u32 n ) const { return pointer( (pbyte)data + n ); }
+	inline pointer operator-( u32 n ) const { return pointer( (pbyte)data - n ); }
+	inline pointer operator+( s32 n ) const { return pointer( (pbyte)data + n ); }
+	inline pointer operator-( s32 n ) const { return pointer( (pbyte)data - n ); }
 
 	inline ptr operator-( pointer p ) const { return (pbyte)data - (pbyte)p.data; }
 
 	inline pointer& operator+=( uptr n ) { data = (pbyte)data + n; return *this; }
 	inline pointer& operator-=( uptr n ) { data = (pbyte)data - n; return *this; }
+	inline pointer& operator+=( ptr n ) { data = (pbyte)data + n; return *this; }
+	inline pointer& operator-=( ptr n ) { data = (pbyte)data - n; return *this; }
+	inline pointer& operator+=( u32 n ) { data = (pbyte)data + n; return *this; }
+	inline pointer& operator-=( u32 n ) { data = (pbyte)data - n; return *this; }
+	inline pointer& operator+=( s32 n ) { data = (pbyte)data + n; return *this; }
+	inline pointer& operator-=( s32 n ) { data = (pbyte)data - n; return *this; }
 	
 	inline pointer& operator++( ) { data = (pbyte)data + 1; return *this; }
 	inline pointer& operator--( ) { data = (pbyte)data + 1; return *this; }
