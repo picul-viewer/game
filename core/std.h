@@ -3,6 +3,8 @@
 
 #include "types.h"
 
+#include "std/function.h"
+
 #include "std/memory.h"
 #include "std/allocator.h"
 #include "std/pool.h"
