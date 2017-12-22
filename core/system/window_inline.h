@@ -36,7 +36,7 @@ LRESULT CALLBACK window<Events>::wndProc( HWND hWnd, UINT message, WPARAM wParam
 		break;
 
 	case WM_SIZE:
-		Events::resize	( math::u16x2( LOWORD( lParam ), HIWORD( lParam ) ) );
+		Events::resize	( math::u16x2( (u16)LOWORD( lParam ), (u16)HIWORD( lParam ) ) );
 		break;
 
 	case WM_ACTIVATE:
@@ -54,6 +54,8 @@ LRESULT CALLBACK window<Events>::wndProc( HWND hWnd, UINT message, WPARAM wParam
 template<typename Events>
 void window<Events>::create( window_init const& init )
 {
+	ASSERT( init.dimensions > 0 );
+
 	struct window_class
 	{
 		window_class( )
@@ -74,7 +76,7 @@ void window<Events>::create( window_init const& init )
 			wcex.hCursor		= LoadCursor( nullptr, IDC_ARROW );
 			wcex.hIconSm		= LoadIcon	( wcex.hInstance, IDI_APPLICATION );
 
-			if ( !RegisterClassEx( &wcex ) ) return;
+			ASSERT				( RegisterClassEx( &wcex ) );
 		}
 
 		~window_class( )
@@ -108,16 +110,17 @@ void window<Events>::create( window_init const& init )
 	HINSTANCE inst	= GetModuleHandle( nullptr );
 	m_hwnd			= CreateWindow( this_class.get_name( ), init.title, style,
 		x_pos, y_pos, rect.right - rect.left, rect.bottom - rect.top, nullptr, nullptr, inst, this );
+
+	ASSERT			( m_hwnd );
 }
 
 template<typename Events>
 void window<Events>::destroy( )
 {
-	if ( m_hwnd )
-	{
-		DestroyWindow			( m_hwnd );
-		m_hwnd					= nullptr;
-	}
+	ASSERT			( m_hwnd );
+
+	DestroyWindow	( m_hwnd );
+	m_hwnd			= nullptr;
 }
 
 template<typename Events>
