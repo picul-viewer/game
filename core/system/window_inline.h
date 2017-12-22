@@ -21,8 +21,7 @@ LRESULT CALLBACK window<Events>::wndProc( HWND hWnd, UINT message, WPARAM wParam
 	switch ( message )
 	{
 	case WM_CREATE:
-		w->m_hwnd		= hWnd;
-		Events::create	( );
+		Events::create	( hWnd );
 		break;
 
 	case WM_PAINT:
@@ -41,7 +40,7 @@ LRESULT CALLBACK window<Events>::wndProc( HWND hWnd, UINT message, WPARAM wParam
 		break;
 
 	case WM_ACTIVATE:
-		w->m_active		= wParam != 0;
+		Events::activate( wParam != 0 );
 		break;
 
 	default:
@@ -92,12 +91,9 @@ void window<Events>::create( window_init const& init )
 
 	static window_class this_class;
 
-	m_active		= false;
-	m_fullscreen	= init.fullscreen;
-
 	RECT rect		= { 0, 0, init.dimensions.x, init.dimensions.y };
 
-	DWORD style		= m_fullscreen ? WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN : WS_OVERLAPPEDWINDOW;
+	DWORD style		= init.fullscreen ? WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN : WS_OVERLAPPEDWINDOW;
 	if ( init.visible )
 		style		|= WS_VISIBLE;
 
@@ -106,7 +102,7 @@ void window<Events>::create( window_init const& init )
 	int x_pos		= GetSystemMetrics( SM_CXSCREEN );
 	int y_pos		= GetSystemMetrics( SM_CYSCREEN );
 
-	if ( m_fullscreen )
+	if ( init.fullscreen )
 	{
 		// TODO: this is not working
 
@@ -124,7 +120,7 @@ void window<Events>::create( window_init const& init )
 	y_pos			= ( y_pos - init.dimensions.y ) / 2;
 
 	HINSTANCE inst	= GetModuleHandle( nullptr );
-	CreateWindow	( this_class.get_name( ), init.title, style,
+	m_hwnd			= CreateWindow( this_class.get_name( ), init.title, style,
 		x_pos, y_pos, rect.right - rect.left, rect.bottom - rect.top, nullptr, nullptr, inst, this );
 }
 

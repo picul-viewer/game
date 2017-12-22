@@ -28,21 +28,18 @@ public:
 	void run( );
 
 	inline HWND get_hwnd( ) const { return m_hwnd; }
-	inline bool is_active( ) const { return m_active; }
-	inline bool is_fullscreen( ) const { return m_fullscreen; }
 
 protected:
 	HWND		m_hwnd;
-	bool		m_active;
-	bool		m_fullscreen;
 
 	static LRESULT CALLBACK wndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 };
 
 struct window_default_events
 {
-	static void create( ) { }
+	static void create( HWND hwnd ) { }
 	static void destroy( ) { }
+	static void activate( bool active ) { }
 	static void resize( math::u16x2 new_dimensions ) { }
 	static void update( ) { }
 };
