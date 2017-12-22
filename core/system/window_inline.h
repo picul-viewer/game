@@ -42,6 +42,48 @@ LRESULT CALLBACK window<Events>::wndProc( HWND hWnd, UINT message, WPARAM wParam
 	case WM_ACTIVATE:
 		Events::activate( wParam != 0 );
 		break;
+		
+	case WM_MOUSEMOVE:
+		Events::mouse_move	( math::s16x2( (s16)LOWORD( lParam ), (s16)HIWORD( lParam ) ) );
+		break;
+
+	case WM_LBUTTONDOWN:
+		Events::mouse_button_down	( mouse_button::left );
+		break;
+
+	case WM_LBUTTONUP:
+		Events::mouse_button_up		( mouse_button::left );
+		break;
+
+	case WM_RBUTTONDOWN:
+		Events::mouse_button_down	( mouse_button::right );
+		break;
+
+	case WM_RBUTTONUP:
+		Events::mouse_button_up		( mouse_button::right );
+		break;
+
+	case WM_MBUTTONDOWN:
+		Events::mouse_button_down	( mouse_button::middle );
+		break;
+
+	case WM_MBUTTONUP:
+		Events::mouse_button_up		( mouse_button::middle );
+		break;
+		
+	case WM_MOUSEWHEEL:
+		Events::mouse_wheel			( (s16)HIWORD( wParam ) );
+		break;
+		
+	case WM_SYSKEYDOWN:
+	case WM_KEYDOWN:
+		Events::key_down			( wParam );
+		break;
+
+	case WM_SYSKEYUP:
+	case WM_KEYUP:
+		Events::key_up				( wParam );
+		break;
 
 	default:
 		return DefWindowProc( hWnd, message, wParam, lParam );
