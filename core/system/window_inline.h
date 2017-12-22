@@ -102,20 +102,6 @@ void window<Events>::create( window_init const& init )
 	int x_pos		= GetSystemMetrics( SM_CXSCREEN );
 	int y_pos		= GetSystemMetrics( SM_CYSCREEN );
 
-	if ( init.fullscreen )
-	{
-		// TODO: this is not working
-
-		DEVMODE mode = { };
-
-		mode.dmSize				= sizeof(DEVMODE);
-		mode.dmPelsWidth		= x_pos;
-		mode.dmPelsHeight		= y_pos;
-		mode.dmFields			= DM_PELSWIDTH | DM_PELSHEIGHT;
-
-		ChangeDisplaySettings	( &mode, 0 );
-	}
-
 	x_pos			= ( x_pos - init.dimensions.x ) / 2;
 	y_pos			= ( y_pos - init.dimensions.y ) / 2;
 
@@ -131,7 +117,6 @@ void window<Events>::destroy( )
 	{
 		DestroyWindow			( m_hwnd );
 		m_hwnd					= nullptr;
-		ChangeDisplaySettings	( nullptr, 0 );
 	}
 }
 
