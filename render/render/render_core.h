@@ -6,7 +6,9 @@
 #include "dx_include.h"
 #include <core/threads.h>
 
-namespace render_core
+namespace render {
+
+namespace core
 {
 	void create( HWND in_hwnd, math::u16x2 in_resolution, bool in_is_windowed, bool in_allow_debug );
 	void destroy( );
@@ -23,6 +25,8 @@ namespace render_core
 	thread_task_queue&	get_render_queue( );
 	thread_task_queue&	get_device_queue( );
 
-} // namespace renderer
+} // namespace core
+
+} // namespace render
 
 #endif // #ifndef __render_render_core_h_included_

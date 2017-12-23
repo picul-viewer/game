@@ -4,7 +4,7 @@
 
 namespace fs {
 
-namespace fs_core {
+namespace core {
 
 struct fs_thread_args
 {
@@ -62,7 +62,7 @@ fs_queue& get_fs_queue( )
 	return m_fs_queue;
 }
 
-} // namespace fs_core
+} // namespace core
 
 bool file_exists( pcstr file_name )
 {

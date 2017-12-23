@@ -7,7 +7,7 @@
 
 namespace fs {
 
-namespace fs_core
+namespace core
 {
 	typedef task_queue<256> fs_queue;
 	void create( );
@@ -22,7 +22,7 @@ namespace fs_core
 	template<typename ... Args>
 	void write_file( const char* file_name, pointer data, uptr size, void(*post_processing_functor)( pointer, uptr, Args ... ), Args ... post_processing_args );
 
-} // namespace fs_core
+} // namespace core
 
 bool file_exists( pcstr file_name );
 

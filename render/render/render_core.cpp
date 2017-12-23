@@ -7,7 +7,7 @@
 
 namespace render {
 
-namespace render_core {
+namespace core {
 
 thread				m_render_thread;
 thread				m_context_thread;
@@ -186,6 +186,6 @@ thread_task_queue& get_device_queue( )
 	return m_device_queue;
 }
 
-} // namespace render_core
+} // namespace core
 
 } // namespace render
