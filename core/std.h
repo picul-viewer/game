@@ -3,9 +3,12 @@
 
 #include "types.h"
 
+#include "std/function.h"
+
 #include "std/memory.h"
 #include "std/allocator.h"
-#include "std/heap.h"
+#include "std/pool.h"
+#include "std/poolset.h"
 
 #include "std/basic_string.h"
 #include "std/weak_string.h"

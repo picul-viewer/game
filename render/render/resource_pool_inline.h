@@ -36,7 +36,7 @@ T* resource_pool<T>::create_resource( weak_const_string const& in_filename )
 		it->second.add_ref( );
 	else
 	{
-		alloc_string		resource_path( m_pool_string_heap, in_filename );
+		alloc_string		resource_path( m_string_pool, in_filename );
 		it					= m_pool_data.emplace( make_pair( weak_const_string( resource_path ), T( ) ) ).first;
 		
 		// Read data from file with callback

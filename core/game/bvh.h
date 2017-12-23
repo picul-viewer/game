@@ -42,6 +42,11 @@ protected:
 	node* m_root;
 };
 
+struct static_bvh_node_size
+{
+	static const uptr value = sizeof(aabb_aligned) + 2 * sizeof(pointer);
+};
+
 #include "bvh_inline.h"
 
 #endif // #ifndef __core_bvh_h_included_

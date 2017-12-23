@@ -18,8 +18,8 @@ typename octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::node* octree<T,
 template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
 void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::calculate_bounds( aabb_aligned const& box )
 {
-	__m128 l = _mm_load_ps( box.min.data );
-	__m128 h = _mm_load_ps( box.max.data );
+	__m128 l = box.min.data;
+	__m128 h = box.max.data;
 	
 	__m128 sum = _mm_add_ps( l, h );
 
@@ -32,18 +32,18 @@ void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::calculate_bounds( a
 }
 
 template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::create( NodeAllocator& node_heap, aabb_aligned const& box, u32 max_depth )
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::create( NodeAllocator& node_allocator, aabb_aligned const& box, u32 max_depth )
 {
-	this->m_nodes = node_heap;
+	this->m_nodes = &node_allocator;
 	calculate_bounds( box );
 	m_root = new_node( );
 	this->max_depth = max_depth;
 }
 
 template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
-void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::create( NodeAllocator& node_heap, aabb_aligned const& box, float node_min_radius )
+void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::create( NodeAllocator& node_allocator, aabb_aligned const& box, float node_min_radius )
 {
-	this->m_nodes = &node_heap;
+	this->m_nodes = &node_allocator;
 	calculate_bounds( box );
 	m_root = new_node( );
 
@@ -76,8 +76,8 @@ void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::insert( T* object )
 
 	aabb_aligned const& obj_box = object->get_aabb( );
 	
-	__m128 obj_box_min = _mm_load_ps( obj_box.min.data );
-	__m128 obj_box_max = _mm_load_ps( obj_box.max.data );
+	__m128 obj_box_min = obj_box.min.data;
+	__m128 obj_box_max = obj_box.max.data;
 	
 	__m128 tree_box_center = _mm_load_ps( m_box_center.data );
 	__m128 tree_box_radius = _mm_load_ps( m_box_half_radius.data );

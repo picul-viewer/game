@@ -9,11 +9,12 @@ namespace fs {
 
 namespace fs_core
 {
+	typedef task_queue<256> fs_queue;
 	void create( );
 	void destroy( );
 	void wait_for_destruction( );
 
-	task_queue& get_fs_queue( );
+	fs_queue& get_fs_queue( );
 
 	template<typename ... Args>
 	void read_file( const char* file_name, void(*post_processing_functor)( pointer, uptr, Args ... ), Args ... post_processing_args );
