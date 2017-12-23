@@ -17,9 +17,6 @@ render_context_queue	m_context_queue;
 render_device_queue		m_device_queue;
 
 bool					m_keep_alive;
-bool					m_render_thread_finished;
-bool					m_context_thread_finished;
-bool					m_device_thread_finished;
 
 mt_u32					m_render_frame_id = 0;
 mt_u32					m_context_frame_id = 0;
@@ -65,10 +62,7 @@ void render_thread_func( void* )
 		interlocked_inc( m_render_frame_id );
 	}
 
-	while ( !m_context_thread_finished )
-		Sleep( 100 );
-
-	m_render_thread_finished = true;
+	m_context_thread.destroy( INFINITE );
 }
 
 void context_thread_func( void* )
@@ -89,12 +83,9 @@ void context_thread_func( void* )
 		functor( );
 	}
 
-	while ( !m_device_thread_finished )
-		Sleep( 100 );
+	m_device_thread.destroy( INFINITE );
 
 	api::destroy( );
-
-	m_context_thread_finished = true;
 }
 
 void device_thread_func( void* )
@@ -116,8 +107,6 @@ void device_thread_func( void* )
 	}
 
 	resources::destroy( );
-
-	m_device_thread_finished = true;
 }
 
 void create( HWND in_hwnd, math::u16x2 in_resolution, bool in_is_windowed, bool in_allow_debug )
@@ -128,9 +117,6 @@ void create( HWND in_hwnd, math::u16x2 in_resolution, bool in_is_windowed, bool 
 	parameters::set_debug		( in_allow_debug );
 
 	m_keep_alive				= true;
-	m_render_thread_finished	= false;
-	m_context_thread_finished	= false;
-	m_device_thread_finished	= false;
 
 	m_render_thread.create( render_thread_func, 0, nullptr );
 	m_context_thread.create( context_thread_func, 0, nullptr );
@@ -146,12 +132,9 @@ void destroy( )
 
 void wait_for_destruction( )
 {
-	while ( m_render_thread_finished == false )
-		Sleep( 100 );
-	
-	m_render_thread.destroy( );
-	m_context_thread.destroy( );
-	m_device_thread.destroy( );
+	m_render_thread.destroy( INFINITE );
+	m_context_thread.destroy( INFINITE );
+	m_device_thread.destroy( INFINITE );
 }
 
 void suspend( )
