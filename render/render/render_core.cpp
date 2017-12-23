@@ -9,20 +9,20 @@ namespace render {
 
 namespace core {
 
-thread				m_render_thread;
-thread				m_context_thread;
-thread				m_device_thread;
+thread					m_render_thread;
+thread					m_context_thread;
+thread					m_device_thread;
 
-thread_task_queue	m_render_queue;
-thread_task_queue	m_device_queue;
+render_context_queue	m_context_queue;
+render_device_queue		m_device_queue;
 
-bool				m_keep_alive;
-bool				m_render_thread_finished;
-bool				m_context_thread_finished;
-bool				m_device_thread_finished;
+bool					m_keep_alive;
+bool					m_render_thread_finished;
+bool					m_context_thread_finished;
+bool					m_device_thread_finished;
 
-mt_u32				m_render_frame_id = 0;
-mt_u32				m_context_frame_id = 0;
+mt_u32					m_render_frame_id = 0;
+mt_u32					m_context_frame_id = 0;
 
 u32 render_frame_id( )
 {
@@ -46,7 +46,7 @@ void end_frame_impl( )
 
 void end_frame( )
 {
-	m_render_queue.push( end_frame_impl );
+	m_context_queue.push( end_frame_impl );
 }
 
 void render_thread_func( void* )
@@ -55,7 +55,7 @@ void render_thread_func( void* )
 	{
 		renderer::render( );
 		
-		m_render_queue.push( end_frame );
+		m_context_queue.push( end_frame );
 
 		// Wait while context thread is to far behind
 		// 'resume' is to be called in 'end_frame' command
@@ -75,22 +75,18 @@ void context_thread_func( void* )
 {
 	api::create( );
 
-	task_queue::functor	functor;
-	va_list				arg_list;
+	render_context_queue::functor functor;
 
 	while ( m_keep_alive )
 	{
-		m_render_queue.pop( functor, arg_list );
-
-		functor( arg_list );
+		m_context_queue.pop( functor );
+		functor( );
 	}
 
-	m_render_queue.pop( functor, arg_list );
-
-	while ( functor != task_queue::empty_func )
+	while ( !m_context_queue.empty( ) )
 	{
-		functor( arg_list );
-		m_render_queue.pop( functor, arg_list );
+		m_context_queue.pop( functor );
+		functor( );
 	}
 
 	while ( !m_device_thread_finished )
@@ -103,24 +99,20 @@ void context_thread_func( void* )
 
 void device_thread_func( void* )
 {
-	task_queue::functor	functor;
-	va_list				arg_list;
+	render_device_queue::functor functor;
 
 	resources::create( );
 
 	while ( m_keep_alive )
 	{
-		m_device_queue.pop( functor, arg_list );
-
-		functor( arg_list );
+		m_device_queue.pop( functor );
+		functor( );
 	}
 
-	m_device_queue.pop( functor, arg_list );
-
-	while ( functor != task_queue::empty_func )
+	while ( !m_device_queue.empty( ) )
 	{
-		functor( arg_list );
-		m_device_queue.pop( functor, arg_list );
+		m_device_queue.pop( functor );
+		functor( );
 	}
 
 	resources::destroy( );
@@ -176,12 +168,12 @@ void resume( )
 	m_device_thread.resume( );
 }
 
-thread_task_queue& get_render_queue( )
+render_context_queue& get_context_queue( )
 {
-	return m_render_queue;
+	return m_context_queue;
 }
 
-thread_task_queue& get_device_queue( )
+render_device_queue& get_device_queue( )
 {
 	return m_device_queue;
 }
