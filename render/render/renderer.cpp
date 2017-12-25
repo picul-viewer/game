@@ -9,6 +9,7 @@
 
 #include "render_parameters.h"
 
+#include "render_allocators.h"
 #include "render_scene.h"
 
 #include "stages.h"
@@ -39,8 +40,10 @@ void renderer_data::destroy( )
 namespace renderer
 {
 
-extern renderer_data	g_data;
-extern scene			g_scene;
+extern renderer_data			g_data;
+
+extern render_objects_allocator	g_render_objects_allocator;
+extern render_scene				g_scene;
 
 void create( )
 {
