@@ -4,6 +4,8 @@
 #include <core/types.h>
 #include "dx_include.h"
 
+#include "mesh.h"
+#include "texture.h"
 #include "resource_pool.h"
 #include "pipeline_state_pool.h"
 #include "shader_pool.h"
@@ -23,7 +25,17 @@ namespace resources
 	mesh_pool&			get_mesh_pool( );
 	texture_pool&		get_texture_pool( );
 
-	typedef pipeline_state_pool<32, 16, 16>	pipeline_pool;
+	enum {
+		max_depth_stencil_states	= 32,
+		max_blend_states			= 16,
+		max_rasterizer_states		= 16
+	};
+
+	typedef pipeline_state_pool<
+		max_depth_stencil_states,
+		max_blend_states,
+		max_rasterizer_states
+	> pipeline_pool;
 
 	pipeline_pool&		get_pipeline_pool( );
 	
