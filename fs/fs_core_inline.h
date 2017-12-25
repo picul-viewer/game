@@ -7,7 +7,7 @@
 
 namespace fs {
 
-namespace fs_core {
+namespace core {
 
 template<typename ... Args>
 void read_file_impl( const char* file_name, void(*post_processing_functor)( pointer, uptr, Args ... ), Args ... post_processing_args )
@@ -95,7 +95,7 @@ void write_file( const char* file_name, pointer data, uptr size, void(*post_proc
 	get_fs_queue( ).push( write_file_impl, file_name, data, size, post_processing_functor, post_processing_args ... );
 }
 
-} // namespace fs_core
+} // namespace core
 
 } // namespace fs
 
