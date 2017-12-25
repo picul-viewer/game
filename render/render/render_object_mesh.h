@@ -16,9 +16,9 @@ public:
 	render_object_mesh( );
 
 	void create( config& in_config );
-	virtual void destroy( ) override;
+	void destroy( );
 
-	virtual void dispatch( ) const override;
+	void dispatch( ) const;
 
 	void render( ) const;
 
@@ -38,7 +38,7 @@ public:
 
 	void create( config& in_config );
 	
-	virtual void update_transform( ) override;
+	void update_transform( );
 
 protected:
 	math::float4x4	m_identity_transform;
