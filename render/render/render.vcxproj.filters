@@ -82,6 +82,24 @@
     <Filter Include="resources\render_object\render_objects\direct_light">
       <UniqueIdentifier>{c2a3f8e8-c5fa-46ed-8170-7e6411a8b77e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="renderer\allocators">
+      <UniqueIdentifier>{1935c86e-fd11-4e6c-8579-dbf5f4a9968b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\api">
+      <UniqueIdentifier>{46484c15-51a2-4ab6-9977-1442fc94a676}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\scene">
+      <UniqueIdentifier>{719d7485-28d0-4d4a-93f7-53d6da82a78b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\resources">
+      <UniqueIdentifier>{47b5c29a-60d0-41ab-aae5-01004173494d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\parameters">
+      <UniqueIdentifier>{4b88d307-b9a3-4448-bdde-d732f2d1be7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\mesh">
+      <UniqueIdentifier>{4e227022-127a-43c4-ac56-aa129687dece}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
@@ -133,18 +151,6 @@
     <ClCompile Include="renderer.cpp">
       <Filter>renderer</Filter>
     </ClCompile>
-    <ClCompile Include="render_parameters.cpp">
-      <Filter>renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="render_api.cpp">
-      <Filter>renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="render_resources.cpp">
-      <Filter>renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="render_scene.cpp">
-      <Filter>renderer</Filter>
-    </ClCompile>
     <ClCompile Include="render_object_mesh.cpp">
       <Filter>resources\render_object\render_objects\mesh</Filter>
     </ClCompile>
@@ -157,11 +163,23 @@
     <ClCompile Include="stage_forward_default.cpp">
       <Filter>renderer\stages\stage_forward_default</Filter>
     </ClCompile>
-    <ClCompile Include="render_object.cpp">
-      <Filter>resources\render_object</Filter>
-    </ClCompile>
     <ClCompile Include="game_object.cpp">
       <Filter>resources\render_object</Filter>
+    </ClCompile>
+    <ClCompile Include="render_api.cpp">
+      <Filter>renderer\api</Filter>
+    </ClCompile>
+    <ClCompile Include="render_scene.cpp">
+      <Filter>renderer\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="render_resources.cpp">
+      <Filter>renderer\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="render_parameters.cpp">
+      <Filter>renderer\parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh.cpp">
+      <Filter>resources\mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -239,18 +257,6 @@
     <ClInclude Include="renderer.h">
       <Filter>renderer</Filter>
     </ClInclude>
-    <ClInclude Include="render_parameters.h">
-      <Filter>renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="render_api.h">
-      <Filter>renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="render_resources.h">
-      <Filter>renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="render_scene.h">
-      <Filter>renderer</Filter>
-    </ClInclude>
     <ClInclude Include="render_object_mesh.h">
       <Filter>resources\render_object\render_objects\mesh</Filter>
     </ClInclude>
@@ -271,6 +277,27 @@
     </ClInclude>
     <ClInclude Include="game_object.h">
       <Filter>resources\render_object</Filter>
+    </ClInclude>
+    <ClInclude Include="render_allocators.h">
+      <Filter>renderer\allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="render_allocators_inline.h">
+      <Filter>renderer\allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="render_api.h">
+      <Filter>renderer\api</Filter>
+    </ClInclude>
+    <ClInclude Include="render_scene.h">
+      <Filter>renderer\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="render_resources.h">
+      <Filter>renderer\resources</Filter>
+    </ClInclude>
+    <ClInclude Include="render_parameters.h">
+      <Filter>renderer\parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh.h">
+      <Filter>resources\mesh</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

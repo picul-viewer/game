@@ -170,10 +170,13 @@
     <ClInclude Include="forward_default_effect.h" />
     <ClInclude Include="game_object.h" />
     <ClInclude Include="input_layout.h" />
+    <ClInclude Include="mesh.h" />
     <ClInclude Include="mesh_box.h" />
     <ClInclude Include="mesh_collection.h" />
     <ClInclude Include="mesh_quad.h" />
     <ClInclude Include="pipeline_state_pool.h" />
+    <ClInclude Include="render_allocators.h" />
+    <ClInclude Include="render_allocators_inline.h" />
     <ClInclude Include="stages.h" />
     <ClInclude Include="stage_forward_default.h" />
     <ClInclude Include="stage_prepare_objects.h" />
@@ -206,12 +209,12 @@
     <ClCompile Include="forward_default_effect.cpp" />
     <ClCompile Include="game_object.cpp" />
     <ClCompile Include="input_layout.cpp" />
+    <ClCompile Include="mesh.cpp" />
     <ClCompile Include="mesh_collection.cpp" />
     <ClCompile Include="pipeline_state_pool.cpp" />
     <ClCompile Include="stage_forward_default.cpp" />
     <ClCompile Include="stage_prepare_objects.cpp" />
     <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="render_object.cpp" />
     <ClCompile Include="pipeline_state.cpp" />
     <ClCompile Include="render_core.cpp" />
     <ClCompile Include="render_api.cpp" />
