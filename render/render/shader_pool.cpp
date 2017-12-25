@@ -59,7 +59,7 @@ static void create_vertex_impl( pointer in_data, uptr in_size, vertex_shader* in
 
 	in_resource->create( in_data, in_size, desc, desc_size );
 
-	mem_allocator::deallocate( in_data );
+	mem_allocator( ).deallocate( in_data );
 }
 
 vertex_shader* shader_pool::create_vertex( pcstr in_filename, u32 in_configuration )
@@ -88,7 +88,7 @@ vertex_shader* shader_pool::create_vertex( pcstr in_filename, u32 in_configurati
 		}
 		else
 #endif // #ifdef DEBUG
-		fs::fs_core::read_file			( path.c_str( ), &create_vertex_impl, &it->second, vertex );
+		fs::core::read_file				( path.c_str( ), &create_vertex_impl, &it->second, vertex );
 	}
 	
 	return &it->second;
@@ -98,7 +98,7 @@ template<typename T>
 static void create_shader_impl( pointer in_data, uptr in_size, T* in_resource )
 {
 	in_resource->create( in_data, in_size );
-	mem_allocator::deallocate( in_data );
+	mem_allocator( ).deallocate( in_data );
 }
 
 template<typename T>
@@ -126,7 +126,7 @@ T* shader_pool::create_shader( pcstr in_filename, u32 in_configuration, shader_m
 		}
 		else
 #endif // #ifdef DEBUG
-		fs::fs_core::read_file			( path.c_str( ), &create_shader_impl<T>, &it->second );
+		fs::core::read_file				( path.c_str( ), &create_shader_impl<T>, &it->second );
 	}
 	
 	return &it->second;

@@ -62,7 +62,7 @@ void render( )
 	stage_prepare_objects::execute	( );
 	stage_forward_default::execute	( );
 
-	render_core::end_frame			( );
+	core::end_frame					( );
 }
 
 } // namespace renderer
