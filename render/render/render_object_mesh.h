@@ -4,7 +4,7 @@
 #include <core/types.h>
 #include <core/math.h>
 #include <core/game.h>
-#include "buffer.h"
+#include "mesh.h"
 #include "forward_default_effect.h"
 #include "resource_views.h"
 

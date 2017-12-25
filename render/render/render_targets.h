@@ -4,7 +4,6 @@
 #include <core/types.h>
 #include "dx_include.h"
 
-#include "buffer.h"
 #include "texture.h"
 #include "resource_views.h"
 

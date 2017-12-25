@@ -1,5 +1,5 @@
 #include "input_layout.h"
-#include "buffer.h"
+#include "mesh.h"
 
 #include <core/macros.h>
 
