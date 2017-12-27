@@ -77,18 +77,12 @@ aabb const& aabb_aligned::get_box( ) const
 
 void aabb_aligned::set_min_max( math::sse::vector const& min, math::sse::vector const& max )
 {
-	ASSERT( min.data.m128_f32[3] == 1.0f );
-	ASSERT( max.data.m128_f32[3] == 1.0f );
-
 	this->min = min;
 	this->max = max;
 }
 
 void aabb_aligned::set_center_radius( math::sse::vector const& center, math::sse::vector const& radius )
 {
-	ASSERT( center.data.m128_f32[3] == 1.0f );
-	ASSERT( radius.data.m128_f32[3] == 0.0f );
-	
 	min = _mm_sub_ps( center, radius );
 	max = _mm_add_ps( center, radius );
 }
@@ -131,9 +125,6 @@ void aabb_aligned::extrude( aabb_aligned const& box )
 
 void aabb_aligned::modify( math::sse::vector const& transform )
 {
-	// Do not modify unused variables
-	ASSERT( transform.data.m128_f32[3] == 0.0f );
-
 	min = _mm_add_ps( min, transform );
 	max = _mm_add_ps( max, transform );
 }
