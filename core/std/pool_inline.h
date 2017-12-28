@@ -73,6 +73,12 @@ void pool<ElemSize, PageSize>::deallocate( pointer p )
 	m_push_pointer	= p;
 }
 
+template<uptr ElemSize, uptr PageSize>
+pointer pool<ElemSize, PageSize>::data( ) const
+{
+	return m_data;
+}
+
 
 template<uptr ElemSize, uptr PageSize>
 allocation_pool<ElemSize, PageSize>::allocation_pool( )
@@ -115,6 +121,12 @@ pointer allocation_pool<ElemSize, PageSize>::allocate( uptr size )
 	pointer result	= m_last_pointer;
 	m_last_pointer	+= ElemSize;
 	return			result;
+}
+
+template<uptr ElemSize, uptr PageSize>
+pointer allocation_pool<ElemSize, PageSize>::data( ) const
+{
+	return m_data;
 }
 
 
@@ -188,6 +200,12 @@ void dynamic_pool<ElemSize, PageSize, PageMaxCount>::deallocate( pointer p )
 	m_push_pointer		= p;
 }
 
+template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
+pointer dynamic_pool<ElemSize, PageSize>::data( ) const
+{
+	return m_data;
+}
+
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::dynamic_allocation_pool( )
@@ -239,6 +257,12 @@ pointer dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::allocate( upt
 	return result;
 }
 
+template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
+pointer dynamic_allocation_pool<ElemSize, PageSize>::data( ) const
+{
+	return m_data;
+}
+
 
 template<uptr PageSize>
 allocation_multipool<PageSize>::allocation_multipool( )
@@ -280,6 +304,12 @@ pointer allocation_multipool<PageSize>::allocate( uptr size )
 	pointer result	= m_last_pointer;
 	m_last_pointer	+= size;
 	return			result;
+}
+
+template<uptr PageSize>
+pointer allocation_multipool<PageSize>::data( ) const
+{
+	return m_data;
 }
 
 
@@ -330,6 +360,12 @@ pointer dynamic_allocation_multipool<PageSize, PageMaxCount>::allocate( uptr siz
 	pointer result		= m_last_pointer;
 	m_last_pointer		+= size;
 	return result;
+}
+
+template<uptr PageSize, uptr PageMaxCount>
+pointer dynamic_allocation_multipool<PageSize, PageMaxCount>::data( ) const
+{
+	return m_data;
 }
 
 #endif // #ifndef __core_pool_inline_h_included_

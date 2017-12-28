@@ -18,6 +18,8 @@ public:
 	pointer allocate( uptr size );
 	void deallocate( pointer p );
 
+	pointer data( ) const;
+
 protected:
 	pool( pointer memory );
 
@@ -39,6 +41,8 @@ public:
 
 	pointer allocate( uptr size );
 
+	pointer data( ) const;
+
 protected:
 	allocation_pool( pointer memory );
 
@@ -59,6 +63,8 @@ public:
 
 	pointer allocate( uptr size );
 	void deallocate( pointer p );
+
+	pointer data( ) const;
 
 protected:
 	dynamic_pool( pointer memory );
@@ -82,6 +88,8 @@ public:
 
 	pointer allocate( uptr size );
 
+	pointer data( ) const;
+
 protected:
 	dynamic_allocation_pool( pointer memory );
 
@@ -103,6 +111,8 @@ public:
 
 	pointer allocate( uptr size );
 
+	pointer data( ) const;
+
 protected:
 	allocation_multipool( pointer memory );
 
@@ -122,6 +132,8 @@ public:
 	void clear( );
 
 	pointer allocate( uptr size );
+
+	pointer data( ) const;
 
 protected:
 	dynamic_allocation_multipool( pointer memory );

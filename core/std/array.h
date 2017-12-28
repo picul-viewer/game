@@ -17,6 +17,8 @@ public:
 	buffer_array( pointer buffer, uptr capacity, uptr size = 0 );
 	void set( pointer buffer, uptr capacity, uptr size = 0 );
 
+	pointer data( ) const;
+
 	void push_back( T const& value );
 	T* emplace_back( );
 	

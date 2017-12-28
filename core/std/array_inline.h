@@ -19,6 +19,12 @@ void buffer_array<T, Tcref>::set( pointer buffer, uptr capacity, uptr size )
 }
 
 template<typename T, typename Tcref>
+pointer buffer_array<T, Tcref>::data( ) const
+{
+	return m_begin;
+}
+
+template<typename T, typename Tcref>
 void buffer_array<T, Tcref>::push_back( T const& value )
 {
 	ASSERT		( m_end < m_max_end );
