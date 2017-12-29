@@ -181,6 +181,9 @@
     <ClCompile Include="mesh.cpp">
       <Filter>resources\mesh</Filter>
     </ClCompile>
+    <ClCompile Include="render_model_mesh.cpp">
+      <Filter>resources\render_object\render_objects\mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dx_include.h" />
@@ -298,6 +301,9 @@
     </ClInclude>
     <ClInclude Include="mesh.h">
       <Filter>resources\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="render_model_mesh.h">
+      <Filter>resources\render_object\render_objects\mesh</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

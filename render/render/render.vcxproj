@@ -177,6 +177,7 @@
     <ClInclude Include="pipeline_state_pool.h" />
     <ClInclude Include="render_allocators.h" />
     <ClInclude Include="render_allocators_inline.h" />
+    <ClInclude Include="render_model_mesh.h" />
     <ClInclude Include="stages.h" />
     <ClInclude Include="stage_forward_default.h" />
     <ClInclude Include="stage_prepare_objects.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="mesh_collection.cpp" />
     <ClCompile Include="pipeline_state_pool.cpp" />
+    <ClCompile Include="render_model_mesh.cpp" />
     <ClCompile Include="stage_forward_default.cpp" />
     <ClCompile Include="stage_prepare_objects.cpp" />
     <ClCompile Include="renderer.cpp" />
