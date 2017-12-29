@@ -7,9 +7,6 @@
     <Filter Include="dx\buffers">
       <UniqueIdentifier>{c06b87df-219a-4078-9784-5cd8eb449881}</UniqueIdentifier>
     </Filter>
-    <Filter Include="dx\buffers\constant_buffers">
-      <UniqueIdentifier>{195da88b-79bc-4cf5-a169-92eabd9a3068}</UniqueIdentifier>
-    </Filter>
     <Filter Include="dx\textures">
       <UniqueIdentifier>{38f4217e-2009-4283-9345-da0a342f6e8c}</UniqueIdentifier>
     </Filter>
@@ -100,13 +97,13 @@
     <Filter Include="resources\mesh">
       <UniqueIdentifier>{4e227022-127a-43c4-ac56-aa129687dece}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\constant_buffers">
+      <UniqueIdentifier>{195da88b-79bc-4cf5-a169-92eabd9a3068}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
       <Filter>dx\buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="constant_buffers.cpp">
-      <Filter>dx\buffers\constant_buffers</Filter>
     </ClCompile>
     <ClCompile Include="render_core.cpp" />
     <ClCompile Include="input_layout.cpp">
@@ -184,33 +181,30 @@
     <ClCompile Include="render_model_mesh.cpp">
       <Filter>resources\render_object\render_objects\mesh</Filter>
     </ClCompile>
+    <ClCompile Include="constant_buffers.cpp">
+      <Filter>resources\constant_buffers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dx_include.h" />
     <ClInclude Include="buffer.h">
       <Filter>dx\buffers</Filter>
     </ClInclude>
-    <ClInclude Include="constant_buffer.h">
-      <Filter>dx\buffers\constant_buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="constant_buffer_inline.h">
-      <Filter>dx\buffers\constant_buffers</Filter>
-    </ClInclude>
     <ClInclude Include="per_frame_constant_buffer.h">
-      <Filter>dx\buffers\constant_buffers</Filter>
+      <Filter>resources\constant_buffers</Filter>
     </ClInclude>
     <ClInclude Include="per_instance_constant_buffer.h">
-      <Filter>dx\buffers\constant_buffers</Filter>
+      <Filter>resources\constant_buffers</Filter>
     </ClInclude>
     <ClInclude Include="constant_buffers.h">
-      <Filter>dx\buffers\constant_buffers</Filter>
+      <Filter>resources\constant_buffers</Filter>
     </ClInclude>
     <ClInclude Include="render_core.h" />
     <ClInclude Include="input_layout.h">
       <Filter>resources\input_layout</Filter>
     </ClInclude>
     <ClInclude Include="miscellaneous_constant_buffer.h">
-      <Filter>dx\buffers\constant_buffers</Filter>
+      <Filter>resources\constant_buffers</Filter>
     </ClInclude>
     <ClInclude Include="texture.h">
       <Filter>dx\textures</Filter>
@@ -304,6 +298,12 @@
     </ClInclude>
     <ClInclude Include="render_model_mesh.h">
       <Filter>resources\render_object\render_objects\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_buffer.h">
+      <Filter>dx\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_buffer_inline.h">
+      <Filter>dx\buffers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
