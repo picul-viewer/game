@@ -201,7 +201,7 @@ void dynamic_pool<ElemSize, PageSize, PageMaxCount>::deallocate( pointer p )
 }
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-pointer dynamic_pool<ElemSize, PageSize>::data( ) const
+pointer dynamic_pool<ElemSize, PageSize, PageMaxCount>::data( ) const
 {
 	return m_data;
 }
@@ -258,7 +258,7 @@ pointer dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::allocate( upt
 }
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-pointer dynamic_allocation_pool<ElemSize, PageSize>::data( ) const
+pointer dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::data( ) const
 {
 	return m_data;
 }
