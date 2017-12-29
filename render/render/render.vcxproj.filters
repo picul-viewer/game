@@ -193,21 +193,12 @@
     <ClInclude Include="buffer.h">
       <Filter>dx\buffers</Filter>
     </ClInclude>
-    <ClInclude Include="per_frame_constant_buffer.h">
-      <Filter>resources\constant_buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="per_instance_constant_buffer.h">
-      <Filter>resources\constant_buffers</Filter>
-    </ClInclude>
     <ClInclude Include="constant_buffers.h">
       <Filter>resources\constant_buffers</Filter>
     </ClInclude>
     <ClInclude Include="render_core.h" />
     <ClInclude Include="input_layout.h">
       <Filter>resources\input_layout</Filter>
-    </ClInclude>
-    <ClInclude Include="miscellaneous_constant_buffer.h">
-      <Filter>resources\constant_buffers</Filter>
     </ClInclude>
     <ClInclude Include="texture.h">
       <Filter>dx\textures</Filter>
@@ -307,6 +298,9 @@
     </ClInclude>
     <ClInclude Include="constant_buffer_inline.h">
       <Filter>dx\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="per_frame_constants.h">
+      <Filter>resources\constant_buffers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

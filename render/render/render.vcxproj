@@ -174,6 +174,7 @@
     <ClInclude Include="mesh_box.h" />
     <ClInclude Include="mesh_collection.h" />
     <ClInclude Include="mesh_quad.h" />
+    <ClInclude Include="per_frame_constants.h" />
     <ClInclude Include="pipeline_state_pool.h" />
     <ClInclude Include="render_allocators.h" />
     <ClInclude Include="render_allocators_inline.h" />
@@ -183,9 +184,6 @@
     <ClInclude Include="stage_prepare_objects.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="render_object.h" />
-    <ClInclude Include="per_frame_constant_buffer.h" />
-    <ClInclude Include="per_instance_constant_buffer.h" />
-    <ClInclude Include="miscellaneous_constant_buffer.h" />
     <ClInclude Include="pipeline_state.h" />
     <ClInclude Include="render_core.h" />
     <ClInclude Include="render_api.h" />
@@ -205,6 +203,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp" />
+    <ClCompile Include="constant_buffer.cpp" />
     <ClCompile Include="constant_buffers.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="forward_default_effect.cpp" />
