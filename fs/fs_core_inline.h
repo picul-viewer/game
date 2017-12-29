@@ -34,7 +34,7 @@ void read_file_impl( const char* file_name, void(*post_processing_functor)( poin
 	}
 #endif // #ifdef DEBUG
 
-	pointer data = mem_allocator::allocate( (uptr)file_size );
+	pointer data = mem_allocator( ).allocate( (uptr)file_size );
 
 	DWORD bytes_read = 0;
 	ReadFile( file, data, file_size, &bytes_read, nullptr );

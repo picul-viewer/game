@@ -176,7 +176,7 @@ void static_bvh<T>::create( NodeAllocator& node_allocator, buffer_array<T*>& obj
 		return;
 	}
 	
-	aabb_aligned* aabbs = aligned_mem_allocator<16>( ).allocate( count * sizeof(aabb_aligned) );
+	aabb_aligned* aabbs = aligned_mem_allocator<16>( ).allocate( objects.size( ) * sizeof(aabb_aligned) );
 
 	// Pre-sort by max.x -> sorting == 0
 	sort( objects.begin( ), objects.end( ), []( T* l, T* r )
