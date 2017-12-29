@@ -184,6 +184,9 @@
     <ClCompile Include="constant_buffers.cpp">
       <Filter>resources\constant_buffers</Filter>
     </ClCompile>
+    <ClCompile Include="constant_buffer.cpp">
+      <Filter>dx\buffers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dx_include.h" />
