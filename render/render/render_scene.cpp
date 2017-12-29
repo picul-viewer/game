@@ -1,12 +1,9 @@
 #include "render_scene.h"
+
 #include "render_parameters.h"
-#include "render_allocators.h"
+#include "render_resources.h"
 
 namespace render {
-
-namespace renderer {
-	extern render_objects_allocator g_render_objects_allocator;
-}
 
 void render_scene::create( )
 {
@@ -57,7 +54,7 @@ void render_scene::insert_static_game_object( game_object* in_object )
 {
 	in_object->for_each( [this]( render_object* current )
 	{
-		renderer::g_render_objects_allocator.execute_typed( current, insert_render_object( ), this );
+		resources::get_render_objects_allocator( ).execute_typed( current, insert_render_object( ), this );
 	} );
 }
 

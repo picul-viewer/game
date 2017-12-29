@@ -9,6 +9,10 @@
 
 namespace render {
 
+typedef dynamic_poolset<Memory_Page_Size, 256,
+	render_model_mesh
+> render_models_allocator;
+
 class render_objects_allocator
 {
 public:

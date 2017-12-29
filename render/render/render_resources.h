@@ -10,6 +10,8 @@
 #include "pipeline_state_pool.h"
 #include "shader_pool.h"
 
+#include "render_allocators.h"
+
 #include "effect.h"
 
 namespace render {
@@ -44,6 +46,9 @@ namespace resources
 	typedef pool<sizeof(effect), 1024>		effect_allocator;
 
 	effect_allocator&	get_effect_allocator( );
+	
+	render_models_allocator& get_render_models_allocator( );
+	render_objects_allocator& get_render_objects_allocator( );
 }
 
 } // namespace render

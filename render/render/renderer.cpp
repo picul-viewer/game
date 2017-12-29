@@ -42,7 +42,6 @@ namespace renderer
 
 extern renderer_data			g_data;
 
-extern render_objects_allocator	g_render_objects_allocator;
 extern render_scene				g_scene;
 
 void create( )
