@@ -29,6 +29,8 @@ namespace constant_buffers
 	void bind_hs( );
 	void bind_ds( );
 	void bind_cs( );
+
+	void bind( );
 }
 
 } // namespace render

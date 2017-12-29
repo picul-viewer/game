@@ -71,6 +71,16 @@ namespace constant_buffers
 		api::get_context( )->CSSetConstantBuffers( 0, c_default_constant_buffers_count, (ID3D11Buffer* const*)&m_data );
 	}
 
+	void bind( )
+	{
+		bind_vs( );
+		bind_ps( );
+		bind_gs( );
+		bind_hs( );
+		bind_ds( );
+		bind_cs( );
+	}
+
 } // namespace constant_buffers
 
 } // namespace render
