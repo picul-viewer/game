@@ -49,12 +49,6 @@
     <Filter Include="renderer">
       <UniqueIdentifier>{e6497ef8-4add-4ef2-afe5-ee3441bfe369}</UniqueIdentifier>
     </Filter>
-    <Filter Include="effects">
-      <UniqueIdentifier>{c7081ffc-b54f-4eb1-b743-ee702899c4b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="effects\forward_default">
-      <UniqueIdentifier>{fccdd4d1-9c7d-49c3-b0a1-46ddcb893db7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="renderer\stages">
       <UniqueIdentifier>{6b425e7d-630f-4f17-b377-bbdf4b5a6ace}</UniqueIdentifier>
     </Filter>
@@ -150,9 +144,6 @@
     </ClCompile>
     <ClCompile Include="render_object_mesh.cpp">
       <Filter>resources\render_object\render_objects\mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="forward_default_effect.cpp">
-      <Filter>effects\forward_default</Filter>
     </ClCompile>
     <ClCompile Include="stage_prepare_objects.cpp">
       <Filter>renderer\stages\stage_prepare_objects</Filter>
@@ -250,9 +241,6 @@
     </ClInclude>
     <ClInclude Include="render_object_mesh.h">
       <Filter>resources\render_object\render_objects\mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="forward_default_effect.h">
-      <Filter>effects\forward_default</Filter>
     </ClInclude>
     <ClInclude Include="stage_prepare_objects.h">
       <Filter>renderer\stages\stage_prepare_objects</Filter>

@@ -167,7 +167,6 @@
     <ClInclude Include="constant_buffer_inline.h" />
     <ClInclude Include="dx_include.h" />
     <ClInclude Include="effect.h" />
-    <ClInclude Include="forward_default_effect.h" />
     <ClInclude Include="game_object.h" />
     <ClInclude Include="input_layout.h" />
     <ClInclude Include="mesh.h" />
@@ -206,7 +205,6 @@
     <ClCompile Include="constant_buffer.cpp" />
     <ClCompile Include="constant_buffers.cpp" />
     <ClCompile Include="effect.cpp" />
-    <ClCompile Include="forward_default_effect.cpp" />
     <ClCompile Include="game_object.cpp" />
     <ClCompile Include="input_layout.cpp" />
     <ClCompile Include="mesh.cpp" />
