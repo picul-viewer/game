@@ -16,7 +16,7 @@ void render_objects_allocator::deallocate( T* in_object )
 }
 
 template<typename Callback, typename ... Args>
-void render_objects_allocator::execute_typed( render_object* in_object, Callback const& in_functor, Args ... in_args )
+void render_objects_allocator::execute_typed( render_object* in_object, Callback in_functor, Args ... in_args )
 {
 	switch ( m_allocator.get_object_type( in_object ) )
 	{

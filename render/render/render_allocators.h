@@ -22,7 +22,7 @@ public:
 	void deallocate( T* in_object );
 
 	template<typename Callback, typename ... Args>
-	void execute_typed( render_object* in_object, Callback const& in_functor, Args ... in_args );
+	void execute_typed( render_object* in_object, Callback in_functor, Args ... in_args );
 
 protected:
 	enum {

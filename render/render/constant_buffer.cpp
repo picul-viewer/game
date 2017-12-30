@@ -7,7 +7,7 @@ namespace render {
 void constant_buffer::create( pvoid in_data, uptr in_size, bool in_is_dynamic )
 {
 	buffer::cook buffer_cook;
-	buffer_cook.set_constant_buffer( in_size, in_is_dynamic );
+	buffer_cook.set_constant_buffer( (u32)in_size, in_is_dynamic );
 	buffer::create( buffer_cook, in_data );
 }
 

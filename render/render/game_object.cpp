@@ -38,7 +38,7 @@ void game_object::create( config& in_config )
 struct destroy_render_object
 {
 	template<typename T>
-	void call( render_object* in_object )
+	void call( T* in_object )
 	{
 		in_object->destroy( );
 	}
