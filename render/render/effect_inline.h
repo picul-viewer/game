@@ -4,6 +4,20 @@
 namespace render {
 
 template<uptr TechniqueCount>
+void effect<TechniqueCount>::create( )
+{
+	for ( uptr i = 0; i < TechniqueCount; ++i )
+		m_techniques[i].create( );
+}
+
+template<uptr TechniqueCount>
+void effect<TechniqueCount>::destroy( )
+{
+	for ( uptr i = 0; i < TechniqueCount; ++i )
+		m_techniques[i].destroy( );
+}
+
+template<uptr TechniqueCount>
 technique& effect<TechniqueCount>::operator[]( uptr in_index )
 {
 	ASSERT( in_index < TechniqueCount );

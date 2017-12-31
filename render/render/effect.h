@@ -49,6 +49,9 @@ template<uptr TechniqueCount>
 class effect
 {
 public:
+	void create( );
+	void destroy( );
+
 	technique& operator[]( uptr in_index );
 	technique const& operator[]( uptr in_index ) const;
 
