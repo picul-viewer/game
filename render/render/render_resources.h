@@ -43,10 +43,6 @@ namespace resources
 	
 	shader_pool&		get_shader_pool( );
 
-	typedef pool<sizeof(effect), 1024>		effect_allocator;
-
-	effect_allocator&	get_effect_allocator( );
-	
 	render_models_allocator& get_render_models_allocator( );
 	render_objects_allocator& get_render_objects_allocator( );
 }
