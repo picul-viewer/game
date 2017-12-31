@@ -52,7 +52,7 @@ public:
 	technique& operator[]( uptr in_index );
 	technique const& operator[]( uptr in_index ) const;
 
-	void apply( uptr in_index ) const;
+	void apply( uptr in_index = 0 ) const;
 
 protected:
 	technique m_techniques[TechniqueCount];
