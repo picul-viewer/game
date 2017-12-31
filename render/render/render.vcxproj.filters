@@ -94,6 +94,12 @@
     <Filter Include="resources\constant_buffers">
       <UniqueIdentifier>{195da88b-79bc-4cf5-a169-92eabd9a3068}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\pipeline_state_pool">
+      <UniqueIdentifier>{2b9e7b2e-7c22-4145-af95-d3014cc8af04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\shader_pool">
+      <UniqueIdentifier>{74bb7d3c-07da-47b6-b15f-c966dc56d105}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
@@ -124,14 +130,8 @@
     <ClCompile Include="effect.cpp">
       <Filter>resources\effect</Filter>
     </ClCompile>
-    <ClCompile Include="pipeline_state_pool.cpp">
-      <Filter>resources\effect</Filter>
-    </ClCompile>
     <ClCompile Include="sampler_colletion.cpp">
       <Filter>resources\collections\sampler_collection</Filter>
-    </ClCompile>
-    <ClCompile Include="shader_pool.cpp">
-      <Filter>resources\effect</Filter>
     </ClCompile>
     <ClCompile Include="resource_views.cpp">
       <Filter>dx\resource_views</Filter>
@@ -178,6 +178,12 @@
     <ClCompile Include="constant_buffer.cpp">
       <Filter>dx\buffers</Filter>
     </ClCompile>
+    <ClCompile Include="pipeline_state_pool.cpp">
+      <Filter>resources\pipeline_state_pool</Filter>
+    </ClCompile>
+    <ClCompile Include="shader_pool.cpp">
+      <Filter>resources\shader_pool</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dx_include.h" />
@@ -215,14 +221,8 @@
     <ClInclude Include="effect.h">
       <Filter>resources\effect</Filter>
     </ClInclude>
-    <ClInclude Include="pipeline_state_pool.h">
-      <Filter>resources\effect</Filter>
-    </ClInclude>
     <ClInclude Include="sampler_colletion.h">
       <Filter>resources\collections\sampler_collection</Filter>
-    </ClInclude>
-    <ClInclude Include="shader_pool.h">
-      <Filter>resources\effect</Filter>
     </ClInclude>
     <ClInclude Include="mesh_box.h">
       <Filter>resources\collections\mesh_collection</Filter>
@@ -289,6 +289,12 @@
     </ClInclude>
     <ClInclude Include="per_frame_constants.h">
       <Filter>resources\constant_buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="pipeline_state_pool.h">
+      <Filter>resources\pipeline_state_pool</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_pool.h">
+      <Filter>resources\shader_pool</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
