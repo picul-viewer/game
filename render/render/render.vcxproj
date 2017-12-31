@@ -167,6 +167,7 @@
     <ClInclude Include="constant_buffer_inline.h" />
     <ClInclude Include="dx_include.h" />
     <ClInclude Include="effect.h" />
+    <ClInclude Include="effect_inline.h" />
     <ClInclude Include="game_object.h" />
     <ClInclude Include="input_layout.h" />
     <ClInclude Include="mesh.h" />

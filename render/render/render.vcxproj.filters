@@ -296,5 +296,8 @@
     <ClInclude Include="shader_pool.h">
       <Filter>resources\shader_pool</Filter>
     </ClInclude>
+    <ClInclude Include="effect_inline.h">
+      <Filter>resources\effect</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
