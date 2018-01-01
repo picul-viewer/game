@@ -9,6 +9,7 @@ namespace math {
 
 struct float2x2;
 struct float3x3;
+struct float4x3;
 struct float4x4;
 
 struct float2x2
@@ -26,8 +27,9 @@ struct float2x2
 		l0( l0 ), l1( l1 )
 	{ }
 
-	inline float2x2( float3x3 const& m );
-	inline float2x2( float4x4 const& m );
+	inline explicit float2x2( float3x3 const& m );
+	inline explicit float2x2( float4x3 const& m );
+	inline explicit float2x2( float4x4 const& m );
 	
 	static inline float2x2 get_zero( ) { return float2x2( float2( 0.0f, 0.0f ), float2( 0.0f, 0.0f ) ); }
 	static inline float2x2 get_identity( ) { return float2x2( float2( 1.0f, 0.0f ), float2( 0.0f, 1.0f ) ); }
@@ -84,8 +86,9 @@ struct float3x3
 		l0( l0 ), l1( l1 ), l2( l2 )
 	{ }
 
-	inline float3x3( float2x2 const& m );
-	inline float3x3( float4x4 const& m );
+	inline explicit float3x3( float2x2 const& m );
+	inline explicit float3x3( float4x3 const& m );
+	inline explicit float3x3( float4x4 const& m );
 	
 	static inline float3x3 get_zero( ) { return float3x3( float3( 0.0f, 0.0f, 0.0f ), float3( 0.0f, 0.0f, 0.0f ), float3( 0.0f, 0.0f, 0.0f ) ); }
 	static inline float3x3 get_identity( ) { return float3x3( float3( 1.0f, 0.0f, 0.0f ), float3( 0.0f, 1.0f, 0.0f ), float3( 0.0f, 0.0f, 1.0f ) ); }
@@ -150,8 +153,9 @@ struct float4x4
 		l0( l0 ), l1( l1 ), l2( l2 ), l3( l3 )
 	{ }
 
-	inline float4x4( float2x2 const& m );
-	inline float4x4( float3x3 const& m );
+	inline explicit float4x4( float2x2 const& m );
+	inline explicit float4x4( float3x3 const& m );
+	inline explicit float4x4( float4x3 const& m );
 
 	static inline float4x4 get_zero( ) { return float4x4( float4( 0.0f, 0.0f, 0.0f, 0.0f ), float4( 0.0f, 0.0f, 0.0f, 0.0f ), float4( 0.0f, 0.0f, 0.0f, 0.0f ), float4( 0.0f, 0.0f, 0.0f, 0.0f ) ); }
 	static inline float4x4 get_identity( ) { return float4x4( float4( 1.0f, 0.0f, 0.0f, 0.0f ), float4( 0.0f, 1.0f, 0.0f, 0.0f ), float4( 0.0f, 0.0f, 1.0f, 0.0f ), float4( 0.0f, 0.0f, 0.0f, 1.0f ) ); }
@@ -257,8 +261,9 @@ struct float4x3
 		l0( l0 ), l1( l1 ), l2( l2 )
 	{ }
 
-	inline float4x3( float2x2 const& m );
-	inline float4x3( float3x3 const& m );
+	inline explicit float4x3( float2x2 const& m );
+	inline explicit float4x3( float3x3 const& m );
+	inline explicit float4x3( float4x4 const& m );
 
 	inline operator float4x4( )
 	{
@@ -334,11 +339,17 @@ struct float4x3
 };
 
 float2x2::float2x2( float3x3 const& m ) : l0( m.l0 ), l1( m.l1 ) { }
+float2x2::float2x2( float4x3 const& m ) : l0( m.l0 ), l1( m.l1 ) { }
 float2x2::float2x2( float4x4 const& m ) : l0( m.l0 ), l1( m.l1 ) { }
 float3x3::float3x3( float2x2 const& m ) : l0( m.l0, 0.0f ), l1( m.l1, 0.0f ), l2( 0.0f, 0.0f, 1.0f ) { }
+float3x3::float3x3( float4x3 const& m ) : l0( m.l0 ), l1( m.l1 ), l2( m.l2 ) { }
 float3x3::float3x3( float4x4 const& m ) : l0( m.l0 ), l1( m.l1 ), l2( m.l2 ) { }
 float4x4::float4x4( float2x2 const& m ) : l0( m.l0, 0.0f, 0.0f ), l1( m.l1, 0.0f, 0.0f ), l2( 0.0f, 0.0f, 1.0f, 0.0f ), l3( 0.0f, 0.0f, 0.0f, 1.0f ) { }
 float4x4::float4x4( float3x3 const& m ) : l0( m.l0, 0.0f ), l1( m.l1, 0.0f ), l2( m.l2, 0.0f ), l3( 0.0f, 0.0f, 0.0f, 1.0f ) { }
+float4x4::float4x4( float4x3 const& m ) : l0( m.l0 ), l1( m.l1 ), l2( m.l2 ), l3( 0.0f, 0.0f, 0.0f, 1.0f ) { }
+float4x3::float4x3( float2x2 const& m ) : l0( m.l0 ), l1( m.l1 ), l2( 0.0f, 0.0f, 1.0f, 0.0f ) { }
+float4x3::float4x3( float3x3 const& m ) : l0( m.l0 ), l1( m.l1 ), l2( m.l2 ) { }
+float4x3::float4x3( float4x4 const& m ) : l0( m.l0 ), l1( m.l1 ), l2( m.l2 ) { }
 
 inline float2 mul( float2x2 const& m, float2 const& v ) { return float2( m.l0.dot( v ), m.l1.dot( v ) ); }
 inline float3 mul( float3x3 const& m, float3 const& v ) { return float3( m.l0.dot( v ), m.l1.dot( v ), m.l2.dot( v ) ); }

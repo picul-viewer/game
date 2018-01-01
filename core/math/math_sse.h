@@ -54,7 +54,7 @@ struct matrix3
 		this->data[1] = _mm_load_ps( data.l1.data );
 		this->data[2] = _mm_load_ps( data.l2.data );
 	}
-	inline matrix3( matrix const& m );
+	inline explicit matrix3( matrix const& m );
 
 	inline operator __m128*( ) { return data; }
 	inline operator math::float4x3( ) const
@@ -87,6 +87,15 @@ struct matrix
 		this->data[1] = _mm_load_ps( data.l1.data );
 		this->data[2] = _mm_load_ps( data.l2.data );
 		this->data[3] = _mm_load_ps( data.l3.data );
+	}
+	
+	inline explicit matrix( matrix3 const& data )
+	{
+		ASSERT( aligned( &data, 16 ) );
+		this->data[0] = data[0];
+		this->data[1] = data[1];
+		this->data[2] = data[2];
+		this->data[3] = _mm_setr_ps( 0.0f, 0.0f, 0.0f, 1.0f );
 	}
 
 	inline operator __m128*( ) { return data; }
@@ -203,6 +212,12 @@ inline vector modify_position_by_transform( vector const& v, matrix const& m )
 		_mm_add_ps( _mm_mul_ps( l2, vec2 ), l3 ) );
 
 	return res;
+}
+
+
+inline matrix combine_transforms( matrix const& left, matrix const& right )
+{
+	return matrix_multiply( right, left );
 }
 
 // Only 12 elements are necessary in 'left' and 'right'

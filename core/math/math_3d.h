@@ -193,8 +193,13 @@ inline float3 modify_position_by_transform( float3 const& v, float4x4 const& m )
 
 inline float4x4 combine_transforms( float4x4 const& m1, float4x4 const& m2 )
 {
+	return mul( m2, m1 );
+}
+
+inline float4x3 combine_transforms( float4x3 const& m1, float4x3 const& m2 )
+{
 	//return mul( m2, m1 );
-	float4x4 result	= mul( float3x3( m2 ), float3x3( m1 ) );
+	float4x3 result	= float4x3( mul( float3x3( m2 ), float3x3( m1 ) ) );
 	
 	result.a03		= m2.a00 * m1.a03 + m2.a01 + m1.a13 + m2.a02 * m1.a23 + m2.a03;
 	result.a13		= m2.a10 * m1.a03 + m2.a11 + m1.a13 + m2.a12 * m1.a23 + m2.a13;
