@@ -110,8 +110,8 @@ class texture : public shader_resource_view
 public:
 	void create( pointer in_data, uptr in_size );
 
-	void add_ref( ) const;
-	void release( ) const;
+	u32 add_ref( ) const;
+	u32 release( ) const;
 };
 
 } // namespace render

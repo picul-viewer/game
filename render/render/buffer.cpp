@@ -76,14 +76,14 @@ void buffer::set( ID3D11Buffer* in_buffer )
 	m_buffer = in_buffer;
 }
 
-void buffer::add_ref( ) const
+u32 buffer::add_ref( ) const
 {
-	m_buffer->AddRef( );
+	return m_buffer->AddRef( );
 }
 
-void buffer::release( ) const
+u32 buffer::release( ) const
 {
-	m_buffer->Release( );
+	return m_buffer->Release( );
 }
 
 void buffer::destroy( )

@@ -151,14 +151,14 @@ void texture3d::destroy( )
 }
 
 
-void texture::add_ref( ) const
+u32 texture::add_ref( ) const
 {
-	m_srv->AddRef( );
+	return m_srv->AddRef( );
 }
 
-void texture::release( ) const
+u32 texture::release( ) const
 {
-	m_srv->Release( );
+	return m_srv->Release( );
 }
 
 } // namespace render

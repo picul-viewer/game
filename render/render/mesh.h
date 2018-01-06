@@ -21,8 +21,8 @@ public:
 	void set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY in_primitive_topology );
 	void set_dimensions( u32 in_index_count, u32 in_instance_count );
 	
-	void add_ref( ) const;
-	void release( ) const;
+	u32 add_ref( ) const;
+	u32 release( ) const;
 	
 	void destroy( );
 

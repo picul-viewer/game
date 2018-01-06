@@ -36,8 +36,8 @@ public:
 	void create( cook const& in_cook );
 	void set( ID3D11Buffer* in_buffer );
 	
-	void add_ref( ) const;
-	void release( ) const;
+	u32 add_ref( ) const;
+	u32 release( ) const;
 	
 	void destroy( );
 
