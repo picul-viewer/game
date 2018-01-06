@@ -176,8 +176,8 @@
     <ClInclude Include="mesh_quad.h" />
     <ClInclude Include="per_frame_constants.h" />
     <ClInclude Include="pipeline_state_pool.h" />
-    <ClInclude Include="render_allocators.h" />
-    <ClInclude Include="render_allocators_inline.h" />
+    <ClInclude Include="render_object_allocator.h" />
+    <ClInclude Include="render_object_allocator_inline.h" />
     <ClInclude Include="render_model_mesh.h" />
     <ClInclude Include="stages.h" />
     <ClInclude Include="stage_forward_default.h" />

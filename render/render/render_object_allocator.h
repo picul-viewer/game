@@ -1,5 +1,5 @@
-#ifndef __render_render_allocators_h_included_
-#define __render_render_allocators_h_included_
+#ifndef __render_render_object_allocator_h_included_
+#define __render_render_object_allocator_h_included_
 
 #include <core/types.h>
 #include <core/math.h>
@@ -8,10 +8,6 @@
 #include "render_object_mesh.h"
 
 namespace render {
-
-typedef dynamic_poolset<Memory_Page_Size, 256,
-	render_model_mesh
-> render_models_allocator;
 
 class render_objects_allocator
 {
@@ -39,6 +35,6 @@ protected:
 
 } // namespace render
 
-#include "render_allocators_inline.h"
+#include "render_object_allocator_inline.h"
 
-#endif // #ifndef __render_render_allocators_h_included_
+#endif // #ifndef __render_render_object_allocator_h_included_

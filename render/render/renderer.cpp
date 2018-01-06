@@ -9,7 +9,7 @@
 
 #include "render_parameters.h"
 
-#include "render_allocators.h"
+#include "render_object_allocator.h"
 #include "render_scene.h"
 
 #include "stages.h"
