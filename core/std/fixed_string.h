@@ -4,11 +4,11 @@
 #include <core/types.h>
 #include "basic_string.h"
 
-template<uptr max_size>
+template<uptr MaxSize>
 class fixed_string : public i_string
 {
 public:
-	enum { max_string_size = max_size };
+	enum { max_string_size = MaxSize };
 
 	fixed_string( );
 	fixed_string( const char* str );
@@ -18,16 +18,9 @@ public:
 
 	~fixed_string( ) = default;
 
-	fixed_string& operator=( const char* str );
-	fixed_string& assign( const char* str );
 	fixed_string& operator=( i_const_string const& str );
 	fixed_string& assign( i_const_string const& str );
 
-	fixed_string<max_size> const& operator+( const char* str );
-	fixed_string<max_size> const& operator+( i_const_string const& str );
-
-	fixed_string& operator+=( const char* str );
-	fixed_string& append( const char* str );
 	fixed_string& operator+=( i_const_string const& str );
 	fixed_string& append( i_const_string const& str );
 
@@ -37,8 +30,11 @@ public:
 	fixed_string const& copy( uptr start, uptr length ) const;
 
 protected:
-	char	m_data[max_size];
+	char	m_data[MaxSize];
 };
+
+template<uptr MaxSize>
+fixed_string<MaxSize> operator+( fixed_string<MaxSize> const& l, i_const_string const& r );
 
 typedef fixed_string<Cache_Line>	little_string;
 typedef fixed_string<256>			str256;

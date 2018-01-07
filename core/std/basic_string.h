@@ -6,17 +6,17 @@
 class i_const_string
 {
 public:
-	inline uptr length( ) const;
+	uptr length( ) const;
 
-	inline bool empty( ) const;
+	bool empty( ) const;
 	
-	inline char operator[]( uptr index ) const;
-	inline char at( uptr index ) const;
+	char operator[]( uptr index ) const;
+	char at( uptr index ) const;
 	
-	virtual inline const char* c_str( ) const = 0;
+	virtual const char* c_str( ) const = 0;
 	
-	inline uptr find( const char* str, uptr pos = 0 ) const;
-	inline uptr find( char c, uptr pos = 0 ) const;
+	uptr find( const char* str, uptr pos = 0 ) const;
+	uptr find( char c, uptr pos = 0 ) const;
 };
 
 bool operator==( i_const_string const& left, i_const_string const& right );
