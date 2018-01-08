@@ -9,6 +9,9 @@ namespace resource_compiler {
 class strategy
 {
 public:
+	virtual void on_start( ) { }
+	virtual void on_finish( ) { }
+
 	virtual void get_output_name( weak_const_string input_name, weak_string output_name ) = 0;
 	virtual void compile( weak_const_string input_path,
 						  weak_const_string output_directory ) = 0;

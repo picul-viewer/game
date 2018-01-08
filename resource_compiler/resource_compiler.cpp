@@ -43,6 +43,8 @@ void manager::compile_category( category& category )
 
 	if ( file_handle != INVALID_HANDLE_VALUE )
 	{
+		category.strategy->on_start( );
+
 		do
 		{
 			str256 file_local_path = str256( file_data.cFileName + m_input_path.length( ) );
@@ -71,6 +73,8 @@ void manager::compile_category( category& category )
 		while ( FindNextFile( file_handle, &file_data ) );
 
 		FindClose( file_handle );
+		
+		category.strategy->on_finish( );
 	}
 }
 
