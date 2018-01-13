@@ -73,7 +73,7 @@ const char* fixed_string<MaxSize>::c_str( ) const
 }
 
 template<uptr MaxSize>
-fixed_string<MaxSize> const& fixed_string<MaxSize>::copy( uptr start, uptr length ) const
+fixed_string<MaxSize> fixed_string<MaxSize>::copy( uptr start, uptr length ) const
 {
 	return fixed_string<MaxSize>( m_data + start, length );
 }

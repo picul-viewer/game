@@ -7,6 +7,7 @@
 class weak_const_string : public i_const_string
 {
 public:
+	weak_const_string( ) = default;
 	weak_const_string( const char* str );
 	weak_const_string( i_const_string const& str );
 
@@ -21,6 +22,7 @@ protected:
 class weak_string : public i_string
 {
 public:
+	weak_string( ) = default;
 	weak_string( char* str );
 	weak_string( i_string const& str );
 
