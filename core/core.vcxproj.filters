@@ -218,6 +218,9 @@
     <ClInclude Include="system.h">
       <Filter>system</Filter>
     </ClInclude>
+    <ClInclude Include="game\text_config.h">
+      <Filter>game\config</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\camera.cpp">
@@ -249,6 +252,9 @@
     </ClCompile>
     <ClCompile Include="system\timer.cpp">
       <Filter>system\timer</Filter>
+    </ClCompile>
+    <ClCompile Include="game\text_config.cpp">
+      <Filter>game\config</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

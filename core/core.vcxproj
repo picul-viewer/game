@@ -170,6 +170,7 @@
     <ClInclude Include="game\frustum.h" />
     <ClInclude Include="game\octree.h" />
     <ClInclude Include="game\octree_inline.h" />
+    <ClInclude Include="game\text_config.h" />
     <ClInclude Include="macros.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="math\math_3d.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="game\camera.cpp" />
     <ClCompile Include="game\config.cpp" />
     <ClCompile Include="game\frustum.cpp" />
+    <ClCompile Include="game\text_config.cpp" />
     <ClCompile Include="std\alloc_string.cpp" />
     <ClCompile Include="std\basic_string.cpp" />
     <ClCompile Include="std\weak_string.cpp" />

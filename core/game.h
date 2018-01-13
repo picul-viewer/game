@@ -2,6 +2,7 @@
 #define __core_game_h_included_
 
 #include "game/config.h"
+#include "game/text_config.h"
 
 #include "game/camera.h"
 #include "game/aabb.h"
