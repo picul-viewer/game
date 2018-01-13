@@ -27,7 +27,7 @@ public:
 	virtual char* data( ) const override;
 	virtual const char* c_str( ) const override;
 
-	fixed_string const& copy( uptr start, uptr length ) const;
+	fixed_string copy( uptr start, uptr length ) const;
 
 protected:
 	char	m_data[MaxSize];
