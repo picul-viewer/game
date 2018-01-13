@@ -163,9 +163,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="resource_compiler.cpp" />
+    <ClCompile Include="shader_strategy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource_compiler.h" />
+    <ClInclude Include="shader_strategy.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">
