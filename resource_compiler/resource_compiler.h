@@ -12,16 +12,19 @@ public:
 	virtual void on_start( ) { }
 	virtual void on_finish( ) { }
 
-	virtual void get_output_name( weak_const_string input_name, weak_string output_name ) = 0;
-	virtual void compile( weak_const_string input_path,
+	virtual void compile( u64 relevant_date,
+						  weak_const_string input_path,
 						  weak_const_string output_directory ) = 0;
 };
 
 struct category
 {
-	weak_const_string path;
+	weak_const_string input_path;
+	weak_const_string output_path;
 	strategy* strategy;
 };
+
+inline u64 filetime_to_u64( FILETIME data );
 
 class manager
 {
