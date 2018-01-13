@@ -22,6 +22,9 @@ struct category
 	weak_const_string input_path;
 	weak_const_string output_path;
 	strategy* strategy;
+
+	category( ) = default;
+	category( weak_const_string input_path, weak_const_string output_path, resource_compiler::strategy* strategy );
 };
 
 inline u64 filetime_to_u64( FILETIME data );
@@ -29,8 +32,10 @@ inline u64 filetime_to_u64( FILETIME data );
 class manager
 {
 public:
-	manager( std::initializer_list<category> const& init );
+	manager( uptr category_count );
 	~manager( );
+
+	void add_category( strategy* strategy, weak_const_string input_path, weak_const_string output_path );
 
 	void compile( weak_const_string input_path, weak_const_string output_path );
 

@@ -9,16 +9,17 @@ inline u64 filetime_to_u64( FILETIME data )
 	return *(u64*)&data;
 }
 
-manager::manager( std::initializer_list<category> const& init ) :
-	m_categories	( init ),
+category::category( weak_const_string input_path, weak_const_string output_path, resource_compiler::strategy* strategy ) :
+	input_path	( input_path ),
+	output_path	( output_path ),
+	strategy	( strategy )
+{ }
+
+manager::manager( uptr category_count ) :
+	m_categories	( category_count ),
 	m_input_path	( nullptr ),
 	m_output_path	( nullptr )
-{
-#ifdef DEBUG
-	for ( std::vector<category>::iterator i = m_categories.begin( ), e = m_categories.end( ); i != e; ++i )
-		ASSERT( i->strategy );
-#endif // #ifdef DEBUG
-}
+{ }
 
 manager::~manager( )
 {
@@ -26,8 +27,16 @@ manager::~manager( )
 		delete i->strategy;
 }
 
+void manager::add_category( strategy* strategy, weak_const_string input_path, weak_const_string output_path )
+{
+	m_categories.push_back( { input_path, output_path, strategy } );
+}
+
 void manager::compile( weak_const_string input_path, weak_const_string output_path )
 {
+	m_input_path	= input_path;
+	m_output_path	= output_path;
+
 	for ( std::vector<category>::iterator i = m_categories.begin( ), e = m_categories.end( ); i != e; ++i )
 		compile_category( *i );
 }
