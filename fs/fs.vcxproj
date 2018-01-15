@@ -96,7 +96,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <PreprocessorDefinitions>DEBUG;_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -108,7 +108,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <PreprocessorDefinitions>DEBUG;_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
