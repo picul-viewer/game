@@ -5,7 +5,7 @@
 #include <core/math.h>
 #include <core/game.h>
 
-#include <render/render/game_object.h>
+#include <render/game_object.h>
 
 namespace game {
 
