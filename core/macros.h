@@ -27,22 +27,22 @@ inline void logger( char const* message, Args ... args )
 #ifdef DEBUG
 namespace macros {
 
-inline void assertion_failed( char const* expr )
+inline void assertion_failed( char const* expr, char const* file, char const* func, int line )
 {
-	LOG( "ASSERTION FAILED:\nfile: %s\nfunction: %s\nline: %d\nexpression: %s\n", __FILE__, __FUNCTION__, __LINE__, expr );
+	LOG( "ASSERTION FAILED:\nfile: %s\nfunction: %s\nline: %d\nexpression: %s\n", file, func, line, expr );
 }
 
 template<typename ... Args>
-inline void assertion_failed( char const* expr, char const* message, Args ... args )
+inline void assertion_failed( char const* expr, char const* file, char const* func, int line, char const* message, Args ... args )
 {
 	char text[8192] = { };
 	sprintf( text, message, args ... );
-	LOG( "ASSERTION FAILED:\nfile: %s\nfunction: %s\nline: %d\nexpression: %s\ninformation: %s\n", __FILE__, __FUNCTION__, __LINE__, expr, text );
+	LOG( "ASSERTION FAILED:\nfile: %s\nfunction: %s\nline: %d\nexpression: %s\ninformation: %s\n", file, func, line, expr, text );
 }
 
 }
 
-#	define ASSERT( expr, ... ) if ( !( expr ) ) { macros::assertion_failed( #expr, ##__VA_ARGS__ ); DEBUG_BREAK }
+#	define ASSERT( expr, ... ) if ( !( expr ) ) { macros::assertion_failed( #expr, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); DEBUG_BREAK }
 #else // #ifdef DEBUG
 #	define ASSERT( expr, ... ) NO_OP
 #endif // #ifdef DEBUG
@@ -50,20 +50,20 @@ inline void assertion_failed( char const* expr, char const* message, Args ... ar
 #ifdef DEBUG
 namespace macros {
 
-inline void fatal_error( )
+inline void fatal_error( char const* file, char const* func, int line )
 {
-	LOG( "ERROR:\nfile: %s\nfunction: %s\nline: %d\n\n", __FILE__, __FUNCTION__, __LINE__ );
+	LOG( "ERROR:\nfile: %s\nfunction: %s\nline: %d\n\n", file, func, line );
 }
 
 template<typename ... Args>
-inline void fatal_error( char const* message, Args ... args )
+inline void fatal_error( char const* file, char const* func, int line, char const* message, Args ... args )
 {
-	LOG( "ERROR:\nfile: %s\nfunction: %s\nline: %d\nmessage: %s\n", __FILE__, __FUNCTION__, __LINE__, message, args ... );
+	LOG( "ERROR:\nfile: %s\nfunction: %s\nline: %d\nmessage: %s\n", file, func, line, message, args ... );
 }
 
 }
 
-#	define FATAL_ERROR( ... ) { macros::fatal_error( ##__VA_ARGS__ ); DEBUG_BREAK }
+#	define FATAL_ERROR( ... ) { macros::fatal_error( __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); DEBUG_BREAK }
 #else // #ifdef DEBUG
 #	define FATAL_ERROR( message ) NO_OP
 #endif // #ifdef DEBUG
