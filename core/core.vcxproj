@@ -188,6 +188,7 @@
     <ClInclude Include="std\array.h" />
     <ClInclude Include="std\array_inline.h" />
     <ClInclude Include="std\basic_string.h" />
+    <ClInclude Include="std\basic_string_inline.h" />
     <ClInclude Include="std\embedded_list.h" />
     <ClInclude Include="std\embedded_list_inline.h" />
     <ClInclude Include="std\fixed_string.h" />
@@ -219,7 +220,6 @@
     <ClCompile Include="game\frustum.cpp" />
     <ClCompile Include="game\text_config.cpp" />
     <ClCompile Include="std\alloc_string.cpp" />
-    <ClCompile Include="std\basic_string.cpp" />
     <ClCompile Include="std\weak_string.cpp" />
     <ClCompile Include="system\timer.cpp" />
     <ClCompile Include="threads\threading_event.cpp" />

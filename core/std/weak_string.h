@@ -4,32 +4,40 @@
 #include <core/types.h>
 #include "basic_string.h"
 
-class weak_const_string : public i_const_string
+class weak_const_string : public i_const_string<weak_const_string>
 {
 public:
 	weak_const_string( ) = default;
 	weak_const_string( const char* str );
-	weak_const_string( i_const_string const& str );
+
+	template<typename StringClass>
+	weak_const_string( i_const_string<StringClass> const& str ) :
+		m_data( str.c_str( ) )
+	{ }
 
 	~weak_const_string( ) = default;
 	
-	virtual const char* c_str( ) const override;
+	const char* c_str( ) const;
 
 protected:
 	char const* m_data;
 };
 
-class weak_string : public i_string
+class weak_string : public i_string<weak_string>
 {
 public:
 	weak_string( ) = default;
 	weak_string( char* str );
-	weak_string( i_string const& str );
+
+	template<typename StringClass>
+	inline weak_string( i_string<StringClass> const& str ) :
+		m_data( str.data( ) )
+	{ }
 
 	~weak_string( ) = default;
 	
-	virtual char* data( ) const override;
-	virtual const char* c_str( ) const override;
+	char* data( ) const;
+	const char* c_str( ) const;
 
 protected:
 	char* m_data;

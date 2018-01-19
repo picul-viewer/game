@@ -221,6 +221,9 @@
     <ClInclude Include="game\text_config.h">
       <Filter>game\config</Filter>
     </ClInclude>
+    <ClInclude Include="std\basic_string_inline.h">
+      <Filter>std\string</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\camera.cpp">
@@ -236,9 +239,6 @@
       <Filter>game\collision\frustum</Filter>
     </ClCompile>
     <ClCompile Include="std\alloc_string.cpp">
-      <Filter>std\string</Filter>
-    </ClCompile>
-    <ClCompile Include="std\basic_string.cpp">
       <Filter>std\string</Filter>
     </ClCompile>
     <ClCompile Include="std\weak_string.cpp">
