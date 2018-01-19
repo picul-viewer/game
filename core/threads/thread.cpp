@@ -1,6 +1,7 @@
 #include "thread.h"
 
 #include <process.h>
+#include <Windows.h>
 
 thread::thread( thread_func_type func, u32 stack_size, void* arg )
 {

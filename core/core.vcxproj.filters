@@ -70,6 +70,9 @@
     <Filter Include="system\timer">
       <UniqueIdentifier>{6c8255af-79d7-4870-a685-48db5f83c6fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="threads\api\interlocked">
+      <UniqueIdentifier>{228245d0-c358-42c5-8627-bee6d6b8d673}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -200,9 +203,6 @@
     <ClInclude Include="threads\thread.h">
       <Filter>threads\api\thread</Filter>
     </ClInclude>
-    <ClInclude Include="threads\interlocked.h">
-      <Filter>threads\api</Filter>
-    </ClInclude>
     <ClInclude Include="threads\threading_event.h">
       <Filter>threads\api\threading_event</Filter>
     </ClInclude>
@@ -223,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="std\basic_string_inline.h">
       <Filter>std\string</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\interlocked.h">
+      <Filter>threads\api\interlocked</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -256,5 +259,9 @@
     <ClCompile Include="game\text_config.cpp">
       <Filter>game\config</Filter>
     </ClCompile>
+    <ClCompile Include="std\allocator.cpp">
+      <Filter>std\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="threads\interlocked.cpp" />
   </ItemGroup>
 </Project>

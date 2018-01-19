@@ -219,9 +219,11 @@
     <ClCompile Include="game\config.cpp" />
     <ClCompile Include="game\frustum.cpp" />
     <ClCompile Include="game\text_config.cpp" />
+    <ClCompile Include="std\allocator.cpp" />
     <ClCompile Include="std\alloc_string.cpp" />
     <ClCompile Include="std\weak_string.cpp" />
     <ClCompile Include="system\timer.cpp" />
+    <ClCompile Include="threads\interlocked.cpp" />
     <ClCompile Include="threads\threading_event.cpp" />
     <ClCompile Include="threads\thread.cpp" />
   </ItemGroup>

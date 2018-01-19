@@ -147,7 +147,7 @@ bool frustum_aligned::test_aabb_inside( aabb_aligned const& box ) const
 
 	__m128 max_dot_c3 = _mm_shuffle_ps( max_dots, max_dots, _MM_SHUFFLE( 3, 3, 3, 3 ) );
 
-	__m128 dot_compare_to_zero_mask = _mm_castsi128_ps( _mm_setr_epi32( INT_MIN, INT_MIN, INT_MIN, 0 ) );
+	__m128i dot_compare_to_zero_mask = _mm_setr_epi32( INT_MIN, INT_MIN, INT_MIN, 0 );
 	__m128 dot_c3_addition_mask = _mm_castsi128_ps( _mm_setr_epi32( -1, -1, 0, 0 ) );
 
 	{
@@ -160,7 +160,7 @@ bool frustum_aligned::test_aabb_inside( aabb_aligned const& box ) const
 		
 		__m128 comb = _mm_and_ps( cmp0, cmp1 );
 
-		return !!_mm_testc_ps( comb, dot_compare_to_zero_mask );
+		return !!_mm_testc_si128( _mm_castps_si128( comb ), dot_compare_to_zero_mask );
 	}
 }
 
@@ -193,7 +193,7 @@ bool frustum_aligned::test_aabb_outside( aabb_aligned const& box ) const
 
 	__m128 min_dot_c3 = _mm_shuffle_ps( min_dots, min_dots, _MM_SHUFFLE( 3, 3, 3, 3 ) );
 
-	__m128 dot_compare_to_zero_mask = _mm_castsi128_ps( _mm_setr_epi32( INT_MIN, INT_MIN, INT_MIN, 0 ) );
+	__m128i dot_compare_to_zero_mask = _mm_setr_epi32( INT_MIN, INT_MIN, INT_MIN, 0 );
 	__m128 dot_c3_addition_mask = _mm_castsi128_ps( _mm_setr_epi32( -1, -1, 0, 0 ) );
 
 	{
@@ -205,7 +205,7 @@ bool frustum_aligned::test_aabb_outside( aabb_aligned const& box ) const
 		
 		__m128 comb = _mm_and_ps( cmp0, cmp1 );
 
-		return !_mm_testc_ps( comb, dot_compare_to_zero_mask );
+		return !_mm_testc_si128( _mm_castps_si128( comb ), dot_compare_to_zero_mask );
 	}
 }
 
@@ -238,7 +238,7 @@ intersection frustum_aligned::test_aabb( aabb_aligned const& box ) const
 	__m128 min_dot_c3 = _mm_shuffle_ps( min_dots, min_dots, _MM_SHUFFLE( 3, 3, 3, 3 ) );
 	__m128 max_dot_c3 = _mm_shuffle_ps( max_dots, max_dots, _MM_SHUFFLE( 3, 3, 3, 3 ) );
 	
-	__m128 dot_compare_to_zero_mask = _mm_castsi128_ps( _mm_setr_epi32( INT_MIN, INT_MIN, INT_MIN, 0 ) );
+	__m128i dot_compare_to_zero_mask = _mm_setr_epi32( INT_MIN, INT_MIN, INT_MIN, 0 );
 	__m128 dot_addition_mask = _mm_castsi128_ps( _mm_setr_epi32( -1, -1, 0, 0 ) );
 
 	{
@@ -250,7 +250,7 @@ intersection frustum_aligned::test_aabb( aabb_aligned const& box ) const
 
 		__m128 comb = _mm_and_ps( cmp0, cmp1 );
 
-		if ( !_mm_testc_ps( comb, dot_compare_to_zero_mask ) )
+		if ( !_mm_testc_si128( _mm_castps_si128( comb ), dot_compare_to_zero_mask ) )
 			return outside;
 	}
 	
@@ -264,7 +264,7 @@ intersection frustum_aligned::test_aabb( aabb_aligned const& box ) const
 		
 		__m128 comb = _mm_and_ps( cmp0, cmp1 );
 
-		if ( !_mm_testc_ps( comb, dot_compare_to_zero_mask ) )
+		if ( !_mm_testc_si128( _mm_castps_si128( comb ), dot_compare_to_zero_mask ) )
 			return intersect;
 		else
 			return inside;

@@ -14,7 +14,7 @@ public:
 	u64 get_elapsed_s( ) const;
 
 protected:
-	LARGE_INTEGER start_time;
+	u64 start_time;
 };
 
 float time_tick( );
@@ -26,7 +26,7 @@ public:
 	float get_elapsed_time( ) const;
 
 protected:
-	LARGE_INTEGER start_time;
+	u64 start_time;
 };
 
 #endif // #ifndef __core_timer_h_included_
