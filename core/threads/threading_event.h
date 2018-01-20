@@ -2,7 +2,6 @@
 #define __core_threading_event_h_included_
 
 #include <core/types.h>
-#include <Windows.h>
 
 class threading_event
 {
@@ -18,10 +17,10 @@ public:
 	void set( );
 	void reset( );
 
-	void wait_for( u32 wait_ms = INFINITE );
+	void wait_for( u32 wait_ms = (u32)-1 );
 
 protected:
-	HANDLE	m_id;
+	pvoid	m_id;
 };
 
 #endif // #ifndef __core_threading_event_h_included_

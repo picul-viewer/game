@@ -173,7 +173,7 @@ struct vec2<float>
 	inline float dot( vec2<float> const& v ) const { return x * v.x + y * v.y; }
 
 	inline float squared_length( ) const { return dot( *this ); }
-	inline float length( ) const { return sqrt( squared_length( ) ); }
+	inline float length( ) const { return sqrtf( squared_length( ) ); }
 	inline vec2<float> normalize( ) const { return *this / length( ); }
 	
 	inline float cross( vec2<float> const& v ) const { return x * v.y - y * v.x; }
@@ -203,7 +203,7 @@ struct vec3<float>
 	inline float dot( vec3<float> const& v ) const { return x * v.x + y * v.y + z * v.z; }
 
 	inline float squared_length( ) const { return dot( *this ); }
-	inline float length( ) const { return sqrt( squared_length( ) ); }
+	inline float length( ) const { return sqrtf( squared_length( ) ); }
 	inline vec3<float> normalize( ) const { return *this / length( ); }
 
 	inline vec3<float> cross( vec3<float> const& v ) const { return vec3<float>( y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x); }
@@ -234,7 +234,7 @@ struct vec4<float>
 	inline float dot( vec4<float> const& v ) const { return x * v.x + y * v.y + z * v.z + w * v.w; }
 
 	inline float squared_length( ) const { return dot( *this ); }
-	inline float length( ) const { return sqrt( squared_length( ) ); }
+	inline float length( ) const { return sqrtf( squared_length( ) ); }
 	inline vec4<float> normalize( ) const { return *this / length( ); }
 };
 

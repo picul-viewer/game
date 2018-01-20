@@ -2,7 +2,6 @@
 #define __core_thread_h_included_
 
 #include <core/types.h>
-#include <Windows.h>
 
 class thread
 {
@@ -21,7 +20,7 @@ public:
 	void resume( );
 
 protected:
-	HANDLE	m_id;
+	pvoid	m_id;
 };
 
 #endif // #ifndef __core_thread_h_included_
