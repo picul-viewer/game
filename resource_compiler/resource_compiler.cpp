@@ -16,10 +16,11 @@ category::category( weak_const_string input_path, weak_const_string output_path,
 { }
 
 manager::manager( uptr category_count ) :
-	m_categories	( category_count ),
 	m_input_path	( nullptr ),
 	m_output_path	( nullptr )
-{ }
+{
+	m_categories.reserve( category_count );
+}
 
 manager::~manager( )
 {

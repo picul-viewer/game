@@ -4,6 +4,8 @@
 #include <core/types.h>
 #include <core/std.h>
 
+#include <vector>
+
 namespace resource_compiler {
 
 class strategy
