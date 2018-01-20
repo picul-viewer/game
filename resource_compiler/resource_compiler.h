@@ -35,7 +35,7 @@ class manager
 {
 public:
 	manager( uptr category_count );
-	~manager( );
+	~manager( ) = default;
 
 	void add_category( strategy* strategy, weak_const_string input_path, weak_const_string output_path );
 

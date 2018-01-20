@@ -22,12 +22,6 @@ manager::manager( uptr category_count ) :
 	m_categories.reserve( category_count );
 }
 
-manager::~manager( )
-{
-	for ( std::vector<category>::iterator i = m_categories.begin( ), e = m_categories.end( ); i != e; ++i )
-		delete i->strategy;
-}
-
 void manager::add_category( strategy* strategy, weak_const_string input_path, weak_const_string output_path )
 {
 	m_categories.push_back( { input_path, output_path, strategy } );

@@ -10,20 +10,21 @@ int main( int argc, char** argv )
 {
 	ASSERT( argc >= 3 );
 
-	manager manager( 1 );
+	manager manager( 2 );
 
-	{
-		bool debug = 
+	bool shaders_debug = 
 #ifdef DEBUG
-			true
+		true
 #else
-			false
+		false
 #endif // #ifdef DEBUG
-			;
+		;
 		
-		manager.add_category( new shader_strategy( "4_0", debug ), "shaders/compile.cfg", "shaders/4_0/" );
-		manager.add_category( new shader_strategy( "5_0", debug ), "shaders/compile.cfg", "shaders/5_0/" );
-	}
+	shader_strategy s0( "4_0", shaders_debug );
+	shader_strategy s1( "4_0", shaders_debug );
+
+	manager.add_category( &s0, "shaders/compile.cfg", "shaders/4_0/" );
+	manager.add_category( &s1, "shaders/compile.cfg", "shaders/5_0/" );
 
 	manager.compile( argv[1], argv[2] );
 }
