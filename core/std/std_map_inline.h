@@ -9,7 +9,7 @@ stl_map_alocator<T, PoolPageSize, PoolPageMaxCount>::stl_map_alocator( const stl
 template<typename T, uptr PoolPageSize, uptr PoolPageMaxCount>
 T* stl_map_alocator<T, PoolPageSize, PoolPageMaxCount>::allocate( std::size_t n )
 {
-	return pool.allocate( );
+	return pool.allocate( sizeof(T) );
 }
 
 template<typename T, uptr PoolPageSize, uptr PoolPageMaxCount>
