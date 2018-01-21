@@ -41,14 +41,16 @@ void shader_strategy::compile( u64 relevant_date, weak_const_string input_path, 
 		fixed_string<17> configuration_string;
 		sprintf( configuration_string.data( ), "%llx", configuration );
 		
-		str512 output_path = str512( output_directory ) + weak_const_string( "/" ) + shader_name + weak_const_string( "_" ) + configuration_string;
+		str512 output_path = str512( output_directory );
+		PathAppend( output_path.data( ), ( shader_name + weak_const_string( "_" ) + configuration_string ).c_str( ) );
 
 		WIN32_FIND_DATA output_data;
 		if ( FindFirstFile( output_path.c_str( ), &output_data ) != INVALID_HANDLE_VALUE )
 			if ( filetime_to_u64( output_data.ftLastWriteTime ) > relevant_date )
 				continue;
 
-		str512 input_path = str512( input_directory ) + weak_const_string( "/" ) + shader_name;
+		str512 input_path = str512( input_directory );
+		PathAppend( input_path.data( ), shader_name.c_str( ) );
 		str512 errors_path = output_path + weak_const_string( "_errors" );
 
 		fixed_string<4> shader_type = shader_name.copy( shader_name.length( ) - 2, 2 );
