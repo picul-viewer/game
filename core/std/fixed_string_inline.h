@@ -45,7 +45,7 @@ template<uptr MaxSize>
 template<typename StringClass>
 fixed_string<MaxSize>& fixed_string<MaxSize>::assign( i_const_string<StringClass> const& str )
 {
-	*this = str;
+	return *this = str;
 }
 
 template<uptr MaxSize>
@@ -62,7 +62,7 @@ template<uptr MaxSize>
 template<typename StringClass>
 fixed_string<MaxSize>& fixed_string<MaxSize>::append( i_const_string<StringClass> const& str )
 {
-	*this += str;
+	return *this += str;
 }
 
 template<uptr MaxSize>
