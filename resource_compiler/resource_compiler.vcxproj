@@ -166,10 +166,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="fbx_mesh_strategy.cpp" />
     <ClCompile Include="resource_compiler.cpp" />
     <ClCompile Include="shader_strategy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fbx_mesh_strategy.h" />
     <ClInclude Include="resource_compiler.h" />
     <ClInclude Include="shader_strategy.h" />
   </ItemGroup>
