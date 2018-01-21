@@ -23,8 +23,8 @@ int main( int argc, char** argv )
 	shader_strategy s0( "4_0", shaders_debug );
 	shader_strategy s1( "4_0", shaders_debug );
 
-	manager.add_category( &s0, "shaders/compile.cfg", "shaders/4_0/" );
-	manager.add_category( &s1, "shaders/compile.cfg", "shaders/5_0/" );
+	manager.add_category( &s0, "shaders/compile.cfg", "shaders/4_0/", 0 );
+	manager.add_category( &s1, "shaders/compile.cfg", "shaders/5_0/", 0 );
 
 	manager.compile( argv[1], argv[2] );
 }

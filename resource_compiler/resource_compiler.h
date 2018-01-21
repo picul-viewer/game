@@ -24,9 +24,10 @@ struct category
 	weak_const_string input_path;
 	weak_const_string output_path;
 	strategy* strategy;
+	u32 root_length;
 
 	category( ) = default;
-	category( weak_const_string input_path, weak_const_string output_path, resource_compiler::strategy* strategy );
+	category( weak_const_string input_path, weak_const_string output_path, resource_compiler::strategy* strategy, u32 root_length );
 };
 
 inline u64 filetime_to_u64( FILETIME data );
@@ -37,7 +38,7 @@ public:
 	manager( uptr category_count );
 	~manager( ) = default;
 
-	void add_category( strategy* strategy, weak_const_string input_path, weak_const_string output_path );
+	void add_category( strategy* strategy, weak_const_string input_path, weak_const_string output_path, u32 root_length );
 
 	void compile( weak_const_string input_path, weak_const_string output_path );
 
