@@ -38,11 +38,15 @@ class i_string : public i_const_string<StringClass>
 {
 public:
 	void clear( );
+
+	void resize( uptr size );
 	
 	char& operator[]( uptr index );
 	char& at( uptr index );
 	
 	char* data( ) const;
+
+	void replace( char value, char new_value );
 };
 
 #include "basic_string_inline.h"
