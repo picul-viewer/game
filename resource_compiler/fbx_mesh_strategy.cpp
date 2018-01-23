@@ -232,7 +232,7 @@ void fbx_mesh_strategy::compile( u64 relevant_date, weak_const_string input_path
 	
 	PathRemoveExtension( file_name.data( ) );
 
-	file_name.append( weak_const_string( ".model" ) );
+	file_name.append( weak_const_string( ".mesh" ) );
 
 	str512 output_path = str512( output_directory );
 	PathAppend( output_path.data( ), file_name.c_str( ) );
