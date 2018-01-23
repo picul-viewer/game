@@ -3,38 +3,52 @@
 
 #include <core/types.h>
 
+template<typename StringClass>
 class i_const_string
 {
 public:
-	inline uptr length( ) const;
+	uptr length( ) const;
 
-	inline bool empty( ) const;
+	bool empty( ) const;
 	
-	inline char operator[]( uptr index ) const;
-	inline char at( uptr index ) const;
+	char operator[]( uptr index ) const;
+	char at( uptr index ) const;
 	
-	virtual inline const char* c_str( ) const = 0;
-	
-	inline uptr find( const char* str, uptr pos = 0 ) const;
-	inline uptr find( char c, uptr pos = 0 ) const;
+	char const* c_str( ) const;
+
+	uptr find( const char* str, uptr pos = 0 ) const;
+	uptr find( char c, uptr pos = 0 ) const;
 };
 
-bool operator==( i_const_string const& left, i_const_string const& right );
-bool operator!=( i_const_string const& left, i_const_string const& right );
-bool operator<=( i_const_string const& left, i_const_string const& right );
-bool operator>=( i_const_string const& left, i_const_string const& right );
-bool operator<( i_const_string const& left, i_const_string const& right );
-bool operator>( i_const_string const& left, i_const_string const& right );
+template<typename LStringClass, typename RStringClass>
+bool operator==( i_const_string<LStringClass> const& left, i_const_string<RStringClass> const& right );
+template<typename LStringClass, typename RStringClass>
+bool operator!=( i_const_string<LStringClass> const& left, i_const_string<RStringClass> const& right );
+template<typename LStringClass, typename RStringClass>
+bool operator<=( i_const_string<LStringClass> const& left, i_const_string<RStringClass> const& right );
+template<typename LStringClass, typename RStringClass>
+bool operator>=( i_const_string<LStringClass> const& left, i_const_string<RStringClass> const& right );
+template<typename LStringClass, typename RStringClass>
+bool operator<( i_const_string<LStringClass> const& left, i_const_string<RStringClass> const& right );
+template<typename LStringClass, typename RStringClass>
+bool operator>( i_const_string<LStringClass> const& left, i_const_string<RStringClass> const& right );
 
-class i_string : public i_const_string
+template<typename StringClass>
+class i_string : public i_const_string<StringClass>
 {
 public:
 	void clear( );
+
+	void resize( uptr size );
 	
 	char& operator[]( uptr index );
 	char& at( uptr index );
 	
-	virtual char* data( ) const = 0;
+	char* data( ) const;
+
+	void replace( char value, char new_value );
 };
+
+#include "basic_string_inline.h"
 
 #endif // #ifndef __core_basic_string_h_included_

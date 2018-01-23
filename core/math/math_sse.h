@@ -5,7 +5,7 @@
 #include <core/macros.h>
 #include "vector.h"
 #include "matrix.h"
-#include <xmmintrin.h>
+#include <nmmintrin.h>
 
 namespace math {
 

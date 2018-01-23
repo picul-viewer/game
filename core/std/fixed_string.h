@@ -4,41 +4,42 @@
 #include <core/types.h>
 #include "basic_string.h"
 
-template<uptr max_size>
-class fixed_string : public i_string
+template<uptr MaxSize>
+class fixed_string : public i_string<fixed_string<MaxSize>>
 {
 public:
-	enum { max_string_size = max_size };
+	enum { max_string_size = MaxSize };
 
 	fixed_string( );
 	fixed_string( const char* str );
 	fixed_string( const char* str, uptr size );
 
-	fixed_string( i_const_string const& str );
+	template<typename StringClass>
+	fixed_string( i_const_string<StringClass> const& str );
 
 	~fixed_string( ) = default;
+	
+	template<typename StringClass>
+	fixed_string& operator=( i_const_string<StringClass> const& str );
+	template<typename StringClass>
+	fixed_string& assign( i_const_string<StringClass> const& str );
+	
+	template<typename StringClass>
+	fixed_string& operator+=( i_const_string<StringClass> const& str );
+	template<typename StringClass>
+	fixed_string& append( i_const_string<StringClass> const& str );
 
-	fixed_string& operator=( const char* str );
-	fixed_string& assign( const char* str );
-	fixed_string& operator=( i_const_string const& str );
-	fixed_string& assign( i_const_string const& str );
+	char* data( ) const;
+	const char* c_str( ) const;
 
-	fixed_string<max_size> const& operator+( const char* str );
-	fixed_string<max_size> const& operator+( i_const_string const& str );
-
-	fixed_string& operator+=( const char* str );
-	fixed_string& append( const char* str );
-	fixed_string& operator+=( i_const_string const& str );
-	fixed_string& append( i_const_string const& str );
-
-	virtual char* data( ) const override;
-	virtual const char* c_str( ) const override;
-
-	fixed_string const& copy( uptr start, uptr length ) const;
+	fixed_string copy( uptr start, uptr length ) const;
 
 protected:
-	char	m_data[max_size];
+	char	m_data[MaxSize];
 };
+
+template<uptr MaxSize, typename StringClass>
+fixed_string<MaxSize> operator+( fixed_string<MaxSize> const& l, i_const_string<StringClass> const& r );
 
 typedef fixed_string<Cache_Line>	little_string;
 typedef fixed_string<256>			str256;

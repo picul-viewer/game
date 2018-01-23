@@ -20,8 +20,8 @@ alloc_string::alloc_string( AllocatorType& allocator, const char* str, uptr size
 	m_data[size] = '\0';
 }
 
-template<typename AllocatorType>
-alloc_string::alloc_string( AllocatorType& allocator, i_const_string const& str )
+template<typename AllocatorType, typename StringClass>
+alloc_string::alloc_string( AllocatorType& allocator, i_const_string<StringClass> const& str )
 {
 	uptr l = str.length( );
 	m_data = (char*)allocator.allocate( l + 1 );

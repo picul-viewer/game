@@ -1,6 +1,7 @@
 #include "threading_event.h"
 
 #include <process.h>
+#include <Windows.h>
 
 threading_event::threading_event( bool initial_state, bool use_manual_reset )
 {

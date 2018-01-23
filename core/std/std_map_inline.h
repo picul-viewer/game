@@ -9,12 +9,14 @@ stl_map_alocator<T, PoolPageSize, PoolPageMaxCount>::stl_map_alocator( const stl
 template<typename T, uptr PoolPageSize, uptr PoolPageMaxCount>
 T* stl_map_alocator<T, PoolPageSize, PoolPageMaxCount>::allocate( std::size_t n )
 {
-	return pool.allocate( n );
+	ASSERT( n == 1 );
+	return pool.allocate( sizeof(T) );
 }
 
 template<typename T, uptr PoolPageSize, uptr PoolPageMaxCount>
 void stl_map_alocator<T, PoolPageSize, PoolPageMaxCount>::deallocate( T* p, std::size_t n )
 {
+	ASSERT( n == 1 );
 	pool.deallocate( p );
 }
 

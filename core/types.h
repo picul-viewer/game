@@ -1,14 +1,7 @@
 #ifndef __core_types_h_included_
 #define __core_types_h_included_
 
-#include <stdio.h>
-
-#include <array>
-#include <random>
-#include <windows.h>
-
-#undef min
-#undef max
+#include <cstddef>
 
 typedef char				s8;
 typedef short				s16;
@@ -63,7 +56,7 @@ public:
 	}
 	inline f32 randf( )
 	{
-		return rand( ) / (f32)UINT_MAX;
+		return rand( ) / (f32)(-1);
 	}
 	inline f32 randf( f32 max )
 	{

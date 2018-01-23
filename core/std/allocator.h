@@ -18,10 +18,10 @@ struct aligned_mem_allocator
 
 struct virtual_mem_allocator
 {
-	inline pointer reserve( pointer p, uptr size );
-	inline pointer commit( pointer p, uptr size );
-	inline void decommit( pointer p, uptr size );
-	inline void release( pointer p, uptr size );
+	pointer reserve( pointer p, uptr size );
+	pointer commit( pointer p, uptr size );
+	void decommit( pointer p, uptr size );
+	void release( pointer p, uptr size );
 };
 
 #include "allocator_inline.h"

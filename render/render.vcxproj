@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B7376639-83BD-4434-A00A-7A2551608722}</ProjectGuid>
-    <RootNamespace>core</RootNamespace>
+    <ProjectGuid>{58B676B2-5B1B-49E9-A2E4-0B71C90AF057}</ProjectGuid>
+    <RootNamespace>render</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -68,22 +68,23 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\libs\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\temp\$(ProjectName)\</IntDir>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\libs\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\temp\$(ProjectName)\</IntDir>
     <TargetExt>.lib</TargetExt>
-    <IncludePath>D:\c++\directx\sm\game;$(IncludePath)</IncludePath>
+    <IncludePath>D:\c++\directx\sm\game;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)build\$(Platform)\$(Configuration)\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\c++\directx\sm\game;$(IncludePath)</IncludePath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\libs\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\temp\$(ProjectName)\</IntDir>
     <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\libs\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\temp\$(ProjectName)\</IntDir>
+    <TargetExt>.lib</TargetExt>
+    <IncludePath>D:\c++\directx\sm\game;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)build\$(Platform)\$(Configuration)\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -99,7 +100,7 @@
       <PreprocessorDefinitions>DEBUG;_MBCS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -111,7 +112,7 @@
       <PreprocessorDefinitions>DEBUG;_MBCS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -122,8 +123,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>RELEASE;_MBCS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>RELEASE;_MBCS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
@@ -160,72 +161,83 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="game.h" />
-    <ClInclude Include="game\aabb.h" />
-    <ClInclude Include="game\aabb_inline.h" />
-    <ClInclude Include="game\bvh.h" />
-    <ClInclude Include="game\bvh_inline.h" />
-    <ClInclude Include="game\camera.h" />
-    <ClInclude Include="game\config.h" />
-    <ClInclude Include="game\frustum.h" />
-    <ClInclude Include="game\octree.h" />
-    <ClInclude Include="game\octree_inline.h" />
-    <ClInclude Include="game\text_config.h" />
-    <ClInclude Include="macros.h" />
-    <ClInclude Include="math.h" />
-    <ClInclude Include="math\math_3d.h" />
-    <ClInclude Include="math\math_common.h" />
-    <ClInclude Include="math\math_sse.h" />
-    <ClInclude Include="math\matrix.h" />
-    <ClInclude Include="math\quaternion.h" />
-    <ClInclude Include="math\vector.h" />
-    <ClInclude Include="std.h" />
-    <ClInclude Include="std\algorithms.h" />
-    <ClInclude Include="std\allocator.h" />
-    <ClInclude Include="std\allocator_inline.h" />
-    <ClInclude Include="std\alloc_string.h" />
-    <ClInclude Include="std\alloc_string_inline.h" />
-    <ClInclude Include="std\array.h" />
-    <ClInclude Include="std\array_inline.h" />
-    <ClInclude Include="std\basic_string.h" />
-    <ClInclude Include="std\basic_string_inline.h" />
-    <ClInclude Include="std\embedded_list.h" />
-    <ClInclude Include="std\embedded_list_inline.h" />
-    <ClInclude Include="std\fixed_string.h" />
-    <ClInclude Include="std\fixed_string_inline.h" />
-    <ClInclude Include="std\function.h" />
-    <ClInclude Include="std\pool.h" />
-    <ClInclude Include="std\poolset.h" />
-    <ClInclude Include="std\pool_inline.h" />
-    <ClInclude Include="std\memory.h" />
-    <ClInclude Include="std\std_map.h" />
-    <ClInclude Include="std\std_map_inline.h" />
-    <ClInclude Include="std\weak_string.h" />
-    <ClInclude Include="system.h" />
-    <ClInclude Include="system\timer.h" />
-    <ClInclude Include="system\window.h" />
-    <ClInclude Include="system\window_inline.h" />
-    <ClInclude Include="threads.h" />
-    <ClInclude Include="threads\threading_event.h" />
-    <ClInclude Include="threads\interlocked.h" />
-    <ClInclude Include="threads\task_queue.h" />
-    <ClInclude Include="threads\task_queue_inline.h" />
-    <ClInclude Include="threads\thread.h" />
-    <ClInclude Include="types.h" />
+    <ClInclude Include="buffer.h" />
+    <ClInclude Include="constant_buffer.h" />
+    <ClInclude Include="constant_buffers.h" />
+    <ClInclude Include="constant_buffer_inline.h" />
+    <ClInclude Include="dx_include.h" />
+    <ClInclude Include="effect.h" />
+    <ClInclude Include="effect_inline.h" />
+    <ClInclude Include="game_object.h" />
+    <ClInclude Include="input_layout.h" />
+    <ClInclude Include="mesh.h" />
+    <ClInclude Include="mesh_box.h" />
+    <ClInclude Include="mesh_collection.h" />
+    <ClInclude Include="mesh_quad.h" />
+    <ClInclude Include="per_frame_constants.h" />
+    <ClInclude Include="pipeline_state_pool.h" />
+    <ClInclude Include="render_object_allocator.h" />
+    <ClInclude Include="render_object_allocator_inline.h" />
+    <ClInclude Include="render_model_mesh.h" />
+    <ClInclude Include="stages.h" />
+    <ClInclude Include="stage_forward_default.h" />
+    <ClInclude Include="stage_prepare_objects.h" />
+    <ClInclude Include="renderer.h" />
+    <ClInclude Include="render_object.h" />
+    <ClInclude Include="pipeline_state.h" />
+    <ClInclude Include="render_core.h" />
+    <ClInclude Include="render_api.h" />
+    <ClInclude Include="render_object_mesh.h" />
+    <ClInclude Include="render_parameters.h" />
+    <ClInclude Include="render_resources.h" />
+    <ClInclude Include="render_scene.h" />
+    <ClInclude Include="render_targets.h" />
+    <ClInclude Include="resource_pool.h" />
+    <ClInclude Include="resource_pool_inline.h" />
+    <ClInclude Include="resource_views.h" />
+    <ClInclude Include="sampler.h" />
+    <ClInclude Include="sampler_colletion.h" />
+    <ClInclude Include="shader.h" />
+    <ClInclude Include="shader_pool.h" />
+    <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="game\aabb.cpp" />
-    <ClCompile Include="game\camera.cpp" />
-    <ClCompile Include="game\config.cpp" />
-    <ClCompile Include="game\frustum.cpp" />
-    <ClCompile Include="game\text_config.cpp" />
-    <ClCompile Include="std\allocator.cpp" />
-    <ClCompile Include="std\alloc_string.cpp" />
-    <ClCompile Include="std\weak_string.cpp" />
-    <ClCompile Include="system\timer.cpp" />
-    <ClCompile Include="threads\interlocked.cpp" />
-    <ClCompile Include="threads\threading_event.cpp" />
-    <ClCompile Include="threads\thread.cpp" />
+    <ClCompile Include="buffer.cpp" />
+    <ClCompile Include="constant_buffer.cpp" />
+    <ClCompile Include="constant_buffers.cpp" />
+    <ClCompile Include="effect.cpp" />
+    <ClCompile Include="game_object.cpp" />
+    <ClCompile Include="input_layout.cpp" />
+    <ClCompile Include="mesh.cpp" />
+    <ClCompile Include="mesh_collection.cpp" />
+    <ClCompile Include="pipeline_state_pool.cpp" />
+    <ClCompile Include="render_model_mesh.cpp" />
+    <ClCompile Include="stage_forward_default.cpp" />
+    <ClCompile Include="stage_prepare_objects.cpp" />
+    <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="pipeline_state.cpp" />
+    <ClCompile Include="render_core.cpp" />
+    <ClCompile Include="render_api.cpp" />
+    <ClCompile Include="render_object_mesh.cpp" />
+    <ClCompile Include="render_parameters.cpp" />
+    <ClCompile Include="render_resources.cpp" />
+    <ClCompile Include="render_scene.cpp" />
+    <ClCompile Include="render_targets.cpp" />
+    <ClCompile Include="resource_views.cpp" />
+    <ClCompile Include="sampler.cpp" />
+    <ClCompile Include="sampler_colletion.cpp" />
+    <ClCompile Include="shader.cpp" />
+    <ClCompile Include="shader_pool.cpp" />
+    <ClCompile Include="texture.cpp" />
+    <ClCompile Include="texture_loader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\core.vcxproj">
+      <Project>{b7376639-83bd-4434-a00a-7a2551608722}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\fs\fs.vcxproj">
+      <Project>{665de970-5f56-461f-887a-7a83f9295de7}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,6 +4,8 @@
 #include <core/types.h>
 #include <core/macros.h>
 
+#include <nmmintrin.h>
+
 namespace memory
 {
 
