@@ -99,6 +99,12 @@ void i_string<StringClass>::clear( )
 }
 
 template<typename StringClass>
+void i_string<StringClass>::resize( uptr size )
+{
+	data( )[size] = '\0';
+}
+
+template<typename StringClass>
 char& i_string<StringClass>::operator[]( uptr index )
 {
 	ASSERT( index < length( ) );
@@ -116,6 +122,14 @@ template<typename StringClass>
 inline char* i_string<StringClass>::data( ) const
 {
 	return ((StringClass*)this)->data( );
+}
+
+template<typename StringClass>
+inline void i_string<StringClass>::replace( char value, char new_value )
+{
+	for ( uptr i = 0, l = length( ); i != l; ++i )
+		if ( data( )[i] == value )
+			data( )[i] = new_value;
 }
 
 #endif // #ifndef __code_basic_string_inline_h_included_
