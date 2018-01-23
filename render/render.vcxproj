@@ -232,10 +232,10 @@
     <ClCompile Include="texture_loader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\core.vcxproj">
+    <ProjectReference Include="..\core\core.vcxproj">
       <Project>{b7376639-83bd-4434-a00a-7a2551608722}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\fs\fs.vcxproj">
+    <ProjectReference Include="..\fs\fs.vcxproj">
       <Project>{665de970-5f56-461f-887a-7a83f9295de7}</Project>
     </ProjectReference>
   </ItemGroup>
