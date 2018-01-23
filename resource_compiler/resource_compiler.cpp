@@ -39,7 +39,8 @@ void manager::compile( weak_const_string input_path, weak_const_string output_pa
 
 void manager::compile_category( category& category )
 {
-	str256 const& search_path = str512( m_input_path ) + category.input_path;
+	str512 search_path( m_input_path );
+	PathAppend( search_path.data( ), category.input_path.c_str( ) );
 
 	WIN32_FIND_DATA file_data;
 	HANDLE file_handle = FindFirstFile( search_path.c_str( ), &file_data );
