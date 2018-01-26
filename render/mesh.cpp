@@ -3,92 +3,20 @@
 #include "render_api.h"
 #include "input_layout.h"
 
+#include <fs/fs_core.h>
+#include <render/render_core.h>
+
 namespace render
 {
 
-void mesh::create( pointer in_data, uptr in_size )
-{
-	ASSERT						( in_size < 3 * sizeof(u32) );
-
-	const vertex_type vertex	= (vertex_type)*( (u32*)in_data + 0 );
-	const u32 index_count		= (vertex_type)*( (u32*)in_data + 1 );
-	m_instance_count			= (vertex_type)*( (u32*)in_data + 2 );
-	
-	// Index format is coded by highest bit in index count
-	m_index_format				= ( index_count & 0x80000000 ) ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT;
-	m_index_count				= ( index_count & 0x7FFFFFFF );
-
-	set_vertex_buffers_count	( get_vertex_type_buffers_count( vertex ) );
-
-	pointer ptr					= in_data + 3 * sizeof(u32);
-	
-	for ( u32 i = 0; i < m_buffers_count; ++i )
-	{
-		ASSERT					( ptr + sizeof(u32) < in_data + in_size );
-
-		const u32 buffer_size	= ptr.get<u32>( );
-		ptr						+= sizeof(u32);
-		
-		buffer::cook cook;
-		cook.set_vertex_buffer	( buffer_size );
-		
-		m_vertex_strides[i]		= get_vertex_type_size( i, vertex );
-		
-		ASSERT					( ptr + buffer_size < in_data + in_size );
-
-		create_vertex_buffer	( i, cook, ptr, m_vertex_strides[i] );
-		ptr						+= buffer_size;
-	}
-
-	buffer::cook cook;
-	cook.set_index_buffer		( m_index_count );
-
-	ASSERT						( ptr + m_index_count < in_data + in_size );
-
-	create_index_buffer			( cook, ptr, m_index_format );
-
-	m_primitive_topology		= D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-}
-
-void mesh::set_vertex_buffers_count( u32 in_vertex_buffers_count )
-{
-	ASSERT			( in_vertex_buffers_count < max_vertex_buffers_count );
-	m_buffers_count	= in_vertex_buffers_count;
-}
-
-void mesh::create_vertex_buffer( u32 in_index, buffer::cook const& in_cook, pcvoid in_data, u32 in_stride )
-{
-	ASSERT( in_index < m_buffers_count );
-	
-	ASSERT( in_cook.buffer_desc.ByteWidth % in_stride == 0 );
-	
-	m_vertex_buffers[in_index].create( in_cook, in_data );
-	m_vertex_strides[in_index] = in_stride;
-}
-
-void mesh::create_index_buffer( buffer::cook const& in_cook, pcvoid in_data, DXGI_FORMAT in_format )
-{
-	ASSERT( ( in_format == DXGI_FORMAT_R16_UINT ) || ( in_format == DXGI_FORMAT_R32_UINT ) );
-	
-	u32 index_size = ( in_format == DXGI_FORMAT_R16_UINT ) ? 2 : 4;
-	
-	ASSERT( in_cook.buffer_desc.ByteWidth % index_size == 0 );
-	m_index_count = in_cook.buffer_desc.ByteWidth / index_size;
-	
-	m_index_buffer.create( in_cook, in_data );
-	m_index_format = in_format;
-}
-
-void mesh::set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY in_primitive_topology )
-{
-	m_primitive_topology = in_primitive_topology;
-}
-
-void mesh::set_dimensions( u32 in_index_count, u32 in_instance_count )
-{
-	m_index_count		= in_index_count;
-	m_instance_count	= in_instance_count;
-}
+mesh::mesh( ) :
+	m_vertex_strides	{ },
+	m_index_format		( DXGI_FORMAT_UNKNOWN ),
+	m_index_count		( 0 ),
+	m_instance_count	( 0 ),
+	m_buffers_count		( 0 ),
+	m_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED )
+{ }
 
 u32 mesh::add_ref( ) const
 {
@@ -154,5 +82,82 @@ void mesh::draw_instanced( u32 in_instance_count ) const
 	bind( );
 	api::get_context( )->DrawIndexedInstanced( m_index_count, in_instance_count, 0, 0, 0 );
 }
+
+
+void mesh_creator::create( mesh* out_resource, weak_const_string in_filename )
+{
+	fs::core::read_file( in_filename.c_str( ), &on_read_from_file, out_resource );
+}
+
+void mesh_creator::on_read_from_file( pointer in_data, uptr in_size, mesh* out_mesh )
+{
+	core::get_device_queue( ).push( &on_read_from_file_command, in_data, in_size, out_mesh );
+}
+
+void mesh_creator::on_read_from_file_command( pointer in_data, uptr in_size, mesh* out_mesh )
+{
+	pointer local_data				= in_data;
+	uptr local_size					= in_size;
+
+	ASSERT							( local_size >= sizeof(u32) );
+
+	const u32 index_data			= local_data.get<u32>( );
+	
+	local_data						+= sizeof(u32);
+	local_size						-= sizeof(u32);
+
+	// 29 LSBs - indices count
+	out_mesh->m_index_count			= index_data & 0x1FFFFFFF;
+	out_mesh->m_instance_count		= 1;
+	// Index format is coded by 29st bit in index count
+	out_mesh->m_index_format		= ( index_data & 0x20000000 ) ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT;
+
+	uptr indices_size				= out_mesh->m_index_count * format_get_bits_per_pixel( out_mesh->m_index_format );
+
+	ASSERT							( local_size >= indices_size );
+
+	buffer::cook cook;
+	cook.set_index_buffer			( indices_size );
+
+	out_mesh->m_index_buffer.create	( cook, local_data );
+
+	local_data						+= indices_size;
+	local_size						-= indices_size;
+
+	out_mesh->m_primitive_topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+	static const vertex_type vertex_formats[] = {
+		vertex_type::vertex_type_mesh,
+	};
+
+	// Vertex type can be uncoded by 2 MSBs
+	vertex_type vertex			= vertex_formats[index_data >> 30];
+
+	u32 buffers_count			= get_vertex_type_buffers_count( vertex );
+	out_mesh->m_buffers_count	= buffers_count;
+
+	for ( u32 i = 0; i < buffers_count; ++i )
+	{
+		out_mesh->m_vertex_strides[i] = get_vertex_type_size( i, vertex );
+
+		ASSERT					( local_size >= sizeof(u32) );
+
+		u32 vertices_size		= local_data.get<u32>( );
+
+		local_data				+= sizeof(u32);
+		local_size				-= sizeof(u32);
+
+		ASSERT					( local_size >= vertices_size );
+		
+		buffer::cook cook;
+		cook.set_vertex_buffer	( vertices_size );
+		
+		out_mesh->m_vertex_buffers[i].create( cook, local_data );
+		
+		local_data				+= vertices_size;
+		local_size				-= vertices_size;
+	}
+}
+
 
 } // namespace render

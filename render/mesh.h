@@ -2,6 +2,7 @@
 #define __render_mesh_h_included_
 
 #include <core/types.h>
+#include <core/std.h>
 #include "dx_include.h"
 #include "buffer.h"
 
@@ -13,14 +14,8 @@ class mesh
 public:
 	enum { max_vertex_buffers_count = 4 };
 	
-	void create( pointer in_data, uptr in_size );
-	
-	void set_vertex_buffers_count( u32 in_vertex_buffers_count );
-	void create_vertex_buffer( u32 in_index, buffer::cook const& in_cook, pcvoid in_data, u32 in_stride );
-	void create_index_buffer( buffer::cook const& in_cook, pcvoid in_data, DXGI_FORMAT in_format );
-	void set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY in_primitive_topology );
-	void set_dimensions( u32 in_index_count, u32 in_instance_count );
-	
+	mesh( );
+
 	u32 add_ref( ) const;
 	u32 release( ) const;
 	
@@ -37,6 +32,8 @@ public:
 	void draw_instanced( u32 in_instance_count ) const;
 	
 protected:
+	friend struct mesh_creator;
+
 	buffer						m_vertex_buffers[max_vertex_buffers_count];
 	buffer						m_index_buffer;
 	u32							m_vertex_strides[max_vertex_buffers_count];
@@ -45,6 +42,16 @@ protected:
 	u32							m_instance_count;
 	u32							m_buffers_count;
 	D3D11_PRIMITIVE_TOPOLOGY	m_primitive_topology;
+};
+
+struct mesh_creator
+{
+public:
+	static void create( mesh* out_resource, weak_const_string in_filename );
+
+protected:
+	static void on_read_from_file( pointer in_data, uptr in_size, mesh* out_mesh );
+	static void on_read_from_file_command( pointer in_data, uptr in_size, mesh* out_mesh );
 };
 
 } // namespace render

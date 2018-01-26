@@ -5,32 +5,40 @@
 
 namespace render {
 
-D3D11_INPUT_ELEMENT_DESC vertex_type_default_desc[] = {
+D3D11_INPUT_ELEMENT_DESC vertex_type_position_2d_desc[] = {
+	{ "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+};
+
+D3D11_INPUT_ELEMENT_DESC vertex_type_position_desc[] = {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
-D3D11_INPUT_ELEMENT_DESC vertex_type_static_mesh_desc[] = {
+D3D11_INPUT_ELEMENT_DESC vertex_type_mesh_desc[] = {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD", 0, DXGI_FORMAT_R16G16_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "NORMAL", 0, DXGI_FORMAT_R16G16_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	{ "NORMAL", 0, DXGI_FORMAT_R8G8B8A8_SNORM, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
 D3D11_INPUT_ELEMENT_DESC* vertex_type_descs[] = {
-	vertex_type_default_desc,
-	vertex_type_static_mesh_desc
+	vertex_type_position_2d_desc,
+	vertex_type_position_desc,
+	vertex_type_mesh_desc
 };
 
 u32 vertex_type_desc_sizes[] = {
+	1,
 	1,
 	3
 };
 
 u32 vertex_type_buffers_counts[] = {
 	1,
+	1,
 	1
 };
 
 u32 vertex_type_sizes[][mesh::max_vertex_buffers_count] = {
+	{ 8 },
 	{ 12 },
 	{ 20 }
 };
