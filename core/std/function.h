@@ -4,6 +4,60 @@
 #include <core/types.h>
 #include <core/macros.h>
 
+struct functor
+{
+	template<typename ... Args>
+	using functor_type = void(*)( Args ... );
+
+	template<typename ... Args>
+	explicit functor( void(*f)( Args ... ) ) :
+		func( *(pvoid*)&f )
+	{ }
+	
+	template<typename ... Args>
+	void operator( )( Args ... args )
+	{
+		(*(functor_type<Args ...>*)&func)( args ... );
+	}
+
+protected:
+	pvoid func;
+};
+
+template<typename ... Args>
+functor make_functor( void(*f)( Args ... ) )
+{
+	return functor( f );
+}
+
+template<typename T>
+struct member_functor
+{
+	template<typename T, typename ... Args>
+	explicit member_functor( void(T::*f)( Args ... ), T* this_pointer ) :
+		func		( *(pvoid*)&f ),
+		this_pointer( this_pointer )
+	{ }
+
+	template<typename ... Args>
+	void operator( )( Args ... args )
+	{
+		typedef void(T::*functor_type)( Args ... );
+		void(T::*f)( Args ... ) = *(void(T::**)( Args ... ))&func;
+		( this_pointer->*f )( args ... );
+	}
+
+protected:
+	pvoid func;
+	T* this_pointer;
+};
+
+template<typename T, typename ... Args>
+member_functor<T> make_member_functor( void(T::*f)( Args ... ), T* this_pointer )
+{
+	return member_functor<T>( f, this_pointer );
+}
+
 template<uptr Size>
 struct procedure
 {
