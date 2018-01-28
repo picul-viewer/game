@@ -54,9 +54,4 @@ fs_queue& get_fs_queue( )
 
 } // namespace core
 
-bool file_exists( pcstr file_name )
-{
-	return PathFileExists( file_name ) == TRUE;
-}
-
 } // namespace fs

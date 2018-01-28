@@ -17,14 +17,20 @@ namespace core
 	fs_queue& get_fs_queue( );
 
 	template<typename ... Args>
-	void read_file( const char* file_name, void(*post_processing_functor)( pointer, uptr, Args ... ), Args ... post_processing_args );
-
+	void read_file( const char* file_name, void(*callback)( pointer, uptr, Args ... ), Args ... args );
+	template<typename T, typename ... Args>
+	void read_file( const char* file_name, void(T::*callback)( pointer, uptr, Args ... ), T* this_pointer, Args ... args );
+	template<typename T, typename ... Args>
+	void read_file( const char* file_name, void(T::*callback)( pointer, uptr, Args ... ) const, T const* this_pointer, Args ... args );
+	
 	template<typename ... Args>
-	void write_file( const char* file_name, pointer data, uptr size, void(*post_processing_functor)( pointer, uptr, Args ... ), Args ... post_processing_args );
+	void write_file( const char* file_name, pointer data, uptr size, void(*callback)( pointer, uptr, Args ... ), Args ... args );
+	template<typename T, typename ... Args>
+	void write_file( const char* file_name, pointer data, uptr size, void(T::*callback)( pointer, uptr, Args ... ), T* this_pointer, Args ... args );
+	template<typename T, typename ... Args>
+	void write_file( const char* file_name, pointer data, uptr size, void(T::*callback)( pointer, uptr, Args ... )const, T const* this_pointer, Args ... args );
 
 } // namespace core
-
-bool file_exists( pcstr file_name );
 
 } // namespace fs
 
