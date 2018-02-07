@@ -5,7 +5,7 @@
 #include <core/macros.h>
 
 template<uptr Size>
-struct procedure
+struct mem_align(16) procedure
 {
 protected:
 	using functor_type = void(*)( );
@@ -114,6 +114,29 @@ public:
 	void operator( )( )
 	{
 		( this->*invoker )( );
+	}
+};
+
+template<>
+struct mem_align(8) procedure<8>
+{
+protected:
+	using functor_type = void(*)( );
+
+	functor_type functor;
+
+public:
+	inline procedure( )
+	{ }
+
+	inline procedure( void(*f)( ) )
+	{
+		functor = f;
+	}
+
+	void operator( )( )
+	{
+		functor( );
 	}
 };
 
