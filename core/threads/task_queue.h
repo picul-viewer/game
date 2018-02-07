@@ -31,14 +31,18 @@ public:
 	bool full( ) const;
 
 protected:
+	mt_s32			m_push_index;
+	s32				m_unused0[Cache_Line / sizeof(s32) - 1];
+
+	mt_s32			m_pop_index;
+	s32				m_unused1[Cache_Line / sizeof(s32) - 1];
+	
 	functor*		m_data;
 
-	mt_u32			m_push_index;
-	mt_u32			m_pop_index;
+	s32				m_index_mask;
 
-	u32				m_index_mask;
-
-	threading_event	m_event;
+	threading_event	m_empty_event;
+	threading_event	m_full_event;
 };
 
 #include "task_queue_inline.h"
