@@ -20,6 +20,7 @@
 #include "std/embedded_list.h"
 
 #include "std/std_map.h"
+#include "std/hash.h"
 
 #include "std/algorithms.h"
 

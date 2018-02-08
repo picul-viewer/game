@@ -194,6 +194,7 @@
     <ClInclude Include="std\fixed_string.h" />
     <ClInclude Include="std\fixed_string_inline.h" />
     <ClInclude Include="std\function.h" />
+    <ClInclude Include="std\hash.h" />
     <ClInclude Include="std\pool.h" />
     <ClInclude Include="std\poolset.h" />
     <ClInclude Include="std\pool_inline.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="game\text_config.cpp" />
     <ClCompile Include="std\allocator.cpp" />
     <ClCompile Include="std\alloc_string.cpp" />
+    <ClCompile Include="std\hash.cpp" />
     <ClCompile Include="std\weak_string.cpp" />
     <ClCompile Include="system\timer.cpp" />
     <ClCompile Include="threads\interlocked.cpp" />
