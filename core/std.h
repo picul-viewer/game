@@ -21,6 +21,7 @@
 
 #include "std/std_map.h"
 #include "std/hash.h"
+#include "std/hash_map.h"
 
 #include "std/algorithms.h"
 

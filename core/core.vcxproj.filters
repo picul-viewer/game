@@ -230,6 +230,12 @@
     <ClInclude Include="std\hash.h">
       <Filter>std\map</Filter>
     </ClInclude>
+    <ClInclude Include="std\hash_map.h">
+      <Filter>std\map</Filter>
+    </ClInclude>
+    <ClInclude Include="std\hash_map_inline.h">
+      <Filter>std\map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\camera.cpp">
