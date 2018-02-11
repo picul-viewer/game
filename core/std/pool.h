@@ -13,6 +13,7 @@ public:
 
 	void destroy( );
 
+	inline pointer get_data( ) { return m_data; }
 	void clear( );
 
 	pointer allocate( uptr size );
@@ -35,6 +36,7 @@ public:
 
 	void destroy( );
 	
+	inline pointer get_data( ) { return m_data; }
 	void clear( );
 
 	pointer allocate( uptr size );
@@ -54,7 +56,8 @@ public:
 	~dynamic_pool( );
 
 	void destroy( );
-	
+
+	inline pointer get_data( ) { return m_data; }
 	void clear( );
 
 	pointer allocate( uptr size );
@@ -78,6 +81,7 @@ public:
 
 	void destroy( );
 	
+	inline pointer get_data( ) { return m_data; }
 	void clear( );
 
 	pointer allocate( uptr size );
@@ -99,6 +103,7 @@ public:
 
 	void destroy( );
 	
+	inline pointer get_data( ) { return m_data; }
 	void clear( );
 
 	pointer allocate( uptr size );
@@ -119,6 +124,7 @@ public:
 
 	void destroy( );
 	
+	inline pointer get_data( ) { return m_data; }
 	void clear( );
 
 	pointer allocate( uptr size );
