@@ -9,6 +9,8 @@ protected:
 	static u16 const table[256];
 
 public:
+	typedef u16 value_type;
+
 	u16 operator( )( pcvoid begin, pcvoid end, u16 initial_value = 0xFFFF );
 };
 
@@ -18,6 +20,8 @@ protected:
 	static u32 const table[256];
 
 public:
+	typedef u32 value_type;
+
 	u32 operator( )( pcvoid begin, pcvoid end, u32 initial_value = 0xFFFFFFFF );
 };
 
