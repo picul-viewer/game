@@ -8,6 +8,7 @@ template<
 	typename K,
 	typename V,
 	typename HashPred,
+	typename KeyEqualPred,
 	typename KVStore,
 	typename KVStoreIndex,
 	typename KVStorePool
@@ -68,6 +69,15 @@ struct hash_map_hash_pred_adapter
 	typename Hash::value_type operator( )( T const& value )
 	{
 		return Hash( )( (pcbyte)&value, (pcbyte)&value + sizeof(T) );
+	}
+};
+
+template<typename K>
+struct hash_map_key_equal_pred_adapter
+{
+	bool operator( )( K const& l, K const& r )
+	{
+		return l == r;
 	}
 };
 
@@ -164,6 +174,7 @@ enum
 template<typename K, typename V, uptr PoolPageSize = hash_map_allocator_default_pool_page_size, uptr PoolPageMaxCount = hash_map_allocator_default_pool_page_max_count>
 using hash_map16 = hash_map_template<K, V,
 	hash_map_hash_pred_adapter<K, hash16>,
+	hash_map_key_equal_pred_adapter<K>,
 	hash_map_kv_store_16<K, V>,
 	hash_map_kv_store_index_16<
 		hash_map_kv_store_16<K, V>,
@@ -175,6 +186,7 @@ using hash_map16 = hash_map_template<K, V,
 template<typename K, typename V, uptr PoolPageSize = hash_map_allocator_default_pool_page_size, uptr PoolPageMaxCount = hash_map_allocator_default_pool_page_max_count>
 using hash_map32 = hash_map_template<K, V,
 	hash_map_hash_pred_adapter<K, hash32>,
+	hash_map_key_equal_pred_adapter<K>,
 	hash_map_kv_store_32<K, V>,
 	hash_map_kv_store_index_32<
 		hash_map_kv_store_32<K, V>,

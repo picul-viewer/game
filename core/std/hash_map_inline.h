@@ -3,9 +3,9 @@
 
 #include <core/macros.h>
 
-template<typename K, typename V, typename HashPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
+template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
 template<typename TableAllocator>
-hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStorePool>::hash_map_template( uptr table_length, TableAllocator& table_allocator, KVStorePool& kv_pool ) :
+hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::hash_map_template( uptr table_length, TableAllocator& table_allocator, KVStorePool& kv_pool ) :
 	m_pool			( kv_pool ),
 	m_table			( table_allocator.allocate( sizeof(typename KVStoreIndex::value_type) * table_length ) ),
 	m_table_length	( table_length )
@@ -14,8 +14,8 @@ hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStorePool>::hash_map_
 		m_table[i] = KVStoreIndex::null_value;
 }
 
-template<typename K, typename V, typename HashPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
-inline void hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStorePool>::insert( K const& key, V const& value )
+template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
+inline void hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::insert( K const& key, V const& value )
 {
 	auto hash = HashPred( )( key );
 
@@ -46,16 +46,16 @@ inline void hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStorePool
 	}
 }
 
-template<typename K, typename V, typename HashPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
-inline V* hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStorePool>::find( K const& key ) const
+template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
+inline V* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::find( K const& key ) const
 {
 	KVStore* dest = find_kv( key );
 
 	return ( dest == nullptr ) ? nullptr : &dest->value( );
 }
 
-template<typename K, typename V, typename HashPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
-inline KVStore* hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStorePool>::find_kv( K const& key ) const
+template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
+inline KVStore* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::find_kv( K const& key ) const
 {
 	auto h = HashPred( )( key );
 
@@ -63,8 +63,8 @@ inline KVStore* hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStore
 	return find_key_in_kv_list( first, key );
 }
 
-template<typename K, typename V, typename HashPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
-inline bool hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStorePool>::remove( K const& key )
+template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
+inline bool hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::remove( K const& key )
 {
 	auto hash = HashPred( )( key );
 
@@ -97,8 +97,8 @@ inline bool hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStorePool
 	return true;
 }
 
-template<typename K, typename V, typename HashPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
-inline void hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStorePool>::remove_kv( KVStore* kv )
+template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
+inline void hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::remove_kv( KVStore* kv )
 {
 	if ( kv == nullptr )
 		return false;
@@ -129,16 +129,16 @@ inline void hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStorePool
 	return true;
 }
 
-template<typename K, typename V, typename HashPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
+template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
 template<typename Hash>
-inline KVStore* hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStorePool>::find_first_kv( Hash const& hash ) const
+inline KVStore* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::find_first_kv( Hash const& hash ) const
 {
 	auto const& index = m_table[hash % m_table_length];
 	return KVStoreIndex::get( m_pool, index );
 }
 
-template<typename K, typename V, typename HashPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
-inline KVStore* hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStorePool>::find_key_in_kv_list( KVStore* list, K const& key ) const
+template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
+inline KVStore* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::find_key_in_kv_list( KVStore* list, K const& key ) const
 {
 	if ( list == nullptr )
 		return nullptr;
@@ -146,7 +146,7 @@ inline KVStore* hash_map_template<K, V, HashPred, KVStore, KVStoreIndex, KVStore
 	KVStore* current = list;
 	do
 	{
-		if ( current->key( ) == key )
+		if ( KeyEqualPred( )( current->key( ), key ) )
 			return current;
 
 		current = KVStoreIndex::get( m_pool, current->next( ) );
