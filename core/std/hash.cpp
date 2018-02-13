@@ -21,12 +21,14 @@ u16 const hash16::table[256] = {
 u16 hash16::operator( )( pcvoid begin, pcvoid end, u16 initial_value )
 {
 	u16 result = initial_value;
-	for ( pcbyte i = (pcbyte)begin; i != (pcbyte)end; ++i )
-	{
-		u8 const byte_index = ( *i ^ result ) & 0xFF;
-		result >>= 8;
-		result ^= table[ byte_index ];
-	}
+
+	uptr length = (pcbyte)end - (pcbyte)begin;
+
+	pcbyte i = (pcbyte)begin;
+
+	while ( length-- )
+		result = ( result >> 8 ) ^ table[ ( result & 0xFF ) ^ *( i++ ) ];
+
 	return result;
 }
 
@@ -52,11 +54,13 @@ u32 const hash32::table[256] = {
 u32 hash32::operator( )( pcvoid begin, pcvoid end, u32 initial_value )
 {
 	u32 result = initial_value;
-	for ( pcbyte i = (pcbyte)begin; i != (pcbyte)end; ++i )
-	{
-		u8 const byte_index = ( *i ^ result ) & 0xFF;
-		result >>= 8;
-		result ^= table[ byte_index ];
-	}
+
+	uptr length = (pcbyte)end - (pcbyte)begin;
+
+	pcbyte i = (pcbyte)begin;
+
+	while ( length-- )
+		result = ( result >> 8 ) ^ table[ ( result & 0xFF ) ^ *( i++ ) ];
+
 	return result;
 }
