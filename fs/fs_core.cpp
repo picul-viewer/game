@@ -20,7 +20,7 @@ void fs_thread_func( void* arg )
 {
 	fs_thread_args *args = (fs_thread_args*)arg;
 	
-	fs_queue::functor functor;
+	fs_queue::value_type functor;
 
 	while ( args->keep_alive )
 	{

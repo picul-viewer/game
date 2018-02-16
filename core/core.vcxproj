@@ -211,8 +211,8 @@
     <ClInclude Include="threads.h" />
     <ClInclude Include="threads\threading_event.h" />
     <ClInclude Include="threads\interlocked.h" />
-    <ClInclude Include="threads\task_queue.h" />
-    <ClInclude Include="threads\task_queue_inline.h" />
+    <ClInclude Include="threads\spsc_queue.h" />
+    <ClInclude Include="threads\spsc_queue_inline.h" />
     <ClInclude Include="threads\thread.h" />
     <ClInclude Include="types.h" />
   </ItemGroup>

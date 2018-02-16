@@ -4,9 +4,6 @@
     <Filter Include="threads">
       <UniqueIdentifier>{0f1a02ca-c1f4-4392-b638-bdb502e5aada}</UniqueIdentifier>
     </Filter>
-    <Filter Include="threads\task_queue">
-      <UniqueIdentifier>{1c0e13e9-8a35-4ac8-810b-2380f460e23b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="math">
       <UniqueIdentifier>{94bdc342-06bd-47a4-ba96-8d4cc0e700fc}</UniqueIdentifier>
     </Filter>
@@ -73,16 +70,13 @@
     <Filter Include="threads\api\interlocked">
       <UniqueIdentifier>{228245d0-c358-42c5-8627-bee6d6b8d673}</UniqueIdentifier>
     </Filter>
+    <Filter Include="threads\spsc_queue">
+      <UniqueIdentifier>{1c0e13e9-8a35-4ac8-810b-2380f460e23b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
     <ClInclude Include="types.h" />
-    <ClInclude Include="threads\task_queue.h">
-      <Filter>threads\task_queue</Filter>
-    </ClInclude>
-    <ClInclude Include="threads\task_queue_inline.h">
-      <Filter>threads\task_queue</Filter>
-    </ClInclude>
     <ClInclude Include="threads.h">
       <Filter>threads</Filter>
     </ClInclude>
@@ -235,6 +229,12 @@
     </ClInclude>
     <ClInclude Include="std\hash_map_inline.h">
       <Filter>std\map</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\spsc_queue.h">
+      <Filter>threads\spsc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\spsc_queue_inline.h">
+      <Filter>threads\spsc_queue</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

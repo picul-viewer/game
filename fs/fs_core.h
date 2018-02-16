@@ -9,7 +9,7 @@ namespace fs {
 
 namespace fs_core
 {
-	typedef task_queue<256> fs_queue;
+	typedef spsc_queue<procedure<256>> fs_queue;
 	void create( );
 	void destroy( );
 	void wait_for_destruction( );
