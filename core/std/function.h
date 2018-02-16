@@ -4,6 +4,34 @@
 #include <core/types.h>
 #include <core/macros.h>
 
+template<typename T, typename Return, typename ... Args>
+struct method_binding
+{
+public:
+	typedef Return(T::*value_type)( Args ... );
+	typedef Return(T::*const_value_type)( Args ... )const;
+	typedef T type;
+
+	inline method_binding( value_type method, type* this_ptr ) :
+		m_method	( method ),
+		m_this_ptr	( this_ptr )
+	{ }
+	
+	inline method_binding( const_value_type method, type const* this_ptr ) :
+		m_method	( (value_type)method ),
+		m_this_ptr	( (type*)this_ptr )
+	{ }
+
+	inline Return operator( )( Args ... args )
+	{
+		return ( m_this_ptr->*m_method )( args ... );
+	}
+
+protected:
+	value_type	m_method;
+	type*		m_this_ptr;
+};
+
 template<uptr Size>
 struct mem_align(16) procedure
 {
