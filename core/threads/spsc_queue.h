@@ -7,18 +7,18 @@
 
 // Single producer, single consumer
 template<typename T, uptr RecordSize = sizeof(T)>
-class spsc_queue
+class spsc_queue_no_wait
 {
 public:
-	spsc_queue( ) = default;
-	~spsc_queue( ) = default;
+	spsc_queue_no_wait( ) = default;
+	~spsc_queue_no_wait( ) = default;
 
 	typedef T value_type;
 
 	void create( uptr in_buffer_size );
 	void destroy( );
 
-	inline void push( value_type const& in_value );
+	void push( value_type const& in_value );
 	void pop( value_type& out_value );
 	
 	bool empty( ) const;
@@ -34,6 +34,23 @@ protected:
 	value_type*		m_data;
 
 	s32				m_index_mask;
+};
+
+template<typename T, uptr RecordSize = sizeof(T)>
+class spsc_queue : public spsc_queue_no_wait<T, RecordSize>
+{
+public:
+	spsc_queue( ) = default;
+	~spsc_queue( ) = default;
+
+	void create( uptr in_buffer_size );
+	void destroy( );
+
+	void push( value_type const& in_value );
+	void pop( value_type& out_value );
+	
+protected:
+	typedef spsc_queue_no_wait<T, RecordSize> parent;
 
 	threading_event	m_empty_event;
 	threading_event	m_full_event;
