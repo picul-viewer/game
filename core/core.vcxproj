@@ -201,6 +201,8 @@
     <ClInclude Include="std\poolset.h" />
     <ClInclude Include="std\pool_inline.h" />
     <ClInclude Include="std\memory.h" />
+    <ClInclude Include="std\queue.h" />
+    <ClInclude Include="std\queue_inline.h" />
     <ClInclude Include="std\std_map.h" />
     <ClInclude Include="std\std_map_inline.h" />
     <ClInclude Include="std\weak_string.h" />

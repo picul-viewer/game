@@ -10,6 +10,8 @@
 #include "std/pool.h"
 #include "std/poolset.h"
 
+#include "std/queue.h"
+
 #include "std/basic_string.h"
 #include "std/weak_string.h"
 #include "std/fixed_string.h"

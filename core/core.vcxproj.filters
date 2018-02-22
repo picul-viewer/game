@@ -73,6 +73,9 @@
     <Filter Include="threads\spsc_queue">
       <UniqueIdentifier>{1c0e13e9-8a35-4ac8-810b-2380f460e23b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="std\queue">
+      <UniqueIdentifier>{6f5bcf6d-f7b6-4e8c-b22a-dda65147df45}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -235,6 +238,12 @@
     </ClInclude>
     <ClInclude Include="threads\spsc_queue_inline.h">
       <Filter>threads\spsc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="std\queue.h">
+      <Filter>std\queue</Filter>
+    </ClInclude>
+    <ClInclude Include="std\queue_inline.h">
+      <Filter>std\queue</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
