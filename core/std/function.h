@@ -394,6 +394,134 @@ protected:
 
 };
 
+
+struct dummy_type;
+
+template<typename Type, u32 Index, typename ResultReturn, typename ... ResultArgs>
+struct set_binding_param;
+
+template<typename Type, u32 Index, typename ResultReturn, typename ... ResultArgs>
+struct set_binding_param
+{
+	template<typename ... Args>
+	struct inner;
+
+	template<typename T, typename ... Args>
+	struct inner<T, Args ...>
+	{
+		typedef typename set_binding_param<Type, Index - 1, ResultReturn, ResultArgs ..., T>::template inner<Args ...>::function_type function_type;
+	};
+	
+	template<>
+	struct inner<>
+	{
+		typedef typename set_binding_param<Type, Index - 1, ResultReturn, ResultArgs ..., dummy_type>::template inner<>::function_type function_type;
+	};
+};
+
+template<typename Type, typename ResultReturn, typename ... ResultArgs>
+struct set_binding_param<Type, 0, ResultReturn, ResultArgs ...>
+{
+	template<typename ... Args>
+	struct inner;
+
+	template<typename ... Args>
+	struct inner<dummy_type, Args ...>
+	{
+		typedef ResultReturn(*function_type)( ResultArgs ..., Type, Args ... );
+	};
+	
+	template<>
+	struct inner<>
+	{
+		typedef ResultReturn(*function_type)( ResultArgs ..., Type );
+	};
+};
+
+
+template<typename Functor>
+struct bind_resolve;
+
+template<typename ResultReturn, typename ... ResultArgs>
+struct bind_resolve<ResultReturn(*)( ResultArgs ... )>
+{
+	template<typename ... Args>
+	struct args;
+
+	template<>
+	struct args<>
+	{
+		template<typename ... Params>
+		struct params;
+
+		template<>
+		struct params<>
+		{
+			typedef ResultReturn (*function_type)( ResultArgs ... );
+		};
+	};
+
+	template<typename A, typename ... Args>
+	struct args<A, Args ...>
+	{
+		template<typename ... Params>
+		struct params;
+
+		template<typename ... Params>
+		struct params<A, Params ...>
+		{
+			typedef typename bind_resolve<ResultReturn(*)( ResultArgs ... )>::template args<Args ...>::template params<Params ...>::function_type function_type;
+		};
+
+		template<u32 Index, typename ... Params>
+		struct params<bind_parameter_type<Index>, Params ...>
+		{
+			typedef typename bind_resolve<typename set_binding_param<A, Index, ResultReturn>::template inner<ResultArgs ...>::function_type>::template args<Args ...>::template params<Params ...>::function_type function_type;
+		};
+	};
+
+	template<typename A>
+	struct args<A>
+	{
+		template<typename ... Params>
+		struct params;
+
+		template<>
+		struct params<A>
+		{
+			typedef ResultReturn (*function_type)( ResultArgs ... );
+		};
+		
+		template<u32 Index, typename ... Params>
+		struct params<bind_parameter_type<Index>, Params ...>
+		{
+			typedef typename set_binding_param<A, Index, ResultReturn>::template inner<ResultArgs ...>::function_type function_type;
+		};
+	};
+};
+
+template<typename Functor>
+struct bind_result;
+
+template<typename ResultReturn, typename ... ResultArgs>
+struct bind_result<ResultReturn(*)( ResultArgs ... )>
+{
+	template<typename ... Params>
+	struct params
+	{
+		typedef typename bind_resolve<ResultReturn(*)( )>::template args<ResultArgs ...>::template params<Params ...>::function_type function_type;
+	};
+};
+
+template<typename Functor, typename ... Args>
+function_binding<typename bind_result<Functor>::template params<Args ...>::function_type> function_bind( Functor const& functor, Args ... args )
+{
+	typedef function_binding<typename bind_result<Functor>::template params<Args ...>::function_type> result_type;
+
+	return result_type( functor, args ... );
+}
+
+
 template<typename T, typename Return, typename ... Args>
 struct method_binding
 {
