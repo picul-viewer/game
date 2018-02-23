@@ -1,7 +1,7 @@
 #ifndef __core_array_inline_h_included_
 #define __core_array_inline_h_included_
 
-#include <core/macros.h>
+#include <macros.h>
 
 template<typename T, typename Tcref>
 buffer_array<T, Tcref>::buffer_array( pointer buffer, uptr capacity, uptr size ) :

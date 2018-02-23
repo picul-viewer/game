@@ -1,7 +1,7 @@
 #ifndef __core_math_common_h_included_
 #define __core_math_common_h_included_
 
-#include <core/types.h>
+#include <types.h>
 
 namespace math
 {

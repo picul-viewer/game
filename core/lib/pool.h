@@ -1,7 +1,7 @@
 #ifndef __core_pool_h_included_
 #define __core_pool_h_included_
 
-#include <core/types.h>
+#include <types.h>
 #include "allocator.h"
 
 template<uptr ElemSize, uptr PageSize>

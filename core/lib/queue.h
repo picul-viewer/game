@@ -1,7 +1,7 @@
 #ifndef __core_queue_h_included_
 #define __core_queue_h_included_
 
-#include <core/types.h>
+#include <types.h>
 
 template<typename T>
 struct linear_queue

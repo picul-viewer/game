@@ -1,8 +1,8 @@
 #ifndef __core_memory_h_included_
 #define __core_memory_h_included_
 
-#include <core/types.h>
-#include <core/macros.h>
+#include <types.h>
+#include <macros.h>
 
 #include <nmmintrin.h>
 

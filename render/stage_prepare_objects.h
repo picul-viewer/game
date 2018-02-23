@@ -1,7 +1,7 @@
 #ifndef __render_stage_prepare_objects_h_included_
 #define __render_stage_prepare_objects_h_included_
 
-#include <core/types.h>
+#include <types.h>
 
 #include "render_scene.h"
 #include "renderer.h"

@@ -1,7 +1,7 @@
 #ifndef __core_quaternion_h_included_
 #define __core_quaternion_h_included_
 
-#include <core/types.h>
+#include <types.h>
 #include "vector.h"
 #include "matrix.h"
 

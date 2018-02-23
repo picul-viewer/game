@@ -1,9 +1,10 @@
 #ifndef __core_spsc_queue_h_inlcuded_
 #define __core_spsc_queue_h_inlcuded_
 
-#include <core/types.h>
-#include <core/std.h>
-#include <core/threads.h>
+#include <types.h>
+
+#include <threads/interlocked.h>
+#include <threads/threading_event.h>
 
 // Single producer, single consumer
 template<typename T, uptr RecordSize = sizeof(T)>

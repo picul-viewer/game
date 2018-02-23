@@ -1,7 +1,7 @@
 #ifndef __render_shader_h_included_
 #define __render_shader_h_included_
 
-#include <core/types.h>
+#include <types.h>
 #include <core/math.h>
 #include "dx_include.h"
 

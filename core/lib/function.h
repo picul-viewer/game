@@ -1,8 +1,8 @@
 #ifndef __core_function_h_included_
 #define __core_function_h_included_
 
-#include <core/types.h>
-#include <core/macros.h>
+#include <types.h>
+#include <macros.h>
 
 template<u32 index>
 struct bind_parameter_type

@@ -1,4 +1,4 @@
-#include <core/types.h>
+#include <types.h>
 #include "texture.h"
 #include "dx_include.h"
 

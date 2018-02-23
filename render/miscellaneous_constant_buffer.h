@@ -1,8 +1,11 @@
 #ifndef __render_per_material_constant_buffer_h_included_
 #define __render_per_material_constant_buffer_h_included_
 
-#include <core/types.h>
-#include <core/math.h>
+#include <types.h>
+#include <macros.h>
+
+#include <math/vector.h>
+
 #include "dx_include.h"
 
 #include "constant_buffer.h"

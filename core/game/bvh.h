@@ -1,8 +1,10 @@
 #ifndef __core_bvh_h_included_
 #define __core_bvh_h_included_
 
-#include <core/types.h>
-#include <core/std.h>
+#include <types.h>
+#include <lib/array.h>
+#include <game/aabb.h>
+#include <game/frustum.h>
 
 template<typename T>
 class static_bvh

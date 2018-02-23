@@ -1,10 +1,9 @@
 #ifndef __game_game_world_h_included_
 #define __game_game_world_h_included_
 
-#include <core/types.h>
-#include <core/math.h>
-#include <core/std.h>
-#include <core/game.h>
+#include <types.h>
+#include <lib/embedded_list.h>
+#include <game/config.h>
 
 #include "game_object.h"
 

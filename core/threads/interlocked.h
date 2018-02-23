@@ -1,7 +1,7 @@
 #ifndef __core_interlocked_h_included_
 #define __core_interlocked_h_included_
 
-#include <core/types.h>
+#include <types.h>
 
 typedef s32 volatile mt_s32;
 typedef s64 volatile mt_s64;

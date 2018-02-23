@@ -1,7 +1,7 @@
 #ifndef __core_array_h_included_
 #define __core_array_h_included_
 
-#include <core/types.h>
+#include <types.h>
 
 #include <array>
 

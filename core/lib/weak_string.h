@@ -1,7 +1,7 @@
 #ifndef __core_weak_string_h_included_
 #define __core_weak_string_h_included_
 
-#include <core/types.h>
+#include <types.h>
 #include "basic_string.h"
 
 class weak_const_string : public i_const_string<weak_const_string>

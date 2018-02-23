@@ -1,7 +1,7 @@
 #include "input_layout.h"
 #include "buffer.h"
 
-#include <core/macros.h>
+#include <macros.h>
 
 namespace render {
 

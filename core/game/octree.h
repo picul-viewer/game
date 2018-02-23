@@ -1,8 +1,9 @@
 #ifndef __core_octree_h_included_
 #define __core_octree_h_included_
 
-#include <core/types.h>
-#include <core/std.h>
+#include <types.h>
+#include <math/vector.h>
+#include <game/aabb.h>
 
 template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
 class octree

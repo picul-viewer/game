@@ -1,8 +1,10 @@
 #ifndef __core_frustum_h_included_
 #define __core_frustum_h_included_
 
-#include <core/types.h>
-#include <core/math.h>
+#include <types.h>
+
+#include <math/math_sse.h>
+#include <game/aabb.h>
 
 #include "aabb.h"
 

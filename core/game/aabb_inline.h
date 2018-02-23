@@ -1,6 +1,9 @@
 #ifndef __core_aabb_inline_h_included_
 #define __core_aabb_inline_h_included_
 
+#include <math/math_sse.h>
+#include <math/math_common.h>
+
 aabb& aabb::get_box( )
 {
 	return *this;

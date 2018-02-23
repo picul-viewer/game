@@ -1,6 +1,10 @@
 #include "shader_strategy.h"
 
-#include <core/game.h>
+#include <lib/allocator.h>
+#include <lib/weak_string.h>
+#include <lib/fixed_string.h>
+
+#include <game/text_config.h>
 
 #include <Shlwapi.h>
 

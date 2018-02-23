@@ -1,6 +1,8 @@
 #ifndef __core_spsc_queue_inline_h_inlcuded_
 #define __core_spsc_queue_inline_h_inlcuded_
 
+#include <lib/allocator.h>
+
 template<typename T, uptr RecordSize>
 void spsc_queue_no_wait<T, RecordSize>::create( uptr in_buffer_size )
 {

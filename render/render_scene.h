@@ -1,7 +1,7 @@
 #ifndef __render_render_scene_h_included_
 #define __render_render_scene_h_included_
 
-#include <core/types.h>
+#include <types.h>
 #include <core/math.h>
 #include <core/std.h>
 #include <core/game.h>

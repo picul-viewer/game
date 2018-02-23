@@ -1,7 +1,7 @@
 #ifndef __code_basic_string_inline_h_included_
 #define __code_basic_string_inline_h_included_
 
-#include <core/macros.h>
+#include <macros.h>
 #include <cstring>
 
 template<typename StringClass>

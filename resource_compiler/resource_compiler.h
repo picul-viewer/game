@@ -1,8 +1,10 @@
 #ifndef __resource_compiler_resource_compiler_h_included_
 #define __resource_compiler_resource_compiler_h_included_
 
-#include <core/types.h>
-#include <core/std.h>
+#include <types.h>
+
+#include <lib/weak_string.h>
+#include <lib/fixed_string.h>
 
 #include <vector>
 

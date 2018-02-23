@@ -1,10 +1,19 @@
 #include "fbx_mesh_strategy.h"
 
+#include <macros.h>
+
 #include <fbxsdk.h>
 #include <map>
 #include <Shlwapi.h>
 
-#include <core/math.h>
+#include <math/vector.h>
+
+#include <lib/allocator.h>
+
+#include <lib/weak_string.h>
+#include <lib/fixed_string.h>
+
+#include <lib/std_map.h>
 
 namespace resource_compiler {
 

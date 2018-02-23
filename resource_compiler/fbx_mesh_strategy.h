@@ -1,8 +1,7 @@
 #ifndef __resource_compiler_fbx_mesh_strategy_h_included_
 #define __resource_compiler_fbx_mesh_strategy_h_included_
 
-#include <core/types.h>
-#include <core/std.h>
+#include <types.h>
 
 #include "resource_compiler.h"
 

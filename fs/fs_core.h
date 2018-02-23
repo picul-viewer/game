@@ -1,9 +1,9 @@
 #ifndef __fs_fs_core_h_included_
 #define __fs_fs_core_h_included_
 
-#include <core/types.h>
-#include <core/std.h>
-#include <core/threads.h>
+#include <types.h>
+#include <lib/function.h>
+#include <threads/spsc_queue.h>
 
 namespace fs {
 

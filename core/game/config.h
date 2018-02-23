@@ -1,8 +1,8 @@
 #ifndef __core_config_h_included_
 #define __core_config_h_included_
 
-#include <core/types.h>
-#include <core/std.h>
+#include <types.h>
+#include <lib/weak_string.h>
 
 class config
 {

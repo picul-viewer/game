@@ -1,7 +1,7 @@
 #ifndef __core_pool_inline_h_included_
 #define __core_pool_inline_h_included_
 
-#include <core/macros.h>
+#include <macros.h>
 
 template<uptr MemorySize>
 struct pool_page_size_helper

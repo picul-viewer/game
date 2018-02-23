@@ -1,9 +1,8 @@
 #ifndef __core_window_h_included_
 #define __core_window_h_included_
 
-#include <core/types.h>
-#include <core/std.h>
-#include <core/math.h>
+#include <types.h>
+#include <math/vector.h>
 #include <Windows.h>
 
 struct window_init

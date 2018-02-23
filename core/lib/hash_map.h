@@ -1,7 +1,7 @@
 #ifndef __core_hash_map_h_included_
 #define __core_hash_map_h_included_
 
-#include <core/types.h>
+#include <types.h>
 #include "pool.h"
 
 template<

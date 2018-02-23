@@ -1,7 +1,7 @@
 #ifndef __core_basic_string_h_included_
 #define __core_basic_string_h_included_
 
-#include <core/types.h>
+#include <types.h>
 
 template<typename StringClass>
 class i_const_string

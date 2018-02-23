@@ -1,8 +1,8 @@
 #ifndef __core_camera_h_included_
 #define __core_camera_h_included_
 
-#include <core/types.h>
-#include <core/math.h>
+#include <types.h>
+#include <math/matrix.h>
 
 class camera
 {

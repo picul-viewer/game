@@ -1,7 +1,7 @@
 #ifndef __render_mesh_collection_h_included_
 #define __render_mesh_collection_h_included_
 
-#include <core/types.h>
+#include <types.h>
 #include "buffer.h"
 
 namespace render {

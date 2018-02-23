@@ -1,5 +1,7 @@
 #include "camera.h"
 
+#include <math/math_3d.h>
+
 void camera::mult_view_projection( )
 {
 	m_view_projection.a00	= m_projection.a00 * m_view.a00;

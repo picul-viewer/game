@@ -65,7 +65,7 @@ inline void fatal_error( char const* file, char const* func, int line, char cons
 
 #	define FATAL_ERROR( ... ) { macros::fatal_error( __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); DEBUG_BREAK }
 #else // #ifdef DEBUG
-#	define FATAL_ERROR( message ) NO_OP
+#	define FATAL_ERROR( ... ) NO_OP
 #endif // #ifdef DEBUG
 
 #define UNREACHABLE_CODE FATAL_ERROR( "unreachable code" )

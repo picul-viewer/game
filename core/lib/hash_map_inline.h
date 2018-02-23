@@ -1,7 +1,7 @@
 #ifndef __core_hash_map_inline_h_included_
 #define __core_hash_map_inline_h_included_
 
-#include <core/macros.h>
+#include <macros.h>
 
 template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
 template<typename TableAllocator>

@@ -1,8 +1,11 @@
 #ifndef __core_aabb_h_included_
 #define __core_aabb_h_included_
 
-#include <core/macros.h>
-#include <core/math.h>
+#include <macros.h>
+
+#include <math/vector.h>
+#include <math/matrix.h>
+#include <math/math_sse.h>
 
 struct aabb
 {

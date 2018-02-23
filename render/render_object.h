@@ -1,10 +1,7 @@
 #ifndef __render_render_object_h_included_
 #define __render_render_object_h_included_
 
-#include <core/types.h>
-#include <core/math.h>
-#include <core/std.h>
-#include <core/game.h>
+#include <types.h>
 #include "dx_include.h"
 
 namespace render {

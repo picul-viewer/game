@@ -1,7 +1,7 @@
 #ifndef __core_fixed_string_h_included_
 #define __core_fixed_string_h_included_
 
-#include <core/types.h>
+#include <types.h>
 #include "basic_string.h"
 
 template<uptr MaxSize>

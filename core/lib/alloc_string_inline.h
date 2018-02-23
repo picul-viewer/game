@@ -1,7 +1,7 @@
 #ifndef __core_alloc_string_inline_h_included_
 #define __core_alloc_string_inline_h_included_
 
-#include <core/macros.h>
+#include <macros.h>
 #include <cstring>
 
 template<typename AllocatorType>

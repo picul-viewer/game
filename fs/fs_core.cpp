@@ -1,6 +1,7 @@
 #include "fs_core.h"
 
 #include <Shlwapi.h>
+#include <threads/thread.h>
 
 namespace fs {
 

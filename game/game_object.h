@@ -1,9 +1,9 @@
 #ifndef __game_game_object_h_included_
 #define __game_game_object_h_included_
 
-#include <core/types.h>
-#include <core/math.h>
-#include <core/game.h>
+#include <types.h>
+#include <math/matrix.h>
+#include <game/config.h>
 
 #include <render/game_object.h>
 

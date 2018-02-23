@@ -1,7 +1,7 @@
 #ifndef __core_threading_event_h_included_
 #define __core_threading_event_h_included_
 
-#include <core/types.h>
+#include <types.h>
 
 class threading_event
 {

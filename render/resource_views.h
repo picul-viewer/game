@@ -1,7 +1,7 @@
 #ifndef __render_resource_views_h_included_
 #define __render_resource_views_h_included_
 
-#include <core/types.h>
+#include <types.h>
 #include "dx_include.h"
 
 namespace render {

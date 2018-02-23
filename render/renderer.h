@@ -1,7 +1,7 @@
 #ifndef __render_renderer_h_included_
 #define __render_renderer_h_included_
 
-#include <core/types.h>
+#include <types.h>
 #include "dx_include.h"
 
 #include "resource_views.h"

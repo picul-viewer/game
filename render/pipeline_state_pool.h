@@ -1,7 +1,7 @@
 #ifndef __render_pipeline_state_pool_h_included_
 #define __render_pipeline_state_pool_h_included_
 
-#include <core/types.h>
+#include <types.h>
 #include "dx_include.h"
 #include "pipeline_state.h"
 

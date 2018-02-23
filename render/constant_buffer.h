@@ -1,8 +1,7 @@
 #ifndef __render_constant_buffer_h_included_
 #define __render_constant_buffer_h_included_
 
-#include <core/types.h>
-#include <core/math.h>
+#include <types.h>
 #include "dx_include.h"
 #include "buffer.h"
 

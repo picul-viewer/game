@@ -1,6 +1,8 @@
 #ifndef __core_embedded_list_inline_h_included_
 #define __core_embedded_list_inline_h_included_
 
+#include <macros.h>
+
 template<typename T, T* (T::*Next)>
 embedded_list<T, Next>::embedded_list( ) :
 	m_first( nullptr )
