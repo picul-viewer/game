@@ -256,7 +256,6 @@
     <ClCompile Include="game\text_config.cpp">
       <Filter>game\config</Filter>
     </ClCompile>
-    <ClCompile Include="threads\interlocked.cpp" />
     <ClCompile Include="lib\hash.cpp">
       <Filter>lib\map</Filter>
     </ClCompile>
@@ -268,6 +267,9 @@
     </ClCompile>
     <ClCompile Include="lib\weak_string.cpp">
       <Filter>lib\string</Filter>
+    </ClCompile>
+    <ClCompile Include="threads\interlocked.cpp">
+      <Filter>threads\api\interlocked</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
