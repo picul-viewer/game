@@ -22,14 +22,14 @@ static const bind_parameter_type<8> bind_param_8;
 static const bind_parameter_type<9> bind_param_9;
 
 template<typename FunctionType>
-struct function_binding;
+struct function;
 
 template<typename FunctionReturn, typename ... FunctionArgs>
-struct function_binding<FunctionReturn(*)( FunctionArgs ... )>
+struct function<FunctionReturn(*)( FunctionArgs ... )>
 {
 public:
 	template<typename FunctorType, typename ... Args>
-	inline function_binding( FunctorType const& func, Args ... args )
+	inline function( FunctorType const& func, Args ... args )
 	{
 		typedef invoke_function_helper<FunctorType> helper;
 
@@ -513,10 +513,36 @@ struct bind_result<ResultReturn(*)( ResultArgs ... )>
 	};
 };
 
-template<typename Functor, typename ... Args>
-function_binding<typename bind_result<Functor>::template params<Args ...>::function_type> function_bind( Functor const& functor, Args ... args )
+template<typename ResultReturn, typename ResultThis, typename ... ResultArgs>
+struct bind_result<ResultReturn(ResultThis::*)( ResultArgs ... )>
 {
-	typedef function_binding<typename bind_result<Functor>::template params<Args ...>::function_type> result_type;
+	template<typename ... Params>
+	struct params;
+
+	template<typename ... Params>
+	struct params<ResultThis*, Params ...>
+	{
+		typedef typename bind_resolve<ResultReturn(*)( )>::template args<ResultArgs ...>::template params<Params ...>::function_type function_type;
+	};
+};
+
+template<typename ResultReturn, typename ResultThis, typename ... ResultArgs>
+struct bind_result<ResultReturn(ResultThis::*)( ResultArgs ... ) const>
+{
+	template<typename ... Params>
+	struct params;
+
+	template<typename ... Params>
+	struct params<ResultThis const*, Params ...>
+	{
+		typedef typename bind_resolve<ResultReturn(*)( )>::template args<ResultArgs ...>::template params<Params ...>::function_type function_type;
+	};
+};
+
+template<typename Functor, typename ... Args>
+function<typename bind_result<Functor>::template params<Args ...>::function_type> function_bind( Functor const& functor, Args ... args )
+{
+	typedef function<typename bind_result<Functor>::template params<Args ...>::function_type> result_type;
 
 	return result_type( functor, args ... );
 }
