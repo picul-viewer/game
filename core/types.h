@@ -139,9 +139,9 @@ struct pointer
 	inline pointer( pvoid data ) { this->data = data; }
 
 	template<typename T>
-	inline operator T*( ) { return (T*)data; }
+	inline operator T*( ) const { return (T*)data; }
 	
-	inline operator bool( ) { return data != nullptr; }
+	inline operator bool( ) const { return data != nullptr; }
 	
 	template<typename T>
 	inline pointer& operator=( T* data ) { this->data = (pvoid)data; return *this; }
