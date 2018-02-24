@@ -4,6 +4,8 @@
 #include <types.h>
 #include <macros.h>
 
+#include <xmemory>
+
 template<u32 index>
 struct bind_parameter_type
 {
