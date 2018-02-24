@@ -48,10 +48,6 @@ protected:
 	typedef FunctionReturn(*invoker_type)( pbyte, FunctionArgs ... );
 
 	
-	template<typename ArgsType, u32 Index>
-	struct type_by_index;
-
-	
 	template<typename ... ArgPair>
 	struct arg_pair_type;
 	
@@ -69,18 +65,6 @@ protected:
 		typedef arg_pair_type<> right_type;
 		
 		left_type left;
-
-		template<u32 Index>
-		inline typename type_by_index<arg_pair_type<T>, Index>::value_type value_by_index( )
-		{
-			static_assert( false, "Parameter index out of bounds" );
-		}
-		
-		template<>
-		inline typename type_by_index<arg_pair_type<T>, 0>::value_type value_by_index<0>( )
-		{
-			return left;
-		}
 	};
 
 	template<typename L, typename R>
@@ -91,47 +75,8 @@ protected:
 
 		left_type left;
 		right_type right;
-		
-		template<u32 Index>
-		inline typename type_by_index<arg_pair_type<L, R>, Index>::value_type value_by_index( )
-		{
-			return right.value_by_index<Index - 1>( );
-		}
-		
-		template<>
-		inline typename type_by_index<arg_pair_type<L, R>, 0>::value_type value_by_index<0>( )
-		{
-			return left;
-		}
-	};
-
-	
-	template<typename ArgsType, u32 Index>
-	struct type_by_index
-	{
-		typedef typename type_by_index<typename ArgsType::right_type, Index - 1>::value_type value_type;
 	};
 	
-	template<typename ArgsType>
-	struct type_by_index<ArgsType, 0u>
-	{
-		typedef typename ArgsType::left_type value_type;
-	};
-	
-	template<typename T, u32 Index>
-	struct type_by_index<arg_pair_type<T>, Index>
-	{ };
-	
-	template<typename T>
-	struct type_by_index<arg_pair_type<T>, 0>
-	{
-		typedef T value_type;
-	};
-
-	template<u32 Index>
-	struct type_by_index<arg_pair_type<>, Index>
-	{ };
-
 
 	template<typename ... Args>
 	struct args_store_type;
@@ -186,63 +131,128 @@ protected:
 	};
 
 	
-	template<typename FunctorType, typename CallerArgsType, typename ArgsType, typename ... Args>
-	struct invoke_helper;
-	
-	template<typename FunctorType, typename CallerArgsType, typename LeftType, typename RightArgsType, typename ... Args>
-	struct invoke_helper<FunctorType, CallerArgsType, arg_pair_type<LeftType, RightArgsType>, Args ...>
-	{
-		static inline typename FunctorType::return_type call( FunctorType const& functor, CallerArgsType caller_args, arg_pair_type<LeftType, RightArgsType>& args_holder, Args ... args )
-		{
-			return invoke_helper<FunctorType, CallerArgsType, RightArgsType, Args ..., LeftType>::call(
-				functor, caller_args, args_holder.right, args ..., args_holder.left );
-		}
-	};
-	
-	template<typename FunctorType, typename CallerArgsType, u32 BindIndex, typename RightArgsType, typename ... Args>
-	struct invoke_helper<FunctorType, CallerArgsType, arg_pair_type<bind_parameter_type<BindIndex>, RightArgsType>, Args ...>
-	{
-		static inline typename FunctorType::return_type call( FunctorType const& functor, CallerArgsType caller_args, arg_pair_type<bind_parameter_type<BindIndex>, RightArgsType>& args_holder, Args ... args )
-		{
-			return invoke_helper<FunctorType, CallerArgsType, RightArgsType, Args ..., typename type_by_index<CallerArgsType, BindIndex>::value_type>::call(
-				functor, caller_args, args_holder.right, args ..., caller_args.value_by_index<BindIndex>( ) );
-		}
-	};
-	
-	template<typename FunctorType, typename CallerArgsType, typename T, typename ... Args>
-	struct invoke_helper<FunctorType, CallerArgsType, arg_pair_type<T>, Args ...>
-	{
-		static inline typename FunctorType::return_type call( FunctorType const& functor, CallerArgsType caller_args, arg_pair_type<T>& args_holder, Args ... args )
-		{
-			return invoke_helper<FunctorType, CallerArgsType, arg_pair_type<>, Args ..., T>::call(
-				functor, caller_args, arg_pair_type<>( ), args ..., args_holder.left );
-		}
-	};
-	
-	template<typename FunctorType, typename CallerArgsType, u32 BindIndex, typename ... Args>
-	struct invoke_helper<FunctorType, CallerArgsType, arg_pair_type<bind_parameter_type<BindIndex>>, Args ...>
-	{
-		static inline typename FunctorType::return_type call( FunctorType const& functor, CallerArgsType caller_args, arg_pair_type<bind_parameter_type<BindIndex>>& args_holder, Args ... args )
-		{
-			return invoke_helper<FunctorType, CallerArgsType, arg_pair_type<>, Args ..., type_by_index<CallerArgsType, BindIndex>::value_type>::call(
-				functor, caller_args, arg_pair_type<>( ), args ..., caller_args.value_by_index<BindIndex>( ) );
-		}
-	};
+	template<u32 Index, typename ... Args>
+	struct type_by_index;
 
-	template<typename FunctorType, typename CallerArgsType, typename ... Args>
-	struct invoke_helper<FunctorType, CallerArgsType, arg_pair_type<>, Args ...>
+	template<u32 Index, typename T, typename ... Args>
+	struct type_by_index<Index, T, Args ...>
 	{
-		static inline typename FunctorType::return_type call( FunctorType const& functor, CallerArgsType function_args, arg_pair_type<>& args_holder, Args ... args )
+		typedef typename type_by_index<Index - 1, Args ...>::value_type value_type;
+	};
+	
+	template<typename T, typename ... Args>
+	struct type_by_index<0, T, Args ...>
+	{
+		typedef T value_type;
+	};
+	
+	template<u32 Index, typename T>
+	struct type_by_index<Index, T>
+	{
+		static_assert( Index == 0, "bad parameter index" );
+
+		typedef T value_type;
+	};
+	
+
+	template<typename Return, u32 Index, typename ... Args>
+	struct value_by_index_helper;
+
+	template<typename Return, u32 Index, typename T, typename ... Args>
+	struct value_by_index_helper<Return, Index, T, Args ...>
+	{
+		static inline Return get( T left, Args ... right )
 		{
-			return functor( args ... );
+			return value_by_index_helper<Return, Index - 1, Args ...>::get( right ... );
 		}
+	};
+	
+	template<typename Return, typename T, typename ... Args>
+	struct value_by_index_helper<Return, 0, T, Args ...>
+	{
+		static inline Return get( T left, Args ... right )
+		{
+			return left;
+		}
+	};
+	
+	template<typename Return, u32 Index, typename T>
+	struct value_by_index_helper<Return, Index, T>
+	{
+		static_assert( Index == 0, "bad parameter index" );
+
+		static inline Return get( T left )
+		{
+			return left;
+		}
+	};
+	
+	template<u32 Index, typename ... Args>
+	static inline typename type_by_index<Index, Args ...>::value_type value_by_index( Args ... args )
+	{
+		return value_by_index_helper<typename type_by_index<Index, Args ...>::value_type, Index, Args ...>::get( args ... );
+	}
+
+	
+	template<typename ... CallerArgs>
+	struct invoke_helper
+	{
+		template<typename FunctorType, typename ArgsType, typename ... Args>
+		struct inner;
+	
+		template<typename FunctorType, typename LeftType, typename RightArgsType, typename ... Args>
+		struct inner<FunctorType, arg_pair_type<LeftType, RightArgsType>, Args ...>
+		{
+			static inline typename FunctorType::return_type call( FunctorType const& functor, CallerArgs ... caller_args, arg_pair_type<LeftType, RightArgsType>& args_holder, Args ... args )
+			{
+				return invoke_helper<CallerArgs ...>::template inner<FunctorType, RightArgsType, Args ..., LeftType>::call(
+					functor, caller_args ..., args_holder.right, args ..., args_holder.left );
+			}
+		};
+	
+		template<typename FunctorType, u32 BindIndex, typename RightArgsType, typename ... Args>
+		struct inner<FunctorType, arg_pair_type<bind_parameter_type<BindIndex>, RightArgsType>, Args ...>
+		{
+			static inline typename FunctorType::return_type call( FunctorType const& functor, CallerArgs ... caller_args, arg_pair_type<bind_parameter_type<BindIndex>, RightArgsType>& args_holder, Args ... args )
+			{
+				return invoke_helper<CallerArgs ...>::template inner<FunctorType, RightArgsType, Args ..., typename type_by_index<BindIndex, CallerArgs ...>::value_type>::call(
+					functor, caller_args ..., args_holder.right, args ..., value_by_index<BindIndex, CallerArgs ...>( caller_args ... ) );
+			}
+		};
+	
+		template<typename FunctorType, typename T, typename ... Args>
+		struct inner<FunctorType, arg_pair_type<T>, Args ...>
+		{
+			static inline typename FunctorType::return_type call( FunctorType const& functor, CallerArgs ... caller_args, arg_pair_type<T>& args_holder, Args ... args )
+			{
+				return invoke_helper<CallerArgs ...>::template inner<FunctorType, arg_pair_type<>, Args ..., T>::call(
+					functor, caller_args ..., arg_pair_type<>( ), args ..., args_holder.left );
+			}
+		};
+	
+		template<typename FunctorType, u32 BindIndex, typename ... Args>
+		struct inner<FunctorType, arg_pair_type<bind_parameter_type<BindIndex>>, Args ...>
+		{
+			static inline typename FunctorType::return_type call( FunctorType const& functor, CallerArgs ... caller_args, arg_pair_type<bind_parameter_type<BindIndex>>& args_holder, Args ... args )
+			{
+				return invoke_helper<CallerArgs ...>::template inner<FunctorType, arg_pair_type<>, Args ..., typename type_by_index<BindIndex, CallerArgs ...>::value_type>::call(
+					functor, caller_args ..., arg_pair_type<>( ), args ..., value_by_index<BindIndex, CallerArgs ...>( caller_args ... ) );
+			}
+		};
+
+		template<typename FunctorType, typename ... Args>
+		struct inner<FunctorType, arg_pair_type<>, Args ...>
+		{
+			static inline typename FunctorType::return_type call( FunctorType const& functor, CallerArgs ... function_args, arg_pair_type<>& args_holder, Args ... args )
+			{
+				return functor( args ... );
+			}
+		};
 	};
 
 	
 	template<typename FunctorType>
 	struct invoke_function_helper;
-
-	typedef typename args_store_type<FunctionArgs ...>::pair_type func_params_type;
 
 	template<typename Return, typename ... FArgs>
 	struct invoke_function_helper<Return(*)( FArgs ... )>
@@ -285,7 +295,7 @@ protected:
 			function_type const&	func_value = *(function_type*)( arena );
 			params_type&			args_value = *(params_type*)( arena + sizeof(function_type) );
 
-			return invoke_helper<bind, func_params_type, params_type>::call( bind( func_value ), args_store_type<FunctionArgs ...>( args ... ), args_value );
+			return invoke_helper<FunctionArgs ...>::template inner<bind, params_type>::call( bind( func_value ), args ..., args_value );
 		}
 	};
 	
@@ -333,8 +343,8 @@ protected:
 			function_type	func_value = *(function_type*)( arena );
 			This*			this_value = *(This**)( arena + sizeof(function_type) );
 			params_type&	args_value = *(params_type*)( arena + sizeof(function_type) + sizeof(This*) );
-
-			return invoke_helper<bind, func_params_type, params_type>::call( bind( func_value, this_value ), args_store_type<FunctionArgs ...>( args ... ), args_value );
+			
+			return invoke_helper<FunctionArgs ...>::template inner<bind, params_type>::call( bind( func_value, this_value ), args ..., args_value );
 		}
 	};
 	
@@ -382,8 +392,8 @@ protected:
 			function_type	func_value = *(function_type*)( arena );
 			This const*		this_value = *(This const**)( arena + sizeof(function_type) );
 			params_type&	args_value = *(params_type*)( arena + sizeof(function_type) + sizeof(This const*) );
-
-			return invoke_helper<bind, func_params_type, params_type>::call( bind( func_value, this_value ), args_store_type<FunctionArgs ...>( args ... ), args_value );
+			
+			return invoke_helper<FunctionArgs ...>::template inner<bind, params_type>::call( bind( func_value, this_value ), args ..., args_value );
 		}
 	};
 	
