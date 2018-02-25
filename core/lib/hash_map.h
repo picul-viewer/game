@@ -68,7 +68,7 @@ struct hash_map_hash_pred_adapter
 {
 	typename Hash::value_type operator( )( T const& value )
 	{
-		return Hash( )( (pcbyte)&value, (pcbyte)&value + sizeof(T) );
+		return Hash( )( (pcvoid)&value, sizeof(T) );
 	}
 };
 
