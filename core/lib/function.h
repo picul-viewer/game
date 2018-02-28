@@ -29,21 +29,28 @@ namespace __lib_function_detail
 
 template<typename ... ArgPair>
 struct arg_pair_type;
-	
+
 template<>
 struct arg_pair_type<>
 {
 	typedef void left_type;
 	typedef void right_type;
 };
-	
+
 template<typename T>
 struct arg_pair_type<T>
 {
 	typedef T left_type;
 	typedef arg_pair_type<> right_type;
-		
+
 	left_type left;
+};
+
+template<u32 Index>
+struct arg_pair_type<bind_parameter_type<Index>>
+{
+	typedef bind_parameter_type<Index> left_type;
+	typedef arg_pair_type<> right_type;
 };
 
 template<typename L, typename R>
@@ -56,23 +63,32 @@ struct arg_pair_type<L, R>
 	right_type right;
 };
 
+template<u32 Index, typename R>
+struct arg_pair_type<bind_parameter_type<Index>, R>
+{
+	typedef bind_parameter_type<Index> left_type;
+	typedef R right_type;
+
+	right_type right;
+};
+
 
 template<typename ... Args>
 struct args_store_type;
-	
+
 template<>
 struct args_store_type<>
 {
 	typedef arg_pair_type<> pair_type;
 
 	args_store_type( ) = default;
-		
+
 	operator pair_type( )
 	{
 		return *(pair_type*)this;
 	}
 };
-	
+
 template<typename T>
 struct args_store_type<T>
 {
@@ -81,13 +97,30 @@ struct args_store_type<T>
 	args_store_type( T left ) :
 		left	( left )
 	{ }
-		
+
 	operator pair_type( )
 	{
 		return *(pair_type*)this;
 	}
 
 	T left;
+};
+
+template<u32 Index>
+struct args_store_type<bind_parameter_type<Index>>
+{
+	typedef arg_pair_type<bind_parameter_type<Index>> pair_type;
+	
+	args_store_type( )
+	{ }
+
+	args_store_type( bind_parameter_type<Index> )
+	{ }
+
+	operator pair_type( )
+	{
+		return *(pair_type*)this;
+	}
 };
 
 template<typename T, typename ... Args>
@@ -106,6 +139,27 @@ struct args_store_type<T, Args ...>
 	}
 
 	T left;
+	args_store_type<Args ...> right;
+};
+
+template<u32 Index, typename ... Args>
+struct args_store_type<bind_parameter_type<Index>, Args ...>
+{
+	typedef arg_pair_type<bind_parameter_type<Index>, typename args_store_type<Args ...>::pair_type> pair_type;
+	
+	args_store_type( Args ... right ) :
+		right	( right ... )
+	{ }
+
+	args_store_type( bind_parameter_type<Index>, Args ... right ) :
+		right	( right ... )
+	{ }
+
+	operator pair_type( )
+	{
+		return *(pair_type*)this;
+	}
+
 	args_store_type<Args ...> right;
 };
 
@@ -327,7 +381,7 @@ struct bind_resolve<ResultReturn(*)( ResultArgs ... )>
 		{
 			typedef ResultReturn (*function_type)( ResultArgs ... );
 		};
-		
+
 		template<u32 Index, typename ... Params>
 		struct params<bind_parameter_type<Index>, Params ...>
 		{
