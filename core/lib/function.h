@@ -12,16 +12,27 @@ struct bind_parameter_type
 	enum { value = index };
 };
 
-static const bind_parameter_type<0> bind_param_0;
-static const bind_parameter_type<1> bind_param_1;
-static const bind_parameter_type<2> bind_param_2;
-static const bind_parameter_type<3> bind_param_3;
-static const bind_parameter_type<4> bind_param_4;
-static const bind_parameter_type<5> bind_param_5;
-static const bind_parameter_type<6> bind_param_6;
-static const bind_parameter_type<7> bind_param_7;
-static const bind_parameter_type<8> bind_param_8;
-static const bind_parameter_type<9> bind_param_9;
+typedef bind_parameter_type<0> bound_param_0;
+typedef bind_parameter_type<1> bound_param_1;
+typedef bind_parameter_type<2> bound_param_2;
+typedef bind_parameter_type<3> bound_param_3;
+typedef bind_parameter_type<4> bound_param_4;
+typedef bind_parameter_type<5> bound_param_5;
+typedef bind_parameter_type<6> bound_param_6;
+typedef bind_parameter_type<7> bound_param_7;
+typedef bind_parameter_type<8> bound_param_8;
+typedef bind_parameter_type<9> bound_param_9;
+
+static const bound_param_0 bind_param_0;
+static const bound_param_1 bind_param_1;
+static const bound_param_2 bind_param_2;
+static const bound_param_3 bind_param_3;
+static const bound_param_4 bind_param_4;
+static const bound_param_5 bind_param_5;
+static const bound_param_6 bind_param_6;
+static const bound_param_7 bind_param_7;
+static const bound_param_8 bind_param_8;
+static const bound_param_9 bind_param_9;
 
 
 namespace __lib_function_detail
