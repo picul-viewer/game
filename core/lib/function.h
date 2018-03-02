@@ -284,6 +284,70 @@ struct invoke_helper
 };
 
 
+template<typename FunctionType>
+struct function_wrapper;
+
+template<typename Return, typename ... Args>
+struct function_wrapper<Return(*)( Args ... )>
+{
+public:
+	typedef Return(*value_type)( Args ... );
+	typedef Return return_type;
+
+	inline function_wrapper( value_type f ) :
+		m_function	( f )
+	{ }
+
+	inline Return operator( )( Args ... args ) const
+	{
+		return m_function( args ... );
+	}
+
+protected:
+	value_type	m_function;
+};
+
+template<typename Return, typename This, typename ... Args>
+struct function_wrapper<Return(This::*)( Args ... )>
+{
+public:
+	typedef Return(This::*value_type)( Args ... );
+	typedef Return return_type;
+
+	inline function_wrapper( value_type f ) :
+		m_function	( f )
+	{ }
+
+	inline Return operator( )( This* this_ptr, Args ... args ) const
+	{
+		return ( this_ptr->*m_function )( args ... );
+	}
+
+protected:
+	value_type	m_function;
+};
+
+template<typename Return, typename This, typename ... Args>
+struct function_wrapper<Return(This::*)( Args ... ) const>
+{
+public:
+	typedef Return(This::*value_type)( Args ... ) const;
+	typedef Return return_type;
+
+	inline function_wrapper( value_type method, This const* this_ptr ) :
+		m_function	( method )
+	{ }
+
+	inline Return operator( )( This const* this_ptr, Args ... args ) const
+	{
+		return ( this_ptr->*m_function )( args ... );
+	}
+
+protected:
+	value_type	m_function;
+};
+
+
 
 struct dummy_type;
 
@@ -455,34 +519,13 @@ public:
 
 protected:
 	typedef FunctionReturn(*invoker_type)( pbyte, FunctionArgs ... );
-		
+	
 	template<typename FunctorType>
-	struct invoke_function_helper;
-
-	template<typename Return, typename ... FArgs>
-	struct invoke_function_helper<Return(*)( FArgs ... )>
+	struct invoke_function_helper
 	{
-		typedef Return(*function_type)( FArgs ... );
+		typedef FunctorType function_type;
+		typedef __lib_function_detail::function_wrapper<function_type> bind;
 
-		struct bind
-		{
-		public:
-			typedef Return(*value_type)( FArgs ... );
-			typedef Return return_type;
-
-			inline bind( value_type method ) :
-				m_function	( method )
-			{ }
-
-			inline Return operator( )( FArgs ... args ) const
-			{
-				return m_function( args ... );
-			}
-
-		protected:
-			value_type	m_function;
-		};
-		
 		template<typename ... Args>
 		static inline void create( pbyte arena, function_type func, Args ... args )
 		{
@@ -493,7 +536,7 @@ protected:
 		}
 
 		template<typename ... Args>
-		static inline Return invoke( pbyte arena, FunctionArgs ... args )
+		static inline typename bind::return_type invoke( pbyte arena, FunctionArgs ... args )
 		{
 			typedef typename __lib_function_detail::args_store_type<Args ...>::pair_type params_type;
 
@@ -501,104 +544,6 @@ protected:
 			params_type&			args_value = *(params_type*)( arena + sizeof(function_type) );
 
 			return __lib_function_detail::invoke_helper<FunctionArgs ...>::template inner<bind, params_type>::call( bind( func_value ), args ..., args_value );
-		}
-	};
-	
-	template<typename Return, typename This, typename ... FArgs>
-	struct invoke_function_helper<Return(This::*)( FArgs ... )>
-	{
-		typedef Return(This::*function_type)( FArgs ... );
-
-		struct bind
-		{
-		public:
-			typedef Return(This::*value_type)( FArgs ... );
-			typedef Return return_type;
-
-			inline bind( value_type method, This* this_ptr ) :
-				m_method	( method ),
-				m_this_ptr	( this_ptr )
-			{ }
-
-			inline Return operator( )( FArgs ... args ) const
-			{
-				return ( m_this_ptr->*m_method )( args ... );
-			}
-
-		protected:
-			value_type	m_method;
-			This*		m_this_ptr;
-		};
-		
-		template<typename ... Args>
-		static inline void create( pbyte arena, function_type func, This* this_ptr, Args ... args )
-		{
-			ASSERT( sizeof(function_type) + sizeof(This*) + sizeof(__lib_function_detail::args_store_type<Args ...>) <= ArenaSize, "not enough memory to store all arguments" );
-
-			*(function_type*)( arena ) = func;
-			*(This**)( arena + sizeof(function_type) ) = this_ptr;
-			new ( arena + sizeof(function_type) + sizeof(This*) ) __lib_function_detail::args_store_type<Args ...>( args ... );
-		}
-		
-		template<typename ... Args>
-		static inline Return invoke( pbyte arena, FunctionArgs ... args )
-		{
-			typedef typename args_store_type<Args ...>::pair_type params_type;
-
-			function_type	func_value = *(function_type*)( arena );
-			This*			this_value = *(This**)( arena + sizeof(function_type) );
-			params_type&	args_value = *(params_type*)( arena + sizeof(function_type) + sizeof(This*) );
-			
-			return __lib_function_detail::invoke_helper<FunctionArgs ...>::template inner<bind, params_type>::call( bind( func_value, this_value ), args ..., args_value );
-		}
-	};
-	
-	template<typename Return, typename This, typename ... FArgs>
-	struct invoke_function_helper<Return(This::*)( FArgs ... ) const>
-	{
-		typedef Return(This::*function_type)( FArgs ... ) const;
-
-		struct bind
-		{
-		public:
-			typedef Return(This::*value_type)( FArgs ... ) const;
-			typedef Return return_type;
-
-			inline bind( value_type method, This const* this_ptr ) :
-				m_method	( method ),
-				m_this_ptr	( this_ptr )
-			{ }
-
-			inline Return operator( )( FArgs ... args ) const
-			{
-				return ( m_this_ptr->*m_method )( args ... );
-			}
-
-		protected:
-			value_type	m_method;
-			This const*	m_this_ptr;
-		};
-		
-		template<typename ... Args>
-		static inline void create( pbyte arena, function_type func, This* this_ptr, Args ... args )
-		{
-			ASSERT( sizeof(function_type) + sizeof(This const*) + sizeof(__lib_function_detail::args_store_type<Args ...>) <= ArenaSize, "not enough memory to store all arguments" );
-
-			*(function_type*)( arena ) = func;
-			*(This const**)( arena + sizeof(function_type) ) = this_ptr;
-			new ( arena + sizeof(function_type) + sizeof(This const*) ) __lib_function_detail::args_store_type<Args ...>( args ... );
-		}
-		
-		template<typename ... Args>
-		static inline Return invoke( pbyte arena, Args ... args )
-		{
-			typedef typename args_store_type<Args ...>::pair_type params_type;
-
-			function_type	func_value = *(function_type*)( arena );
-			This const*		this_value = *(This const**)( arena + sizeof(function_type) );
-			params_type&	args_value = *(params_type*)( arena + sizeof(function_type) + sizeof(This const*) );
-			
-			return __lib_function_detail::invoke_helper<FunctionArgs ...>::template inner<bind, params_type>::call( bind( func_value, this_value ), args ..., args_value );
 		}
 	};
 	
