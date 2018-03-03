@@ -35,6 +35,13 @@ static const bound_param_8 bind_param_8;
 static const bound_param_9 bind_param_9;
 
 
+template<typename FunctionType, typename ... BindingParams>
+struct fixed_function;
+
+template<typename FunctionType>
+struct auto_function;
+
+
 namespace __lib_function_detail
 {
 
@@ -504,6 +511,16 @@ struct bind_result<ResultReturn(ResultThis::*)( ResultArgs ... ) const>
 	};
 };
 
+
+template<typename FixedFunctionType>
+struct auto_from_fixed_bind_result_helper;
+
+template<typename FunctionType, typename ... Bindings>
+struct auto_from_fixed_bind_result_helper<fixed_function<FunctionType, Bindings ...>>
+{
+	typedef auto_function<typename bind_result<FunctionType>::template params<Bindings ...>::function_type> result_type;
+};
+
 }
 
 
@@ -538,20 +555,22 @@ protected:
 };
 
 
-template<typename FunctionType>
-struct function;
-
 template<typename FunctionReturn, typename ... FunctionArgs>
-struct function<FunctionReturn(*)( FunctionArgs ... )>
+struct auto_function<FunctionReturn(*)( FunctionArgs ... )>
 {
 public:
-	template<typename FunctorType, typename ... Args>
-	inline function( FunctorType const& func, Args ... args )
+	template<typename FunctionType, typename ... Args>
+	inline auto_function( FunctionType const& func, Args ... args ) :
+		auto_function( fixed_function<FunctionType, Args ...>( func, args ... ) )
+	{ }
+	
+	template<typename FunctionType, typename ... Args>
+	inline auto_function( fixed_function<FunctionType, Args ...> const& func )
 	{
-		typedef invoke_function_helper<FunctorType> helper;
+		typedef invoke_function_helper<fixed_function<FunctionType, Args ...>> helper;
 
-		invoker			= &helper::invoke<Args ...>;
-		helper::create	( data, func, args ... );
+		invoker			= &helper::invoke;
+		helper::create	( data, func );
 	}
 
 	FunctionReturn operator( )( FunctionArgs ... args )
@@ -562,30 +581,29 @@ public:
 protected:
 	typedef FunctionReturn(*invoker_type)( pbyte, FunctionArgs ... );
 	
-	template<typename FunctorType>
-	struct invoke_function_helper
+	template<typename FixedFunctionType>
+	struct invoke_function_helper;
+
+	template<typename FunctionType, typename ... Bindings>
+	struct invoke_function_helper<fixed_function<FunctionType, Bindings ...>>
 	{
-		typedef FunctorType function_type;
-		typedef __lib_function_detail::function_wrapper<function_type> bind;
+		typedef FunctionType function_type;
+		typedef fixed_function<FunctionType, Bindings ...> fixed_function_type;
+		typedef typename __lib_function_detail::template function_wrapper<FunctionType>::return_type return_type;
 
-		template<typename ... Args>
-		static inline void create( pbyte arena, function_type func, Args ... args )
+		static inline void create( pbyte arena, fixed_function_type func )
 		{
-			ASSERT( sizeof(function_type) + sizeof(__lib_function_detail::args_store_type<Args ...>) <= ArenaSize, "not enough memory to store all arguments" );
+			ASSERT( sizeof(fixed_function_type) <= ArenaSize, "not enough memory to store all arguments" );
 
-			*(function_type*)( arena ) = func;
-			new ( arena + sizeof(function_type) ) __lib_function_detail::args_store_type<Args ...>( args ... );
+			*(fixed_function_type*)( arena ) = func;
 		}
 
 		template<typename ... Args>
-		static inline typename bind::return_type invoke( pbyte arena, FunctionArgs ... args )
+		static inline return_type invoke( pbyte arena, FunctionArgs ... args )
 		{
-			typedef typename __lib_function_detail::args_store_type<Args ...>::pair_type params_type;
+			fixed_function_type& func = *(fixed_function_type*)arena;
 
-			function_type const&	func_value = *(function_type*)( arena );
-			params_type&			args_value = *(params_type*)( arena + sizeof(function_type) );
-
-			return __lib_function_detail::invoke_helper<FunctionArgs ...>::template inner<bind, params_type>::call( bind( func_value ), args ..., args_value );
+			return func( args ... );
 		}
 	};
 	
@@ -599,12 +617,26 @@ protected:
 };
 
 
-template<typename Functor, typename ... Args>
-function<typename __lib_function_detail::bind_result<Functor>::template params<Args ...>::function_type> function_bind( Functor const& functor, Args ... args )
+template<typename FunctionType, typename ... Args>
+fixed_function<FunctionType, Args ...> fixed_function_bind( FunctionType const& functor, Args ... args )
 {
-	typedef function<typename __lib_function_detail::bind_result<Functor>::template params<Args ...>::function_type> result_type;
+	return fixed_function<FunctionType, Args ...>( functor, args ... );
+}
+
+template<typename FunctionType, typename ... Args>
+auto_function<typename __lib_function_detail::bind_result<FunctionType>::template params<Args ...>::function_type> auto_function_bind( FunctionType const& functor, Args ... args )
+{
+	typedef auto_function<typename __lib_function_detail::bind_result<FunctionType>::template params<Args ...>::function_type> result_type;
 
 	return result_type( functor, args ... );
+}
+
+template<typename FixedFunctionType>
+typename __lib_function_detail::template auto_from_fixed_bind_result_helper<FixedFunctionType>::result_type auto_function_bind( FixedFunctionType const& functor )
+{
+	typedef typename __lib_function_detail::template auto_from_fixed_bind_result_helper<FixedFunctionType>::result_type result_type;
+
+	return result_type( functor );
 }
 
 #endif // #ifndef __core_function_h_included_
