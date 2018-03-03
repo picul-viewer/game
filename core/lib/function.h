@@ -507,6 +507,37 @@ struct bind_result<ResultReturn(ResultThis::*)( ResultArgs ... ) const>
 }
 
 
+template<typename FunctionType, typename ... BindingParams>
+struct fixed_function
+{
+protected:
+	typedef __lib_function_detail::args_store_type<BindingParams ...> arguments_type;
+
+public:
+	template<typename ... Args>
+	fixed_function( FunctionType const& functor, Args ... args ) :
+		m_function		( functor ),
+		m_params_store	( args ... )
+	{ }
+
+	template<typename ... Args>
+	typename __lib_function_detail::function_wrapper<FunctionType>::return_type operator( )( Args ... args )
+	{	
+		__lib_function_detail::invoke_helper<Args ...>::template inner<
+			__lib_function_detail::function_wrapper<FunctionType>,
+			typename arguments_type::pair_type>::call( m_function, args ..., m_param_use );
+	}
+
+protected:
+	__lib_function_detail::function_wrapper<FunctionType> m_function;
+	union
+	{
+		arguments_type m_params_store;
+		typename arguments_type::pair_type m_param_use;
+	};
+};
+
+
 template<typename FunctionType>
 struct function;
 
