@@ -312,6 +312,9 @@ public:
 	typedef Return(*value_type)( Args ... );
 	typedef Return return_type;
 
+	inline function_wrapper( )
+	{ }
+
 	inline function_wrapper( value_type f ) :
 		m_function	( f )
 	{ }
@@ -332,6 +335,9 @@ public:
 	typedef Return(This::*value_type)( Args ... );
 	typedef Return return_type;
 
+	inline function_wrapper( )
+	{ }
+
 	inline function_wrapper( value_type f ) :
 		m_function	( f )
 	{ }
@@ -351,6 +357,9 @@ struct function_wrapper<Return(This::*)( Args ... ) const>
 public:
 	typedef Return(This::*value_type)( Args ... ) const;
 	typedef Return return_type;
+
+	inline function_wrapper( )
+	{ }
 
 	inline function_wrapper( value_type method, This const* this_ptr ) :
 		m_function	( method )
@@ -531,14 +540,17 @@ protected:
 	typedef __lib_function_detail::args_store_type<BindingParams ...> arguments_type;
 
 public:
+	inline fixed_function( )
+	{ }
+
 	template<typename ... Args>
-	fixed_function( FunctionType const& functor, Args ... args ) :
+	inline fixed_function( FunctionType const& functor, Args ... args ) :
 		m_function		( functor ),
 		m_params_store	( args ... )
 	{ }
 
 	template<typename ... Args>
-	typename __lib_function_detail::function_wrapper<FunctionType>::return_type operator( )( Args ... args )
+	inline typename __lib_function_detail::function_wrapper<FunctionType>::return_type operator( )( Args ... args )
 	{	
 		__lib_function_detail::invoke_helper<Args ...>::template inner<
 			__lib_function_detail::function_wrapper<FunctionType>,
@@ -559,6 +571,9 @@ template<typename FunctionReturn, typename ... FunctionArgs>
 struct auto_function<FunctionReturn(*)( FunctionArgs ... )>
 {
 public:
+	inline auto_function( )
+	{ }
+
 	template<typename FunctionType, typename ... Args>
 	inline auto_function( FunctionType const& func, Args ... args ) :
 		auto_function( fixed_function<FunctionType, Args ...>( func, args ... ) )
@@ -573,7 +588,7 @@ public:
 		helper::create	( data, func );
 	}
 
-	FunctionReturn operator( )( FunctionArgs ... args )
+	inline FunctionReturn operator( )( FunctionArgs ... args )
 	{
 		return (FunctionReturn)invoker( data, args ... );
 	}
@@ -618,13 +633,13 @@ protected:
 
 
 template<typename FunctionType, typename ... Args>
-fixed_function<FunctionType, Args ...> fixed_function_bind( FunctionType const& functor, Args ... args )
+inline fixed_function<FunctionType, Args ...> fixed_function_bind( FunctionType const& functor, Args ... args )
 {
 	return fixed_function<FunctionType, Args ...>( functor, args ... );
 }
 
 template<typename FunctionType, typename ... Args>
-auto_function<typename __lib_function_detail::bind_result<FunctionType>::template params<Args ...>::function_type> auto_function_bind( FunctionType const& functor, Args ... args )
+inline auto_function<typename __lib_function_detail::bind_result<FunctionType>::template params<Args ...>::function_type> auto_function_bind( FunctionType const& functor, Args ... args )
 {
 	typedef auto_function<typename __lib_function_detail::bind_result<FunctionType>::template params<Args ...>::function_type> result_type;
 
@@ -632,7 +647,7 @@ auto_function<typename __lib_function_detail::bind_result<FunctionType>::templat
 }
 
 template<typename FixedFunctionType>
-typename __lib_function_detail::template auto_from_fixed_bind_result_helper<FixedFunctionType>::result_type auto_function_bind( FixedFunctionType const& functor )
+inline typename __lib_function_detail::template auto_from_fixed_bind_result_helper<FixedFunctionType>::result_type auto_function_bind( FixedFunctionType const& functor )
 {
 	typedef typename __lib_function_detail::template auto_from_fixed_bind_result_helper<FixedFunctionType>::result_type result_type;
 
