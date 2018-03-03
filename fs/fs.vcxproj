@@ -157,11 +157,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="fs_core.h" />
-    <ClInclude Include="fs_core_inline.h" />
+    <ClInclude Include="fs_resource_system_worker.h" />
+    <ClInclude Include="include.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="fs_core.cpp" />
+    <ClCompile Include="fs_resource_system_worker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">

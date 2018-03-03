@@ -1,10 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="fs_core.h" />
-    <ClInclude Include="fs_core_inline.h" />
+    <ClInclude Include="include.h" />
+    <ClInclude Include="fs_resource_system_worker.h">
+      <Filter>fs_resource_system_worker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="fs_core.cpp" />
+    <Filter Include="fs_resource_system_worker">
+      <UniqueIdentifier>{5af96a33-5003-4bae-94ba-d65b131240f2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="fs_resource_system_worker.cpp">
+      <Filter>fs_resource_system_worker</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
