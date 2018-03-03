@@ -308,7 +308,6 @@ struct function_wrapper;
 template<typename Return, typename ... Args>
 struct function_wrapper<Return(*)( Args ... )>
 {
-public:
 	typedef Return(*value_type)( Args ... );
 	typedef Return return_type;
 
@@ -324,14 +323,12 @@ public:
 		return m_function( args ... );
 	}
 
-protected:
 	value_type	m_function;
 };
 
 template<typename Return, typename This, typename ... Args>
 struct function_wrapper<Return(This::*)( Args ... )>
 {
-public:
 	typedef Return(This::*value_type)( Args ... );
 	typedef Return return_type;
 
@@ -347,14 +344,12 @@ public:
 		return ( this_ptr->*m_function )( args ... );
 	}
 
-protected:
 	value_type	m_function;
 };
 
 template<typename Return, typename This, typename ... Args>
 struct function_wrapper<Return(This::*)( Args ... ) const>
 {
-public:
 	typedef Return(This::*value_type)( Args ... ) const;
 	typedef Return return_type;
 
@@ -370,7 +365,6 @@ public:
 		return ( this_ptr->*m_function )( args ... );
 	}
 
-protected:
 	value_type	m_function;
 };
 
@@ -557,6 +551,11 @@ public:
 			typename arguments_type::pair_type>::call( m_function, args ..., m_param_use );
 	}
 
+	inline operator bool( )
+	{
+		return m_function.m_function != nullptr;
+	}
+
 protected:
 	__lib_function_detail::function_wrapper<FunctionType> m_function;
 	union
@@ -584,13 +583,18 @@ public:
 	{
 		typedef invoke_function_helper<fixed_function<FunctionType, Args ...>> helper;
 
-		invoker			= &helper::invoke;
-		helper::create	( data, func );
+		m_invoker		= &helper::invoke;
+		helper::create	( m_data, func );
 	}
 
 	inline FunctionReturn operator( )( FunctionArgs ... args )
 	{
-		return (FunctionReturn)invoker( data, args ... );
+		return (FunctionReturn)m_invoker( m_data, args ... );
+	}
+	
+	inline operator bool( )
+	{
+		return m_invoker != nullptr;
 	}
 
 protected:
@@ -626,8 +630,8 @@ protected:
 	enum { Size = 128 };
 	enum { ArenaSize = Size - sizeof(invoker_type) };
 
-	invoker_type invoker;
-	byte data[ArenaSize];
+	invoker_type m_invoker;
+	byte m_data[ArenaSize];
 
 };
 
