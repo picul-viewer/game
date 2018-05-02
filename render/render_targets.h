@@ -4,7 +4,7 @@
 #include <core/types.h>
 #include "dx_include.h"
 
-#include "texture.h"
+#include "texture2d.h"
 #include "resource_views.h"
 
 namespace render {

@@ -1,48 +1,9 @@
-#include "hw_texture.h"
+#include "texture2d.h"
 
 #include "render_api.h"
 #include <fs/fs_core.h>
 
 namespace render {
-
-texture1d::texture1d( ) :
-	m_texture( nullptr )
-{ }
-
-void texture1d::cook::set_texture1d( u32			in_width,
-									 u32			in_mips,
-									 u32			in_array_size,
-									 DXGI_FORMAT	in_format,
-									 D3D11_USAGE	in_usage,
-									 u32			in_bind_flags,
-									 u32			in_cpu_access_flags,
-									 u32			in_misc_flags )
-{
-	desc.Width				= in_width;
-	desc.MipLevels			= in_mips;
-	desc.ArraySize			= in_array_size;
-	desc.Format				= in_format;
-	desc.Usage				= in_usage;
-	desc.BindFlags			= in_bind_flags;
-	desc.CPUAccessFlags		= in_cpu_access_flags;
-	desc.MiscFlags			= in_misc_flags;
-}
-
-void texture1d::create( cook const& in_cook )
-{
-	api::get_device( )->CreateTexture1D( &in_cook.desc, nullptr, &m_texture );
-}
-
-void texture1d::set( ID3D11Texture1D* in_texture )
-{
-	m_texture = in_texture;
-}
-
-void texture1d::destroy( )
-{
-	dx_release( m_texture );
-}
-
 
 texture2d::texture2d( ) :
 	m_texture( nullptr )
@@ -105,47 +66,6 @@ void texture2d::set( ID3D11Texture2D* in_texture )
 }
 
 void texture2d::destroy( )
-{
-	dx_release( m_texture );
-}
-
-
-texture3d::texture3d( ) :
-	m_texture( nullptr )
-{ }
-
-void texture3d::cook::set_texture3d( u32			in_width,
-									 u32			in_height,
-									 u32			in_depth,
-									 u32			in_mips,
-									 DXGI_FORMAT	in_format,
-									 D3D11_USAGE	in_usage,
-									 u32			in_bind_flags,
-									 u32			in_cpu_access_flags,
-									 u32			in_misc_flags )
-{
-	desc.Width				= in_width;
-	desc.Height				= in_height;
-	desc.Depth				= in_depth;
-	desc.MipLevels			= in_mips;
-	desc.Format				= in_format;
-	desc.Usage				= in_usage;
-	desc.BindFlags			= in_bind_flags;
-	desc.CPUAccessFlags		= in_cpu_access_flags;
-	desc.MiscFlags			= in_misc_flags;
-}
-
-void texture3d::create( cook const& in_cook )
-{
-	api::get_device( )->CreateTexture3D( &in_cook.desc, nullptr, &m_texture );
-}
-
-void texture3d::set( ID3D11Texture3D* in_texture )
-{
-	m_texture = in_texture;
-}
-
-void texture3d::destroy( )
 {
 	dx_release( m_texture );
 }

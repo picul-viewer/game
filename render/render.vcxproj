@@ -199,8 +199,10 @@
     <ClInclude Include="sampler_colletion.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="shader_pool.h" />
-    <ClInclude Include="hw_texture.h" />
+    <ClInclude Include="texture1d.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="texture2d.h" />
+    <ClInclude Include="texture3d.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp" />
@@ -229,8 +231,10 @@
     <ClCompile Include="sampler_colletion.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="shader_pool.cpp" />
-    <ClCompile Include="hw_texture.cpp" />
+    <ClCompile Include="texture1d.cpp" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="texture2d.cpp" />
+    <ClCompile Include="texture3d.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">

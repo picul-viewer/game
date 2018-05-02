@@ -184,11 +184,17 @@
     <ClCompile Include="shader_pool.cpp">
       <Filter>resources\shader_pool</Filter>
     </ClCompile>
-    <ClCompile Include="hw_texture.cpp">
-      <Filter>dx\textures</Filter>
-    </ClCompile>
     <ClCompile Include="texture.cpp">
       <Filter>resources\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="texture1d.cpp">
+      <Filter>dx\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="texture2d.cpp">
+      <Filter>dx\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="texture3d.cpp">
+      <Filter>dx\textures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -302,11 +308,17 @@
     <ClInclude Include="render_object_allocator.h">
       <Filter>resources\objects\containers\render_object_allocator</Filter>
     </ClInclude>
-    <ClInclude Include="hw_texture.h">
-      <Filter>dx\textures</Filter>
-    </ClInclude>
     <ClInclude Include="texture.h">
       <Filter>resources\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="texture1d.h">
+      <Filter>dx\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="texture2d.h">
+      <Filter>dx\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="texture3d.h">
+      <Filter>dx\textures</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
