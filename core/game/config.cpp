@@ -1,52 +1,91 @@
 #include "config.h"
+#include <lib/memory.h>
+#include <lib/hash.h>
 
 config::config( pointer data, uptr size ) :
-	m_begin		( data ),
-#ifdef DEBUG
-	m_end		( data + size ),
-#endif // #ifdef DEBUG
+	m_data		( data ),
+	m_size		( size ),
 	m_pointer	( data )
 { }
 
-void config::set( pointer data, uptr size )
+void config::create( pointer data, uptr size )
 {
-	m_begin		= data;
-#ifdef DEBUG
-	m_end		= data + size;
-#endif // #ifdef DEBUG
+	m_data		= data;
+	m_size		= size;
 	m_pointer	= data;
 }
 
-void config::move( ptr size )
+void config::operator+=( ptr size )
 {
 	m_pointer += size;
-	ASSERT( ( m_pointer >= m_begin ) && ( m_pointer < m_end ) );
+	ASSERT( ( m_pointer >= m_data ) && ( m_pointer < m_data + size ) );
+}
+
+void config::reset( )
+{
+	m_pointer = m_data;
+}
+
+pointer config::data( ) const
+{
+	return m_data;
+}
+
+uptr config::size( ) const
+{
+	return m_pointer - m_data;
+}
+
+uptr config::capacity( ) const
+{
+	return m_size;
+}
+
+u32 config::hash( ) const
+{
+	return hash32( )( data( ), size( ) );
 }
 
 
-config_builder::config_builder( pointer data, uptr max_size ) :
-	m_begin		( data ),
-#ifdef DEBUG
-	m_end		( data + max_size ),
-#endif // #ifdef DEBUG
-	m_pointer	( data )
-{ }
-
-void config_builder::set( pointer data, uptr max_size )
+bool operator==( config const& l, config const& r )
 {
-	m_begin		= data;
-#ifdef DEBUG
-	m_end		= data + max_size;
-#endif // #ifdef DEBUG
-	m_pointer	= data;
+	if ( l.size( ) != r.size( ) )
+		return false;
+	return memory::equal( l.data( ), r.data( ), l.size( ) );
 }
 
-pointer config_builder::data( ) const
+bool operator!=( config const& l, config const& r )
 {
-	return m_begin;
+	if ( l.size( ) != r.size( ) )
+		return true;
+	return !memory::equal( l.data( ), r.data( ), l.size( ) );
 }
 
-uptr config_builder::size( ) const
+bool operator<( config const& l, config const& r )
 {
-	return m_pointer - m_begin;
+	// Not lexic order, but it's faster.
+	if ( l.size( ) != r.size( ) )
+		return l.size( ) < r.size( );
+	return memory::less( l.data( ), r.data( ), l.size( ) );
+}
+
+bool operator>( config const& l, config const& r )
+{
+	if ( l.size( ) != r.size( ) )
+		return l.size( ) > r.size( );
+	return memory::greater( l.data( ), r.data( ), l.size( ) );
+}
+
+bool operator<=( config const& l, config const& r )
+{
+	if ( l.size( ) != r.size( ) )
+		return l.size( ) <= r.size( );
+	return !memory::greater( l.data( ), r.data( ), l.size( ) );
+}
+
+bool operator>=( config const& l, config const& r )
+{
+	if ( l.size( ) != r.size( ) )
+		return l.size( ) >= r.size( );
+	return !memory::less( l.data( ), r.data( ), l.size( ) );
 }
