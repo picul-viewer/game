@@ -2,7 +2,8 @@
 #define __render_pipeline_state_h_included_
 
 #include <types.h>
-#include <core/math.h>
+#include <math/vector.h>
+
 #include "dx_include.h"
 
 namespace render {

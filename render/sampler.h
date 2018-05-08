@@ -2,8 +2,9 @@
 #define __render_sampler_h_included_
 
 #include <types.h>
-#include <core/math.h>
 #include "dx_include.h"
+
+#include <math/vector.h>
 
 namespace render {
 

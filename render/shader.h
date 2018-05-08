@@ -2,7 +2,6 @@
 #define __render_shader_h_included_
 
 #include <types.h>
-#include <core/math.h>
 #include "dx_include.h"
 
 #include "input_layout.h"
