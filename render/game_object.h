@@ -17,12 +17,15 @@ public:
 	void create( config& in_config );
 	void destroy( );
 	
-	void dispatch( ) const;
-	
+	template<typename Pred>
+	inline void for_each( Pred const& functor )
+	{
+		m_objects.for_each( functor );
+	}
+
 protected:
-	typedef embedded_list<render_object, &render_object::m_next> render_object_list;
+	typedef embedded_typeless_list render_object_list;
 	render_object_list	m_objects;
-	//skeleton*			m_skeleton;
 };
 
 } // namespace render

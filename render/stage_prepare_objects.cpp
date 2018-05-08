@@ -4,7 +4,7 @@ namespace render {
 
 namespace renderer {
 	extern renderer_data	g_data;
-	extern scene*			g_scene;
+	extern render_scene*	g_scene;
 } // namespace renderer
 
 namespace stage_prepare_objects

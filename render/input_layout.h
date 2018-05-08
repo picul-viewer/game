@@ -10,7 +10,9 @@ namespace render {
 enum vertex_type
 {
 	vertex_type_default = 0,
-	vertex_type_static_mesh,
+	vertex_type_position_2d,
+	vertex_type_position,
+	vertex_type_mesh,
 
 	vertex_type_count
 };

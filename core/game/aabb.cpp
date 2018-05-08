@@ -107,15 +107,8 @@ void aabb_aligned::modify( math::sse::matrix3 const& transform )
 	__m128 max_y = _mm_shuffle_ps( _mm_shuffle_ps( l0_max, l1_max, _MM_SHUFFLE( 1, 1, 1, 1 ) ), l2_max, _MM_SHUFFLE( 1, 1, 2, 0 ) );
 	__m128 max_z = _mm_shuffle_ps( _mm_shuffle_ps( l0_max, l1_max, _MM_SHUFFLE( 2, 2, 2, 2 ) ), l2_max, _MM_SHUFFLE( 2, 2, 2, 0 ) );
 
-	__m128 trans = _mm_shuffle_ps( _mm_shuffle_ps( l0_max, l1_max, _MM_SHUFFLE( 3, 3, 3, 3 ) ), l2_max, _MM_SHUFFLE( 3, 3, 2, 0 ) );
+	__m128 trans = _mm_shuffle_ps( _mm_shuffle_ps( transform[0], transform[1], _MM_SHUFFLE( 3, 3, 3, 3 ) ), transform[2], _MM_SHUFFLE( 3, 3, 2, 0 ) );
 
-	__m128 new_min = _mm_add_ps( _mm_add_ps( min_x, min_y ), _mm_add_ps( min_z, trans ) );
-	__m128 new_max = _mm_add_ps( _mm_add_ps( max_x, max_y ), _mm_add_ps( max_z, trans ) );
-
-	__m128 mask0 = _mm_castsi128_ps( _mm_setr_epi32( -1, -1, -1, 0 ) );
-	__m128 mask1 = _mm_castsi128_ps( _mm_setr_epi32( 0, 0, 0, 0x3F800000 ) );
-
-	// Set w-component to 1.0f
-	min = _mm_or_ps( _mm_and_ps( new_min, mask0 ), mask1 );
-	max = _mm_or_ps( _mm_and_ps( new_max, mask0 ), mask1 );
+	min = _mm_add_ps( _mm_add_ps( min_x, min_y ), _mm_add_ps( min_z, trans ) );
+	max = _mm_add_ps( _mm_add_ps( max_x, max_y ), _mm_add_ps( max_z, trans ) );
 }

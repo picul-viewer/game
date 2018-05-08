@@ -23,7 +23,7 @@ public:
 	void create( );
 	void destroy( );
 
-	inline render_meshes_type& get_rendered_meshes( ) { return m_rendered_meshes; }
+	inline render_meshes_type& get_render_meshes( ) { return m_render_meshes; }
 
 	inline render_target_view& get_backbuffer( ) { return m_backbuffer_rt; }
 	inline render_target_tex2d& get_depth_buffer( ) { return m_depth_buffer; }
@@ -43,7 +43,7 @@ protected:
 	};
 
 	fixed_array<s8, rendered_objects_memory_size>	m_rendered_objects_memory;
-	render_meshes_type								m_rendered_meshes;
+	render_meshes_type								m_render_meshes;
 	
 	render_target_view								m_backbuffer_rt;
 	render_target_tex2d								m_depth_buffer;

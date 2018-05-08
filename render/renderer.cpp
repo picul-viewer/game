@@ -9,6 +9,7 @@
 
 #include "render_parameters.h"
 
+#include "render_object_allocator.h"
 #include "render_scene.h"
 
 #include "stages.h"
@@ -39,8 +40,9 @@ void renderer_data::destroy( )
 namespace renderer
 {
 
-extern renderer_data	g_data;
-extern scene			g_scene;
+extern renderer_data			g_data;
+
+extern render_scene				g_scene;
 
 void create( )
 {
@@ -59,7 +61,7 @@ void render( )
 	stage_prepare_objects::execute	( );
 	stage_forward_default::execute	( );
 
-	render_core::end_frame			( );
+	core::end_frame					( );
 }
 
 } // namespace renderer

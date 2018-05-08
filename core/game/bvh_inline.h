@@ -109,15 +109,15 @@ typename static_bvh<T>::node* static_bvh<T>::build( NodeAllocator& node_allocato
 	
 	float sah[3];
 	
-	sah[0] = get_linear_sah( objects[0], count, aabbs, found_divisions[0], found_aabbs[0] );
+	sah[0] = get_linear_sah( objects[0], count, aabbs, found_divisions[0] );
 
 	// Now can get node AABB
 	aabb_aligned node_box = aabbs[count - 2];
-	node_box.extrude( objects[0][count - 1] );
+	node_box.extrude( objects[0][count - 1]->get_aabb( ) );
 	n->box = node_box;
 
-	sah[1] = get_linear_sah( objects[1], count, aabbs, found_divisions[1], found_aabbs[1] );
-	sah[2] = get_linear_sah( objects[2], count, aabbs, found_divisions[2], found_aabbs[2] );
+	sah[1] = get_linear_sah( objects[1], count, aabbs, found_divisions[1] );
+	sah[2] = get_linear_sah( objects[2], count, aabbs, found_divisions[2] );
 
 	if ( ( sah[0] > sah[1] ) && ( sah[0] > sah[2] ) )
 	{
@@ -135,8 +135,10 @@ typename static_bvh<T>::node* static_bvh<T>::build( NodeAllocator& node_allocato
 		n->right = build( node_allocator, objects[2] + found_divisions[2], count - found_divisions[2], aabbs, 2 );
 	}
 
-	aligned_mem_allocator( ).deallocate( objects[sorting1] );
-	aligned_mem_allocator( ).deallocate( objects[sorting2] );
+	aligned_mem_allocator<16>( ).deallocate( objects[sorting1] );
+	aligned_mem_allocator<16>( ).deallocate( objects[sorting2] );
+
+	return n;
 }
 
 template<typename T>
@@ -176,7 +178,7 @@ void static_bvh<T>::create( NodeAllocator& node_allocator, buffer_array<T*>& obj
 		return;
 	}
 	
-	aabb_aligned* aabbs = aligned_mem_allocator<16>( ).allocate( count * sizeof(aabb_aligned) );
+	aabb_aligned* aabbs = aligned_mem_allocator<16>( ).allocate( objects.size( ) * sizeof(aabb_aligned) );
 
 	// Pre-sort by max.x -> sorting == 0
 	sort( objects.begin( ), objects.end( ), []( T* l, T* r )

@@ -22,8 +22,8 @@ public:
 	void create( pointer in_data, uptr in_size, D3D11_INPUT_ELEMENT_DESC* in_descs, u32 in_descs_count );
 	void set( ID3D11VertexShader* in_shader, ID3D11InputLayout* in_layout );
 	
-	void add_ref( ) const;
-	void release( ) const;
+	u32 add_ref( ) const;
+	u32 release( ) const;
 	
 	virtual void bind( ) const override;
 	virtual inline bool is_null( ) const override;
@@ -39,8 +39,8 @@ public:
 	void create( pointer in_data, uptr in_size );
 	void set( ID3D11PixelShader* in_shader );
 	
-	void add_ref( ) const;
-	void release( ) const;
+	u32 add_ref( ) const;
+	u32 release( ) const;
 	
 	virtual void bind( ) const override;
 	virtual inline bool is_null( ) const override;
@@ -55,8 +55,8 @@ public:
 	void create( pointer in_data, uptr in_size );
 	void set( ID3D11GeometryShader* in_shader );
 	
-	void add_ref( ) const;
-	void release( ) const;
+	u32 add_ref( ) const;
+	u32 release( ) const;
 	
 	virtual void bind( ) const override;
 	virtual inline bool is_null( ) const override;
@@ -71,8 +71,8 @@ public:
 	void create( pointer in_data, uptr in_size );
 	void set( ID3D11HullShader* in_shader );
 	
-	void add_ref( ) const;
-	void release( ) const;
+	u32 add_ref( ) const;
+	u32 release( ) const;
 	
 	virtual void bind( ) const override;
 	virtual inline bool is_null( ) const override;
@@ -87,8 +87,8 @@ public:
 	void create( pointer in_data, uptr in_size );
 	void set( ID3D11DomainShader* in_shader );
 	
-	void add_ref( ) const;
-	void release( ) const;
+	u32 add_ref( ) const;
+	u32 release( ) const;
 	
 	virtual void bind( ) const override;
 	virtual inline bool is_null( ) const override;
@@ -103,8 +103,8 @@ public:
 	void create( pointer in_data, uptr in_size );
 	void set( ID3D11ComputeShader* in_shader );
 	
-	void add_ref( ) const;
-	void release( ) const;
+	u32 add_ref( ) const;
+	u32 release( ) const;
 	
 	virtual void bind( ) const override;
 	virtual inline bool is_null( ) const override;

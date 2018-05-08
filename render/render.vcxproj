@@ -167,21 +167,23 @@
     <ClInclude Include="constant_buffer_inline.h" />
     <ClInclude Include="dx_include.h" />
     <ClInclude Include="effect.h" />
-    <ClInclude Include="forward_default_effect.h" />
+    <ClInclude Include="effect_inline.h" />
     <ClInclude Include="game_object.h" />
     <ClInclude Include="input_layout.h" />
+    <ClInclude Include="mesh.h" />
     <ClInclude Include="mesh_box.h" />
     <ClInclude Include="mesh_collection.h" />
     <ClInclude Include="mesh_quad.h" />
+    <ClInclude Include="per_frame_constants.h" />
     <ClInclude Include="pipeline_state_pool.h" />
+    <ClInclude Include="render_object_allocator.h" />
+    <ClInclude Include="render_object_allocator_inline.h" />
+    <ClInclude Include="render_model_mesh.h" />
     <ClInclude Include="stages.h" />
     <ClInclude Include="stage_forward_default.h" />
     <ClInclude Include="stage_prepare_objects.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="render_object.h" />
-    <ClInclude Include="per_frame_constant_buffer.h" />
-    <ClInclude Include="per_instance_constant_buffer.h" />
-    <ClInclude Include="miscellaneous_constant_buffer.h" />
     <ClInclude Include="pipeline_state.h" />
     <ClInclude Include="render_core.h" />
     <ClInclude Include="render_api.h" />
@@ -197,21 +199,25 @@
     <ClInclude Include="sampler_colletion.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="shader_pool.h" />
+    <ClInclude Include="texture1d.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="texture2d.h" />
+    <ClInclude Include="texture3d.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp" />
+    <ClCompile Include="constant_buffer.cpp" />
     <ClCompile Include="constant_buffers.cpp" />
     <ClCompile Include="effect.cpp" />
-    <ClCompile Include="forward_default_effect.cpp" />
     <ClCompile Include="game_object.cpp" />
     <ClCompile Include="input_layout.cpp" />
+    <ClCompile Include="mesh.cpp" />
     <ClCompile Include="mesh_collection.cpp" />
     <ClCompile Include="pipeline_state_pool.cpp" />
+    <ClCompile Include="render_model_mesh.cpp" />
     <ClCompile Include="stage_forward_default.cpp" />
     <ClCompile Include="stage_prepare_objects.cpp" />
     <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="render_object.cpp" />
     <ClCompile Include="pipeline_state.cpp" />
     <ClCompile Include="render_core.cpp" />
     <ClCompile Include="render_api.cpp" />
@@ -225,14 +231,16 @@
     <ClCompile Include="sampler_colletion.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="shader_pool.cpp" />
+    <ClCompile Include="texture1d.cpp" />
     <ClCompile Include="texture.cpp" />
-    <ClCompile Include="texture_loader.cpp" />
+    <ClCompile Include="texture2d.cpp" />
+    <ClCompile Include="texture3d.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\core.vcxproj">
+    <ProjectReference Include="..\core\core.vcxproj">
       <Project>{b7376639-83bd-4434-a00a-7a2551608722}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\fs\fs.vcxproj">
+    <ProjectReference Include="..\fs\fs.vcxproj">
       <Project>{665de970-5f56-461f-887a-7a83f9295de7}</Project>
     </ProjectReference>
   </ItemGroup>

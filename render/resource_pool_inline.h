@@ -21,7 +21,7 @@ template<typename T>
 static void create_resource_impl( pointer in_data, uptr in_size, T* in_resource )
 {
 	in_resource->create( in_data, in_size );
-	mem_allocator::deallocate( in_data );
+	mem_allocator( ).deallocate( in_data );
 }
 
 template<typename T>
@@ -40,7 +40,7 @@ T* resource_pool<T>::create_resource( weak_const_string const& in_filename )
 		it					= m_pool_data.emplace( make_pair( weak_const_string( resource_path ), T( ) ) ).first;
 		
 		// Read data from file with callback
-		fs::fs_core::read_file( in_filename.c_str( ), &create_resource_impl<T>, &it->second );
+		fs::core::read_file( in_filename.c_str( ), &create_resource_impl<T>, &it->second );
 	}
 	
 	return &it->second;

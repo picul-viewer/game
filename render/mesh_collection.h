@@ -2,7 +2,7 @@
 #define __render_mesh_collection_h_included_
 
 #include <types.h>
-#include "buffer.h"
+#include "mesh.h"
 
 namespace render {
 

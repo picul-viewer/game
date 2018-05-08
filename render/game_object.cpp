@@ -2,12 +2,15 @@
 
 #include "renderer.h"
 
+#include "render_allocators.h"
+
 #include "render_object_mesh.h"
 
 namespace render {
 
 namespace renderer {
-	extern scene g_scene;
+	extern render_scene				g_scene;
+	extern render_objects_allocator	g_render_objects_allocator;
 }
 
 void game_object::create( config& in_config )
@@ -22,7 +25,7 @@ void game_object::create( config& in_config )
 		{
 		case render_object_type_mesh:
 		{
-			render_object_mesh* obj	= renderer::g_scene.insert_render_object_mesh( );
+			render_object_mesh* obj	= renderer::g_render_objects_allocator.allocate<render_object_mesh>( );
 			obj->create				( in_config );
 			m_objects.insert		( obj );
 		}
@@ -32,28 +35,21 @@ void game_object::create( config& in_config )
 	}
 }
 
+struct destroy_render_object
+{
+	template<typename T>
+	void call( T* in_object )
+	{
+		in_object->destroy( );
+	}
+};
+
 void game_object::destroy( )
 {
 	m_objects.for_each( []( render_object* current )
 	{
-		switch ( current->get_type( ) )
-		{
-		case render_object_type_mesh:
-		{
-			render_object_mesh* obj = (render_object_mesh*)current;
-			renderer::g_scene.remove_render_object_mesh( obj );
-			obj->destroy( );
-			return;
-		}
-		default:
-			UNREACHABLE_CODE;
-		}
+		renderer::g_render_objects_allocator.execute_typed( current, destroy_render_object( ) );
 	} );
-}
-
-void game_object::dispatch( ) const
-{
-	m_objects.for_each( []( render_object const* obj ) { obj->dispatch( ); } );
 }
 
 } // namespace render
