@@ -42,7 +42,7 @@ public:
 	void set( ID3D11Texture2D* in_texture );
 	void destroy( );
 	
-	inline ID3D11Texture2D* get_resource( ) const { return m_texture; }
+	inline ID3D11Texture2D* get( ) const { return m_texture; }
 protected:
 	ID3D11Texture2D*	m_texture;
 };

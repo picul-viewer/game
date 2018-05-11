@@ -8,24 +8,24 @@ void render_target_tex2d::create_views( DXGI_FORMAT in_format, math::u16x2 in_si
 	{
 		shader_resource_view::cook cook;
 		cook.set_tex2d_srv( in_format, 0, 1 );
-		m_srv.create( m_texture.get_resource( ), cook );
+		m_srv.create( m_texture.get( ), cook );
 	}
 
 	if ( in_bind_flags & D3D11_BIND_RENDER_TARGET )
 	{
 		render_target_view::cook cook;
 		cook.set_tex2d_rtv( in_format, 0 );
-		m_rtv.create( m_texture.get_resource( ), cook );
+		m_rtv.create( m_texture.get( ), cook );
 	}
 	
 	if ( in_bind_flags & D3D11_BIND_DEPTH_STENCIL )
 	{
 		depth_stencil_view::cook cook;
 		cook.set_tex2d_dsv( in_format, 0, 0 );
-		m_dsv.create( m_texture.get_resource( ), cook );
+		m_dsv.create( m_texture.get( ), cook );
 		depth_stencil_view::cook const_cook;
 		const_cook.set_tex2d_dsv( in_format, 0, D3D11_DSV_READ_ONLY_DEPTH & D3D11_DSV_READ_ONLY_STENCIL );
-		m_const_dsv.create( m_texture.get_resource( ), const_cook );
+		m_const_dsv.create( m_texture.get( ), const_cook );
 	}
 }
 

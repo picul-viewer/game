@@ -44,7 +44,7 @@ public:
 	void update_default( pcvoid in_data, u32 in_offset, u32 in_size ) const;
 	void update_dynamic( pcvoid in_data, u32 in_offset, u32 in_size ) const;
 	
-	inline ID3D11Buffer* get_resource( ) const { return m_buffer; }
+	inline ID3D11Buffer* get( ) const { return m_buffer; }
 	
 protected:
 	ID3D11Buffer*	m_buffer;

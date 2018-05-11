@@ -15,7 +15,7 @@ public:
 	using buffer::add_ref;
 	using buffer::release;
 
-	using buffer::get_resource;
+	using buffer::get;
 
 	void update( pcvoid in_data, u32 in_offset, u32 in_size ) const;
 
