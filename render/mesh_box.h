@@ -1,10 +1,9 @@
 #include <types.h>
-#include <core/math.h>
 #include "dx_include.h"
 
-namespace render {
+#include <math/vector.h>
 
-namespace mesh_collection {
+namespace render {
 
 namespace box {
 
@@ -37,7 +36,5 @@ const u16 indices[] = {
 const u32 index_count = 36;
 
 } // namespace box
-
-} // namespace mesh_collection
 
 } // namespace render

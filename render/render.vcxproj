@@ -163,7 +163,6 @@
   <ItemGroup>
     <ClInclude Include="buffer.h" />
     <ClInclude Include="constant_buffer.h" />
-    <ClInclude Include="constant_buffers.h" />
     <ClInclude Include="constant_buffer_inline.h" />
     <ClInclude Include="dx_include.h" />
     <ClInclude Include="effect.h" />
@@ -172,9 +171,8 @@
     <ClInclude Include="input_layout.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="mesh_box.h" />
-    <ClInclude Include="mesh_collection.h" />
     <ClInclude Include="mesh_quad.h" />
-    <ClInclude Include="per_frame_constants.h" />
+    <ClInclude Include="constant_buffers_constants.h" />
     <ClInclude Include="pipeline_state_pool.h" />
     <ClInclude Include="render_object_allocator.h" />
     <ClInclude Include="render_object_allocator_inline.h" />
@@ -196,7 +194,6 @@
     <ClInclude Include="resource_pool_inline.h" />
     <ClInclude Include="resource_views.h" />
     <ClInclude Include="sampler.h" />
-    <ClInclude Include="sampler_colletion.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="shader_pool.h" />
     <ClInclude Include="texture1d.h" />
@@ -207,12 +204,10 @@
   <ItemGroup>
     <ClCompile Include="buffer.cpp" />
     <ClCompile Include="constant_buffer.cpp" />
-    <ClCompile Include="constant_buffers.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="game_object.cpp" />
     <ClCompile Include="input_layout.cpp" />
     <ClCompile Include="mesh.cpp" />
-    <ClCompile Include="mesh_collection.cpp" />
     <ClCompile Include="pipeline_state_pool.cpp" />
     <ClCompile Include="render_model_mesh.cpp" />
     <ClCompile Include="stage_forward_default.cpp" />
@@ -228,7 +223,6 @@
     <ClCompile Include="render_targets.cpp" />
     <ClCompile Include="resource_views.cpp" />
     <ClCompile Include="sampler.cpp" />
-    <ClCompile Include="sampler_colletion.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="shader_pool.cpp" />
     <ClCompile Include="texture1d.cpp" />

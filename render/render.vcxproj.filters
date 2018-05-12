@@ -25,26 +25,14 @@
     <Filter Include="resources\input_layout">
       <UniqueIdentifier>{ed10ca64-0681-428c-89ce-096aef007663}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\collections">
-      <UniqueIdentifier>{13f47db1-9546-4e51-9674-1cf053d1a9ac}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\effect">
       <UniqueIdentifier>{c65cf6f1-6559-4e03-942d-0c4b541d5cf1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\collections\mesh_collection">
-      <UniqueIdentifier>{e3d2d044-a56a-4c38-a44e-e2d593d6af2c}</UniqueIdentifier>
     </Filter>
     <Filter Include="resources\resource_pool">
       <UniqueIdentifier>{536c8528-fad1-4329-9683-932d1c8b41ea}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\collections\sampler_collection">
-      <UniqueIdentifier>{914fe4b4-9675-4e13-912b-0f264abaa6be}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\render_target">
       <UniqueIdentifier>{979b6059-b267-4258-8dfd-7b395ab2bc7a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dx\resource_views">
-      <UniqueIdentifier>{36c7e70a-97ab-49dd-b28b-fb5aa1462b27}</UniqueIdentifier>
     </Filter>
     <Filter Include="renderer">
       <UniqueIdentifier>{e6497ef8-4add-4ef2-afe5-ee3441bfe369}</UniqueIdentifier>
@@ -72,9 +60,6 @@
     </Filter>
     <Filter Include="resources\mesh">
       <UniqueIdentifier>{4e227022-127a-43c4-ac56-aa129687dece}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\constant_buffers">
-      <UniqueIdentifier>{195da88b-79bc-4cf5-a169-92eabd9a3068}</UniqueIdentifier>
     </Filter>
     <Filter Include="resources\pipeline_state_pool">
       <UniqueIdentifier>{2b9e7b2e-7c22-4145-af95-d3014cc8af04}</UniqueIdentifier>
@@ -106,6 +91,12 @@
     <Filter Include="resources\texture">
       <UniqueIdentifier>{cb4972b5-da99-462e-beb8-06f068e53dd3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="renderer\resources\mesh_data">
+      <UniqueIdentifier>{eaa926bc-c319-407c-85c3-cc487ec72bf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dx\resource_views">
+      <UniqueIdentifier>{8975af85-d900-4d60-83b1-f4dcae1dc6d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
@@ -124,17 +115,8 @@
     <ClCompile Include="pipeline_state.cpp">
       <Filter>dx\pipeline_states</Filter>
     </ClCompile>
-    <ClCompile Include="mesh_collection.cpp">
-      <Filter>resources\collections\mesh_collection</Filter>
-    </ClCompile>
     <ClCompile Include="effect.cpp">
       <Filter>resources\effect</Filter>
-    </ClCompile>
-    <ClCompile Include="sampler_colletion.cpp">
-      <Filter>resources\collections\sampler_collection</Filter>
-    </ClCompile>
-    <ClCompile Include="resource_views.cpp">
-      <Filter>dx\resource_views</Filter>
     </ClCompile>
     <ClCompile Include="render_targets.cpp">
       <Filter>resources\render_target</Filter>
@@ -172,9 +154,6 @@
     <ClCompile Include="render_model_mesh.cpp">
       <Filter>resources\objects\render_objects\mesh</Filter>
     </ClCompile>
-    <ClCompile Include="constant_buffers.cpp">
-      <Filter>resources\constant_buffers</Filter>
-    </ClCompile>
     <ClCompile Include="constant_buffer.cpp">
       <Filter>dx\buffers</Filter>
     </ClCompile>
@@ -196,14 +175,14 @@
     <ClCompile Include="texture3d.cpp">
       <Filter>dx\textures</Filter>
     </ClCompile>
+    <ClCompile Include="resource_views.cpp">
+      <Filter>dx\resource_views</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dx_include.h" />
     <ClInclude Include="buffer.h">
       <Filter>dx\buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="constant_buffers.h">
-      <Filter>resources\constant_buffers</Filter>
     </ClInclude>
     <ClInclude Include="render_core.h" />
     <ClInclude Include="input_layout.h">
@@ -224,23 +203,8 @@
     <ClInclude Include="resource_pool_inline.h">
       <Filter>resources\resource_pool</Filter>
     </ClInclude>
-    <ClInclude Include="mesh_collection.h">
-      <Filter>resources\collections\mesh_collection</Filter>
-    </ClInclude>
     <ClInclude Include="effect.h">
       <Filter>resources\effect</Filter>
-    </ClInclude>
-    <ClInclude Include="sampler_colletion.h">
-      <Filter>resources\collections\sampler_collection</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh_box.h">
-      <Filter>resources\collections\mesh_collection</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh_quad.h">
-      <Filter>resources\collections\mesh_collection</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_views.h">
-      <Filter>dx\resource_views</Filter>
     </ClInclude>
     <ClInclude Include="render_targets.h">
       <Filter>resources\render_target</Filter>
@@ -290,9 +254,6 @@
     <ClInclude Include="constant_buffer_inline.h">
       <Filter>dx\buffers</Filter>
     </ClInclude>
-    <ClInclude Include="per_frame_constants.h">
-      <Filter>resources\constant_buffers</Filter>
-    </ClInclude>
     <ClInclude Include="pipeline_state_pool.h">
       <Filter>resources\pipeline_state_pool</Filter>
     </ClInclude>
@@ -319,6 +280,18 @@
     </ClInclude>
     <ClInclude Include="texture3d.h">
       <Filter>dx\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_buffers_constants.h">
+      <Filter>renderer\resources</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_views.h">
+      <Filter>dx\resource_views</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_quad.h">
+      <Filter>renderer\resources\mesh_data</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_box.h">
+      <Filter>renderer\resources\mesh_data</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

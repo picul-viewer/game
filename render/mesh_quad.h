@@ -1,10 +1,9 @@
 #include <types.h>
-#include <core/math.h>
 #include "dx_include.h"
 
-namespace render {
+#include <math/vector.h>
 
-namespace mesh_collection {
+namespace render {
 
 namespace quad {
 
@@ -23,7 +22,5 @@ static const u16 indices[] = {
 static const u32 index_count = 6;
 
 } // namespace quad
-
-} // namespace mesh_collection
 
 } // namespace render
