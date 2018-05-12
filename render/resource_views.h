@@ -77,43 +77,24 @@ public:
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC desc;
 	};
+	
+	shader_resource_view( );
 
 	void create( ID3D11Resource* in_resource, cook const& in_cook );
-	void set( ID3D11ShaderResourceView* in_view );
 	void destroy( );
 	
-	void bind_vs( u32 in_slot ) const;
-	void bind_ps( u32 in_slot ) const;
-	void bind_gs( u32 in_slot ) const;
-	void bind_hs( u32 in_slot ) const;
-	void bind_ds( u32 in_slot ) const;
-	void bind_cs( u32 in_slot ) const;
+	inline void set( ID3D11ShaderResourceView* in_view ) { m_srv = in_view; }
+	inline ID3D11ShaderResourceView* const& get( ) const { return m_srv; }
 
-	inline ID3D11ShaderResourceView* get_view( ) const { return m_srv; }
-
+	void bind_vs( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_ps( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_gs( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_hs( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_ds( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_cs( u32 in_slot, u32 in_count = 1 ) const;
+	
 protected:
 	ID3D11ShaderResourceView*	m_srv;
-};
-
-class shader_resource_views
-{
-public:
-	enum { max_shader_resources = 8 };
-
-	void set_shader_resource( u32 index, shader_resource_view in_view );
-	void destroy( );
-
-	shader_resource_view& operator[]( u32 index );
-	
-	void bind_vs( ) const;
-	void bind_ps( ) const;
-	void bind_gs( ) const;
-	void bind_hs( ) const;
-	void bind_ds( ) const;
-	void bind_cs( ) const;
-
-protected:
-	shader_resource_view	m_shader_resources[max_shader_resources]{};
 };
 
 class depth_stencil_view
@@ -163,12 +144,14 @@ public:
 		
 		D3D11_DEPTH_STENCIL_VIEW_DESC desc;
 	};
+	
+	depth_stencil_view( );
 
 	void create( ID3D11Resource* in_resource, cook const& in_cook );
-	void set( ID3D11DepthStencilView* in_view );
 	void destroy( );
 	
-	inline ID3D11DepthStencilView* get_view( ) const { return m_dsv; }
+	inline void set( ID3D11DepthStencilView* in_view ) { m_dsv = in_view; }
+	inline ID3D11DepthStencilView* const& get( ) const { return m_dsv; }
 
 protected:
 	ID3D11DepthStencilView*	m_dsv;
@@ -226,36 +209,19 @@ public:
 
 		D3D11_RENDER_TARGET_VIEW_DESC desc;
 	};
+	
+	render_target_view( );
 
 	void create( ID3D11Resource* in_resource, cook const& in_cook );
-	void set( ID3D11RenderTargetView* in_view );
 	void destroy( );
 	
-	void bind( depth_stencil_view const& in_dsv ) const;
-	
-	inline ID3D11RenderTargetView* get_view( ) const { return m_rtv; }
+	inline void set( ID3D11RenderTargetView* in_view ) { m_rtv = in_view; }
+	inline ID3D11RenderTargetView* const& get( ) const { return m_rtv; }
 
+	void bind( depth_stencil_view in_dsv, u32 in_count = 1 ) const;
+	
 protected:
 	ID3D11RenderTargetView*	m_rtv;
-};
-
-class render_target_views
-{
-public:
-	enum { max_render_targets = 4 };
-
-	void set_render_target( u32 index, render_target_view in_view );
-	void set_depth_stencil( depth_stencil_view in_view );
-	void destroy( );
-
-	render_target_view& get_render_target( u32 index );
-	depth_stencil_view& get_depth_stencil( );
-
-	void bind( ) const;
-
-protected:
-	render_target_view	m_render_targets[max_render_targets];
-	depth_stencil_view	m_depth_stencil;
 };
 
 } // namespace render

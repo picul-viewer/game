@@ -30,15 +30,17 @@ public:
 	};
 	
 	void create( cook const& in_cook );
-	void set( ID3D11SamplerState* in_state );
 	void destroy( );
 	
-	void bind_vs( u32 in_slot ) const;
-	void bind_ps( u32 in_slot ) const;
-	void bind_gs( u32 in_slot ) const;
-	void bind_hs( u32 in_slot ) const;
-	void bind_ds( u32 in_slot ) const;
-	void bind_cs( u32 in_slot ) const;
+	inline void set( ID3D11SamplerState* in_state ) { m_sampler = in_state; }
+	inline ID3D11SamplerState* const& get( ) { return m_sampler; }
+
+	void bind_vs( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_ps( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_gs( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_hs( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_ds( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_cs( u32 in_slot, u32 in_count = 1 ) const;
 
 protected:
 	ID3D11SamplerState* m_sampler;

@@ -3,10 +3,6 @@
 
 namespace render {
 
-texture2d::texture2d( ) :
-	m_texture( nullptr )
-{ }
-
 void texture2d::cook::set_render_target( u32			in_width,
 										 u32			in_height,
 										 DXGI_FORMAT	in_format,
@@ -53,14 +49,13 @@ void texture2d::cook::set_texture2d( u32			in_width,
 	desc.MiscFlags			= in_misc_flags;
 }
 
+texture2d::texture2d( ) :
+	m_texture( nullptr )
+{ }
+
 void texture2d::create( cook const& in_cook )
 {
 	api::get_device( )->CreateTexture2D( &in_cook.desc, nullptr, &m_texture );
-}
-
-void texture2d::set( ID3D11Texture2D* in_texture )
-{
-	m_texture = in_texture;
 }
 
 void texture2d::destroy( )

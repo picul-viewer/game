@@ -31,11 +31,15 @@ public:
 
 		D3D11_DEPTH_STENCIL_DESC desc;
 	};
+	
+	depth_stencil_state( );
 
 	void create( cook const& in_cook );
-	void set( ID3D11DepthStencilState* in_state );
 	void destroy( );
 	
+	inline void set( ID3D11DepthStencilState* in_state ) { m_depth_stencil_state = in_state; }
+	inline ID3D11DepthStencilState* const& get( ) { return m_depth_stencil_state; }
+
 	void bind( u8 in_stencil_ref ) const;
 
 protected:
@@ -62,11 +66,15 @@ public:
 
 		D3D11_BLEND_DESC desc;
 	};
+	
+	blend_state( );
 
 	void create( cook const& in_cook );
-	void set( ID3D11BlendState* in_state );
 	void destroy( );
 	
+	inline void set( ID3D11BlendState* in_state ) { m_blend_state = in_state; }
+	inline ID3D11BlendState* const& get( ) { return m_blend_state; }
+
 	void bind( math::float4 const& in_blend_factor, u32 in_sample_mask ) const;
 
 protected:
@@ -92,10 +100,14 @@ public:
 		D3D11_RASTERIZER_DESC desc;
 	};
 
+	rasterizer_state( );
+
 	void create( cook const& in_cook );
-	void set( ID3D11RasterizerState* in_state );
 	void destroy( );
 	
+	inline void set( ID3D11RasterizerState* in_state ) { m_rasterizer_state = in_state; }
+	inline ID3D11RasterizerState* const& get( ) { return m_rasterizer_state; }
+
 	void bind( ) const;
 
 protected:

@@ -8,9 +8,7 @@ namespace render {
 
 class buffer
 {
-public:
-	buffer( );
-	
+public:	
 	struct cook
 	{
 		void set_vertex_buffer( u32		in_size,
@@ -31,20 +29,21 @@ public:
 		D3D11_BUFFER_DESC buffer_desc;
 	};
 	
+	buffer( );
+
 	void create( cook const& in_cook, pcvoid in_data );
 	void create( cook const& in_cook );
-	void set( ID3D11Buffer* in_buffer );
+	void destroy( );
 	
 	u32 add_ref( ) const;
 	u32 release( ) const;
 	
-	void destroy( );
+	inline void set( ID3D11Buffer* in_buffer ) { m_buffer = in_buffer; }
+	inline ID3D11Buffer* const& get( ) const { return m_buffer; }
 
 	void update_default( pcvoid in_data ) const;
 	void update_default( pcvoid in_data, u32 in_offset, u32 in_size ) const;
 	void update_dynamic( pcvoid in_data, u32 in_offset, u32 in_size ) const;
-	
-	inline ID3D11Buffer* get( ) const { return m_buffer; }
 	
 protected:
 	ID3D11Buffer*	m_buffer;

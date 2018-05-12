@@ -3,10 +3,6 @@
 
 namespace render {
 
-texture3d::texture3d( ) :
-	m_texture( nullptr )
-{ }
-
 void texture3d::cook::set_texture3d( u32			in_width,
 									 u32			in_height,
 									 u32			in_depth,
@@ -33,10 +29,9 @@ void texture3d::create( cook const& in_cook )
 	api::get_device( )->CreateTexture3D( &in_cook.desc, nullptr, &m_texture );
 }
 
-void texture3d::set( ID3D11Texture3D* in_texture )
-{
-	m_texture = in_texture;
-}
+texture3d::texture3d( ) :
+	m_texture( nullptr )
+{ }
 
 void texture3d::destroy( )
 {

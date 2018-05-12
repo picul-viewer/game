@@ -3,10 +3,6 @@
 
 namespace render {
 
-sampler::sampler( ) :
-	m_sampler( nullptr )
-{ }
-
 void sampler::cook::set_sampler( D3D11_FILTER				in_filter,
 								 D3D11_TEXTURE_ADDRESS_MODE	in_address_u,
 								 D3D11_TEXTURE_ADDRESS_MODE	in_address_v,
@@ -33,14 +29,13 @@ void sampler::cook::set_sampler( D3D11_FILTER				in_filter,
 	sampler_desc.MaxLOD				= in_max_lod;
 }
 
+sampler::sampler( ) :
+	m_sampler( nullptr )
+{ }
+
 void sampler::create( cook const& in_cook )
 {
 	api::get_device( )->CreateSamplerState( &in_cook.sampler_desc, &m_sampler );
-}
-
-void sampler::set( ID3D11SamplerState* in_state )
-{
-	m_sampler = in_state;
 }
 
 void sampler::destroy( )
@@ -48,34 +43,34 @@ void sampler::destroy( )
 	dx_release( m_sampler );
 }
 
-void sampler::bind_vs( u32 in_slot ) const
+void sampler::bind_vs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->VSSetSamplers( in_slot, 1, &m_sampler );
+	api::get_context( )->VSSetSamplers( in_slot, in_count, &m_sampler );
 }
 
-void sampler::bind_ps( u32 in_slot ) const
+void sampler::bind_ps( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->PSSetSamplers( in_slot, 1, &m_sampler );
+	api::get_context( )->PSSetSamplers( in_slot, in_count, &m_sampler );
 }
 
-void sampler::bind_gs( u32 in_slot ) const
+void sampler::bind_gs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->GSSetSamplers( in_slot, 1, &m_sampler );
+	api::get_context( )->GSSetSamplers( in_slot, in_count, &m_sampler );
 }
 
-void sampler::bind_hs( u32 in_slot ) const
+void sampler::bind_hs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->HSSetSamplers( in_slot, 1, &m_sampler );
+	api::get_context( )->HSSetSamplers( in_slot, in_count, &m_sampler );
 }
 
-void sampler::bind_ds( u32 in_slot ) const
+void sampler::bind_ds( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->DSSetSamplers( in_slot, 1, &m_sampler );
+	api::get_context( )->DSSetSamplers( in_slot, in_count, &m_sampler );
 }
 
-void sampler::bind_cs( u32 in_slot ) const
+void sampler::bind_cs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->CSSetSamplers( in_slot, 1, &m_sampler );
+	api::get_context( )->CSSetSamplers( in_slot, in_count, &m_sampler );
 }
 
 } // namespace render

@@ -23,12 +23,12 @@ public:
 	void update( Data const& in_data ) const;
 	void update( pcvoid in_data, u32 in_offset, u32 in_size ) const;
 
-	void bind_vs( u32 in_slot ) const;
-	void bind_ps( u32 in_slot ) const;
-	void bind_gs( u32 in_slot ) const;
-	void bind_hs( u32 in_slot ) const;
-	void bind_ds( u32 in_slot ) const;
-	void bind_cs( u32 in_slot ) const;
+	void bind_vs( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_ps( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_gs( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_hs( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_ds( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_cs( u32 in_slot, u32 in_count = 1 ) const;
 
 protected:
 	buffer m_buffer;

@@ -1,5 +1,6 @@
 #include "resource_views.h"
 #include "render_api.h"
+#include <macros.h>
 
 namespace render {
 
@@ -120,14 +121,13 @@ void shader_resource_view::cook::set_tex_cube_array_srv(
 	desc.TextureCubeArray.NumCubes			= in_array_size;
 }
 
+shader_resource_view::shader_resource_view( ) :
+	m_srv( nullptr )
+{ }
+
 void shader_resource_view::create( ID3D11Resource* in_resource, cook const& in_cook )
 {
 	api::get_device( )->CreateShaderResourceView( in_resource, &in_cook.desc, &m_srv );
-}
-
-void shader_resource_view::set( ID3D11ShaderResourceView* in_view )
-{
-	m_srv = in_view;
 }
 
 void shader_resource_view::destroy( )
@@ -135,107 +135,34 @@ void shader_resource_view::destroy( )
 	dx_release( m_srv );
 }
 
-void shader_resource_view::bind_vs( u32 in_slot ) const
+void shader_resource_view::bind_vs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->VSSetShaderResources( in_slot, 1, &m_srv );
+	api::get_context( )->VSSetShaderResources( in_slot, in_count, &m_srv );
 }
 
-void shader_resource_view::bind_ps( u32 in_slot ) const
+void shader_resource_view::bind_ps( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->PSSetShaderResources( in_slot, 1, &m_srv );
+	api::get_context( )->PSSetShaderResources( in_slot, in_count, &m_srv );
 }
 
-void shader_resource_view::bind_gs( u32 in_slot ) const
+void shader_resource_view::bind_gs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->GSSetShaderResources( in_slot, 1, &m_srv );
+	api::get_context( )->GSSetShaderResources( in_slot, in_count, &m_srv );
 }
 
-void shader_resource_view::bind_hs( u32 in_slot ) const
+void shader_resource_view::bind_hs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->HSSetShaderResources( in_slot, 1, &m_srv );
+	api::get_context( )->HSSetShaderResources( in_slot, in_count, &m_srv );
 }
 
-void shader_resource_view::bind_ds( u32 in_slot ) const
+void shader_resource_view::bind_ds( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->DSSetShaderResources( in_slot, 1, &m_srv );
+	api::get_context( )->DSSetShaderResources( in_slot, in_count, &m_srv );
 }
 
-void shader_resource_view::bind_cs( u32 in_slot ) const
+void shader_resource_view::bind_cs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->CSSetShaderResources( in_slot, 1, &m_srv );
-}
-
-
-void shader_resource_views::set_shader_resource( u32 index, shader_resource_view in_view )
-{
-	ASSERT( index < max_shader_resources );
-	m_shader_resources[index] = in_view;
-}
-
-void shader_resource_views::destroy( )
-{
-	for ( u32 i = 0; i < max_shader_resources; ++i )
-		m_shader_resources[i].destroy( );
-}
-
-shader_resource_view& shader_resource_views::operator[]( u32 index )
-{
-	ASSERT( index < max_shader_resources );
-	return m_shader_resources[index];
-}
-
-void shader_resource_views::bind_vs( ) const
-{
-	api::get_context( )->VSSetShaderResources(
-		0,
-		max_shader_resources,
-		(ID3D11ShaderResourceView*const*)m_shader_resources
-	);
-}
-
-void shader_resource_views::bind_ps() const
-{
-	api::get_context( )->PSSetShaderResources(
-		0,
-		max_shader_resources,
-		(ID3D11ShaderResourceView*const*)m_shader_resources
-	);
-}
-
-void shader_resource_views::bind_gs() const
-{
-	api::get_context( )->GSSetShaderResources(
-		0,
-		max_shader_resources,
-		(ID3D11ShaderResourceView*const*)m_shader_resources
-	);
-}
-
-void shader_resource_views::bind_hs() const
-{
-	api::get_context( )->HSSetShaderResources(
-		0,
-		max_shader_resources,
-		(ID3D11ShaderResourceView*const*)m_shader_resources
-	);
-}
-
-void shader_resource_views::bind_ds() const
-{
-	api::get_context( )->DSSetShaderResources(
-		0,
-		max_shader_resources,
-		(ID3D11ShaderResourceView*const*)m_shader_resources
-	);
-}
-
-void shader_resource_views::bind_cs() const
-{
-	api::get_context( )->CSSetShaderResources(
-		0,
-		max_shader_resources,
-		(ID3D11ShaderResourceView*const*)m_shader_resources
-	);
+	api::get_context( )->CSSetShaderResources( in_slot, in_count, &m_srv );
 }
 
 
@@ -313,14 +240,13 @@ void depth_stencil_view::cook::set_tex2dms_array_dsv(
 	desc.Texture2DMSArray.ArraySize			= in_array_size;
 }
 
+depth_stencil_view::depth_stencil_view( ) :
+	m_dsv( nullptr )
+{ }
+
 void depth_stencil_view::create( ID3D11Resource* in_resource, cook const& in_cook )
 {
 	api::get_device( )->CreateDepthStencilView( in_resource, &in_cook.desc, &m_dsv );
-}
-
-void depth_stencil_view::set( ID3D11DepthStencilView* in_view )
-{
-	m_dsv = in_view;
 }
 
 void depth_stencil_view::destroy( )
@@ -410,14 +336,13 @@ void render_target_view::cook::set_tex3d_rtv(
 	desc.Texture3D.MipSlice					= in_mip_slice;
 }
 
+render_target_view::render_target_view( ) :
+	m_rtv( nullptr )
+{ }
+
 void render_target_view::create( ID3D11Resource* in_resource, cook const& in_cook )
 {
 	api::get_device( )->CreateRenderTargetView( in_resource, &in_cook.desc, &m_rtv );
-}
-
-void render_target_view::set( ID3D11RenderTargetView* in_view )
-{
-	m_rtv = in_view;
 }
 
 void render_target_view::destroy( )
@@ -425,48 +350,9 @@ void render_target_view::destroy( )
 	dx_release( m_rtv );
 }
 
-void render_target_view::bind( depth_stencil_view const& in_dsv ) const
+void render_target_view::bind( depth_stencil_view in_dsv, u32 in_count ) const
 {
-	api::get_context( )->OMSetRenderTargets( 1, &m_rtv, (ID3D11DepthStencilView*)&in_dsv );
-}
-
-
-void render_target_views::set_render_target( u32 index, render_target_view in_view )
-{
-	ASSERT( index < max_render_targets );
-	m_render_targets[index] = in_view;
-}
-
-void render_target_views::set_depth_stencil( depth_stencil_view in_view )
-{
-	m_depth_stencil = in_view;
-}
-
-void render_target_views::destroy( )
-{
-	for ( u32 i = 0; i < max_render_targets; ++i )
-		m_render_targets[i].destroy( );
-	m_depth_stencil.destroy( );
-}
-
-render_target_view& render_target_views::get_render_target( u32 index )
-{
-	ASSERT( index < max_render_targets );
-	return m_render_targets[index];
-}
-
-depth_stencil_view& render_target_views::get_depth_stencil( )
-{
-	return m_depth_stencil;
-}
-
-void render_target_views::bind( ) const
-{
-	api::get_context( )->OMSetRenderTargets(
-		max_render_targets,
-		(ID3D11RenderTargetView*const*)m_render_targets,
-		m_depth_stencil.get_view( )
-	);
+	api::get_context( )->OMSetRenderTargets( in_count, &m_rtv, in_dsv.get( ) );
 }
 
 } // namespace render

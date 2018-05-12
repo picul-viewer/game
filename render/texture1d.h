@@ -4,15 +4,11 @@
 #include <types.h>
 #include "dx_include.h"
 
-#include "resource_views.h"
-
 namespace render {
 
 class texture1d
 {
 public:
-	texture1d( );
-
 	struct cook
 	{
 		void set_texture1d( u32			in_width,
@@ -26,12 +22,15 @@ public:
 
 		D3D11_TEXTURE1D_DESC desc;
 	};
+	
+	texture1d( );
 
 	void create( cook const& in_cook );
-	void set( ID3D11Texture1D* in_texture );
 	void destroy( );
+	
+	inline void set( ID3D11Texture1D* in_texture ) { m_texture = in_texture; }
+	inline ID3D11Texture1D* const& get( ) const { return m_texture; }
 
-	inline ID3D11Texture1D* get( ) const { return m_texture; }
 protected:
 	ID3D11Texture1D*	m_texture;
 };

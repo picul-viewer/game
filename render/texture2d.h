@@ -4,15 +4,11 @@
 #include <types.h>
 #include "dx_include.h"
 
-#include "resource_views.h"
-
 namespace render {
 
 class texture2d
 {
 public:
-	texture2d( );
-
 	struct cook
 	{
 		void set_render_target( u32			in_width,
@@ -37,12 +33,15 @@ public:
 
 		D3D11_TEXTURE2D_DESC desc;
 	};
+	
+	texture2d( );
 
 	void create( cook const& in_cook );
-	void set( ID3D11Texture2D* in_texture );
 	void destroy( );
 	
-	inline ID3D11Texture2D* get( ) const { return m_texture; }
+	inline void set( ID3D11Texture2D* in_texture ) { m_texture = in_texture; }
+	inline ID3D11Texture2D* const& get( ) const { return m_texture; }
+
 protected:
 	ID3D11Texture2D*	m_texture;
 };

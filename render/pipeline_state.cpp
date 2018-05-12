@@ -37,14 +37,13 @@ void depth_stencil_state::cook::set_stencil(	bool					in_enable_stencil,
 	desc.BackFace.StencilPassOp			= in_back_face_stencil_pass_op;
 }
 
+depth_stencil_state::depth_stencil_state( ) :
+	m_depth_stencil_state( nullptr )
+{ }
+
 void depth_stencil_state::create( cook const& in_cook )
 {
 	api::get_device( )->CreateDepthStencilState( &in_cook.desc, &m_depth_stencil_state );
-}
-
-void depth_stencil_state::set( ID3D11DepthStencilState* in_state )
-{
-	m_depth_stencil_state = in_state;
 }
 
 void depth_stencil_state::destroy( )
@@ -85,14 +84,13 @@ void blend_state::cook::set_blend_for_rt(	u32				in_render_target_index,
 	desc.RenderTarget[in_render_target_index].RenderTargetWriteMask	= in_color_write_mask;
 }
 
+blend_state::blend_state( ) :
+	m_blend_state( nullptr )
+{ }
+
 void blend_state::create( cook const& in_cook )
 {
 	api::get_device( )->CreateBlendState( &in_cook.desc, &m_blend_state );
-}
-
-void blend_state::set( ID3D11BlendState* in_state )
-{
-	m_blend_state = in_state;
 }
 
 void blend_state::destroy( )
@@ -129,14 +127,13 @@ void rasterizer_state::cook::set(	D3D11_FILL_MODE	in_fill_mode,
 	desc.AntialiasedLineEnable	= in_antialiased_line_enable;
 }
 
+rasterizer_state::rasterizer_state( ) :
+	m_rasterizer_state( nullptr )
+{ }
+
 void rasterizer_state::create( cook const& in_cook )
 {
 	api::get_device( )->CreateRasterizerState( &in_cook.desc, &m_rasterizer_state );
-}
-
-void rasterizer_state::set( ID3D11RasterizerState* in_state )
-{
-	m_rasterizer_state = in_state;
 }
 
 void rasterizer_state::destroy( )

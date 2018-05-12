@@ -3,10 +3,6 @@
 
 namespace render {
 
-buffer::buffer( ) :
-	m_buffer( nullptr )
-{ }
-
 void buffer::cook::set_vertex_buffer( u32	in_size,
 									  bool	in_is_dynamic )
 {
@@ -60,6 +56,10 @@ void buffer::cook::set_buffer( u32			in_size,
 	buffer_desc.StructureByteStride	= in_structure_buffer_size;
 }
 
+buffer::buffer( ) :
+	m_buffer( nullptr )
+{ }
+
 void buffer::create( cook const& in_cook, pcvoid in_data )
 {
 	D3D11_SUBRESOURCE_DATA subresource_data = { in_data };
@@ -71,9 +71,9 @@ void buffer::create( cook const& in_cook )
 	api::get_device( )->CreateBuffer( &in_cook.buffer_desc, nullptr, &m_buffer );
 }
 
-void buffer::set( ID3D11Buffer* in_buffer )
+void buffer::destroy( )
 {
-	m_buffer = in_buffer;
+	dx_release( m_buffer );
 }
 
 u32 buffer::add_ref( ) const
@@ -84,11 +84,6 @@ u32 buffer::add_ref( ) const
 u32 buffer::release( ) const
 {
 	return m_buffer->Release( );
-}
-
-void buffer::destroy( )
-{
-	dx_release( m_buffer );
 }
 
 void buffer::update_default( pcvoid in_data ) const

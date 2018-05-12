@@ -3,10 +3,6 @@
 
 namespace render {
 
-texture1d::texture1d( ) :
-	m_texture( nullptr )
-{ }
-
 void texture1d::cook::set_texture1d( u32			in_width,
 									 u32			in_mips,
 									 u32			in_array_size,
@@ -26,14 +22,13 @@ void texture1d::cook::set_texture1d( u32			in_width,
 	desc.MiscFlags			= in_misc_flags;
 }
 
+texture1d::texture1d( ) :
+	m_texture( nullptr )
+{ }
+
 void texture1d::create( cook const& in_cook )
 {
 	api::get_device( )->CreateTexture1D( &in_cook.desc, nullptr, &m_texture );
-}
-
-void texture1d::set( ID3D11Texture1D* in_texture )
-{
-	m_texture = in_texture;
 }
 
 void texture1d::destroy( )
