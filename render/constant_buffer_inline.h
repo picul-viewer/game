@@ -1,20 +1,22 @@
 #ifndef __render_constant_buffer_inline_h_included_
 #define __render_constant_buffer_inline_h_included_
 
-#include "render_core.h"
-
 namespace render {
 
-template<typename buffer_struct>
-void typed_constant_buffer<buffer_struct>::create( buffer_struct* in_data, bool in_is_dynamic )
+template<typename Data>
+void constant_buffer::update( Data const& in_data ) const
 {
-	create( in_data, sizeof(buffer_struct), in_is_dynamic );
+	update( &in_data, 0, sizeof(Data) );
 }
 
-template<typename buffer_struct>
-void typed_constant_buffer<buffer_struct>::update( buffer_struct const& in_data ) const
+void constant_buffer::set( ID3D11Buffer* in_buffer )
 {
-	update( &in_data, 0, sizeof(buffer_struct) );
+	m_buffer.set( in_buffer );
+}
+
+ID3D11Buffer* const& constant_buffer::get( ) const
+{
+	return m_buffer.get( );
 }
 
 } // namespace render

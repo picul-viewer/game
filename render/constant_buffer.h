@@ -7,16 +7,20 @@
 
 namespace render {
 
-class constant_buffer : protected buffer
+class constant_buffer
 {
 public:
 	void create( pvoid in_data, uptr in_size, bool in_is_dynamic = false );
+	void destroy( );
+	
+	u32 add_ref( ) const;
+	u32 release( ) const;
+	
+	inline void set( ID3D11Buffer* in_buffer );
+	inline ID3D11Buffer* const& get( ) const;
 
-	using buffer::add_ref;
-	using buffer::release;
-
-	using buffer::get;
-
+	template<typename Data>
+	void update( Data const& in_data ) const;
 	void update( pcvoid in_data, u32 in_offset, u32 in_size ) const;
 
 	void bind_vs( u32 in_slot ) const;
@@ -25,19 +29,10 @@ public:
 	void bind_hs( u32 in_slot ) const;
 	void bind_ds( u32 in_slot ) const;
 	void bind_cs( u32 in_slot ) const;
-};
 
-template<typename buffer_struct>
-class typed_constant_buffer : public constant_buffer
-{
-public:
-	void create( buffer_struct* in_data, bool in_is_dynamic = false );
-
-	void update( buffer_struct const& in_data ) const;
 protected:
+	buffer m_buffer;
 
-	using constant_buffer::create;
-	using constant_buffer::update;
 };
 
 } // namespace render
