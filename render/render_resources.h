@@ -109,6 +109,9 @@ protected:
 	constant_buffer			m_default_constant_buffers[default_constant_buffer_type_count];
 };
 
+
+extern render_resources g_render_resources;
+
 } // namespace render
 
 #endif // #ifndef __render_render_resources_h_included_

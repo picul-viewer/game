@@ -183,4 +183,7 @@ void render_resources::bind_default_resources( ) const
 	bind_default_constant_buffers( );
 }
 
+
+render_resources g_render_resources;
+
 } // namespace render
