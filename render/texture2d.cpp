@@ -55,7 +55,7 @@ texture2d::texture2d( ) :
 
 void texture2d::create( cook const& in_cook )
 {
-	api::get_device( )->CreateTexture2D( &in_cook.desc, nullptr, &m_texture );
+	g_api.get_device( )->CreateTexture2D( &in_cook.desc, nullptr, &m_texture );
 }
 
 void texture2d::destroy( )

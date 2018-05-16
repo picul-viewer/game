@@ -26,7 +26,7 @@ void texture3d::cook::set_texture3d( u32			in_width,
 
 void texture3d::create( cook const& in_cook )
 {
-	api::get_device( )->CreateTexture3D( &in_cook.desc, nullptr, &m_texture );
+	g_api.get_device( )->CreateTexture3D( &in_cook.desc, nullptr, &m_texture );
 }
 
 texture3d::texture3d( ) :

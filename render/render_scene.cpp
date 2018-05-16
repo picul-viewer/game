@@ -7,7 +7,7 @@ namespace render {
 
 void render_scene::create( )
 {
-	math::u16x2 const screen_resolution = parameters::get_resolution( );
+	math::u16x2 const screen_resolution = g_parameters->screen_resolution;
 	float const aspect = (float)screen_resolution.x / (float)screen_resolution.y;
 
 	m_camera.set_view_projection( math::float4x4::get_identity( ), c_default_fov, aspect, c_default_near_plane, c_default_far_plane );

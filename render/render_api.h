@@ -2,16 +2,16 @@
 #define __render_render_api_h_included_
 
 #include <types.h>
-#include <core/math.h>
 #include "dx_include.h"
 
 namespace render {
 
-namespace api
+class api
 {
-	static const DXGI_FORMAT backbuffer_pixel_format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	
-	void create	( );// HWND in_hwnd, math::u16x2 in_resolution, DXGI_FORMAT in_pixel_format, bool in_is_windowed, bool in_allow_debug );
+public:
+	static const DXGI_FORMAT backbuffer_pixel_format;
+
+	void create	( );
 	void destroy( );
 
 	ID3D11Device*			get_device			( );
@@ -20,7 +20,17 @@ namespace api
 	ID3D11Texture2D*		get_backbuffer		( );
 	D3D_FEATURE_LEVEL		get_feature_level	( );
 	
-} // namespace render_api
+protected:
+	ID3D11Device*			m_device;
+	IDXGISwapChain*			m_swap_chain;
+	ID3D11DeviceContext*	m_context;
+	ID3D11Texture2D*		m_backbuffer;
+	D3D_FEATURE_LEVEL		m_feature_level;
+
+};
+
+
+extern api g_api;
 
 } // namespace render
 

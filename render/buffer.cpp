@@ -63,12 +63,12 @@ buffer::buffer( ) :
 void buffer::create( cook const& in_cook, pcvoid in_data )
 {
 	D3D11_SUBRESOURCE_DATA subresource_data = { in_data };
-	api::get_device( )->CreateBuffer( &in_cook.buffer_desc, &subresource_data, &m_buffer );
+	g_api.get_device( )->CreateBuffer( &in_cook.buffer_desc, &subresource_data, &m_buffer );
 }
 
 void buffer::create( cook const& in_cook )
 {
-	api::get_device( )->CreateBuffer( &in_cook.buffer_desc, nullptr, &m_buffer );
+	g_api.get_device( )->CreateBuffer( &in_cook.buffer_desc, nullptr, &m_buffer );
 }
 
 void buffer::destroy( )
@@ -88,7 +88,7 @@ u32 buffer::release( ) const
 
 void buffer::update_default( pcvoid in_data ) const
 {
-	api::get_context( )->UpdateSubresource( m_buffer, 0, nullptr, in_data, 0, 0 );
+	g_api.get_context( )->UpdateSubresource( m_buffer, 0, nullptr, in_data, 0, 0 );
 }
 
 void buffer::update_default( pcvoid in_data, u32 in_offset, u32 in_size ) const
@@ -100,17 +100,17 @@ void buffer::update_default( pcvoid in_data, u32 in_offset, u32 in_size ) const
 	box.bottom	= 1;
 	box.front	= 0;
 	box.back	= 1;
-	api::get_context( )->UpdateSubresource( m_buffer, 0, &box, in_data, 0, 0 );
+	g_api.get_context( )->UpdateSubresource( m_buffer, 0, &box, in_data, 0, 0 );
 }
 
 void buffer::update_dynamic( pcvoid in_data, u32 in_offset, u32 in_size ) const
 {
 	D3D11_MAPPED_SUBRESOURCE mapped_resource{ };
-	api::get_context( )->Map( m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource );
+	g_api.get_context( )->Map( m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource );
 
 	memcpy( (s8*)mapped_resource.pData + in_offset, in_data, in_size );
 
-	api::get_context( )->Unmap( m_buffer, 0 );
+	g_api.get_context( )->Unmap( m_buffer, 0 );
 }
 
 
@@ -122,7 +122,7 @@ void vertex_buffer::create( cook const& in_cook, pcvoid in_data, u32 in_stride )
 
 void vertex_buffer::bind( u32 in_slot, u32 in_offset ) const
 {
-	api::get_context( )->IASetVertexBuffers( in_slot, 1, &m_buffer, &m_stride, &in_offset );
+	g_api.get_context( )->IASetVertexBuffers( in_slot, 1, &m_buffer, &m_stride, &in_offset );
 }
 
 
@@ -134,7 +134,7 @@ void index_buffer::create( cook const& in_cook, pcvoid in_data, DXGI_FORMAT in_f
 	
 void index_buffer::bind( u32 in_offset ) const
 {
-	api::get_context( )->IASetIndexBuffer( m_buffer, m_format, in_offset );
+	g_api.get_context( )->IASetIndexBuffer( m_buffer, m_format, in_offset );
 }
 
 } // namespace render

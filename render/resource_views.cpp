@@ -127,7 +127,7 @@ shader_resource_view::shader_resource_view( ) :
 
 void shader_resource_view::create( ID3D11Resource* in_resource, cook const& in_cook )
 {
-	api::get_device( )->CreateShaderResourceView( in_resource, &in_cook.desc, &m_srv );
+	g_api.get_device( )->CreateShaderResourceView( in_resource, &in_cook.desc, &m_srv );
 }
 
 void shader_resource_view::destroy( )
@@ -137,32 +137,32 @@ void shader_resource_view::destroy( )
 
 void shader_resource_view::bind_vs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->VSSetShaderResources( in_slot, in_count, &m_srv );
+	g_api.get_context( )->VSSetShaderResources( in_slot, in_count, &m_srv );
 }
 
 void shader_resource_view::bind_ps( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->PSSetShaderResources( in_slot, in_count, &m_srv );
+	g_api.get_context( )->PSSetShaderResources( in_slot, in_count, &m_srv );
 }
 
 void shader_resource_view::bind_gs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->GSSetShaderResources( in_slot, in_count, &m_srv );
+	g_api.get_context( )->GSSetShaderResources( in_slot, in_count, &m_srv );
 }
 
 void shader_resource_view::bind_hs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->HSSetShaderResources( in_slot, in_count, &m_srv );
+	g_api.get_context( )->HSSetShaderResources( in_slot, in_count, &m_srv );
 }
 
 void shader_resource_view::bind_ds( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->DSSetShaderResources( in_slot, in_count, &m_srv );
+	g_api.get_context( )->DSSetShaderResources( in_slot, in_count, &m_srv );
 }
 
 void shader_resource_view::bind_cs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->CSSetShaderResources( in_slot, in_count, &m_srv );
+	g_api.get_context( )->CSSetShaderResources( in_slot, in_count, &m_srv );
 }
 
 
@@ -246,7 +246,7 @@ depth_stencil_view::depth_stencil_view( ) :
 
 void depth_stencil_view::create( ID3D11Resource* in_resource, cook const& in_cook )
 {
-	api::get_device( )->CreateDepthStencilView( in_resource, &in_cook.desc, &m_dsv );
+	g_api.get_device( )->CreateDepthStencilView( in_resource, &in_cook.desc, &m_dsv );
 }
 
 void depth_stencil_view::destroy( )
@@ -342,7 +342,7 @@ render_target_view::render_target_view( ) :
 
 void render_target_view::create( ID3D11Resource* in_resource, cook const& in_cook )
 {
-	api::get_device( )->CreateRenderTargetView( in_resource, &in_cook.desc, &m_rtv );
+	g_api.get_device( )->CreateRenderTargetView( in_resource, &in_cook.desc, &m_rtv );
 }
 
 void render_target_view::destroy( )
@@ -352,7 +352,7 @@ void render_target_view::destroy( )
 
 void render_target_view::bind( depth_stencil_view in_dsv, u32 in_count ) const
 {
-	api::get_context( )->OMSetRenderTargets( in_count, &m_rtv, in_dsv.get( ) );
+	g_api.get_context( )->OMSetRenderTargets( in_count, &m_rtv, in_dsv.get( ) );
 }
 
 } // namespace render

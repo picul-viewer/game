@@ -33,32 +33,32 @@ void constant_buffer::update( pcvoid in_data, u32 in_offset, u32 in_size ) const
 
 void constant_buffer::bind_vs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->VSSetConstantBuffers( in_slot, in_count, &get( ) );
+	g_api.get_context( )->VSSetConstantBuffers( in_slot, in_count, &get( ) );
 }
 
 void constant_buffer::bind_ps( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->PSSetConstantBuffers( in_slot, in_count, &get( ) );
+	g_api.get_context( )->PSSetConstantBuffers( in_slot, in_count, &get( ) );
 }
 
 void constant_buffer::bind_gs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->GSSetConstantBuffers( in_slot, in_count, &get( ) );
+	g_api.get_context( )->GSSetConstantBuffers( in_slot, in_count, &get( ) );
 }
 
 void constant_buffer::bind_hs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->HSSetConstantBuffers( in_slot, in_count, &get( ) );
+	g_api.get_context( )->HSSetConstantBuffers( in_slot, in_count, &get( ) );
 }
 
 void constant_buffer::bind_ds( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->DSSetConstantBuffers( in_slot, in_count, &get( ) );
+	g_api.get_context( )->DSSetConstantBuffers( in_slot, in_count, &get( ) );
 }
 
 void constant_buffer::bind_cs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->CSSetConstantBuffers( in_slot, in_count, &get( ) );
+	g_api.get_context( )->CSSetConstantBuffers( in_slot, in_count, &get( ) );
 }
 
 } // namespace render

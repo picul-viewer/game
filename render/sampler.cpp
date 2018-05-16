@@ -35,7 +35,7 @@ sampler::sampler( ) :
 
 void sampler::create( cook const& in_cook )
 {
-	api::get_device( )->CreateSamplerState( &in_cook.sampler_desc, &m_sampler );
+	g_api.get_device( )->CreateSamplerState( &in_cook.sampler_desc, &m_sampler );
 }
 
 void sampler::destroy( )
@@ -45,32 +45,32 @@ void sampler::destroy( )
 
 void sampler::bind_vs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->VSSetSamplers( in_slot, in_count, &m_sampler );
+	g_api.get_context( )->VSSetSamplers( in_slot, in_count, &m_sampler );
 }
 
 void sampler::bind_ps( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->PSSetSamplers( in_slot, in_count, &m_sampler );
+	g_api.get_context( )->PSSetSamplers( in_slot, in_count, &m_sampler );
 }
 
 void sampler::bind_gs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->GSSetSamplers( in_slot, in_count, &m_sampler );
+	g_api.get_context( )->GSSetSamplers( in_slot, in_count, &m_sampler );
 }
 
 void sampler::bind_hs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->HSSetSamplers( in_slot, in_count, &m_sampler );
+	g_api.get_context( )->HSSetSamplers( in_slot, in_count, &m_sampler );
 }
 
 void sampler::bind_ds( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->DSSetSamplers( in_slot, in_count, &m_sampler );
+	g_api.get_context( )->DSSetSamplers( in_slot, in_count, &m_sampler );
 }
 
 void sampler::bind_cs( u32 in_slot, u32 in_count ) const
 {
-	api::get_context( )->CSSetSamplers( in_slot, in_count, &m_sampler );
+	g_api.get_context( )->CSSetSamplers( in_slot, in_count, &m_sampler );
 }
 
 } // namespace render

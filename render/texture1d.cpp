@@ -28,7 +28,7 @@ texture1d::texture1d( ) :
 
 void texture1d::create( cook const& in_cook )
 {
-	api::get_device( )->CreateTexture1D( &in_cook.desc, nullptr, &m_texture );
+	g_api.get_device( )->CreateTexture1D( &in_cook.desc, nullptr, &m_texture );
 }
 
 void texture1d::destroy( )

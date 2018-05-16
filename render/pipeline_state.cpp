@@ -43,7 +43,7 @@ depth_stencil_state::depth_stencil_state( ) :
 
 void depth_stencil_state::create( cook const& in_cook )
 {
-	api::get_device( )->CreateDepthStencilState( &in_cook.desc, &m_depth_stencil_state );
+	g_api.get_device( )->CreateDepthStencilState( &in_cook.desc, &m_depth_stencil_state );
 }
 
 void depth_stencil_state::destroy( )
@@ -53,7 +53,7 @@ void depth_stencil_state::destroy( )
 
 void depth_stencil_state::bind( u8 in_stencil_ref ) const
 {
-	api::get_context( )->OMSetDepthStencilState( m_depth_stencil_state, in_stencil_ref );
+	g_api.get_context( )->OMSetDepthStencilState( m_depth_stencil_state, in_stencil_ref );
 }
 
 
@@ -90,7 +90,7 @@ blend_state::blend_state( ) :
 
 void blend_state::create( cook const& in_cook )
 {
-	api::get_device( )->CreateBlendState( &in_cook.desc, &m_blend_state );
+	g_api.get_device( )->CreateBlendState( &in_cook.desc, &m_blend_state );
 }
 
 void blend_state::destroy( )
@@ -100,7 +100,7 @@ void blend_state::destroy( )
 
 void blend_state::bind( math::float4 const& in_blend_factor, u32 in_sample_mask ) const
 {
-	api::get_context( )->OMSetBlendState( m_blend_state, in_blend_factor.data, in_sample_mask );
+	g_api.get_context( )->OMSetBlendState( m_blend_state, in_blend_factor.data, in_sample_mask );
 }
 
 
@@ -133,7 +133,7 @@ rasterizer_state::rasterizer_state( ) :
 
 void rasterizer_state::create( cook const& in_cook )
 {
-	api::get_device( )->CreateRasterizerState( &in_cook.desc, &m_rasterizer_state );
+	g_api.get_device( )->CreateRasterizerState( &in_cook.desc, &m_rasterizer_state );
 }
 
 void rasterizer_state::destroy( )
@@ -143,7 +143,7 @@ void rasterizer_state::destroy( )
 
 void rasterizer_state::bind( ) const
 {
-	api::get_context( )->RSSetState( m_rasterizer_state );
+	g_api.get_context( )->RSSetState( m_rasterizer_state );
 }
 
 } // namespace render

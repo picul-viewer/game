@@ -33,7 +33,7 @@ u32 context_frame_id( )
 
 void end_frame_impl( )
 {
-	api::get_swap_chain( )->Present( 0, 0 );
+	g_api.get_swap_chain( )->Present( 0, 0 );
 	interlocked_inc( m_context_frame_id );
 
 	parameters::update( );
@@ -67,7 +67,7 @@ void render_thread_func( void* )
 
 void context_thread_func( void* )
 {
-	api::create( );
+	g_api.create( );
 
 	render_context_queue::functor functor;
 
@@ -85,7 +85,7 @@ void context_thread_func( void* )
 
 	m_device_thread.destroy( INFINITE );
 
-	api::destroy( );
+	g_api.destroy( );
 }
 
 void device_thread_func( void* )

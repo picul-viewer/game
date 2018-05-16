@@ -60,7 +60,7 @@ void create_resource(
 			desc.MiscFlags		= in_misc_flags;
 
 			ID3D11Texture1D* texture = nullptr;
-			api::get_device( )->CreateTexture1D( &desc, in_data, &texture );
+			g_api.get_device( )->CreateTexture1D( &desc, in_data, &texture );
 
 			ASSERT				( texture != nullptr );
 
@@ -79,7 +79,7 @@ void create_resource(
 				srv_desc.Texture1D.MipLevels		= in_mip_count ? desc.MipLevels : (u32)-1;
 			}
 
-			api::get_device( )->CreateShaderResourceView( texture, &srv_desc, out_srv );
+			g_api.get_device( )->CreateShaderResourceView( texture, &srv_desc, out_srv );
 			
 			ASSERT( out_srv != nullptr );
 
@@ -106,7 +106,7 @@ void create_resource(
 				desc.MiscFlags		|= D3D11_RESOURCE_MISC_TEXTURECUBE;
 
 			ID3D11Texture2D* texture = nullptr;
-			api::get_device( )->CreateTexture2D( &desc, in_data, &texture );
+			g_api.get_device( )->CreateTexture2D( &desc, in_data, &texture );
 			
 			ASSERT( texture != nullptr );
 
@@ -142,7 +142,7 @@ void create_resource(
 				}
 			}
 
-			api::get_device( )->CreateShaderResourceView( texture, &srv_desc, out_srv );
+			g_api.get_device( )->CreateShaderResourceView( texture, &srv_desc, out_srv );
 			
 			ASSERT( out_srv != nullptr );
 
@@ -164,7 +164,7 @@ void create_resource(
 			desc.MiscFlags		= in_misc_flags;
 
 			ID3D11Texture3D* texture = nullptr;
-			api::get_device( )->CreateTexture3D( &desc, in_data, &texture );
+			g_api.get_device( )->CreateTexture3D( &desc, in_data, &texture );
 
 			ASSERT( texture != nullptr );
 
@@ -174,7 +174,7 @@ void create_resource(
 			srv_desc.ViewDimension			= D3D11_SRV_DIMENSION_TEXTURE3D;
 			srv_desc.Texture3D.MipLevels	= ( !in_mip_count ) ? -1 : desc.MipLevels;
 
-			api::get_device( )->CreateShaderResourceView( texture, &srv_desc, out_srv );
+			g_api.get_device( )->CreateShaderResourceView( texture, &srv_desc, out_srv );
 			
 			ASSERT( out_srv != nullptr );
 
