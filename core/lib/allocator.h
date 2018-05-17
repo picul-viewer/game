@@ -22,6 +22,9 @@ struct virtual_mem_allocator
 	pointer commit( pointer p, uptr size );
 	void decommit( pointer p, uptr size );
 	void release( pointer p, uptr size );
+
+	pointer allocate( uptr size );
+	void deallocate( pointer p );
 };
 
 #include "allocator_inline.h"
