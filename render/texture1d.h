@@ -28,6 +28,9 @@ public:
 	void create( cook const& in_cook );
 	void destroy( );
 	
+	u32 add_ref( ) const;
+	u32 release( ) const;
+	
 	inline void set( ID3D11Texture1D* in_texture ) { m_texture = in_texture; }
 	inline ID3D11Texture1D* const& get( ) const { return m_texture; }
 

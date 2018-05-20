@@ -4,6 +4,8 @@
 #include <types.h>
 #include "dx_include.h"
 
+#include <math/vector.h>
+
 #include "texture2d.h"
 #include "resource_views.h"
 
@@ -40,7 +42,6 @@ protected:
 	render_target_view		m_rtv;
 	depth_stencil_view		m_dsv;
 	depth_stencil_view		m_const_dsv;
-	bool					m_destroy_texture;
 };
 
 } // namespace render

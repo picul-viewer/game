@@ -63,4 +63,14 @@ void texture2d::destroy( )
 	dx_release( m_texture );
 }
 
+u32 texture2d::add_ref( ) const
+{
+	return m_texture->AddRef( );
+}
+
+u32 texture2d::release( ) const
+{
+	return m_texture->Release( );
+}
+
 } // namespace render

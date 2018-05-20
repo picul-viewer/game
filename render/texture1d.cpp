@@ -36,4 +36,14 @@ void texture1d::destroy( )
 	dx_release( m_texture );
 }
 
+u32 texture1d::add_ref( ) const
+{
+	return m_texture->AddRef( );
+}
+
+u32 texture1d::release( ) const
+{
+	return m_texture->Release( );
+}
+
 } // namespace render

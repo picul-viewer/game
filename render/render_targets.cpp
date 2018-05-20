@@ -35,7 +35,6 @@ void render_target_tex2d::create( DXGI_FORMAT in_format, math::u16x2 in_size, u3
 	texture_cook.set_texture2d( in_size.x, in_size.y, 1, 1, in_format,
 								1, 0, D3D11_USAGE_DEFAULT, in_bind_flags, 0, 0 );
 	m_texture.create	( texture_cook );
-	m_destroy_texture	= true;
 
 	create_views( in_format, in_size, in_bind_flags );
 }
@@ -43,15 +42,14 @@ void render_target_tex2d::create( DXGI_FORMAT in_format, math::u16x2 in_size, u3
 void render_target_tex2d::create( texture2d const& in_texture, DXGI_FORMAT in_format, math::u16x2 in_size, u32 in_bind_flags )
 {
 	m_texture			= in_texture;
-	m_destroy_texture	= false;
+	m_texture.add_ref	( );
 
 	create_views( in_format, in_size, in_bind_flags );
 }
 
 void render_target_tex2d::destroy( )
 {
-	if ( m_destroy_texture )
-		m_texture.destroy( );
+	m_texture.release( );
 	m_srv.destroy( );
 	m_rtv.destroy( );
 	m_dsv.destroy( );
