@@ -2,15 +2,13 @@
 #define __render_input_layout_h_included_
 
 #include <types.h>
-#include <core/math.h>
 #include "dx_include.h"
 
 namespace render {
 
 enum vertex_type
 {
-	vertex_type_default = 0,
-	vertex_type_position_2d,
+	vertex_type_position_2d = 0,
 	vertex_type_position,
 	vertex_type_mesh,
 
