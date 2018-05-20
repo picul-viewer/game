@@ -18,7 +18,6 @@ public:
 	void destroy( );
 
 protected:
-	mem_align(Cache_Line)
 	struct A
 	{
 		depth_stencil_state			state;

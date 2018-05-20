@@ -13,7 +13,7 @@ namespace render {
 static pcstr c_mesh_path	= "resources/meshes/";
 static pcstr c_texture_path	= "resources/textures/";
 
-void render_resources::create( )
+void resources::create( )
 {
 	{
 		render_target_view::cook cook;
@@ -28,7 +28,7 @@ void render_resources::create( )
 	create_default_constant_buffers( );
 }
 
-void render_resources::destroy( )
+void resources::destroy( )
 {
 	m_pipeline_pool.destroy	( );
 	
@@ -40,7 +40,7 @@ void render_resources::destroy( )
 	destroy_default_constant_buffers( );
 }
 
-void render_resources::create_default_samplers( )
+void resources::create_default_samplers( )
 {
 	u32 sampler_index = 0;
 
@@ -69,7 +69,7 @@ void render_resources::create_default_samplers( )
 	ASSERT( sampler_index == default_sampler_type_count );
 }
 
-void render_resources::create_default_meshes( )
+void resources::create_default_meshes( )
 {
 	const u32 stride = sizeof(math::float3);
 
@@ -110,7 +110,7 @@ void render_resources::create_default_meshes( )
 	ASSERT( mesh_index == default_mesh_type_count );
 }
 
-void render_resources::create_default_constant_buffers( )
+void resources::create_default_constant_buffers( )
 {
 	u32 constant_buffer_index = 0;
 	
@@ -123,43 +123,43 @@ void render_resources::create_default_constant_buffers( )
 	ASSERT( constant_buffer_index == default_constant_buffer_type_count );
 }
 
-void render_resources::destroy_default_samplers( )
+void resources::destroy_default_samplers( )
 {
 	for ( u32 i = 0; i < default_sampler_type_count; ++i )
 		m_default_samplers[i].destroy( );
 }
 
-void render_resources::destroy_default_meshes( )
+void resources::destroy_default_meshes( )
 {
 	for ( u32 i = 0; i < default_mesh_type_count; ++i )
 		m_default_meshes[i].destroy( );
 }
 
-void render_resources::destroy_default_constant_buffers( )
+void resources::destroy_default_constant_buffers( )
 {
 	for ( u32 i = 0; i < default_constant_buffer_type_count; ++i )
 		m_default_constant_buffers[i].destroy( );
 }
 
-sampler& render_resources::get_default_sampler( u32 in_index )
+sampler& resources::get_default_sampler( u32 in_index )
 {
 	ASSERT( in_index < default_sampler_type_count );
 	return m_default_samplers[in_index];
 }
 
-mesh& render_resources::get_default_mesh( u32 in_index )
+mesh& resources::get_default_mesh( u32 in_index )
 {
 	ASSERT( in_index < default_mesh_type_count );
 	return m_default_meshes[in_index];
 }
 
-constant_buffer& render_resources::get_default_constant_buffer( u32 in_index )
+constant_buffer& resources::get_default_constant_buffer( u32 in_index )
 {
 	ASSERT( in_index < default_constant_buffer_type_count );
 	return m_default_constant_buffers[in_index];
 }
 
-void render_resources::bind_default_samplers( ) const
+void resources::bind_default_samplers( ) const
 {
 	m_default_samplers[0].bind_vs( 0, default_sampler_type_count );
 	m_default_samplers[0].bind_ps( 0, default_sampler_type_count );
@@ -168,7 +168,7 @@ void render_resources::bind_default_samplers( ) const
 	//m_default_samplers[0].bind_ds( 0, default_sampler_type_count );
 }
 
-void render_resources::bind_default_constant_buffers( ) const
+void resources::bind_default_constant_buffers( ) const
 {
 	m_default_constant_buffers[0].bind_vs( 0, default_constant_buffer_type_count );
 	m_default_constant_buffers[0].bind_ps( 0, default_constant_buffer_type_count );
@@ -177,13 +177,13 @@ void render_resources::bind_default_constant_buffers( ) const
 	//m_default_constant_buffers[0].bind_ds( 0, default_constant_buffer_type_count );
 }
 
-void render_resources::bind_default_resources( ) const
+void resources::bind_default_resources( ) const
 {
 	bind_default_samplers( );
 	bind_default_constant_buffers( );
 }
 
 
-render_resources g_render_resources;
+resources g_render_resources;
 
 } // namespace render

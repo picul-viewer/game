@@ -61,9 +61,6 @@
     <Filter Include="resources\mesh">
       <UniqueIdentifier>{4e227022-127a-43c4-ac56-aa129687dece}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\pipeline_state_pool">
-      <UniqueIdentifier>{2b9e7b2e-7c22-4145-af95-d3014cc8af04}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\shader_pool">
       <UniqueIdentifier>{74bb7d3c-07da-47b6-b15f-c966dc56d105}</UniqueIdentifier>
     </Filter>
@@ -96,6 +93,9 @@
     </Filter>
     <Filter Include="dx\resource_views">
       <UniqueIdentifier>{8975af85-d900-4d60-83b1-f4dcae1dc6d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\resources\pipeline_state_pool">
+      <UniqueIdentifier>{2b9e7b2e-7c22-4145-af95-d3014cc8af04}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -158,7 +158,7 @@
       <Filter>dx\buffers</Filter>
     </ClCompile>
     <ClCompile Include="pipeline_state_pool.cpp">
-      <Filter>resources\pipeline_state_pool</Filter>
+      <Filter>renderer\resources\pipeline_state_pool</Filter>
     </ClCompile>
     <ClCompile Include="shader_pool.cpp">
       <Filter>resources\shader_pool</Filter>
@@ -255,7 +255,7 @@
       <Filter>dx\buffers</Filter>
     </ClInclude>
     <ClInclude Include="pipeline_state_pool.h">
-      <Filter>resources\pipeline_state_pool</Filter>
+      <Filter>renderer\resources\pipeline_state_pool</Filter>
     </ClInclude>
     <ClInclude Include="shader_pool.h">
       <Filter>resources\shader_pool</Filter>

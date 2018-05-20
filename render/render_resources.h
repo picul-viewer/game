@@ -20,7 +20,7 @@
 
 namespace render {
 
-class render_resources
+class resources
 {
 public:
 	typedef resource_pool<mesh>		mesh_pool;
@@ -36,7 +36,7 @@ public:
 		max_depth_stencil_states,
 		max_blend_states,
 		max_rasterizer_states
-	> pipeline_pool;
+	> pipeline_state_pool;
 	
 	enum default_sampler_type
 	{
@@ -73,7 +73,7 @@ public:
 	inline mesh_pool& get_mesh_pool( ) { return m_mesh_pool; }
 	inline texture_pool& get_texture_pool( ) { return m_texture_pool; }
 
-	inline pipeline_pool& get_pipeline_pool( ) { return m_pipeline_pool; }
+	inline pipeline_state_pool& get_pipeline_state_pool( ) { return m_pipeline_state_pool; }
 	inline shader_pool& get_shader_pool( ) { return m_shader_pool; }
 
 	void bind_default_samplers( ) const;
@@ -101,7 +101,7 @@ protected:
 
 	mesh_pool				m_mesh_pool;
 	texture_pool			m_texture_pool;
-	pipeline_pool			m_pipeline_pool;
+	pipeline_state_pool		m_pipeline_state_pool;
 	shader_pool				m_shader_pool;
 
 	sampler					m_default_samplers[default_sampler_type_count];
@@ -110,7 +110,7 @@ protected:
 };
 
 
-extern render_resources g_render_resources;
+extern resources g_resources;
 
 } // namespace render
 
