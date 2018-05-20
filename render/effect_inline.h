@@ -3,6 +3,37 @@
 
 namespace render {
 
+void technique::set_stencil_ref( u8 in_stencil_ref )
+{
+	m_stencil_ref = in_stencil_ref;
+}
+
+void technique::set_blend_factor( math::float4 in_blend_factor )
+{
+	m_blend_factor = in_blend_factor;
+}
+
+void technique::set_sample_mask( u32 in_sample_mask )
+{
+	m_sample_mask = in_sample_mask;
+}
+
+u8 technique::get_stencil_ref(  ) const
+{
+	return m_stencil_ref;
+}
+
+math::float4 technique::get_blend_factor(  ) const
+{
+	return m_blend_factor;
+}
+
+u32 technique::get_sample_mask(  ) const
+{
+	return m_sample_mask;
+}
+
+
 template<uptr TechniqueCount>
 void effect<TechniqueCount>::create( )
 {

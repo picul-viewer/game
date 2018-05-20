@@ -2,9 +2,9 @@
 #define __render_effect_h_included_
 
 #include <types.h>
-#include <core/math.h>
-#include <core/game.h>
 #include "dx_include.h"
+
+#include <math/vector.h>
 
 #include "pipeline_state.h"
 #include "shader.h"
@@ -21,15 +21,22 @@ public:
 	void set_blend_state		( blend_state::cook const& in_cook );
 	void set_rasterizer_state	( rasterizer_state::cook const& in_cook );
 	
-	void set_stencil_ref		( u8 in_stencil_ref );
-	void set_blend_factor		( math::float4 in_blend_factor );
-	void set_sample_mask		( u32 in_sample_mask );
-
 	void set_vertex_shader		( pcstr in_filename, u32 in_configuration );
 	void set_pixel_shader		( pcstr in_filename, u32 in_configuration );
 	void set_geometry_shader	( pcstr in_filename, u32 in_configuration );
+	
+	inline void set_stencil_ref	( u8 in_stencil_ref );
+	inline void set_blend_factor( math::float4 in_blend_factor );
+	inline void set_sample_mask	( u32 in_sample_mask );
+
+	inline u8			get_stencil_ref	(  ) const;
+	inline math::float4	get_blend_factor(  ) const;
+	inline u32			get_sample_mask	(  ) const;
 
 	void apply( ) const;
+	void apply( u8 in_stencil_ref,
+				math::float4 in_blend_factor = math::float4( 1.0f, 1.0f, 1.0f, 1.0f ),
+				u32 in_sample_mask = 0xFFFFFFFF ) const;
 
 protected:
 	depth_stencil_state*	m_depth_stencil_state;
