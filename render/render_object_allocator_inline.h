@@ -4,19 +4,19 @@
 namespace render {
 
 template<typename T>
-T* render_objects_allocator::allocate( )
+T* render_object_allocator::allocate( )
 {
 	return m_allocator.allocate<T>( );
 }
 
 template<typename T>
-void render_objects_allocator::deallocate( T* in_object )
+void render_object_allocator::deallocate( T* in_object )
 {
 	m_allocator.deallocate( in_object );
 }
 
 template<typename Callback, typename ... Args>
-void render_objects_allocator::execute_typed( render_object* in_object, Callback in_functor, Args ... in_args )
+void render_object_allocator::execute_typed( render_object* in_object, Callback in_functor, Args ... in_args )
 {
 	switch ( m_allocator.get_object_type( in_object ) )
 	{

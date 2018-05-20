@@ -79,23 +79,23 @@
     <Filter Include="resources\objects\render_objects\direct_light">
       <UniqueIdentifier>{c2a3f8e8-c5fa-46ed-8170-7e6411a8b77e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\objects\containers">
-      <UniqueIdentifier>{1d1cd2fd-84c8-434b-8db2-854cf828510e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\objects\containers\render_object_allocator">
-      <UniqueIdentifier>{670cc264-7622-4f51-b2f5-663c51a6cacd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\texture">
       <UniqueIdentifier>{cb4972b5-da99-462e-beb8-06f068e53dd3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="renderer\resources\mesh_data">
-      <UniqueIdentifier>{eaa926bc-c319-407c-85c3-cc487ec72bf3}</UniqueIdentifier>
     </Filter>
     <Filter Include="dx\resource_views">
       <UniqueIdentifier>{8975af85-d900-4d60-83b1-f4dcae1dc6d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="renderer\resources\pipeline_state_pool">
+    <Filter Include="renderer\resources\utils">
+      <UniqueIdentifier>{6626bee8-8c85-4fb6-86d6-419ec33505d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\resources\utils\mesh_data">
+      <UniqueIdentifier>{eaa926bc-c319-407c-85c3-cc487ec72bf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\resources\utils\pipeline_state_pool">
       <UniqueIdentifier>{2b9e7b2e-7c22-4145-af95-d3014cc8af04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\resources\utils\render_object_allocator">
+      <UniqueIdentifier>{670cc264-7622-4f51-b2f5-663c51a6cacd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -158,7 +158,7 @@
       <Filter>dx\buffers</Filter>
     </ClCompile>
     <ClCompile Include="pipeline_state_pool.cpp">
-      <Filter>renderer\resources\pipeline_state_pool</Filter>
+      <Filter>renderer\resources\utils\pipeline_state_pool</Filter>
     </ClCompile>
     <ClCompile Include="shader_pool.cpp">
       <Filter>resources\shader_pool</Filter>
@@ -255,7 +255,7 @@
       <Filter>dx\buffers</Filter>
     </ClInclude>
     <ClInclude Include="pipeline_state_pool.h">
-      <Filter>renderer\resources\pipeline_state_pool</Filter>
+      <Filter>renderer\resources\utils\pipeline_state_pool</Filter>
     </ClInclude>
     <ClInclude Include="shader_pool.h">
       <Filter>resources\shader_pool</Filter>
@@ -264,10 +264,10 @@
       <Filter>resources\effect</Filter>
     </ClInclude>
     <ClInclude Include="render_object_allocator_inline.h">
-      <Filter>resources\objects\containers\render_object_allocator</Filter>
+      <Filter>renderer\resources\utils\render_object_allocator</Filter>
     </ClInclude>
     <ClInclude Include="render_object_allocator.h">
-      <Filter>resources\objects\containers\render_object_allocator</Filter>
+      <Filter>renderer\resources\utils\render_object_allocator</Filter>
     </ClInclude>
     <ClInclude Include="texture.h">
       <Filter>resources\texture</Filter>
@@ -281,17 +281,17 @@
     <ClInclude Include="texture3d.h">
       <Filter>dx\textures</Filter>
     </ClInclude>
-    <ClInclude Include="constant_buffers_constants.h">
-      <Filter>renderer\resources</Filter>
-    </ClInclude>
     <ClInclude Include="resource_views.h">
       <Filter>dx\resource_views</Filter>
     </ClInclude>
     <ClInclude Include="mesh_quad.h">
-      <Filter>renderer\resources\mesh_data</Filter>
+      <Filter>renderer\resources\utils\mesh_data</Filter>
     </ClInclude>
     <ClInclude Include="mesh_box.h">
-      <Filter>renderer\resources\mesh_data</Filter>
+      <Filter>renderer\resources\utils\mesh_data</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_buffers_constants.h">
+      <Filter>renderer\resources\utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

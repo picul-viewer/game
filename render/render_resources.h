@@ -16,6 +16,8 @@
 #include "mesh.h"
 #include "constant_buffer.h"
 
+#include "render_object_allocator.h"
+
 #include "effect.h"
 
 namespace render {
@@ -76,14 +78,16 @@ public:
 	inline pipeline_state_pool& get_pipeline_state_pool( ) { return m_pipeline_state_pool; }
 	inline shader_pool& get_shader_pool( ) { return m_shader_pool; }
 
+	sampler& get_default_sampler( u32 in_index );
+	mesh& get_default_mesh( u32 in_index );
+	constant_buffer& get_default_constant_buffer( u32 in_index );
+
+	render_object_allocator& get_render_object_allocator( );
+	
 	void bind_default_samplers( ) const;
 	void bind_default_constant_buffers( ) const;
 
 	void bind_default_resources( ) const;
-
-	sampler& get_default_sampler( u32 in_index );
-	mesh& get_default_mesh( u32 in_index );
-	constant_buffer& get_default_constant_buffer( u32 in_index );
 
 protected:
 	void create_default_samplers( );
@@ -107,6 +111,8 @@ protected:
 	sampler					m_default_samplers[default_sampler_type_count];
 	mesh					m_default_meshes[default_mesh_type_count];
 	constant_buffer			m_default_constant_buffers[default_constant_buffer_type_count];
+
+	render_object_allocator	m_render_object_allocator;
 };
 
 

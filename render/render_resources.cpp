@@ -159,6 +159,11 @@ constant_buffer& resources::get_default_constant_buffer( u32 in_index )
 	return m_default_constant_buffers[in_index];
 }
 
+render_object_allocator& resources::get_render_object_allocator( )
+{
+	return m_render_object_allocator;
+}
+
 void resources::bind_default_samplers( ) const
 {
 	m_default_samplers[0].bind_vs( 0, default_sampler_type_count );

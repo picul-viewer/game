@@ -1,15 +1,14 @@
 #ifndef __render_render_object_allocator_h_included_
 #define __render_render_object_allocator_h_included_
 
-#include <core/types.h>
-#include <core/math.h>
-#include <core/std.h>
+#include <types.h>
+#include <lib/poolset.h>
 
 #include "render_object_mesh.h"
 
 namespace render {
 
-class render_objects_allocator
+class render_object_allocator
 {
 public:
 	template<typename T>
