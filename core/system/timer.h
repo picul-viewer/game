@@ -3,6 +3,16 @@
 
 #include <types.h>
 
+namespace sys {
+
+u64 tick( );
+
+float tick_to_time( u64 tick );
+float time( );
+
+double tick_to_time_precise( u64 tick );
+double time_precise( );
+
 class timer
 {
 public:
@@ -17,8 +27,6 @@ protected:
 	u64 start_time;
 };
 
-float time_tick( );
-
 class float_timer
 {
 public:
@@ -28,5 +36,17 @@ public:
 protected:
 	u64 start_time;
 };
+
+class double_timer
+{
+public:
+	void start( );
+	double get_elapsed_time( ) const;
+
+protected:
+	u64 start_time;
+};
+
+} // namespace sys
 
 #endif // #ifndef __core_timer_h_included_
