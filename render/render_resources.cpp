@@ -189,6 +189,6 @@ void resources::bind_default_resources( ) const
 }
 
 
-resources g_render_resources;
+resources g_resources;
 
 } // namespace render
