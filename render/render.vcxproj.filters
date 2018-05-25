@@ -97,6 +97,9 @@
     <Filter Include="renderer\resources\utils\render_object_allocator">
       <UniqueIdentifier>{670cc264-7622-4f51-b2f5-663c51a6cacd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\statistics">
+      <UniqueIdentifier>{75e0e44d-68ab-468c-a27c-4dd1636fec3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
@@ -177,6 +180,9 @@
     </ClCompile>
     <ClCompile Include="resource_views.cpp">
       <Filter>dx\resource_views</Filter>
+    </ClCompile>
+    <ClCompile Include="profiler.cpp">
+      <Filter>resources\statistics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +298,9 @@
     </ClInclude>
     <ClInclude Include="constant_buffers_constants.h">
       <Filter>renderer\resources\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="profiler.h">
+      <Filter>resources\statistics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
