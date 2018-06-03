@@ -43,7 +43,7 @@ void shader_strategy::compile( u64 relevant_date, weak_const_string input_path, 
 		u64 configuration = config.read<u64>( );
 		
 		fixed_string<17> configuration_string;
-		sprintf( configuration_string.data( ), "%llx", configuration );
+		sprintf( configuration_string.data( ), "%016llx", configuration );
 		
 		str512 output_path = str512( output_directory );
 		PathAppend( output_path.data( ), ( shader_name + weak_const_string( "_" ) + configuration_string ).c_str( ) );
