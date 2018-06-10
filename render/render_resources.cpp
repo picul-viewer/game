@@ -30,7 +30,7 @@ void resources::create( )
 
 void resources::destroy( )
 {
-	m_pipeline_pool.destroy	( );
+	m_pipeline_state_pool.destroy( );
 	
 	m_backbuffer.destroy	( );
 	m_depth_buffer.destroy	( );
