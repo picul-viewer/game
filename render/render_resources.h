@@ -18,6 +18,8 @@
 
 #include "render_object_allocator.h"
 
+#include "shader_containers.h"
+
 #include "effect.h"
 
 namespace render {
@@ -84,6 +86,13 @@ public:
 
 	render_object_allocator& get_render_object_allocator( );
 	
+	vertex_shader_container&	get_vertex_shader_container( );
+	pixel_shader_container&		get_pixel_shader_container( );
+	geometry_shader_container&	get_geometry_shader_container( );
+	hull_shader_container&		get_hull_shader_container( );
+	domain_shader_container&	get_domain_shader_container( );
+	compute_shader_container&	get_compute_shader_container( );
+
 	void bind_default_samplers( ) const;
 	void bind_default_constant_buffers( ) const;
 
@@ -100,19 +109,26 @@ protected:
 	void destroy_default_constant_buffers( );
 
 protected:
-	render_target_view		m_backbuffer;
-	render_target_tex2d		m_depth_buffer;
+	render_target_view			m_backbuffer;
+	render_target_tex2d			m_depth_buffer;
 
-	mesh_pool				m_mesh_pool;
-	texture_pool			m_texture_pool;
-	pipeline_state_pool		m_pipeline_state_pool;
-	shader_pool				m_shader_pool;
+	mesh_pool					m_mesh_pool;
+	texture_pool				m_texture_pool;
+	pipeline_state_pool			m_pipeline_state_pool;
+	shader_pool					m_shader_pool;
 
-	sampler					m_default_samplers[default_sampler_type_count];
-	mesh					m_default_meshes[default_mesh_type_count];
-	constant_buffer			m_default_constant_buffers[default_constant_buffer_type_count];
+	sampler						m_default_samplers[default_sampler_type_count];
+	mesh						m_default_meshes[default_mesh_type_count];
+	constant_buffer				m_default_constant_buffers[default_constant_buffer_type_count];
 
-	render_object_allocator	m_render_object_allocator;
+	render_object_allocator		m_render_object_allocator;
+
+	vertex_shader_container		m_vertex_shader_container;
+	pixel_shader_container		m_pixel_shader_container;
+	geometry_shader_container	m_geometry_shader_container;
+	hull_shader_container		m_hull_shader_container;
+	domain_shader_container		m_domain_shader_container;
+	compute_shader_container	m_compute_shader_container;
 };
 
 

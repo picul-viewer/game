@@ -32,8 +32,8 @@ void resources::destroy( )
 {
 	m_pipeline_state_pool.destroy( );
 	
-	m_backbuffer.destroy	( );
-	m_depth_buffer.destroy	( );
+	m_backbuffer.destroy( );
+	m_depth_buffer.destroy( );
 	
 	destroy_default_samplers( );
 	destroy_default_meshes( );
@@ -162,6 +162,36 @@ constant_buffer& resources::get_default_constant_buffer( u32 in_index )
 render_object_allocator& resources::get_render_object_allocator( )
 {
 	return m_render_object_allocator;
+}
+
+vertex_shader_container& resources::get_vertex_shader_container( )
+{
+	return m_vertex_shader_container;
+}
+
+pixel_shader_container& resources::get_pixel_shader_container( )
+{
+	return m_pixel_shader_container;
+}
+
+geometry_shader_container& resources::get_geometry_shader_container( )
+{
+	return m_geometry_shader_container;
+}
+
+hull_shader_container& resources::get_hull_shader_container( )
+{
+	return m_hull_shader_container;
+}
+
+domain_shader_container& resources::get_domain_shader_container( )
+{
+	return m_domain_shader_container;
+}
+
+compute_shader_container& resources::get_compute_shader_container( )
+{
+	return m_compute_shader_container;
 }
 
 void resources::bind_default_samplers( ) const

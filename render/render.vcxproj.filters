@@ -100,6 +100,12 @@
     <Filter Include="resources\statistics">
       <UniqueIdentifier>{75e0e44d-68ab-468c-a27c-4dd1636fec3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="renderer\resources\utils\shaders">
+      <UniqueIdentifier>{789593d5-6fdb-48fd-bf51-9c27973a34bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\resources\utils\shaders\shader_container">
+      <UniqueIdentifier>{5bced0eb-8110-44cf-9da9-09b8eb2b6102}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
@@ -183,6 +189,9 @@
     </ClCompile>
     <ClCompile Include="profiler.cpp">
       <Filter>resources\statistics</Filter>
+    </ClCompile>
+    <ClCompile Include="shader_containers.cpp">
+      <Filter>renderer\resources\utils\shaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -301,6 +310,21 @@
     </ClInclude>
     <ClInclude Include="profiler.h">
       <Filter>resources\statistics</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_container.h">
+      <Filter>renderer\resources\utils\shaders\shader_container</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_container_inline.h">
+      <Filter>renderer\resources\utils\shaders\shader_container</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_and_input_layout_container.h">
+      <Filter>renderer\resources\utils\shaders\shader_container</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_and_input_layout_container_inline.h">
+      <Filter>renderer\resources\utils\shaders\shader_container</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_containers.h">
+      <Filter>renderer\resources\utils\shaders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

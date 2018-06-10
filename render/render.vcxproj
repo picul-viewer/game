@@ -178,6 +178,10 @@
     <ClInclude Include="render_object_allocator.h" />
     <ClInclude Include="render_object_allocator_inline.h" />
     <ClInclude Include="render_model_mesh.h" />
+    <ClInclude Include="shader_and_input_layout_container.h" />
+    <ClInclude Include="shader_and_input_layout_container_inline.h" />
+    <ClInclude Include="shader_container.h" />
+    <ClInclude Include="shader_container_inline.h" />
     <ClInclude Include="stages.h" />
     <ClInclude Include="stage_forward_default.h" />
     <ClInclude Include="stage_prepare_objects.h" />
@@ -201,6 +205,7 @@
     <ClInclude Include="texture.h" />
     <ClInclude Include="texture2d.h" />
     <ClInclude Include="texture3d.h" />
+    <ClInclude Include="shader_containers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp" />
@@ -212,6 +217,7 @@
     <ClCompile Include="pipeline_state_pool.cpp" />
     <ClCompile Include="profiler.cpp" />
     <ClCompile Include="render_model_mesh.cpp" />
+    <ClCompile Include="shader_containers.cpp" />
     <ClCompile Include="stage_forward_default.cpp" />
     <ClCompile Include="stage_prepare_objects.cpp" />
     <ClCompile Include="renderer.cpp" />
