@@ -23,21 +23,21 @@ inline void small_set( pbyte dest, u64 value )
 	
 	if ( Index & 4 )
 	{
-		*(u32*)dest = value;
+		*(u32*)dest = (u32)value;
 
 		dest += 4;
 	}
 	
 	if ( Index & 2 )
 	{
-		*(u16*)dest = value;
+		*(u16*)dest = (u16)value;
 
 		dest += 2;
 	}
 	
 	if ( Index & 1 )
 	{
-		*(u8*)dest = value;
+		*(u8*)dest = (u8)value;
 	}
 }
 
@@ -348,7 +348,7 @@ inline bool equal( pcvoid left, pcvoid right, uptr size )
 	__m128i* l = (__m128i*)left;
 	__m128i* r = (__m128i*)right;
 
-	for ( u32 i = size / 16; i; --i )
+	for ( uptr i = size / 16; i; --i )
 	{
 		__m128i ldata = _mm_loadu_si128( l );
 		__m128i rdata = _mm_loadu_si128( r );
@@ -433,7 +433,7 @@ inline bool less( pcvoid left, pcvoid right, uptr size )
 	__m128i* l = (__m128i*)left;
 	__m128i* r = (__m128i*)right;
 
-	for ( u32 i = size / 16; i; --i )
+	for ( uptr i = size / 16; i; --i )
 	{
 		__m128i ldata = _mm_loadu_si128( l );
 		__m128i rdata = _mm_loadu_si128( r );
@@ -532,7 +532,7 @@ inline bool greater( pcvoid left, pcvoid right, uptr size )
 	__m128i* l = (__m128i*)left;
 	__m128i* r = (__m128i*)right;
 
-	for ( u32 i = size / 16; i; --i )
+	for ( uptr i = size / 16; i; --i )
 	{
 		__m128i ldata = _mm_loadu_si128( l );
 		__m128i rdata = _mm_loadu_si128( r );
