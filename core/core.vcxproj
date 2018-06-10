@@ -203,6 +203,8 @@
     <ClInclude Include="math\matrix.h" />
     <ClInclude Include="math\quaternion.h" />
     <ClInclude Include="math\vector.h" />
+    <ClInclude Include="system\file.h" />
+    <ClInclude Include="system\path.h" />
     <ClInclude Include="system\timer.h" />
     <ClInclude Include="system\window.h" />
     <ClInclude Include="system\window_inline.h" />
@@ -223,6 +225,8 @@
     <ClCompile Include="lib\alloc_string.cpp" />
     <ClCompile Include="lib\hash.cpp" />
     <ClCompile Include="lib\weak_string.cpp" />
+    <ClCompile Include="system\file.cpp" />
+    <ClCompile Include="system\path.cpp" />
     <ClCompile Include="system\timer.cpp" />
     <ClCompile Include="threads\interlocked.cpp" />
     <ClCompile Include="threads\threading_event.cpp" />

@@ -76,6 +76,15 @@
     <Filter Include="lib\queue">
       <UniqueIdentifier>{6f5bcf6d-f7b6-4e8c-b22a-dda65147df45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="system\fs">
+      <UniqueIdentifier>{b11925ef-aaa5-4248-9a78-b8cdecf2b306}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\fs\path">
+      <UniqueIdentifier>{2275a29b-98ff-4d22-b572-c886b74e087f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\fs\file">
+      <UniqueIdentifier>{a01e2e6f-0baf-412c-89be-9807a5f6dc29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -230,6 +239,12 @@
     <ClInclude Include="lib\function.h">
       <Filter>lib</Filter>
     </ClInclude>
+    <ClInclude Include="system\path.h">
+      <Filter>system\fs\path</Filter>
+    </ClInclude>
+    <ClInclude Include="system\file.h">
+      <Filter>system\fs\file</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\camera.cpp">
@@ -270,6 +285,12 @@
     </ClCompile>
     <ClCompile Include="threads\interlocked.cpp">
       <Filter>threads\api\interlocked</Filter>
+    </ClCompile>
+    <ClCompile Include="system\path.cpp">
+      <Filter>system\fs\path</Filter>
+    </ClCompile>
+    <ClCompile Include="system\file.cpp">
+      <Filter>system\fs\file</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
