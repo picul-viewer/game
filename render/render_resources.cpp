@@ -26,6 +26,13 @@ void resources::create( )
 	create_default_samplers( );
 	create_default_meshes( );
 	create_default_constant_buffers( );
+
+	m_vertex_shader_container.create( );
+	m_pixel_shader_container.create( );
+	m_geometry_shader_container.create( );
+	m_hull_shader_container.create( );
+	m_domain_shader_container.create( );
+	m_compute_shader_container.create( );
 }
 
 void resources::destroy( )
@@ -38,6 +45,13 @@ void resources::destroy( )
 	destroy_default_samplers( );
 	destroy_default_meshes( );
 	destroy_default_constant_buffers( );
+	
+	m_vertex_shader_container.destroy( );
+	m_pixel_shader_container.destroy( );
+	m_geometry_shader_container.destroy( );
+	m_hull_shader_container.destroy( );
+	m_domain_shader_container.destroy( );
+	m_compute_shader_container.destroy( );
 }
 
 void resources::create_default_samplers( )
