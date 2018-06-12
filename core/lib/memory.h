@@ -368,6 +368,8 @@ inline bool equal( pcvoid left, pcvoid right, uptr size )
 		if ( !_mm_testc_si128( ldata, rdata ) )
 			return false;
 	}
+
+	return true;
 }
 
 template<u32 Index>

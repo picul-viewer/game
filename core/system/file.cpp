@@ -28,7 +28,7 @@ file::file( path const& p, open_mode mode )
 		UNREACHABLE_CODE
 	}
 
-	m_handle = open( p.get_string( ).c_str( ), open_flag );
+	m_handle = _open( p.get_string( ).c_str( ), open_flag );
 
 	_lseeki64( m_handle, 0, SEEK_END );
 	m_size = _telli64( m_handle );
@@ -44,7 +44,7 @@ file::~file( )
 void file::close( )
 {
 	ASSERT( m_handle > 0 );
-	::close( m_handle );
+	_close( m_handle );
 	m_handle = -1;
 }
 
@@ -53,7 +53,7 @@ uptr file::size( ) const
 	return m_size;
 }
 
-void file::seek( ptr position, seek_mode mode = seek_from_begin )
+void file::seek( ptr position, seek_mode mode )
 {
 	int origin = -1;
 
@@ -80,7 +80,7 @@ uptr file::read( pvoid buffer, uptr size )
 	ASSERT( buffer );
 	ASSERT( size <= 0x7FFFFFFF );
 
-	return ::read( m_handle, buffer, size );
+	return _read( m_handle, buffer, (u32)size );
 }
 
 uptr file::write( pvoid buffer, uptr size )
@@ -88,7 +88,7 @@ uptr file::write( pvoid buffer, uptr size )
 	ASSERT( buffer );
 	ASSERT( size <= 0x7FFFFFFF );
 
-	return ::write( m_handle, buffer, size );
+	return _write( m_handle, buffer, (u32)size );
 }
 
 bool file::is_valid( ) const

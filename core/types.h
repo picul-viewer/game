@@ -2,6 +2,7 @@
 #define __core_types_h_included_
 
 #include <cstddef>
+#include <new>
 
 typedef char				s8;
 typedef short				s16;

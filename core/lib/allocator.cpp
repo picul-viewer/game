@@ -24,7 +24,7 @@ void virtual_mem_allocator::release( pointer p, uptr /* size */ )
 
 pointer virtual_mem_allocator::allocate( uptr size )
 {
-	VirtualFree( nullptr, size, MEM_RESERVE | MEM_COMMIT );
+	return VirtualAlloc( nullptr, size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE );
 }
 
 void virtual_mem_allocator::deallocate( pointer p )
