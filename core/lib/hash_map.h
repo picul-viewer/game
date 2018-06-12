@@ -3,6 +3,7 @@
 
 #include <types.h>
 #include "pool.h"
+#include "hash.h"
 
 template<
 	typename K,
@@ -16,17 +17,28 @@ template<
 struct hash_map_template
 {
 public:
+	enum { kv_pool_element_size = sizeof(KVStore) };
+
+	typedef typename HashPred::type hash_type;
+
 	typedef KVStorePool kv_store_pool_type;
 
 	template<typename TableAllocator>
 	hash_map_template( uptr table_length, TableAllocator& table_allocator, KVStorePool& kv_pool );
 
-	inline void insert( K const& key, V const& value );
-	inline V* find( K const& key ) const;
-	inline bool remove( K const& key );
+	inline KVStore* insert( K const& key, V const& value );
+	inline KVStore* insert( K const& key, hash_type hash, V const& value );
 
+	inline V* find( K const& key ) const;
+	inline V* find( K const& key, hash_type hash ) const;
 	inline KVStore* find_kv( K const& key ) const;
+	inline KVStore* find_kv( K const& key, hash_type hash ) const;
+
+	inline bool remove( K const& key );
+	inline bool remove( K const& key, hash_type hash );
 	inline void remove_kv( KVStore* kv );
+	inline void remove_kv( KVStore* kv, hash_type hash );
+
 
 	inline void dump( )
 	{
@@ -53,8 +65,7 @@ public:
 	}
 
 protected:
-	template<typename Hash>
-	inline KVStore* find_first_kv( Hash const& hash ) const;
+	inline KVStore* find_first_kv( hash_type hash ) const;
 
 	inline KVStore* find_key_in_kv_list( KVStore* list, K const& key ) const;
 
@@ -66,9 +77,22 @@ protected:
 template<typename T, typename Hash>
 struct hash_map_hash_pred_adapter
 {
+	typedef typename Hash::value_type type;
+
 	typename Hash::value_type operator( )( T const& value )
 	{
 		return Hash( )( (pcvoid)&value, sizeof(T) );
+	}
+};
+
+template<typename T, typename Hash>
+struct object_hash_map_hash_pred_adapter
+{
+	typedef typename Hash::value_type type;
+
+	typename Hash::value_type operator( )( T const& value )
+	{
+		return value.hash( );
 	}
 };
 
@@ -112,6 +136,8 @@ struct hash_map_kv_store_32
 	V _value;
 	u32 _next;
 	u32 _prev;
+
+	inline hash_map_kv_store_32( ) = default;
 
 	inline hash_map_kv_store_32( K const& key, V const& value ) :
 		_key	( key ),
@@ -171,9 +197,12 @@ enum
 	hash_map_allocator_default_pool_page_max_count = 256
 };
 
+
+// Use hash32 because it's faster
+
 template<typename K, typename V, uptr PoolPageSize = hash_map_allocator_default_pool_page_size, uptr PoolPageMaxCount = hash_map_allocator_default_pool_page_max_count>
 using hash_map16 = hash_map_template<K, V,
-	hash_map_hash_pred_adapter<K, hash16>,
+	hash_map_hash_pred_adapter<K, hash32>,
 	hash_map_key_equal_pred_adapter<K>,
 	hash_map_kv_store_16<K, V>,
 	hash_map_kv_store_index_16<
@@ -196,7 +225,28 @@ using hash_map32 = hash_map_template<K, V,
 >;
 
 template<typename K, typename V, uptr PoolPageSize = hash_map_allocator_default_pool_page_size, uptr PoolPageMaxCount = hash_map_allocator_default_pool_page_max_count>
-using hash_map = hash_map16<K, V, PoolPageSize, PoolPageMaxCount>;
+using object_hash_map16 = hash_map_template<K, V,
+	object_hash_map_hash_pred_adapter<K, hash32>,
+	hash_map_key_equal_pred_adapter<K>,
+	hash_map_kv_store_16<K, V>,
+	hash_map_kv_store_index_16<
+		hash_map_kv_store_16<K, V>,
+		dynamic_pool<sizeof(hash_map_kv_store_16<K, V>), PoolPageSize, PoolPageMaxCount>
+	>,
+	dynamic_pool<sizeof(hash_map_kv_store_16<K, V>), PoolPageSize, PoolPageMaxCount>
+>;
+
+template<typename K, typename V, uptr PoolPageSize = hash_map_allocator_default_pool_page_size, uptr PoolPageMaxCount = hash_map_allocator_default_pool_page_max_count>
+using object_hash_map32 = hash_map_template<K, V,
+	object_hash_map_hash_pred_adapter<K, hash32>,
+	hash_map_key_equal_pred_adapter<K>,
+	hash_map_kv_store_32<K, V>,
+	hash_map_kv_store_index_32<
+		hash_map_kv_store_32<K, V>,
+		dynamic_pool<sizeof(hash_map_kv_store_32<K, V>), PoolPageSize, PoolPageMaxCount>
+	>,
+	dynamic_pool<sizeof(hash_map_kv_store_32<K, V>), PoolPageSize, PoolPageMaxCount>
+>;
 
 #include "hash_map_inline.h"
 
