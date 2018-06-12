@@ -3,11 +3,18 @@
 
 #include <macros.h>
 #include <cstring>
+#include <lib/hash.h>
 
 template<typename StringClass>
 uptr i_const_string<StringClass>::length( ) const
 {
 	return strlen( c_str( ) );
+}
+
+template<typename StringClass>
+u32 i_const_string<StringClass>::hash( ) const
+{
+	return hash32( )( c_str( ), length( ) );
 }
 
 template<typename StringClass>

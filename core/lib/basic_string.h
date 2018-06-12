@@ -9,6 +9,8 @@ class i_const_string
 public:
 	uptr length( ) const;
 
+	u32 hash( ) const;
+
 	bool empty( ) const;
 	
 	char operator[]( uptr index ) const;
