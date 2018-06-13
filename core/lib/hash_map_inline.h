@@ -4,6 +4,10 @@
 #include <macros.h>
 
 template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
+hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::hash_map_template( )
+{ }
+
+template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
 template<typename TableAllocator>
 hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::hash_map_template( uptr table_length, TableAllocator& table_allocator, KVStorePool& kv_pool ) :
 	m_pool			( kv_pool ),
@@ -198,6 +202,56 @@ inline KVStore* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStore
 	while ( current != list );
 
 	return nullptr;
+}
+
+template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
+inline void hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::clear( )
+{
+	for ( uptr i = 0; i < m_table_length; ++i )
+	{
+		auto& index = m_table[i];
+
+		if ( index == KVStoreIndex::null_value )
+			continue;
+
+		KVStore* first_kv = KVStoreIndex::get( m_pool, index );
+		KVStore* current = first_kv;
+
+		do
+		{
+			KVStore* new_current = KVStoreIndex::get( m_pool, current->next( ) );
+			m_pool.deallocate( current );
+			current = new_current;
+		}
+		while ( current != first_kv );
+	}
+
+	for ( uptr i = 0; i < m_table_length; ++i )
+		m_table[i] = KVStoreIndex::null_value;
+}
+
+template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
+template<typename Pred>
+inline void hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::for_each( Pred const& functor ) const
+{
+	for ( uptr i = 0; i < m_table_length; ++i )
+	{
+		auto& index = m_table[i];
+
+		if ( index == KVStoreIndex::null_value )
+			continue;
+
+		KVStore* first_kv = KVStoreIndex::get( m_pool, index );
+		KVStore* current = first_kv;
+
+		do
+		{
+			functor( current->key( ), current->value( ) );
+
+			current = KVStoreIndex::get( m_pool, current->next( ) );
+		}
+		while ( current != first_kv );
+	}
 }
 
 #endif // #ifndef __core_hash_map_inline_h_included_

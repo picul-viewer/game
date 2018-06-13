@@ -23,6 +23,8 @@ public:
 
 	typedef KVStorePool kv_store_pool_type;
 
+	hash_map_template( );
+
 	template<typename TableAllocator>
 	hash_map_template( uptr table_length, TableAllocator& table_allocator, KVStorePool& kv_pool );
 
@@ -39,30 +41,10 @@ public:
 	inline void remove_kv( KVStore* kv );
 	inline void remove_kv( KVStore* kv, hash_type hash );
 
+	inline void clear( );
 
-	inline void dump( )
-	{
-		for ( uptr i = 0; i < m_table_length; ++i )
-		{
-			auto& index = m_table[i];
-
-			if ( index == KVStoreIndex::null_value )
-				continue;
-
-			KVStore* first_kv = KVStoreIndex::get( m_pool, index );
-			KVStore* current = first_kv;
-
-			do
-			{
-				printf( "%d ", (u32)current->key( ) );
-
-				current = KVStoreIndex::get( m_pool, current->next( ) );
-			}
-			while ( current != first_kv );
-
-			printf( "\n" );
-		}
-	}
+	template<typename Pred>
+	inline void for_each( Pred const& functor ) const;
 
 protected:
 	inline KVStore* find_first_kv( hash_type hash ) const;
