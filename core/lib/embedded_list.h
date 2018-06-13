@@ -1,6 +1,8 @@
 #ifndef __core_embedded_list_h_included_
 #define __core_embedded_list_h_included_
 
+#include <types.h>
+
 template<typename T, T* (T::*Next)>
 class embedded_list
 {
@@ -18,8 +20,6 @@ public:
 	T* first( ) const;
 	T* get_next( T* object ) const;
 
-	template<typename Pred>
-	void for_each( Pred const& functor );
 	template<typename Pred>
 	void for_each( Pred const& functor ) const;
 
@@ -56,8 +56,6 @@ public:
 	T* get_prev( T* object ) const;
 	
 	template<typename Pred>
-	void reverse_for_each( Pred const& functor );
-	template<typename Pred>
 	void reverse_for_each( Pred const& functor ) const;
 
 protected:
@@ -83,8 +81,6 @@ public:
 	inline pointer first( ) const;
 	inline pointer get_next( pointer object ) const;
 
-	template<typename Pred>
-	inline void for_each( Pred const& functor );
 	template<typename Pred>
 	inline void for_each( Pred const& functor ) const;
 
@@ -132,8 +128,6 @@ public:
 	inline pointer last( ) const;
 	inline pointer get_prev( pointer object ) const;
 	
-	template<typename Pred>
-	inline void reverse_for_each( Pred const& functor );
 	template<typename Pred>
 	inline void reverse_for_each( Pred const& functor ) const;
 
