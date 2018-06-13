@@ -2,7 +2,6 @@
 #define __core_file_h_included_
 
 #include <types.h>
-#include "path.h"
 
 namespace sys {
 
@@ -25,7 +24,7 @@ public:
 
 public:
 	file( );
-	file( path const& p, open_mode mode );
+	file( pcstr path, open_mode mode );
 	~file( );
 
 	void close( );

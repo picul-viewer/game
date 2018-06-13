@@ -31,6 +31,11 @@ pointer config::data( ) const
 	return m_data;
 }
 
+pointer config::current( ) const
+{
+	return m_pointer;
+}
+
 uptr config::size( ) const
 {
 	return m_pointer - m_data;

@@ -24,6 +24,7 @@ public:
 	inline void write_str( pcstr value );
 	
 	pointer data( ) const;
+	pointer current( ) const;
 	uptr size( ) const;
 	uptr capacity( ) const;
 

@@ -3,13 +3,15 @@
 #include <io.h>
 #include <fcntl.h>
 
+#include <macros.h>
+
 namespace sys {
 
 file::file( ) :
 	m_handle( -1 )
 { }
 
-file::file( path const& p, open_mode mode )
+file::file( pcstr path, open_mode mode )
 {
 	int open_flag = 0;
 
@@ -28,7 +30,7 @@ file::file( path const& p, open_mode mode )
 		UNREACHABLE_CODE
 	}
 
-	m_handle = _open( p.get_string( ).c_str( ), open_flag );
+	m_handle = _open( path, open_flag );
 
 	_lseeki64( m_handle, 0, SEEK_END );
 	m_size = _telli64( m_handle );
