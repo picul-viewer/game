@@ -61,9 +61,6 @@
     <Filter Include="resources\mesh">
       <UniqueIdentifier>{4e227022-127a-43c4-ac56-aa129687dece}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\shader_pool">
-      <UniqueIdentifier>{74bb7d3c-07da-47b6-b15f-c966dc56d105}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\objects">
       <UniqueIdentifier>{526509c8-6a01-49ee-89c8-d91b57821df3}</UniqueIdentifier>
     </Filter>
@@ -169,9 +166,6 @@
     <ClCompile Include="pipeline_state_pool.cpp">
       <Filter>renderer\resources\utils\pipeline_state_pool</Filter>
     </ClCompile>
-    <ClCompile Include="shader_pool.cpp">
-      <Filter>resources\shader_pool</Filter>
-    </ClCompile>
     <ClCompile Include="texture.cpp">
       <Filter>resources\texture</Filter>
     </ClCompile>
@@ -271,9 +265,6 @@
     </ClInclude>
     <ClInclude Include="pipeline_state_pool.h">
       <Filter>renderer\resources\utils\pipeline_state_pool</Filter>
-    </ClInclude>
-    <ClInclude Include="shader_pool.h">
-      <Filter>resources\shader_pool</Filter>
     </ClInclude>
     <ClInclude Include="effect_inline.h">
       <Filter>resources\effect</Filter>
