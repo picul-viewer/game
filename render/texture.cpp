@@ -2,10 +2,9 @@
 
 #include "dx_include.h"
 
+#include <lib/allocator.h>
+#include <system/file.h>
 #include "render_api.h"
-
-#include <fs/fs_core.h>
-#include <render/render_core.h>
 
 namespace render {
 
@@ -463,24 +462,23 @@ void fill_init_data( uptr						width,
 	}
 }
 
-void texture_creator::create( texture* out_resource, weak_const_string in_filename )
+void texture::load( texture* out_resource, weak_const_string in_filename )
 {
-	fs::core::read_file( in_filename.c_str( ), &on_read_from_file, out_resource );
-}
+	sys::file f			( in_filename.c_str( ), sys::file::open_read );
+	uptr const size		= f.size( );
+	pvoid const memory	= mem_allocator( ).allocate( size );
+	uptr read_count		= f.read( memory, size );
+	ASSERT				( read_count == size );
+	f.close				( );
 
-void texture_creator::on_read_from_file( pointer in_data, uptr in_size, texture* out_texture )
-{
-	core::get_device_queue( ).push( &on_read_from_file_command, in_data, in_size, out_texture );
-}
+	ASSERT( size >= sizeof(u32) + sizeof(dds_header) );
 
-void texture_creator::on_read_from_file_command( pointer in_data, uptr in_size, texture* out_texture )
-{
-	ASSERT( in_size >= sizeof(u32) + sizeof(dds_header) );
+	pointer data		= memory;
 
-	u32 magic_number = in_data.get<u32>( );
+	u32 magic_number = data.get<u32>( );
 	ASSERT( magic_number == c_dds_magic );
 
-	dds_header const& header = *(dds_header*)( in_data + sizeof( u32 ) );
+	dds_header const& header = *(dds_header*)( data + sizeof( u32 ) );
 	ASSERT( header.size == sizeof(dds_header) );
 	ASSERT( header.ddspf.size == sizeof(dds_pixel_format) );
 	
@@ -501,9 +499,9 @@ void texture_creator::on_read_from_file_command( pointer in_data, uptr in_size, 
 	if ( ( header.ddspf.flags & c_dds_fourcc ) &&
 		( MAKEFOURCC('D', 'X', '1', '0') == header.ddspf.fourcc ) )
 	{
-		ASSERT( in_size >= sizeof(dds_header) + sizeof(u32) + sizeof(dds_header_dxt10) );
+		ASSERT( size >= sizeof(dds_header) + sizeof(u32) + sizeof(dds_header_dxt10) );
 
-		dxt_header = (dds_header_dxt10*)( in_data + sizeof(dds_header) + sizeof(u32) );
+		dxt_header = (dds_header_dxt10*)( data + sizeof(dds_header) + sizeof(u32) );
 
 		array_size = dxt_header->array_size;
 		ASSERT( array_size );
@@ -600,11 +598,13 @@ void texture_creator::on_read_from_file_command( pointer in_data, uptr in_size, 
 
 	D3D11_SUBRESOURCE_DATA* init_data = (D3D11_SUBRESOURCE_DATA*)_alloca( mip_count * array_size * sizeof(D3D11_SUBRESOURCE_DATA) );
 
-	fill_init_data( width, height, depth, mip_count, array_size, format, in_size, in_data, init_data );
+	fill_init_data( width, height, depth, mip_count, array_size, format, size, data, init_data );
 
 	create_resource( res_dim, width, height, depth, (u32)mip_count, array_size,
 					 format, D3D11_USAGE_IMMUTABLE, D3D11_BIND_SHADER_RESOURCE,
-					 0, 0, false, is_cube_map, init_data, &out_texture->m_srv );
+					 0, 0, false, is_cube_map, init_data, &out_resource->m_srv );
+
+	mem_allocator( ).deallocate			( memory );
 }
 
 } // namespace render

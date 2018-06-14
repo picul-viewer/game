@@ -2,24 +2,29 @@
 #define __render_resource_pool_h_included_
 
 #include <types.h>
-#include <core/std.h>
+#include <lib/weak_string.h>
+#include <lib/hash_map.h>
 
 namespace render {
 
-template<typename Resource, typename ResourceCreator>
+template<typename Resource>
 class resource_pool
 {
 public:
 	resource_pool( );
 
-	Resource* create_resource( weak_const_string const& in_filename );
-	void free_resource( Resource* in_resource );
+	void create( uptr in_hash_map_table_size );
+	void destroy( );
+
+	Resource* get( weak_const_string const& in_filename );
 
 protected:
-	typedef map<weak_const_string, Resource> pool_data;
-	typedef dynamic_allocation_multipool<8192, 128> string_pool;
+	typedef object_hash_map32<weak_const_string, Resource> pool_data;
+	typedef dynamic_pool<pool_data::kv_pool_element_size, 4 * Kb, 256> pool_data_allocator;
+	typedef dynamic_allocation_multipool<4 * Kb, 256> string_pool;
 
 	string_pool			m_string_pool;
+	pool_data_allocator	m_pool_data_allocator;
 	pool_data			m_pool_data;
 };
 

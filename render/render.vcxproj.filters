@@ -28,9 +28,6 @@
     <Filter Include="resources\effect">
       <UniqueIdentifier>{c65cf6f1-6559-4e03-942d-0c4b541d5cf1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\resource_pool">
-      <UniqueIdentifier>{536c8528-fad1-4329-9683-932d1c8b41ea}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\render_target">
       <UniqueIdentifier>{979b6059-b267-4258-8dfd-7b395ab2bc7a}</UniqueIdentifier>
     </Filter>
@@ -58,9 +55,6 @@
     <Filter Include="renderer\parameters">
       <UniqueIdentifier>{4b88d307-b9a3-4448-bdde-d732f2d1be7a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\mesh">
-      <UniqueIdentifier>{4e227022-127a-43c4-ac56-aa129687dece}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\objects">
       <UniqueIdentifier>{526509c8-6a01-49ee-89c8-d91b57821df3}</UniqueIdentifier>
     </Filter>
@@ -75,9 +69,6 @@
     </Filter>
     <Filter Include="resources\objects\render_objects\direct_light">
       <UniqueIdentifier>{c2a3f8e8-c5fa-46ed-8170-7e6411a8b77e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\texture">
-      <UniqueIdentifier>{cb4972b5-da99-462e-beb8-06f068e53dd3}</UniqueIdentifier>
     </Filter>
     <Filter Include="dx\resource_views">
       <UniqueIdentifier>{8975af85-d900-4d60-83b1-f4dcae1dc6d5}</UniqueIdentifier>
@@ -102,6 +93,18 @@
     </Filter>
     <Filter Include="renderer\resources\utils\shaders\shader_container">
       <UniqueIdentifier>{5bced0eb-8110-44cf-9da9-09b8eb2b6102}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\resources\utils\generic_resources">
+      <UniqueIdentifier>{8a9c3af5-6811-4560-9474-0667fede5ade}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\resources\utils\generic_resources\mesh">
+      <UniqueIdentifier>{4e227022-127a-43c4-ac56-aa129687dece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\resources\utils\generic_resources\texture">
+      <UniqueIdentifier>{cb4972b5-da99-462e-beb8-06f068e53dd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\resources\utils\generic_resources\resource_pool">
+      <UniqueIdentifier>{536c8528-fad1-4329-9683-932d1c8b41ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -155,7 +158,7 @@
       <Filter>renderer\parameters</Filter>
     </ClCompile>
     <ClCompile Include="mesh.cpp">
-      <Filter>resources\mesh</Filter>
+      <Filter>renderer\resources\utils\generic_resources\mesh</Filter>
     </ClCompile>
     <ClCompile Include="render_model_mesh.cpp">
       <Filter>resources\objects\render_objects\mesh</Filter>
@@ -167,7 +170,7 @@
       <Filter>renderer\resources\utils\pipeline_state_pool</Filter>
     </ClCompile>
     <ClCompile Include="texture.cpp">
-      <Filter>resources\texture</Filter>
+      <Filter>renderer\resources\utils\generic_resources\texture</Filter>
     </ClCompile>
     <ClCompile Include="texture1d.cpp">
       <Filter>dx\textures</Filter>
@@ -207,10 +210,10 @@
       <Filter>dx\pipeline_states</Filter>
     </ClInclude>
     <ClInclude Include="resource_pool.h">
-      <Filter>resources\resource_pool</Filter>
+      <Filter>renderer\resources\utils\generic_resources\resource_pool</Filter>
     </ClInclude>
     <ClInclude Include="resource_pool_inline.h">
-      <Filter>resources\resource_pool</Filter>
+      <Filter>renderer\resources\utils\generic_resources\resource_pool</Filter>
     </ClInclude>
     <ClInclude Include="effect.h">
       <Filter>resources\effect</Filter>
@@ -252,7 +255,7 @@
       <Filter>renderer\parameters</Filter>
     </ClInclude>
     <ClInclude Include="mesh.h">
-      <Filter>resources\mesh</Filter>
+      <Filter>renderer\resources\utils\generic_resources\mesh</Filter>
     </ClInclude>
     <ClInclude Include="render_model_mesh.h">
       <Filter>resources\objects\render_objects\mesh</Filter>
@@ -276,7 +279,7 @@
       <Filter>renderer\resources\utils\render_object_allocator</Filter>
     </ClInclude>
     <ClInclude Include="texture.h">
-      <Filter>resources\texture</Filter>
+      <Filter>renderer\resources\utils\generic_resources\texture</Filter>
     </ClInclude>
     <ClInclude Include="texture1d.h">
       <Filter>dx\textures</Filter>

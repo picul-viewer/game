@@ -1,55 +1,49 @@
 #ifndef __render_resource_pool_inline_h_included_
 #define __render_resource_pool_inline_h_included_
 
-#include "render_core.h"
-#include <fs/fs_core.h>
+#include <lib/alloc_string.h>
 
 namespace render {
 
-template<typename T>
-resource_pool<T>::resource_pool( ) :
-	m_resource_path( "" )
+template<typename Resource>
+resource_pool<Resource>::resource_pool( )
 { }
 
-template<typename T>
-void resource_pool<T>::set_resource_path( pcstr in_path )
+template<typename Resource>
+void resource_pool<Resource>::create( uptr in_hash_map_table_size )
 {
-	m_resource_path = in_path;
+	new ( &m_pool_data ) pool_data( in_hash_map_table_size, aligned_mem_allocator<Cache_Line>( ), m_pool_data_allocator );
 }
 
-template<typename T>
-static void create_resource_impl( pointer in_data, uptr in_size, T* in_resource )
+template<typename Resource>
+void resource_pool<Resource>::destroy( )
 {
-	in_resource->create( in_data, in_size );
-	mem_allocator( ).deallocate( in_data );
-}
-
-template<typename T>
-T* resource_pool<T>::create_resource( weak_const_string const& in_filename )
-{
-	fixed_string<256> path	= m_resource_path;
-	path					+= in_filename;
-
-	pool_data::iterator it	= m_pool_data.find( path );
-
-	if ( it != m_pool_data.end( ) )
-		it->second.add_ref( );
-	else
+	m_pool_data.for_each( []( weak_const_string, Resource const& resource )
 	{
-		alloc_string		resource_path( m_string_pool, in_filename );
-		it					= m_pool_data.emplace( make_pair( weak_const_string( resource_path ), T( ) ) ).first;
+		resource.destroy( );
+	} );
+
+	m_pool_data.clear( );
+}
+
+template<typename Resource>
+Resource* resource_pool<Resource>::get( weak_const_string const& in_filename )
+{
+	u32 filename_hash	= in_filename.hash( );
+
+	Resource* resource	= m_pool_data.find( in_filename, filename_hash );
+
+	if ( resource == nullptr )
+	{
+		alloc_string	resource_path( m_string_pool, in_filename );
+
+		auto inserted	= m_pool_data.insert( weak_const_string( resource_path ), filename_hash, Resource( ) );
+		resource		= &inserted->value( );
 		
-		// Read data from file with callback
-		fs::core::read_file( in_filename.c_str( ), &create_resource_impl<T>, &it->second );
+		Resource::load	( resource, in_filename );
 	}
 	
-	return &it->second;
-}
-
-template<typename T>
-void resource_pool<T>::free_resource( T* in_resource )
-{
-	in_resource->release( );
+	return resource;
 }
 
 } // namespace render
