@@ -10,7 +10,6 @@
 #include "texture.h"
 #include "resource_pool.h"
 #include "pipeline_state_pool.h"
-#include "shader_pool.h"
 
 #include "sampler.h"
 #include "mesh.h"
@@ -78,7 +77,6 @@ public:
 	inline texture_pool& get_texture_pool( ) { return m_texture_pool; }
 
 	inline pipeline_state_pool& get_pipeline_state_pool( ) { return m_pipeline_state_pool; }
-	inline shader_pool& get_shader_pool( ) { return m_shader_pool; }
 
 	sampler& get_default_sampler( u32 in_index );
 	mesh& get_default_mesh( u32 in_index );
@@ -115,7 +113,6 @@ protected:
 	mesh_pool					m_mesh_pool;
 	texture_pool				m_texture_pool;
 	pipeline_state_pool			m_pipeline_state_pool;
-	shader_pool					m_shader_pool;
 
 	sampler						m_default_samplers[default_sampler_type_count];
 	mesh						m_default_meshes[default_mesh_type_count];
