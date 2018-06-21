@@ -18,7 +18,10 @@ public:
 	ShaderType operator[]( uptr in_index );
 
 protected:
-	ShaderType m_shaders[ShaderEnumeratorMax];
+	// To avoid zero-elemets-array error.
+	enum { data_size = ( ShaderEnumeratorMax == 0 ) ? 1 : ShaderEnumeratorMax };
+
+	ShaderType m_shaders[data_size];
 
 #ifdef DEBUG
 	bool m_created;
