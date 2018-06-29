@@ -84,14 +84,14 @@ public:
 	mesh& get_default_mesh( u32 in_index );
 	constant_buffer& get_default_constant_buffer( u32 in_index );
 
-	render_object_allocator& get_render_object_allocator( );
+	render_object_allocator& get_render_object_allocator( ) { return m_render_object_allocator; }
 	
-	vertex_shader_container&	get_vertex_shader_container( );
-	pixel_shader_container&		get_pixel_shader_container( );
-	geometry_shader_container&	get_geometry_shader_container( );
-	hull_shader_container&		get_hull_shader_container( );
-	domain_shader_container&	get_domain_shader_container( );
-	compute_shader_container&	get_compute_shader_container( );
+	vertex_shader_container&	get_vertex_shader_container( ) { return m_vertex_shader_container; }
+	pixel_shader_container&		get_pixel_shader_container( ) { return m_pixel_shader_container; }
+	geometry_shader_container&	get_geometry_shader_container( ) { return m_geometry_shader_container; }
+	hull_shader_container&		get_hull_shader_container( ) { return m_hull_shader_container; }
+	domain_shader_container&	get_domain_shader_container( ) { return m_domain_shader_container; }
+	compute_shader_container&	get_compute_shader_container( ) { return m_compute_shader_container; }
 	
 	inline render_model_mesh_pool& get_render_model_mesh_pool( ) { return m_render_model_mesh_pool; }
 
