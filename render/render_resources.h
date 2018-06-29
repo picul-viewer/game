@@ -19,7 +19,7 @@
 
 #include "shader_containers.h"
 
-#include "effect.h"
+#include "render_model_mesh.h"
 
 namespace render {
 
@@ -28,6 +28,8 @@ class resources
 public:
 	typedef resource_pool<mesh>		mesh_pool;
 	typedef resource_pool<texture>	texture_pool;
+
+	typedef resource_pool<render_model_mesh>	render_model_mesh_pool;
 
 	enum {
 		max_depth_stencil_states	= 32,
@@ -90,6 +92,8 @@ public:
 	hull_shader_container&		get_hull_shader_container( );
 	domain_shader_container&	get_domain_shader_container( );
 	compute_shader_container&	get_compute_shader_container( );
+	
+	inline render_model_mesh_pool& get_render_model_mesh_pool( ) { return m_render_model_mesh_pool; }
 
 	void bind_default_samplers( ) const;
 	void bind_default_constant_buffers( ) const;
@@ -126,6 +130,8 @@ protected:
 	hull_shader_container		m_hull_shader_container;
 	domain_shader_container		m_domain_shader_container;
 	compute_shader_container	m_compute_shader_container;
+
+	render_model_mesh_pool		m_render_model_mesh_pool;
 };
 
 

@@ -22,8 +22,18 @@ struct vector
 	inline vector( __m128 data ) : data( data ) { }
 	inline vector( math::float4 const& data )
 	{
+		load( data.data );
+	}
+	
+	inline void load( float const* data )
+	{
 		ASSERT( aligned( &data, 16 ) );
-		this->data = _mm_load_ps( data.data );
+		this->data = _mm_load_ps( data );
+	}
+
+	inline void loadu( float const* data )
+	{
+		this->data = _mm_loadu_ps( data );
 	}
 
 	inline operator __m128( ) const { return data; }
