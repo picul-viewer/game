@@ -160,9 +160,6 @@
     <ClCompile Include="render_resources.cpp">
       <Filter>resources</Filter>
     </ClCompile>
-    <ClCompile Include="render_parameters.cpp">
-      <Filter>parameters</Filter>
-    </ClCompile>
     <ClCompile Include="mesh.cpp">
       <Filter>resources\shared_resources\mesh</Filter>
     </ClCompile>
@@ -195,6 +192,12 @@
     </ClCompile>
     <ClCompile Include="render_model_mesh.cpp">
       <Filter>resources\shared_resources\models\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="render_parameters_manager.cpp">
+      <Filter>parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="render_parameters.cpp">
+      <Filter>parameters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -255,9 +258,6 @@
     </ClInclude>
     <ClInclude Include="render_resources.h">
       <Filter>resources</Filter>
-    </ClInclude>
-    <ClInclude Include="render_parameters.h">
-      <Filter>parameters</Filter>
     </ClInclude>
     <ClInclude Include="mesh.h">
       <Filter>resources\shared_resources\mesh</Filter>
@@ -327,6 +327,12 @@
     </ClInclude>
     <ClInclude Include="dx_include.h">
       <Filter>dx</Filter>
+    </ClInclude>
+    <ClInclude Include="render_parameters_manager.h">
+      <Filter>parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="render_parameters.h">
+      <Filter>parameters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

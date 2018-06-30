@@ -9,7 +9,7 @@ const DXGI_FORMAT api::backbuffer_pixel_format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 void api::create( )
 {
-	UINT create_device_flags = g_parameters->is_d3d_debug ? D3D11_CREATE_DEVICE_DEBUG : 0;
+	UINT create_device_flags = g_parameters.is_d3d_debug ? D3D11_CREATE_DEVICE_DEBUG : 0;
 
 	D3D_FEATURE_LEVEL feature_levels[] =
 	{
@@ -24,16 +24,16 @@ void api::create( )
 
 	DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
 	swap_chain_desc.BufferCount							= 1;
-	swap_chain_desc.BufferDesc.Width					= g_parameters->screen_resolution.x;
-	swap_chain_desc.BufferDesc.Height					= g_parameters->screen_resolution.y;
+	swap_chain_desc.BufferDesc.Width					= g_parameters.screen_resolution.x;
+	swap_chain_desc.BufferDesc.Height					= g_parameters.screen_resolution.y;
 	swap_chain_desc.BufferDesc.Format					= backbuffer_pixel_format;
 	swap_chain_desc.BufferDesc.RefreshRate.Numerator	= 60;
 	swap_chain_desc.BufferDesc.RefreshRate.Denominator	= 1;
 	swap_chain_desc.BufferUsage							= DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swap_chain_desc.OutputWindow						= g_parameters->hwnd;
+	swap_chain_desc.OutputWindow						= g_parameters.hwnd;
 	swap_chain_desc.SampleDesc.Count					= 1;
 	swap_chain_desc.SampleDesc.Quality					= 0;
-	swap_chain_desc.Windowed							= (BOOL)g_parameters->is_windowed;
+	swap_chain_desc.Windowed							= (BOOL)g_parameters.is_windowed;
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain( nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
 		create_device_flags, feature_levels, feature_levels_count, D3D11_SDK_VERSION,

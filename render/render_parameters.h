@@ -8,31 +8,13 @@
 
 namespace render {
 
-class parameters
+struct parameters
 {
-public:
-	struct data
-	{
-		HWND			hwnd;
-		math::u16x2		screen_resolution;
-		bool			is_windowed;
-		bool			is_d3d_debug;
-	};
-
-public:
-	data const* operator->( );
-
-	data const* current( ) const;
-	data* next( );
-
-	void update( );
-
-protected:
-	data m_current;
-	data m_next;
-
+	HWND			hwnd;
+	math::u16x2		screen_resolution;
+	bool			is_windowed;
+	bool			is_d3d_debug;
 };
-
 
 extern parameters g_parameters;
 

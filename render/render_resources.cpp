@@ -18,7 +18,7 @@ void resources::create( )
 		m_backbuffer.create( g_api.get_backbuffer( ), cook );
 	}
 
-	m_depth_buffer.create( DXGI_FORMAT_D24_UNORM_S8_UINT, g_parameters->screen_resolution, D3D11_BIND_DEPTH_STENCIL );
+	m_depth_buffer.create( DXGI_FORMAT_D24_UNORM_S8_UINT, g_parameters.screen_resolution, D3D11_BIND_DEPTH_STENCIL );
 
 	create_default_samplers( );
 	create_default_meshes( );

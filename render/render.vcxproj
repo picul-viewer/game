@@ -173,6 +173,7 @@
     <ClInclude Include="mesh_box.h" />
     <ClInclude Include="mesh_quad.h" />
     <ClInclude Include="constant_buffers_constants.h" />
+    <ClInclude Include="render_parameters.h" />
     <ClInclude Include="pipeline_state_pool.h" />
     <ClInclude Include="profiler.h" />
     <ClInclude Include="render_object_allocator.h" />
@@ -191,7 +192,7 @@
     <ClInclude Include="render_core.h" />
     <ClInclude Include="render_api.h" />
     <ClInclude Include="render_object_mesh.h" />
-    <ClInclude Include="render_parameters.h" />
+    <ClInclude Include="render_parameters_manager.h" />
     <ClInclude Include="render_resources.h" />
     <ClInclude Include="render_scene.h" />
     <ClInclude Include="render_targets.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="pipeline_state_pool.cpp" />
     <ClCompile Include="profiler.cpp" />
     <ClCompile Include="render_model_mesh.cpp" />
+    <ClCompile Include="render_parameters.cpp" />
     <ClCompile Include="shader_containers.cpp" />
     <ClCompile Include="stage_forward_default.cpp" />
     <ClCompile Include="stage_prepare_objects.cpp" />
@@ -224,7 +226,7 @@
     <ClCompile Include="render_core.cpp" />
     <ClCompile Include="render_api.cpp" />
     <ClCompile Include="render_object_mesh.cpp" />
-    <ClCompile Include="render_parameters.cpp" />
+    <ClCompile Include="render_parameters_manager.cpp" />
     <ClCompile Include="render_resources.cpp" />
     <ClCompile Include="render_scene.cpp" />
     <ClCompile Include="render_targets.cpp" />
