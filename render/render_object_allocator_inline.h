@@ -16,7 +16,7 @@ void render_object_allocator::deallocate( T* in_object )
 }
 
 template<typename Callback, typename ... Args>
-void render_object_allocator::execute_typed( render_object* in_object, Callback in_functor, Args ... in_args )
+void render_object_allocator::execute( render_object* in_object, Callback const& in_functor, Args ... in_args )
 {
 	switch ( m_allocator.get_object_type( in_object ) )
 	{
@@ -24,7 +24,7 @@ void render_object_allocator::execute_typed( render_object* in_object, Callback 
 	{
 		// mesh
 		render_object_mesh* obj = (render_object_mesh*)in_object;
-		in_functor.call<render_object_mesh>( obj, in_args ... );
+		in_functor( obj, in_args ... );
 		break;
 	}
 	default:
