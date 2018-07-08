@@ -3,35 +3,25 @@
 
 #include <types.h>
 #include <math/vector.h>
-#include <Windows.h>
 
-struct window_init
-{
-	pcstr title;
-	math::s16x2 dimensions;
-	bool fullscreen;
-	bool visible;
-};
+namespace sys {
 
-template<typename Events>
 class window
 {
 public:
 	window( ) = default;
 	~window( ) = default;
 
-	void create( window_init const& init );
+	void create( pcstr title, math::s32x2 const& dimensions, bool fullscreen, pointer window_procedure );
 	void destroy( );
-	void show( int param );
-	bool is_opened( );
 	void run( );
 
-	inline HWND get_hwnd( ) const { return m_hwnd; }
+	inline pvoid get_hwnd( ) const { return m_hwnd; }
 
 protected:
-	HWND		m_hwnd;
+	pvoid m_hwnd;
 
-	static LRESULT CALLBACK wndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
+	//static LRESULT CALLBACK wndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 };
 
 enum mouse_button
@@ -43,7 +33,7 @@ enum mouse_button
 
 struct window_default_events
 {
-	static void create( HWND hwnd ) { }
+	//static void create( HWND hwnd ) { }
 	static void destroy( ) { }
 	static void activate( bool active ) { }
 	static void resize( math::u16x2 new_dimensions ) { }
@@ -57,6 +47,6 @@ struct window_default_events
 	static void key_up( u64 virtual_key ) { }
 };
 
-#include "window_inline.h"
+} // namespace sys
 
 #endif // #ifndef __core_window_h_included_
