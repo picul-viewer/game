@@ -26,5 +26,17 @@ s32 interlocked_add( mt_s32& left, s32 right );
 s64 interlocked_add( mt_s64& left, s64 right );
 u32 interlocked_add( mt_u32& left, u32 right );
 u64 interlocked_add( mt_u64& left, u64 right );
+s32 interlocked_or( mt_s32& left, s32 right );
+s64 interlocked_or( mt_s64& left, s64 right );
+u32 interlocked_or( mt_u32& left, u32 right );
+u64 interlocked_or( mt_u64& left, u64 right );
+s32 interlocked_and( mt_s32& left, s32 right );
+s64 interlocked_and( mt_s64& left, s64 right );
+u32 interlocked_and( mt_u32& left, u32 right );
+u64 interlocked_and( mt_u64& left, u64 right );
+s32 interlocked_xor( mt_s32& left, s32 right );
+s64 interlocked_xor( mt_s64& left, s64 right );
+u32 interlocked_xor( mt_u32& left, u32 right );
+u64 interlocked_xor( mt_u64& left, u64 right );
 
 #endif
