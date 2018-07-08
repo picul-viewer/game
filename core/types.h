@@ -156,10 +156,10 @@ struct pointer
 	inline bool operator>=( pointer p ) const { return data >= p.data; }
 	inline bool operator<=( pointer p ) const { return data <= p.data; }
 
-	inline pointer operator+( uptr n ) const { return pointer( (pbyte)data + n ); }
-	inline pointer operator-( uptr n ) const { return pointer( (pbyte)data - n ); }
-	inline pointer operator+( ptr n ) const { return pointer( (pbyte)data + n ); }
-	inline pointer operator-( ptr n ) const { return pointer( (pbyte)data - n ); }
+	inline pointer operator+( u64 n ) const { return pointer( (pbyte)data + n ); }
+	inline pointer operator-( u64 n ) const { return pointer( (pbyte)data - n ); }
+	inline pointer operator+( s64 n ) const { return pointer( (pbyte)data + n ); }
+	inline pointer operator-( s64 n ) const { return pointer( (pbyte)data - n ); }
 	inline pointer operator+( u32 n ) const { return pointer( (pbyte)data + n ); }
 	inline pointer operator-( u32 n ) const { return pointer( (pbyte)data - n ); }
 	inline pointer operator+( s32 n ) const { return pointer( (pbyte)data + n ); }
