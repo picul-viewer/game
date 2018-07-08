@@ -146,9 +146,6 @@
     <ClInclude Include="system\window.h">
       <Filter>system\window</Filter>
     </ClInclude>
-    <ClInclude Include="system\window_inline.h">
-      <Filter>system\window</Filter>
-    </ClInclude>
     <ClInclude Include="game\text_config.h">
       <Filter>game\config</Filter>
     </ClInclude>
@@ -245,6 +242,12 @@
     <ClInclude Include="system\file.h">
       <Filter>system\fs\file</Filter>
     </ClInclude>
+    <ClInclude Include="system\window_input.h">
+      <Filter>system\window</Filter>
+    </ClInclude>
+    <ClInclude Include="system\input.h">
+      <Filter>system\window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\camera.cpp">
@@ -291,6 +294,15 @@
     </ClCompile>
     <ClCompile Include="system\file.cpp">
       <Filter>system\fs\file</Filter>
+    </ClCompile>
+    <ClCompile Include="system\window.cpp">
+      <Filter>system\window</Filter>
+    </ClCompile>
+    <ClCompile Include="system\window_input.cpp">
+      <Filter>system\window</Filter>
+    </ClCompile>
+    <ClCompile Include="system\input.cpp">
+      <Filter>system\window</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

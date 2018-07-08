@@ -204,10 +204,11 @@
     <ClInclude Include="math\quaternion.h" />
     <ClInclude Include="math\vector.h" />
     <ClInclude Include="system\file.h" />
+    <ClInclude Include="system\input.h" />
+    <ClInclude Include="system\window_input.h" />
     <ClInclude Include="system\path.h" />
     <ClInclude Include="system\timer.h" />
     <ClInclude Include="system\window.h" />
-    <ClInclude Include="system\window_inline.h" />
     <ClInclude Include="threads\threading_event.h" />
     <ClInclude Include="threads\interlocked.h" />
     <ClInclude Include="threads\spsc_queue.h" />
@@ -226,8 +227,11 @@
     <ClCompile Include="lib\hash.cpp" />
     <ClCompile Include="lib\weak_string.cpp" />
     <ClCompile Include="system\file.cpp" />
+    <ClCompile Include="system\input.cpp" />
+    <ClCompile Include="system\window_input.cpp" />
     <ClCompile Include="system\path.cpp" />
     <ClCompile Include="system\timer.cpp" />
+    <ClCompile Include="system\window.cpp" />
     <ClCompile Include="threads\interlocked.cpp" />
     <ClCompile Include="threads\threading_event.cpp" />
     <ClCompile Include="threads\thread.cpp" />
