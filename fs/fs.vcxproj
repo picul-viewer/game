@@ -79,8 +79,8 @@
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\temp\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\libs\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\temp\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)build\$(Configuration)\libs\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Configuration)\temp\$(ProjectName)\</IntDir>
     <IncludePath>D:\c++\directx\sm\game;$(IncludePath);</IncludePath>
     <LibraryPath>$(SolutionDir)build\$(Platform)\$(Configuration)\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>

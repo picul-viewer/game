@@ -81,8 +81,8 @@
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\libs\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\temp\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)build\$(Configuration)\libs\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Configuration)\temp\$(ProjectName)\</IntDir>
     <TargetExt>.lib</TargetExt>
     <IncludePath>D:\c++\directx\sm\game;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)build\$(Platform)\$(Configuration)\libs;$(LibraryPath)</LibraryPath>
