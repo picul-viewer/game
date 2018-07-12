@@ -1,19 +1,12 @@
-#include "game_object.h"
+#include "object.h"
 
-#include "renderer.h"
-
-#include "render_allocators.h"
+#include "render_resources.h"
 
 #include "render_object_mesh.h"
 
 namespace render {
 
-namespace renderer {
-	extern render_scene				g_scene;
-	extern render_objects_allocator	g_render_objects_allocator;
-}
-
-void game_object::create( config& in_config )
+void object::create( config& in_config )
 {
 	u16 const objects_count			= in_config.read<u16>( );
 
@@ -25,7 +18,7 @@ void game_object::create( config& in_config )
 		{
 		case render_object_type_mesh:
 		{
-			render_object_mesh* obj	= renderer::g_render_objects_allocator.allocate<render_object_mesh>( );
+			render_object_mesh* obj	= g_resources.get_render_object_allocator( ).allocate<render_object_mesh>( );
 			obj->create				( in_config );
 			m_objects.insert		( obj );
 		}
@@ -44,11 +37,11 @@ struct destroy_render_object
 	}
 };
 
-void game_object::destroy( )
+void object::destroy( )
 {
 	m_objects.for_each( []( render_object* current )
 	{
-		renderer::g_render_objects_allocator.execute_typed( current, destroy_render_object( ) );
+		g_resources.get_render_object_allocator( ).execute( current, destroy_render_object( ) );
 	} );
 }
 

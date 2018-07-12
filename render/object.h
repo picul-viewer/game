@@ -1,5 +1,5 @@
-#ifndef __render_game_object_h_included_
-#define __render_game_object_h_included_
+#ifndef __render_object_h_included_
+#define __render_object_h_included_
 
 #include <types.h>
 #include <lib/embedded_list.h>
@@ -11,7 +11,7 @@
 
 namespace render {
 
-class game_object
+class object
 {
 public:
 	void create( config& in_config );
@@ -30,4 +30,4 @@ protected:
 
 } // namespace render
 
-#endif // #ifndef __render_game_object_h_included_
+#endif // #ifndef __render_object_h_included_

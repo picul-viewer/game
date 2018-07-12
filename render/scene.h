@@ -1,43 +1,37 @@
-#ifndef __render_render_scene_h_included_
-#define __render_render_scene_h_included_
+#ifndef __render_scene_h_included_
+#define __render_scene_h_included_
 
 #include <types.h>
-#include <core/math.h>
-#include <core/std.h>
-#include <core/game.h>
 #include "dx_include.h"
 
-#include "game_object.h"
+#include <math/math_3d.h>
+
+#include <lib/array.h>
+#include <lib/pool.h>
+
+#include <game/camera.h>
+#include <game/bvh.h>
+
+#include "object.h"
 
 #include "render_object_mesh.h"
 
 namespace render {
 
-static const float c_default_fov		= math::degree_to_radian( 65.0f );
-static const float c_default_near_plane	= 0.05f;
-static const float c_default_far_plane	= 1000.0f;
-
-class render_scene
+class scene
 {
 public:
 	void create( );
 	void destroy( );
 
-	void rebuild_static( );
-	
-	void clear_static_objects( );
-	void insert_static_game_object( game_object* in_object );
+	void remove_all_static_objects( );
+	void insert_static_object( object* in_object );
+	void build_static_scene( );
 
-	void dispatch( );
-
-	inline camera& get_camera( ) { return m_camera; }
+	void dispatch_render_objects( frustum_aligned const& in_frustum );
 
 protected:
-	struct insert_render_object
-	{
-		template<typename T>
-		void call( T* in_object, render_scene* in_scene );
-	};
+	struct insert_render_object_helper;
 
 	enum {
 		static_render_objects_mesh_memory_ptr	= 0,
@@ -56,7 +50,7 @@ protected:
 	//typedef buffer_array<
 	//	render_object_light> static_render_objects_light_array;
 
-	typedef dynamic_allocation_pool<static_bvh_node_size::value, 4096, 256>
+	typedef dynamic_allocation_pool<static_bvh_node_size::value, Memory_Page_Size, 256>
 		bvh_node_pool;
 
 	typedef static_bvh<render_object_mesh>
@@ -72,11 +66,8 @@ protected:
 
 	static_render_objects_mesh			m_static_render_objects_mesh;
 	//static_render_objects_light			m_static_render_objects_light;
-
-
-	camera								m_camera;
 };
 
 } // namespace render
 
-#endif // #ifndef __render_render_scene_h_included_
+#endif // #ifndef __render_scene_h_included_

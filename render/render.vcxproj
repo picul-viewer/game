@@ -167,7 +167,7 @@
     <ClInclude Include="dx_include.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="effect_inline.h" />
-    <ClInclude Include="game_object.h" />
+    <ClInclude Include="object.h" />
     <ClInclude Include="input_layout.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="mesh_box.h" />
@@ -189,12 +189,11 @@
     <ClInclude Include="renderer.h" />
     <ClInclude Include="render_object.h" />
     <ClInclude Include="pipeline_state.h" />
-    <ClInclude Include="render_core.h" />
     <ClInclude Include="render_api.h" />
     <ClInclude Include="render_object_mesh.h" />
     <ClInclude Include="render_parameters_manager.h" />
     <ClInclude Include="render_resources.h" />
-    <ClInclude Include="render_scene.h" />
+    <ClInclude Include="scene.h" />
     <ClInclude Include="render_targets.h" />
     <ClInclude Include="resource_pool.h" />
     <ClInclude Include="resource_pool_inline.h" />
@@ -206,12 +205,13 @@
     <ClInclude Include="texture2d.h" />
     <ClInclude Include="texture3d.h" />
     <ClInclude Include="shader_containers.h" />
+    <ClInclude Include="world.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp" />
     <ClCompile Include="constant_buffer.cpp" />
     <ClCompile Include="effect.cpp" />
-    <ClCompile Include="game_object.cpp" />
+    <ClCompile Include="object.cpp" />
     <ClCompile Include="input_layout.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="pipeline_state_pool.cpp" />
@@ -223,12 +223,11 @@
     <ClCompile Include="stage_prepare_objects.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="pipeline_state.cpp" />
-    <ClCompile Include="render_core.cpp" />
     <ClCompile Include="render_api.cpp" />
     <ClCompile Include="render_object_mesh.cpp" />
     <ClCompile Include="render_parameters_manager.cpp" />
     <ClCompile Include="render_resources.cpp" />
-    <ClCompile Include="render_scene.cpp" />
+    <ClCompile Include="scene.cpp" />
     <ClCompile Include="render_targets.cpp" />
     <ClCompile Include="resource_views.cpp" />
     <ClCompile Include="sampler.cpp" />
@@ -237,6 +236,7 @@
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="texture2d.cpp" />
     <ClCompile Include="texture3d.cpp" />
+    <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">

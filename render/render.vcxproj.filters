@@ -34,24 +34,6 @@
     <Filter Include="dx\resource_views">
       <UniqueIdentifier>{8975af85-d900-4d60-83b1-f4dcae1dc6d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="scene">
-      <UniqueIdentifier>{719d7485-28d0-4d4a-93f7-53d6da82a78b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scene\objects">
-      <UniqueIdentifier>{526509c8-6a01-49ee-89c8-d91b57821df3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scene\objects\render_objects">
-      <UniqueIdentifier>{b1f208cd-18d8-46d6-a67b-846fc231bcd0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scene\objects\render_objects\mesh">
-      <UniqueIdentifier>{7d72011f-3a23-40b6-8736-f7009806af6b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scene\objects\render_objects\point_light">
-      <UniqueIdentifier>{5609ff8c-ca3e-4c8a-94b3-aa23e4158c6a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scene\objects\render_objects\direct_light">
-      <UniqueIdentifier>{c2a3f8e8-c5fa-46ed-8170-7e6411a8b77e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources">
       <UniqueIdentifier>{47b5c29a-60d0-41ab-aae5-01004173494d}</UniqueIdentifier>
     </Filter>
@@ -112,12 +94,35 @@
     <Filter Include="resources\utils\input_layout">
       <UniqueIdentifier>{ed10ca64-0681-428c-89ce-096aef007663}</UniqueIdentifier>
     </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{a67a58ed-2ce1-46bb-a342-7cf608ed4f76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\scene">
+      <UniqueIdentifier>{719d7485-28d0-4d4a-93f7-53d6da82a78b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\world">
+      <UniqueIdentifier>{e6fd8471-77ab-4b34-81c3-519471ce2ddf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\object">
+      <UniqueIdentifier>{f010f546-653c-4858-b531-7208da401f2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objects">
+      <UniqueIdentifier>{526509c8-6a01-49ee-89c8-d91b57821df3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objects\direct_light">
+      <UniqueIdentifier>{c2a3f8e8-c5fa-46ed-8170-7e6411a8b77e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objects\mesh">
+      <UniqueIdentifier>{7d72011f-3a23-40b6-8736-f7009806af6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objects\point_light">
+      <UniqueIdentifier>{5609ff8c-ca3e-4c8a-94b3-aa23e4158c6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
       <Filter>dx\buffers</Filter>
     </ClCompile>
-    <ClCompile Include="render_core.cpp" />
     <ClCompile Include="input_layout.cpp">
       <Filter>resources\utils\input_layout</Filter>
     </ClCompile>
@@ -140,7 +145,7 @@
       <Filter>renderer</Filter>
     </ClCompile>
     <ClCompile Include="render_object_mesh.cpp">
-      <Filter>scene\objects\render_objects\mesh</Filter>
+      <Filter>objects\mesh</Filter>
     </ClCompile>
     <ClCompile Include="stage_prepare_objects.cpp">
       <Filter>renderer\stages\stage_prepare_objects</Filter>
@@ -148,14 +153,8 @@
     <ClCompile Include="stage_forward_default.cpp">
       <Filter>renderer\stages\stage_forward_default</Filter>
     </ClCompile>
-    <ClCompile Include="game_object.cpp">
-      <Filter>scene\objects</Filter>
-    </ClCompile>
     <ClCompile Include="render_api.cpp">
       <Filter>api</Filter>
-    </ClCompile>
-    <ClCompile Include="render_scene.cpp">
-      <Filter>scene</Filter>
     </ClCompile>
     <ClCompile Include="render_resources.cpp">
       <Filter>resources</Filter>
@@ -199,12 +198,20 @@
     <ClCompile Include="render_parameters.cpp">
       <Filter>parameters</Filter>
     </ClCompile>
+    <ClCompile Include="world.cpp">
+      <Filter>common\world</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>common\object</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>common\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.h">
       <Filter>dx\buffers</Filter>
     </ClInclude>
-    <ClInclude Include="render_core.h" />
     <ClInclude Include="input_layout.h">
       <Filter>resources\utils\input_layout</Filter>
     </ClInclude>
@@ -233,7 +240,7 @@
       <Filter>renderer</Filter>
     </ClInclude>
     <ClInclude Include="render_object_mesh.h">
-      <Filter>scene\objects\render_objects\mesh</Filter>
+      <Filter>objects\mesh</Filter>
     </ClInclude>
     <ClInclude Include="stage_prepare_objects.h">
       <Filter>renderer\stages\stage_prepare_objects</Filter>
@@ -245,16 +252,10 @@
       <Filter>renderer\stages</Filter>
     </ClInclude>
     <ClInclude Include="render_object.h">
-      <Filter>scene\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="game_object.h">
-      <Filter>scene\objects</Filter>
+      <Filter>objects</Filter>
     </ClInclude>
     <ClInclude Include="render_api.h">
       <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="render_scene.h">
-      <Filter>scene</Filter>
     </ClInclude>
     <ClInclude Include="render_resources.h">
       <Filter>resources</Filter>
@@ -333,6 +334,15 @@
     </ClInclude>
     <ClInclude Include="render_parameters.h">
       <Filter>parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="world.h">
+      <Filter>common\world</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>common\object</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>common\scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
