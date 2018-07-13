@@ -12,6 +12,9 @@ resource_pool<Resource>::resource_pool( )
 template<typename Resource>
 void resource_pool<Resource>::create( uptr in_hash_map_table_size )
 {
+	m_string_pool.create( );
+	m_pool_data_allocator.create( );
+
 	new ( &m_pool_data ) pool_data( in_hash_map_table_size, aligned_mem_allocator<Cache_Line>( ), m_pool_data_allocator );
 }
 
@@ -24,6 +27,9 @@ void resource_pool<Resource>::destroy( )
 	} );
 
 	m_pool_data.clear( );
+	
+	m_string_pool.destroy( );
+	m_pool_data_allocator.destroy( );
 }
 
 template<typename Resource>

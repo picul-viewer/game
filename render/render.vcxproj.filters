@@ -207,6 +207,9 @@
     <ClCompile Include="scene.cpp">
       <Filter>common\scene</Filter>
     </ClCompile>
+    <ClCompile Include="render_object_allocator.cpp">
+      <Filter>resources\utils\render_object_allocator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.h">

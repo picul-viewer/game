@@ -16,7 +16,8 @@ struct stl_map_alocator
 public:
 	typedef T value_type;
 
-	stl_map_alocator( ) = default;
+	stl_map_alocator( ) noexcept;
+	~stl_map_alocator( ) noexcept;
 
 	template<typename U, uptr UPoolPageSize, uptr UPoolPageMaxCount>
 	stl_map_alocator( const stl_map_alocator<U, UPoolPageSize, UPoolPageMaxCount>& ) noexcept;

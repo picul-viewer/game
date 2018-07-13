@@ -8,9 +8,7 @@ template<uptr ElemSize, uptr PageSize>
 struct pool
 {
 public:
-	pool( );
-	~pool( );
-
+	void create( );
 	void destroy( );
 
 	inline pointer get_data( ) { return m_data; }
@@ -20,7 +18,7 @@ public:
 	void deallocate( pointer p );
 
 protected:
-	pool( pointer memory );
+	void create( pointer memory );
 
 	pointer	m_data;
 	pointer	m_push_pointer;
@@ -31,9 +29,7 @@ template<uptr ElemSize, uptr PageSize>
 struct allocation_pool
 {
 public:
-	allocation_pool( );
-	~allocation_pool( );
-
+	void create( );
 	void destroy( );
 	
 	inline pointer get_data( ) { return m_data; }
@@ -42,7 +38,7 @@ public:
 	pointer allocate( uptr size );
 
 protected:
-	allocation_pool( pointer memory );
+	void create( pointer memory );
 
 	pointer	m_data;
 	pointer	m_last_pointer;
@@ -52,9 +48,7 @@ template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 struct dynamic_pool
 {
 public:
-	dynamic_pool( );
-	~dynamic_pool( );
-
+	void create( );
 	void destroy( );
 
 	inline pointer get_data( ) { return m_data; }
@@ -64,7 +58,7 @@ public:
 	void deallocate( pointer p );
 
 protected:
-	dynamic_pool( pointer memory );
+	void create( pointer memory );
 
 	pointer	m_data;
 	pointer m_page_pointer;
@@ -76,9 +70,7 @@ template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 struct dynamic_allocation_pool
 {
 public:
-	dynamic_allocation_pool( );
-	~dynamic_allocation_pool( );
-
+	void create( );
 	void destroy( );
 	
 	inline pointer get_data( ) { return m_data; }
@@ -87,7 +79,7 @@ public:
 	pointer allocate( uptr size );
 
 protected:
-	dynamic_allocation_pool( pointer memory );
+	void create( pointer memory );
 
 	pointer	m_data;
 	pointer m_page_pointer;
@@ -98,9 +90,7 @@ template<uptr PageSize>
 struct allocation_multipool
 {
 public:
-	allocation_multipool( );
-	~allocation_multipool( );
-
+	void create( );
 	void destroy( );
 	
 	inline pointer get_data( ) { return m_data; }
@@ -109,7 +99,7 @@ public:
 	pointer allocate( uptr size );
 
 protected:
-	allocation_multipool( pointer memory );
+	void create( pointer memory );
 
 	pointer	m_data;
 	pointer	m_last_pointer;
@@ -119,9 +109,7 @@ template<uptr PageSize, uptr PageMaxCount>
 struct dynamic_allocation_multipool
 {
 public:
-	dynamic_allocation_multipool( );
-	~dynamic_allocation_multipool( );
-
+	void create( );
 	void destroy( );
 	
 	inline pointer get_data( ) { return m_data; }
@@ -130,7 +118,7 @@ public:
 	pointer allocate( uptr size );
 
 protected:
-	dynamic_allocation_multipool( pointer memory );
+	void create( pointer memory );
 
 	pointer	m_data;
 	pointer	m_page_pointer;

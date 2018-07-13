@@ -12,9 +12,7 @@ template<template<uptr, uptr> class Base, uptr PageSize, typename T>
 struct base_poolset<Base, PageSize, T> : Base<sizeof(T), PageSize / sizeof(T)>
 {
 public:
-	base_poolset( ) = default;
-	~base_poolset( ) = default;
-
+	using Base<sizeof(T), PageSize / sizeof(T)>::create;
 	using Base<sizeof(T), PageSize / sizeof(T)>::destroy;
 	using Base<sizeof(T), PageSize / sizeof(T)>::clear;
 
@@ -69,13 +67,11 @@ struct base_poolset<Base, PageSize, T, TList ...> :
 	base_poolset<Base, PageSize, TList ...>
 {
 public:
-	base_poolset( ) :
-		Base<sizeof(T), PageSize / sizeof(T)>(
-			virtual_mem_allocator( ).commit( nullptr, pool_page_size_helper<PageSize>::value * type_count<T, TList ...>::value ) ),
-		base_poolset<Base, PageSize, TList ...>( Base<sizeof(T), PageSize / sizeof(T)>::m_data + pool_page_size_helper<PageSize>::value )
-	{ }
-
-	~base_poolset( ) = default;
+	void create( )
+	{
+		Base<sizeof(T), PageSize / sizeof(T)>::create( virtual_mem_allocator( ).commit( nullptr, pool_page_size_helper<PageSize>::value * type_count<T, TList ...>::value ) );
+		base_poolset<Base, PageSize, TList ...>::create( Base<sizeof(T), PageSize / sizeof(T)>::m_data + pool_page_size_helper<PageSize>::value );
+	}
 
 	void destroy( )
 	{
@@ -129,10 +125,11 @@ public:
 	}
 
 protected:
-	base_poolset( pointer memory ) :
-		Base<sizeof(T), PageSize / sizeof(T)>( memory ),
-		base_poolset<Base, PageSize, TList ...>( memory + pool_page_size_helper<PageSize>::value )
-	{ }
+	void create( pointer memory )
+	{
+		Base<sizeof(T), PageSize / sizeof(T)>::create( memory );
+		base_poolset<Base, PageSize, TList ...>::create( memory + pool_page_size_helper<PageSize>::value );
+	}
 };
 
 
@@ -143,9 +140,7 @@ template<template<uptr, uptr, uptr> class Base, uptr PageSize, uptr PageMaxCount
 struct base_dynamic_poolset<Base, PageSize, PageMaxCount, T> : Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>
 {
 public:
-	base_dynamic_poolset( ) = default;
-	~base_dynamic_poolset( ) = default;
-
+	using Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::create;
 	using Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::destroy;
 	using Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::clear;
 
@@ -200,14 +195,11 @@ struct base_dynamic_poolset<Base, PageSize, PageMaxCount, T, TList ...> :
 	base_dynamic_poolset<Base, PageSize, PageMaxCount, TList ...>
 {
 public:
-	base_dynamic_poolset( ) :
-		Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>(
-			virtual_mem_allocator( ).reserve( nullptr, pool_page_size_helper<PageSize>::value * PageMaxCount * type_count<T, TList ...>::value ) ),
-		base_dynamic_poolset<Base, PageSize, PageMaxCount, TList ...>(
-			Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::m_data + pool_page_size_helper<PageSize>::value * PageMaxCount )
-	{ }
-
-	~base_dynamic_poolset( ) = default;
+	void create( )
+	{
+		Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::create( virtual_mem_allocator( ).reserve( nullptr, pool_page_size_helper<PageSize>::value * PageMaxCount * type_count<T, TList ...>::value ) );
+		base_dynamic_poolset<Base, PageSize, PageMaxCount, TList ...>::create( Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::m_data + pool_page_size_helper<PageSize>::value * PageMaxCount );
+	}
 
 	void destroy( )
 	{
@@ -261,10 +253,11 @@ public:
 	}
 
 protected:
-	base_dynamic_poolset( pointer memory ) :
-		Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>( memory ),
-		base_dynamic_poolset<Base, PageSize, PageMaxCount, TList ...>( memory + pool_page_size_helper<PageSize>::value * PageMaxCount )
-	{ }
+	base_dynamic_poolset( pointer memory )
+	{
+		Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::create( memory );
+		base_dynamic_poolset<Base, PageSize, PageMaxCount, TList ...>::create( memory + pool_page_size_helper<PageSize>::value * PageMaxCount );
+	}
 };
 
 

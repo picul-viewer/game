@@ -2,7 +2,6 @@
 #define __core_alloc_string_h_included_
 
 #include <types.h>
-#include "pool.h"
 #include "basic_string.h"
 
 class alloc_string : public i_const_string<alloc_string>

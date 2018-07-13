@@ -217,6 +217,7 @@
     <ClCompile Include="pipeline_state_pool.cpp" />
     <ClCompile Include="profiler.cpp" />
     <ClCompile Include="render_model_mesh.cpp" />
+    <ClCompile Include="render_object_allocator.cpp" />
     <ClCompile Include="render_parameters.cpp" />
     <ClCompile Include="shader_containers.cpp" />
     <ClCompile Include="stage_forward_default.cpp" />

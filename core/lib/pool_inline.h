@@ -6,11 +6,11 @@
 template<uptr MemorySize>
 struct pool_page_size_helper
 {
-	static const uptr value = ( MemorySize + 4095u ) & ( ~4095u );
+	static const uptr value = ( MemorySize + ( Memory_Page_Size - 1 ) ) & ( ~( Memory_Page_Size - 1 ) );
 };
 
 template<uptr ElemSize, uptr PageSize>
-pool<ElemSize, PageSize>::pool( )
+void pool<ElemSize, PageSize>::create( )
 {
 	ASSERT( ElemSize >= sizeof(pointer) );
 	m_data = virtual_mem_allocator( ).commit( nullptr, pool_page_size_helper<PageSize>::value );
@@ -18,17 +18,11 @@ pool<ElemSize, PageSize>::pool( )
 }
 
 template<uptr ElemSize, uptr PageSize>
-pool<ElemSize, PageSize>::pool( pointer memory )
+void pool<ElemSize, PageSize>::create( pointer memory )
 {
 	ASSERT( ElemSize >= sizeof(pointer) );
 	m_data = memory;
 	clear( );
-}
-
-template<uptr ElemSize, uptr PageSize>
-pool<ElemSize, PageSize>::~pool( )
-{
-	destroy( );
 }
 
 template<uptr ElemSize, uptr PageSize>
@@ -75,23 +69,17 @@ void pool<ElemSize, PageSize>::deallocate( pointer p )
 
 
 template<uptr ElemSize, uptr PageSize>
-allocation_pool<ElemSize, PageSize>::allocation_pool( )
+void allocation_pool<ElemSize, PageSize>::create( )
 {
 	m_data = virtual_mem_allocator( ).commit( nullptr, pool_page_size_helper<PageSize>::value );
 	clear( );
 }
 
 template<uptr ElemSize, uptr PageSize>
-allocation_pool<ElemSize, PageSize>::allocation_pool( pointer memory )
+void allocation_pool<ElemSize, PageSize>::create( pointer memory )
 {
 	m_data = memory;
 	clear( );
-}
-
-template<uptr ElemSize, uptr PageSize>
-allocation_pool<ElemSize, PageSize>::~allocation_pool( )
-{
-	destroy( );
 }
 
 template<uptr ElemSize, uptr PageSize>
@@ -119,7 +107,7 @@ pointer allocation_pool<ElemSize, PageSize>::allocate( uptr size )
 
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-dynamic_pool<ElemSize, PageSize, PageMaxCount>::dynamic_pool( )
+void dynamic_pool<ElemSize, PageSize, PageMaxCount>::create( )
 {
 	ASSERT( ElemSize >= sizeof(pointer) );
 	m_data = virtual_mem_allocator( ).reserve( nullptr, pool_page_size_helper<PageSize>::value * PageMaxCount );
@@ -127,17 +115,11 @@ dynamic_pool<ElemSize, PageSize, PageMaxCount>::dynamic_pool( )
 }
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-dynamic_pool<ElemSize, PageSize, PageMaxCount>::dynamic_pool( pointer memory )
+void dynamic_pool<ElemSize, PageSize, PageMaxCount>::create( pointer memory )
 {
 	ASSERT( ElemSize >= sizeof(pointer) );
 	m_data = memory;
 	clear( );
-}
-
-template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-dynamic_pool<ElemSize, PageSize, PageMaxCount>::~dynamic_pool( )
-{
-	destroy( );
 }
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
@@ -190,23 +172,17 @@ void dynamic_pool<ElemSize, PageSize, PageMaxCount>::deallocate( pointer p )
 
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::dynamic_allocation_pool( )
+void dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::create( )
 {
 	m_data = virtual_mem_allocator( ).reserve( nullptr, pool_page_size_helper<PageSize>::value * PageMaxCount );
 	clear( );
 }
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::dynamic_allocation_pool( pointer memory )
+void dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::create( pointer memory )
 {
 	m_data = memory;
 	clear( );
-}
-
-template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::~dynamic_allocation_pool( )
-{
-	destroy( );
 }
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
@@ -241,23 +217,17 @@ pointer dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::allocate( upt
 
 
 template<uptr PageSize>
-allocation_multipool<PageSize>::allocation_multipool( )
+void allocation_multipool<PageSize>::create( )
 {
 	m_data = virtual_mem_allocator( ).commit( nullptr, pool_page_size_helper<PageSize>::value );
 	clear( );
 }
 
 template<uptr PageSize>
-allocation_multipool<PageSize>::allocation_multipool( pointer memory )
+void allocation_multipool<PageSize>::create( pointer memory )
 {
 	m_data = memory;
 	clear( );
-}
-
-template<uptr PageSize>
-allocation_multipool<PageSize>::~allocation_multipool( )
-{
-	destroy( );
 }
 
 template<uptr PageSize>
@@ -284,23 +254,17 @@ pointer allocation_multipool<PageSize>::allocate( uptr size )
 
 
 template<uptr PageSize, uptr PageMaxCount>
-dynamic_allocation_multipool<PageSize, PageMaxCount>::dynamic_allocation_multipool( )
+void dynamic_allocation_multipool<PageSize, PageMaxCount>::create( )
 {
 	m_data = virtual_mem_allocator( ).reserve( nullptr, pool_page_size_helper<PageSize>::value * PageMaxCount );
 	clear( );
 }
 
 template<uptr PageSize, uptr PageMaxCount>
-dynamic_allocation_multipool<PageSize, PageMaxCount>::dynamic_allocation_multipool( pointer memory )
+void dynamic_allocation_multipool<PageSize, PageMaxCount>::create( pointer memory )
 {
 	m_data = memory;
 	clear( );
-}
-
-template<uptr PageSize, uptr PageMaxCount>
-dynamic_allocation_multipool<PageSize, PageMaxCount>::~dynamic_allocation_multipool( )
-{
-	destroy( );
 }
 
 template<uptr PageSize, uptr PageMaxCount>

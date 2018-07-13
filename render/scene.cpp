@@ -7,6 +7,8 @@ namespace render {
 
 void scene::create( )
 {
+	m_bvh_node_allocator.create( );
+
 	m_static_objects_memory = virtual_mem_allocator( ).allocate( static_objects_memory_size );
 
 	m_static_render_objects_mesh_array.set	( m_static_objects_memory + (uptr)static_render_objects_mesh_memory_ptr, static_render_objects_mesh_count );
@@ -19,6 +21,8 @@ void scene::destroy( )
 	//m_static_render_objects_light.destroy( );
 
 	virtual_mem_allocator( ).deallocate( m_static_objects_memory );
+	
+	m_bvh_node_allocator.destroy( );
 }
 
 struct scene::insert_render_object_helper

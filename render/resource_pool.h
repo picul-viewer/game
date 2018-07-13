@@ -21,7 +21,7 @@ public:
 protected:
 	typedef object_hash_map32<weak_const_string, Resource> pool_data;
 	typedef dynamic_pool<pool_data::kv_pool_element_size, 4 * Kb, 256> pool_data_allocator;
-	typedef dynamic_allocation_multipool<4 * Kb, 256> string_pool;
+	typedef dynamic_allocation_multipool<Memory_Page_Size, 256> string_pool;
 
 	string_pool			m_string_pool;
 	pool_data_allocator	m_pool_data_allocator;

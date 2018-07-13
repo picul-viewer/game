@@ -31,11 +31,17 @@ void resources::create( )
 	m_domain_shader_container.create( );
 	m_compute_shader_container.create( );
 
-	static const uptr mesh_pool_hash_table_size = 256;
-	static const uptr texture_pool_hash_table_size = 256;
+	m_render_object_allocator.create( );
+
+	enum { mesh_pool_hash_table_size = 256 };
+	enum { texture_pool_hash_table_size = 256 };
+
+	enum { render_model_mesh_pool_hash_table_size = 256 };
 
 	m_mesh_pool.create( mesh_pool_hash_table_size );
 	m_texture_pool.create( texture_pool_hash_table_size );
+
+	m_render_model_mesh_pool.create( render_model_mesh_pool_hash_table_size );
 }
 
 void resources::destroy( )
@@ -55,9 +61,13 @@ void resources::destroy( )
 	m_hull_shader_container.destroy( );
 	m_domain_shader_container.destroy( );
 	m_compute_shader_container.destroy( );
+	
+	m_render_object_allocator.destroy( );
 
 	m_mesh_pool.destroy( );
 	m_texture_pool.destroy( );
+
+	m_render_model_mesh_pool.destroy( );
 }
 
 void resources::create_default_samplers( )

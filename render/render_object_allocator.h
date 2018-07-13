@@ -11,6 +11,9 @@ namespace render {
 class render_object_allocator
 {
 public:
+	void create( );
+	void destroy( );
+
 	template<typename T>
 	T* allocate( );
 	template<typename T>

@@ -2,6 +2,18 @@
 #define __core_std_map_inline_h_included_
 
 template<typename T, uptr PoolPageSize, uptr PoolPageMaxCount>
+stl_map_alocator<T, PoolPageSize, PoolPageMaxCount>::stl_map_alocator( ) noexcept
+{
+	pool.create( );
+}
+
+template<typename T, uptr PoolPageSize, uptr PoolPageMaxCount>
+stl_map_alocator<T, PoolPageSize, PoolPageMaxCount>::~stl_map_alocator( ) noexcept
+{
+	pool.destroy( );
+}
+
+template<typename T, uptr PoolPageSize, uptr PoolPageMaxCount>
 template<typename U, uptr UPoolPageSize, uptr UPoolPageMaxCount>
 stl_map_alocator<T, PoolPageSize, PoolPageMaxCount>::stl_map_alocator( const stl_map_alocator<U, UPoolPageSize, UPoolPageMaxCount>& ) noexcept
 { }
