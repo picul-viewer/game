@@ -1,6 +1,6 @@
 #include "object.h"
 
-#include "render_resources.h"
+#include "resources.h"
 
 #include "render_object_mesh.h"
 

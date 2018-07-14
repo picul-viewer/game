@@ -1,6 +1,6 @@
 #include "effect.h"
 
-#include "render_resources.h"
+#include "resources.h"
 
 namespace render {
 

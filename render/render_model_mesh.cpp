@@ -1,6 +1,6 @@
 #include "render_model_mesh.h"
 
-#include "render_resources.h"
+#include "resources.h"
 
 namespace render {
 

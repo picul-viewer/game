@@ -1,7 +1,7 @@
 #include "world.h"
 #include <macros.h>
 #include "render_api.h"
-#include "render_resources.h"
+#include "resources.h"
 #include "render_parameters_manager.h"
 #include "renderer.h"
 

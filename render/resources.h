@@ -1,5 +1,5 @@
-#ifndef __render_render_resources_h_included_
-#define __render_render_resources_h_included_
+#ifndef __render_resources_h_included_
+#define __render_resources_h_included_
 
 #include <types.h>
 #include "dx_include.h"
@@ -139,4 +139,4 @@ extern resources g_resources;
 
 } // namespace render
 
-#endif // #ifndef __render_render_resources_h_included_
+#endif // #ifndef __render_resources_h_included_
