@@ -42,6 +42,9 @@ void resources::create( )
 	m_texture_pool.create( texture_pool_hash_table_size );
 
 	m_render_model_mesh_pool.create( render_model_mesh_pool_hash_table_size );
+
+	m_scene_pool.create( );
+	m_object_pool.create( );
 }
 
 void resources::destroy( )
@@ -68,6 +71,9 @@ void resources::destroy( )
 	m_texture_pool.destroy( );
 
 	m_render_model_mesh_pool.destroy( );
+	
+	m_scene_pool.destroy( );
+	m_object_pool.destroy( );
 }
 
 void resources::create_default_samplers( )
