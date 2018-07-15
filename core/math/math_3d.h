@@ -1,6 +1,9 @@
 #ifndef __core_math_3d_h_included_
 #define __core_math_3d_h_included_
 
+#include "vector.h"
+#include "matrix.h"
+
 namespace math {
 
 static const float c_epsilon = 1e-7f;

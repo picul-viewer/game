@@ -3,7 +3,7 @@
 
 namespace sys {
 
-bool mouse::set_button_pressed( mouse_button button, bool pressed )
+void mouse::set_button_pressed( mouse_button button, bool pressed )
 {
 	if ( pressed )
 		button_data |= ( 1 << (u32)button );
@@ -13,7 +13,7 @@ bool mouse::set_button_pressed( mouse_button button, bool pressed )
 
 bool mouse::is_button_pressed( mouse_button button ) const
 {
-	return button_data & ( 1 << (u32)button );
+	return ( button_data & ( 1 << (u32)button ) ) != 0;
 }
 
 
@@ -43,7 +43,7 @@ bool keyboard::is_key_pressed( key k ) const
 {
 	ASSERT( (u32)k <= 0xFF );
 	u32 index = key_to_keyboard_index[(u32)k];
-	return data.data[index / 32] & ( 1 << ( index % 32 ) );
+	return ( data.data[index / 32] & ( 1 << ( index % 32 ) ) ) != 0;
 }
 
 } // namespace sys
