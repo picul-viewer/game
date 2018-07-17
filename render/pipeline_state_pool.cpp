@@ -22,19 +22,19 @@ bool operator==( depth_stencil_state::cook const& l, depth_stencil_state::cook c
 }
 
 template<u32 DS_max, u32 B_max, u32 R_max>
-depth_stencil_state* pipeline_state_pool<DS_max, B_max, R_max>::create_depth_stencil( depth_stencil_state::cook const& in_cook )
+depth_stencil_state pipeline_state_pool<DS_max, B_max, R_max>::create_depth_stencil( depth_stencil_state::cook const& in_cook )
 {
 	u32 i = 0;
 
 	for ( ; ( i < DS_max ) && ( m_depth_stencil_data[i].state != nullptr ); ++i )
 		if ( m_depth_stencil_data[i].cook == in_cook )
-			return &m_depth_stencil_data[i].state;
+			return m_depth_stencil_data[i].state;
 
 	ASSERT( i < DS_max );
 	m_depth_stencil_data[i].cook	= in_cook;
 	m_depth_stencil_data[i].state.create( in_cook );
 
-	return &m_depth_stencil_data[i].state;
+	return m_depth_stencil_data[i].state;
 }
 
 bool operator==( D3D11_RENDER_TARGET_BLEND_DESC const& l, D3D11_RENDER_TARGET_BLEND_DESC const& r )
@@ -75,19 +75,19 @@ bool operator==( blend_state::cook const& l, blend_state::cook const& r )
 }
 
 template<u32 DS_max, u32 B_max, u32 R_max>
-blend_state* pipeline_state_pool<DS_max, B_max, R_max>::create_blend( blend_state::cook const& in_cook )
+blend_state pipeline_state_pool<DS_max, B_max, R_max>::create_blend( blend_state::cook const& in_cook )
 {
 	u32 i = 0;
 
 	for ( ; ( i < B_max ) && ( m_blend_data[i].state != nullptr ); ++i )
 		if ( m_blend_data[i].cook == in_cook )
-			return &m_blend_data[i].state;
+			return m_blend_data[i].state;
 
 	ASSERT( i < B_max );
 	m_blend_data[i].cook	= in_cook;
 	m_blend_data[i].state.create( in_cook );
 
-	return &m_blend_data[i].state;
+	return m_blend_data[i].state;
 }
 
 bool operator==( rasterizer_state::cook const& l, rasterizer_state::cook const& r )
@@ -106,19 +106,19 @@ bool operator==( rasterizer_state::cook const& l, rasterizer_state::cook const& 
 }
 
 template<u32 DS_max, u32 B_max, u32 R_max>
-rasterizer_state* pipeline_state_pool<DS_max, B_max, R_max>::create_rasterizer( rasterizer_state::cook const& in_cook )
+rasterizer_state pipeline_state_pool<DS_max, B_max, R_max>::create_rasterizer( rasterizer_state::cook const& in_cook )
 {
 	u32 i = 0;
 
 	for ( ; ( i < R_max ) && ( m_rasterizer_data[i].state != nullptr ); ++i )
 		if ( m_rasterizer_data[i].cook == in_cook )
-			return &m_rasterizer_data[i].state;
+			return m_rasterizer_data[i].state;
 
 	ASSERT( i < R_max );
 	m_rasterizer_data[i].cook	= in_cook;
 	m_rasterizer_data[i].state.create( in_cook );
 
-	return &m_rasterizer_data[i].state;
+	return m_rasterizer_data[i].state;
 }
 
 template<u32 DS_max, u32 B_max, u32 R_max>

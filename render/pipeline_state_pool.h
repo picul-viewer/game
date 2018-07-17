@@ -11,9 +11,9 @@ template<u32 DS_max, u32 B_max, u32 R_max>
 class pipeline_state_pool
 {
 public:
-	depth_stencil_state* create_depth_stencil( depth_stencil_state::cook const& in_cook );
-	blend_state* create_blend( blend_state::cook const& in_cook );
-	rasterizer_state* create_rasterizer( rasterizer_state::cook const& in_cook );
+	depth_stencil_state create_depth_stencil( depth_stencil_state::cook const& in_cook );
+	blend_state create_blend( blend_state::cook const& in_cook );
+	rasterizer_state create_rasterizer( rasterizer_state::cook const& in_cook );
 
 	void destroy( );
 
