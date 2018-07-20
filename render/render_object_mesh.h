@@ -2,46 +2,39 @@
 #define __render_render_object_mesh_h_included_
 
 #include <types.h>
-#include <core/math.h>
-#include <core/game.h>
-#include "mesh.h"
-#include "forward_default_effect.h"
-#include "resource_views.h"
+
+#include <math/math_sse.h>
+#include <game/aabb.h>
+#include <game/config.h>
+
+#include "render_object.h"
+
+#include "render_model_mesh.h"
 
 namespace render {
 
 class render_object_mesh : public render_object
 {
 public:
-	render_object_mesh( );
-
 	void create( config& in_config );
 	void destroy( );
 
-	void dispatch( ) const;
+	void update( math::sse::matrix3 in_transform );
 
 	void render( ) const;
 
-	//inline void set_skeleton( skeleton* in_skeleton ) { m_skeleton = in_skeleton; }
-	//inline skeleton* get_skeleton( ) { return m_skeleton; }
+	inline render_model_mesh* get_render_model( ) const { return m_render_model; }
+
+	inline math::sse::matrix3 const& get_transform( ) const { return m_transform; }
+	inline aabb_aligned const& get_aabb( ) const { return m_aabb; }
 
 protected:
-	mesh*					m_mesh;
-	forward_default_effect*	m_effect;
-	//skeleton*				m_skeleton;
-};
+	render_model_mesh*	m_render_model;
 
-class render_object_mesh_transformed : public render_object_mesh
-{
-public:
-	render_object_mesh_transformed( );
-
-	void create( config& in_config );
-	
-	void update_transform( );
-
-protected:
-	math::float4x4	m_identity_transform;
+	// This is 16-byte aligned
+	math::sse::matrix3	m_local_transform;
+	math::sse::matrix3	m_transform;
+	aabb_aligned		m_aabb;
 };
 
 } // namespace render
