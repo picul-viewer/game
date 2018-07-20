@@ -13,10 +13,8 @@ class vertex_shader
 public:
 	void create( pointer in_data, uptr in_size, D3D11_INPUT_ELEMENT_DESC* in_descs, u32 in_descs_count );
 	void set( ID3D11VertexShader* in_shader, ID3D11InputLayout* in_layout );
-	
-	u32 add_ref( ) const;
-	u32 release( ) const;
-	
+	void destroy( );
+
 	void bind( ) const;
 	bool is_null( ) const;
 
@@ -30,10 +28,8 @@ class pixel_shader
 public:
 	void create( pointer in_data, uptr in_size );
 	void set( ID3D11PixelShader* in_shader );
-	
-	u32 add_ref( ) const;
-	u32 release( ) const;
-	
+	void destroy( );
+
 	void bind( ) const;
 	bool is_null( ) const;
 
@@ -46,10 +42,8 @@ class geometry_shader
 public:
 	void create( pointer in_data, uptr in_size );
 	void set( ID3D11GeometryShader* in_shader );
-	
-	u32 add_ref( ) const;
-	u32 release( ) const;
-	
+	void destroy( );
+
 	void bind( ) const;
 	bool is_null( ) const;
 
@@ -62,10 +56,8 @@ class hull_shader
 public:
 	void create( pointer in_data, uptr in_size );
 	void set( ID3D11HullShader* in_shader );
-	
-	u32 add_ref( ) const;
-	u32 release( ) const;
-	
+	void destroy( );
+
 	void bind( ) const;
 	bool is_null( ) const;
 
@@ -78,10 +70,8 @@ class domain_shader
 public:
 	void create( pointer in_data, uptr in_size );
 	void set( ID3D11DomainShader* in_shader );
-	
-	u32 add_ref( ) const;
-	u32 release( ) const;
-	
+	void destroy( );
+
 	void bind( ) const;
 	bool is_null( ) const;
 
@@ -94,10 +84,8 @@ class compute_shader
 public:
 	void create( pointer in_data, uptr in_size );
 	void set( ID3D11ComputeShader* in_shader );
-	
-	u32 add_ref( ) const;
-	u32 release( ) const;
-	
+	void destroy( );
+
 	void bind( ) const;
 	bool is_null( ) const;
 

@@ -15,16 +15,9 @@ void vertex_shader::set( ID3D11VertexShader* in_shader, ID3D11InputLayout* in_la
 	m_layout = in_layout;
 }
 
-u32 vertex_shader::add_ref( ) const
-{
-	m_shader->AddRef( );
-	return m_layout->AddRef( );
-}
-
-u32 vertex_shader::release( ) const
+void vertex_shader::destroy( )
 {
 	m_shader->Release( );
-	return m_layout->Release( );
 }
 
 void vertex_shader::bind( ) const
@@ -49,14 +42,9 @@ void pixel_shader::set( ID3D11PixelShader* in_shader )
 	m_shader = in_shader;
 }
 
-u32 pixel_shader::add_ref( ) const
+void pixel_shader::destroy( )
 {
-	return m_shader->AddRef( );
-}
-
-u32 pixel_shader::release( ) const
-{
-	return m_shader->Release( );
+	m_shader->Release( );
 }
 
 void pixel_shader::bind( ) const
@@ -80,14 +68,9 @@ void geometry_shader::set( ID3D11GeometryShader* in_shader )
 	m_shader = in_shader;
 }
 
-u32 geometry_shader::add_ref( ) const
+void geometry_shader::destroy( )
 {
-	return m_shader->AddRef( );
-}
-
-u32 geometry_shader::release( ) const
-{
-	return m_shader->Release( );
+	m_shader->Release( );
 }
 
 void geometry_shader::bind( ) const
@@ -111,14 +94,9 @@ void hull_shader::set( ID3D11HullShader* in_shader )
 	m_shader = in_shader;
 }
 
-u32 hull_shader::add_ref( ) const
+void hull_shader::destroy( )
 {
-	return m_shader->AddRef( );
-}
-
-u32 hull_shader::release( ) const
-{
-	return m_shader->Release( );
+	m_shader->Release( );
 }
 
 void hull_shader::bind( ) const
@@ -142,14 +120,9 @@ void domain_shader::set( ID3D11DomainShader* in_shader )
 	m_shader = in_shader;
 }
 
-u32 domain_shader::add_ref( ) const
+void domain_shader::destroy( )
 {
-	return m_shader->AddRef( );
-}
-
-u32 domain_shader::release( ) const
-{
-	return m_shader->Release( );
+	m_shader->Release( );
 }
 
 void domain_shader::bind( ) const
@@ -173,14 +146,9 @@ void compute_shader::set( ID3D11ComputeShader* in_shader )
 	m_shader = in_shader;
 }
 
-u32 compute_shader::add_ref( ) const
+void compute_shader::destroy( )
 {
-	return m_shader->AddRef( );
-}
-
-u32 compute_shader::release( ) const
-{
-	return m_shader->Release( );
+	m_shader->Release( );
 }
 
 void compute_shader::bind( ) const
