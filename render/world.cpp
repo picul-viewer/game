@@ -7,7 +7,7 @@
 
 namespace render {
 
-void world::run( HWND in_hwnd, math::u16x2 in_resolution, bool in_is_windowed, bool in_allow_debug )
+void world::run( pvoid in_hwnd, math::u16x2 in_resolution, bool in_is_windowed, bool in_allow_debug )
 {
 	g_parameters.hwnd				= in_hwnd;
 	g_parameters.screen_resolution	= in_resolution;

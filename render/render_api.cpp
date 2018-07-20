@@ -30,7 +30,7 @@ void api::create( )
 	swap_chain_desc.BufferDesc.RefreshRate.Numerator	= 60;
 	swap_chain_desc.BufferDesc.RefreshRate.Denominator	= 1;
 	swap_chain_desc.BufferUsage							= DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swap_chain_desc.OutputWindow						= g_parameters.hwnd;
+	swap_chain_desc.OutputWindow						= (HWND)g_parameters.hwnd;
 	swap_chain_desc.SampleDesc.Count					= 1;
 	swap_chain_desc.SampleDesc.Quality					= 0;
 	swap_chain_desc.Windowed							= (BOOL)g_parameters.is_windowed;

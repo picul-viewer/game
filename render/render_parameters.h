@@ -10,7 +10,7 @@ namespace render {
 
 struct parameters
 {
-	HWND			hwnd;
+	pvoid			hwnd;
 	math::u16x2		screen_resolution;
 	bool			is_windowed;
 	bool			is_d3d_debug;
