@@ -17,11 +17,13 @@ void scene::create( )
 
 void scene::destroy( )
 {
-	m_static_render_objects_mesh.destroy( );
-	//m_static_render_objects_light.destroy( );
+	m_static_render_objects_mesh_container.destroy( );
+	//m_static_render_objects_light_container.destroy( );
 
 	virtual_mem_allocator( ).deallocate( m_static_objects_memory );
 	
+	m_static_render_objects_mesh_container.destroy( );
+
 	m_bvh_node_allocator.destroy( );
 }
 
@@ -48,14 +50,8 @@ void scene::insert_static_object( object* in_object )
 
 void scene::build_static_scene( )
 {
-	m_static_render_objects_mesh.destroy( );
-
-	m_static_render_objects_mesh.create( m_bvh_node_allocator, m_static_render_objects_mesh_array );
-}
-
-void scene::dispatch_render_objects( frustum_aligned const& in_frustum )
-{
-	m_static_render_objects_mesh.query_visibility( in_frustum, []( render_object_mesh* current ) { current->dispatch( ); } );
+	m_static_render_objects_mesh_container.destroy( );
+	m_static_render_objects_mesh_container.create( m_bvh_node_allocator, m_static_render_objects_mesh_array );
 }
 
 } // namespace render
