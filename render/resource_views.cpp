@@ -254,6 +254,21 @@ void depth_stencil_view::destroy( )
 	dx_release( m_dsv );
 }
 
+void depth_stencil_view::clear( float in_depth_value ) const
+{
+	g_api.get_context( )->ClearDepthStencilView( m_dsv, D3D11_CLEAR_DEPTH, in_depth_value, 0u );
+}
+
+void depth_stencil_view::clear( u8 in_stencil_value ) const
+{
+	g_api.get_context( )->ClearDepthStencilView( m_dsv, D3D11_CLEAR_STENCIL, 0.0f, in_stencil_value );
+}
+
+void depth_stencil_view::clear( float in_depth_value, u8 in_stencil_value ) const
+{
+	g_api.get_context( )->ClearDepthStencilView( m_dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, in_depth_value, in_stencil_value );
+}
+
 
 void render_target_view::cook::set_buffer_rtv(
 	DXGI_FORMAT	in_format,
@@ -353,6 +368,11 @@ void render_target_view::destroy( )
 void render_target_view::bind( depth_stencil_view in_dsv, u32 in_count ) const
 {
 	g_api.get_context( )->OMSetRenderTargets( in_count, &m_rtv, in_dsv.get( ) );
+}
+
+void render_target_view::clear( math::float4 const& in_value ) const
+{
+	g_api.get_context( )->ClearRenderTargetView( m_rtv, in_value.data );
 }
 
 } // namespace render

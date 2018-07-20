@@ -3,6 +3,7 @@
 
 #include <types.h>
 #include "dx_include.h"
+#include <math/vector.h>
 
 namespace render {
 
@@ -152,6 +153,10 @@ public:
 	
 	inline void set( ID3D11DepthStencilView* in_view ) { m_dsv = in_view; }
 	inline ID3D11DepthStencilView* const& get( ) const { return m_dsv; }
+	
+	void clear( float in_depth_value ) const;
+	void clear( u8 in_stencil_value ) const;
+	void clear( float in_depth_value, u8 in_stencil_value ) const;
 
 protected:
 	ID3D11DepthStencilView*	m_dsv;
@@ -219,6 +224,7 @@ public:
 	inline ID3D11RenderTargetView* const& get( ) const { return m_rtv; }
 
 	void bind( depth_stencil_view in_dsv, u32 in_count = 1 ) const;
+	void clear( math::float4 const& in_value ) const;
 	
 protected:
 	ID3D11RenderTargetView*	m_rtv;
