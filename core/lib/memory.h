@@ -63,20 +63,10 @@ inline void set( pvoid ptr, uptr size, u8 value )
 
 	__m128i val128 = _mm_set1_epi8( value );
 
-	if ( !aligned( (uptr)ptr, 16 ) )
-	{
-		_mm_storeu_si128( (__m128i*)ptr, val128 );
-
-		uptr first_line = 16 - ( (uptr)ptr & 0xF );
-
-		ptr = ( (pbyte)ptr + first_line );
-		size -= first_line;
-	}
-
 	__m128i* data = (__m128i*)ptr;
 
 	for ( uptr i = size / 16; i; --i )
-		_mm_store_si128( data++, val128 );
+		_mm_storeu_si128( data++, val128 );
 
 	if ( size % 16 )
 		_mm_storeu_si128( (__m128i*)( (pbyte)ptr + size - 16 ), val128 );
@@ -137,20 +127,10 @@ inline void zero( pvoid ptr, uptr size )
 
 	__m128i val128 = _mm_setzero_si128( );
 
-	if ( !aligned( (uptr)ptr, 16 ) )
-	{
-		_mm_storeu_si128( (__m128i*)ptr, val128 );
-
-		uptr first_line = 16 - ( (uptr)ptr & 0xF );
-
-		ptr = ( (pbyte)ptr + first_line );
-		size -= first_line;
-	}
-
 	__m128i* data = (__m128i*)ptr;
 
 	for ( uptr i = size / 16; i; --i )
-		_mm_store_si128( data++, val128 );
+		_mm_storeu_si128( data++, val128 );
 
 	if ( size % 16 )
 		_mm_storeu_si128( (__m128i*)( (pbyte)ptr + size - 16 ), val128 );
@@ -213,17 +193,6 @@ inline void copy( pvoid dest, pcvoid src, uptr size )
 		return;
 	}
 
-	if ( !aligned( dest, 16 ) )
-	{
-		_mm_storeu_si128( (__m128i*)dest, _mm_loadu_si128( (__m128i const*)src ) );
-
-		uptr first_line = 16 - ( (uptr)dest & 0xF );
-
-		dest = ( (pbyte)dest + first_line );
-		src = ( (pbyte)src + first_line );
-		size -= first_line;
-	}
-	
 	__m128i*		d = (__m128i*)dest;
 	__m128i const*	s = (__m128i const*)src;
 

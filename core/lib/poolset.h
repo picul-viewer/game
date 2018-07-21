@@ -54,11 +54,6 @@ public:
 #endif // #ifdef DEBUG
 		return 0;
 	}
-
-protected:
-	base_poolset( pointer memory ) :
-		Base<sizeof(T), PageSize / sizeof(T)>( memory )
-	{ }
 };
 
 template<template<uptr, uptr> class Base, uptr PageSize, typename T, typename ... TList>
@@ -182,11 +177,6 @@ public:
 #endif // #ifdef DEBUG
 		return 0;
 	}
-
-protected:
-	base_dynamic_poolset( pointer memory ) :
-		Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>( memory )
-	{ }
 };
 
 template<template<uptr, uptr, uptr> class Base, uptr PageSize, uptr PageMaxCount, typename T, typename ... TList>
@@ -253,7 +243,7 @@ public:
 	}
 
 protected:
-	base_dynamic_poolset( pointer memory )
+	void create( pointer memory )
 	{
 		Base<sizeof(T), PageSize / sizeof(T), PageMaxCount>::create( memory );
 		base_dynamic_poolset<Base, PageSize, PageMaxCount, TList ...>::create( memory + pool_page_size_helper<PageSize>::value * PageMaxCount );

@@ -1,6 +1,8 @@
 #ifndef __core_bvh_inline_h_included_
 #define __core_bvh_inline_h_included_
 
+#include <lib/memory.h>
+
 template<typename T>
 static_bvh<T>::static_bvh( )
 {
@@ -91,15 +93,15 @@ typename static_bvh<T>::node* static_bvh<T>::build( NodeAllocator& node_allocato
 		objects[sorting1] = aligned_mem_allocator<16>( ).allocate( buffer_size );
 		objects[sorting2] = aligned_mem_allocator<16>( ).allocate( buffer_size );
 		
-		memory::copy_utoa( objects[sorting1], first, buffer_size );
-		memory::copy_atoa( objects[sorting2], objects[sorting1], buffer_size );
+		memory::copy( objects[sorting1], first, buffer_size );
+		memory::copy( objects[sorting2], first, buffer_size );
 		
-		sort( objects[sorting1], objects[sorting1] + count, [sorting1]( T* l, T* r )
+		std::sort( objects[sorting1], objects[sorting1] + count, [sorting1]( T* l, T* r )
 		{
 			return l->get_aabb( ).get_box( ).max.data[sorting1] < r->get_aabb( ).get_box( ).max.data[sorting1];
 		} );
 		
-		sort( objects[sorting2], objects[sorting2] + count, [sorting2]( T* l, T* r )
+		std::sort( objects[sorting2], objects[sorting2] + count, [sorting2]( T* l, T* r )
 		{
 			return l->get_aabb( ).get_box( ).max.data[sorting2] < r->get_aabb( ).get_box( ).max.data[sorting2];
 		} );
@@ -181,7 +183,7 @@ void static_bvh<T>::create( NodeAllocator& node_allocator, buffer_array<T*>& obj
 	aabb_aligned* aabbs = aligned_mem_allocator<16>( ).allocate( objects.size( ) * sizeof(aabb_aligned) );
 
 	// Pre-sort by max.x -> sorting == 0
-	sort( objects.begin( ), objects.end( ), []( T* l, T* r )
+	std::sort( objects.begin( ), objects.end( ), []( T* l, T* r )
 	{
 		return l->get_aabb( ).get_box( ).max.x < r->get_aabb( ).get_box( ).max.x;
 	} );
