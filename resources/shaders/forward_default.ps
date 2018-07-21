@@ -1,0 +1,8 @@
+#include "forward_default.h"
+
+#include "samplers.h"
+
+float4 main( in vertex_output output ) : SV_Target0
+{
+	return	s_diffuse.Sample( s_texture_sampler, input.tex_coords );
+}
