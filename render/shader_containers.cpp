@@ -11,6 +11,8 @@ pcstr vertex_shader_path_provider::get( vertex_shader_type type )
 {
 	switch ( type )
 	{
+	case vertex_shader_forward_default:
+		return "forward_default_0000000000000000.vs";
 	default:
 		UNREACHABLE_CODE
 	}
@@ -22,6 +24,8 @@ pcstr pixel_shader_path_provider::get( pixel_shader_type type )
 {
 	switch ( type )
 	{
+	case pixel_shader_forward_default:
+		return "forward_default_0000000000000000.ps";
 	default:
 		UNREACHABLE_CODE
 	}

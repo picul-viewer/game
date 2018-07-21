@@ -4,59 +4,71 @@
 #include <types.h>
 #include "dx_include.h"
 
-#include "resource_views.h"
-#include "render_targets.h"
+#include <lib/array.h>
 
-#include "render_object.h"
+#include "stage_initialization.h"
+#include "stage_forward_default.h"
+
 #include "render_object_mesh.h"
 
-#include "render_scene.h"
+class camera;
 
 namespace render {
 
-class renderer_data
-{
-public:
-	typedef buffer_array<render_object_mesh const*> render_meshes_type;
+class scene;
 
+class renderer
+{
 public:
 	void create( );
 	void destroy( );
+	
+	inline void set_scene( scene* in_scene ) { m_next_scene = in_scene; }
+	inline void set_camera( camera* in_camera ) { m_next_camera = in_camera; }
 
-	inline render_meshes_type& get_render_meshes( ) { return m_render_meshes; }
+	void render( );
 
-	inline render_target_view& get_backbuffer( ) { return m_backbuffer_rt; }
-	inline render_target_tex2d& get_depth_buffer( ) { return m_depth_buffer; }
+protected:
+	// Stages
+	friend class stage_initialization;
+	friend class stage_forward_default;
+	
+	void render_scene( );
+
+	void end_frame( );
 
 protected:
 	enum
 	{
-		max_rendered_meshes	= 1024,
+		max_render_meshes	= 1024,
 		//
 	};
 
 	enum
 	{
-		rendered_meshes_memory_offset = 0,
+		render_meshes_memory_offset = 0,
 		//
-		rendered_objects_memory_size = rendered_meshes_memory_offset + sizeof(render_object_mesh*) * max_rendered_meshes
+		render_objects_memory_size = render_meshes_memory_offset + sizeof(render_object_mesh*) * max_render_meshes
 	};
-
-	fixed_array<s8, rendered_objects_memory_size>	m_rendered_objects_memory;
-	render_meshes_type								m_render_meshes;
 	
-	render_target_view								m_backbuffer_rt;
-	render_target_tex2d								m_depth_buffer;
+	typedef buffer_array<render_object_mesh const*> render_meshes_type;
+	
+protected:
+	scene*					m_scene;
+	scene*					m_next_scene;
+
+	camera*					m_camera;
+	camera*					m_next_camera;
+
+	pointer					m_render_objects_memory;
+
+	render_meshes_type		m_render_meshes;
+
+	stage_initialization	m_stage_initialization;
+	stage_forward_default	m_stage_forward_default;
 };
 
-namespace renderer
-{
-	void create( );
-	void destroy( );
-	
-	void render( );
-	
-} // namespace renderer
+extern renderer g_renderer;
 
 } // namespace render
 

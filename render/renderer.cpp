@@ -1,7 +1,5 @@
 #include "renderer.h"
 
-#include <core/std.h>
-
 #include "render_api.h"
 
 #include "resource_views.h"
@@ -10,60 +8,66 @@
 #include "render_parameters.h"
 
 #include "render_object_allocator.h"
-#include "render_scene.h"
 
-#include "stages.h"
+#include "scene.h"
+
+#include "render_parameters_manager.h"
 
 namespace render {
 
-void renderer_data::create( )
+void renderer::create( )
 {
-	m_rendered_meshes.set( (render_object_mesh**)( m_rendered_objects_memory.data( ) + rendered_meshes_memory_offset ), max_rendered_meshes );
+	m_scene			= nullptr;
+	m_next_scene	= nullptr;
+	
+	m_camera		= nullptr;
+	m_next_camera	= nullptr;
 
-	//////////////////////
+	m_render_objects_memory = virtual_mem_allocator( ).allocate( render_objects_memory_size );
 
-	{
-		render_target_view::cook cook;
-		cook.set_tex2d_rtv( api::backbuffer_pixel_format );
-		m_backbuffer_rt.create( api::get_backbuffer( ), cook );
-	}
+	m_render_meshes.set(
+		(render_object_mesh const**)( m_render_objects_memory + render_meshes_memory_offset ),
+		max_render_meshes
+	);
 
-	m_depth_buffer.create( DXGI_FORMAT_D24_UNORM_S8_UINT, parameters::get_resolution( ), D3D11_BIND_DEPTH_STENCIL );
+	m_stage_initialization.create( );
+	m_stage_forward_default.create( );
 }
 
-void renderer_data::destroy( )
+void renderer::destroy( )
 {
-	m_backbuffer_rt.destroy( );
-	m_depth_buffer.destroy( );
+	m_stage_initialization.destroy( );
+	m_stage_forward_default.destroy( );
+
+	virtual_mem_allocator( ).deallocate( m_render_objects_memory );
 }
 
-namespace renderer
+void renderer::render_scene( )
 {
-
-extern renderer_data			g_data;
-
-extern render_scene				g_scene;
-
-void create( )
-{
-	g_data.create( );
-	g_scene.create( );
+	m_stage_initialization.execute	( );
+	m_stage_forward_default.execute	( );
 }
 
-void destroy( )
+void renderer::render( )
 {
-	g_data.destroy( );
-	g_scene.destroy( );
+	bool const is_rendering_scene =
+		( m_scene != nullptr ) &&
+		( m_camera != nullptr );
+
+	if ( is_rendering_scene )
+		render_scene( );
+
+	end_frame( );
 }
 
-void render( )
+void renderer::end_frame( )
 {
-	stage_prepare_objects::execute	( );
-	stage_forward_default::execute	( );
+	g_parameters_manager.update( );
 
-	core::end_frame					( );
+	m_scene		= m_next_scene;
+	m_camera	= m_next_camera;
 }
 
-} // namespace renderer
+renderer g_renderer;
 
 } // namespace render

@@ -25,12 +25,6 @@
     <Filter Include="renderer\stages">
       <UniqueIdentifier>{6b425e7d-630f-4f17-b377-bbdf4b5a6ace}</UniqueIdentifier>
     </Filter>
-    <Filter Include="renderer\stages\stage_prepare_objects">
-      <UniqueIdentifier>{8a1818f9-340e-4452-b0d9-701b8ea2d1be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="renderer\stages\stage_forward_default">
-      <UniqueIdentifier>{7f4964f9-35e6-46ee-b824-79cda62804b0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="dx\resource_views">
       <UniqueIdentifier>{8975af85-d900-4d60-83b1-f4dcae1dc6d5}</UniqueIdentifier>
     </Filter>
@@ -118,6 +112,12 @@
     <Filter Include="objects\point_light">
       <UniqueIdentifier>{5609ff8c-ca3e-4c8a-94b3-aa23e4158c6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="renderer\stages\stage_forward_default">
+      <UniqueIdentifier>{8f691ff8-d8d6-4e11-8fdb-5fa94c529027}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\stages\stage_initialization">
+      <UniqueIdentifier>{45451be4-67f2-41c8-9245-ed5fba41f851}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
@@ -147,17 +147,8 @@
     <ClCompile Include="render_object_mesh.cpp">
       <Filter>objects\mesh</Filter>
     </ClCompile>
-    <ClCompile Include="stage_prepare_objects.cpp">
-      <Filter>renderer\stages\stage_prepare_objects</Filter>
-    </ClCompile>
-    <ClCompile Include="stage_forward_default.cpp">
-      <Filter>renderer\stages\stage_forward_default</Filter>
-    </ClCompile>
     <ClCompile Include="render_api.cpp">
       <Filter>api</Filter>
-    </ClCompile>
-    <ClCompile Include="render_resources.cpp">
-      <Filter>resources</Filter>
     </ClCompile>
     <ClCompile Include="mesh.cpp">
       <Filter>resources\shared_resources\mesh</Filter>
@@ -210,6 +201,15 @@
     <ClCompile Include="render_object_allocator.cpp">
       <Filter>resources\utils\render_object_allocator</Filter>
     </ClCompile>
+    <ClCompile Include="resources.cpp">
+      <Filter>resources</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_forward_default.cpp">
+      <Filter>renderer\stages\stage_forward_default</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_initialization.cpp">
+      <Filter>renderer\stages\stage_initialization</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.h">
@@ -245,23 +245,11 @@
     <ClInclude Include="render_object_mesh.h">
       <Filter>objects\mesh</Filter>
     </ClInclude>
-    <ClInclude Include="stage_prepare_objects.h">
-      <Filter>renderer\stages\stage_prepare_objects</Filter>
-    </ClInclude>
-    <ClInclude Include="stage_forward_default.h">
-      <Filter>renderer\stages\stage_forward_default</Filter>
-    </ClInclude>
-    <ClInclude Include="stages.h">
-      <Filter>renderer\stages</Filter>
-    </ClInclude>
     <ClInclude Include="render_object.h">
       <Filter>objects</Filter>
     </ClInclude>
     <ClInclude Include="render_api.h">
       <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="render_resources.h">
-      <Filter>resources</Filter>
     </ClInclude>
     <ClInclude Include="mesh.h">
       <Filter>resources\shared_resources\mesh</Filter>
@@ -346,6 +334,15 @@
     </ClInclude>
     <ClInclude Include="scene.h">
       <Filter>common\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="resources.h">
+      <Filter>resources</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_forward_default.h">
+      <Filter>renderer\stages\stage_forward_default</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_initialization.h">
+      <Filter>renderer\stages\stage_initialization</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
