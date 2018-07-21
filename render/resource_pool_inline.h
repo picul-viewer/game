@@ -21,7 +21,7 @@ void resource_pool<Resource>::create( uptr in_hash_map_table_size )
 template<typename Resource>
 void resource_pool<Resource>::destroy( )
 {
-	m_pool_data.for_each( []( weak_const_string, Resource const& resource )
+	m_pool_data.for_each( []( weak_const_string, Resource& resource )
 	{
 		resource.destroy( );
 	} );

@@ -3,6 +3,7 @@
 
 #include <types.h>
 #include <game/aabb.h>
+#include <game/config.h>
 #include "mesh.h"
 #include "texture.h"
 

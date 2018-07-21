@@ -31,7 +31,7 @@ void object::create( config& in_config )
 struct destroy_render_object
 {
 	template<typename T>
-	void call( T* in_object )
+	void operator( )( T* in_object ) const
 	{
 		in_object->destroy( );
 	}

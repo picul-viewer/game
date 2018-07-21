@@ -29,7 +29,7 @@ void scene::destroy( )
 
 struct scene::insert_render_object_helper
 {
-	void operator( )( render_object_mesh* in_object, scene* in_scene )
+	void operator( )( render_object_mesh* in_object, scene* in_scene ) const
 	{
 		in_scene->m_static_render_objects_mesh_array.push_back( in_object );
 	}

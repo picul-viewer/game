@@ -1,6 +1,7 @@
 #include "render_model_mesh.h"
 
 #include "resources.h"
+#include <math/math_sse.h>
 
 namespace render {
 
