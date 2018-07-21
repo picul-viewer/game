@@ -29,17 +29,32 @@ parameters& world::get_parameters( ) const
 
 scene* world::create_scene( ) const
 {
-	// g_resources
+	return g_resources.get_scene_pool( ).allocate( sizeof(scene) );
 }
 
 void world::set_current_scene( scene* in_scene ) const
 {
-	// g_resources
+	g_renderer.set_scene( in_scene );
 }
 
 void world::destroy_scene( scene* in_scene ) const
 {
-	// g_resources
+	g_resources.get_scene_pool( ).deallocate( in_scene );
+}
+
+void world::set_current_camera( camera* in_camera ) const
+{
+	g_renderer.set_camera( in_camera );
+}
+
+object* world::create_object( ) const
+{
+	return g_resources.get_object_pool( ).allocate( sizeof(object) );
+}
+
+void world::destroy_object( object* in_object ) const
+{
+	g_resources.get_object_pool( ).deallocate( in_object );
 }
 
 world g_world;

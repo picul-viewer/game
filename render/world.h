@@ -7,9 +7,12 @@
 
 #include "render_parameters.h"
 
+class camera;
+
 namespace render {
 
 class scene;
+class object;
 
 class world
 {
@@ -22,6 +25,11 @@ public:
 	scene* create_scene( ) const;
 	void set_current_scene( scene* in_scene ) const;
 	void destroy_scene( scene* in_scene ) const;
+
+	void set_current_camera( camera* in_camera ) const;
+
+	object* create_object( ) const;
+	void destroy_object( object* in_object ) const;
 
 protected:
 	volatile bool m_alive;
