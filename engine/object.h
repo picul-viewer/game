@@ -1,27 +1,27 @@
-#ifndef __game_game_object_h_included_
-#define __game_game_object_h_included_
+#ifndef __engine_object_h_included_
+#define __engine_object_h_included_
 
 #include <types.h>
 #include <math/matrix.h>
 #include <game/config.h>
 
-#include <render/game_object.h>
+namespace render { class object; }
 
-namespace game {
+namespace engine {
 
 class object
 {
 public:
-	object( );
-
 	void create( config& in_config );
 	void destroy( );
 
+	inline render::object* render( ) { return m_render; }
+
 protected:
 	// Aligned by 64 bytes
-	math::float4x4			m_transform;
+	math::float4x3			m_transform;
 
-	render::game_object*	m_render;
+	render::object*			m_render;
 
 	//physics::game_object	m_physic;
 	// Or something to handle physics...
@@ -32,6 +32,6 @@ public:
 	object*					m_next;
 };
 
-} // namespace game
+} // namespace engine
 
-#endif // #ifndef __game_game_object_h_included_
+#endif // #ifndef __engine_object_h_included_

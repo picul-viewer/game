@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="common">
+      <UniqueIdentifier>{3e9684fe-1752-4fcf-b54d-4cd012fd7c3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\world">
+      <UniqueIdentifier>{4c52e81c-5bea-454a-a585-784571ced6db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\object">
+      <UniqueIdentifier>{8daceb2f-7057-435e-a77a-8c6830821a6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\scene">
+      <UniqueIdentifier>{4ab8318c-e015-43db-b4f8-574b0ed173fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{006458a7-1d63-48f2-a09f-644fba92f202}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="object.h">
+      <Filter>common\object</Filter>
+    </ClInclude>
+    <ClInclude Include="world.h">
+      <Filter>common\world</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>common\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="resources.h">
+      <Filter>resources</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="object.cpp">
+      <Filter>common\object</Filter>
+    </ClCompile>
+    <ClCompile Include="world.cpp">
+      <Filter>common\world</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>common\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="resources.cpp">
+      <Filter>resources</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
