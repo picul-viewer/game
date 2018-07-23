@@ -2,7 +2,7 @@
 #define __core_macros_h_included_
 
 #include <windows.h>
-#include <cstdio>
+#include <stdio.h>
 
 #define NO_OP {}
 
