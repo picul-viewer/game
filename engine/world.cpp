@@ -100,8 +100,10 @@ void world::deinitialize( )
 	m_window_thread.destroy( INFINITE );
 }
 
-void world::run( )
+void world::run( math::u32x2 in_window_dimensions )
 {
+	m_window_dimensions = in_window_dimensions;
+
 	initialize( );
 
 	while ( !m_window_created )

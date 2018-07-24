@@ -3,6 +3,6 @@
 
 int __stdcall WinMain( HINSTANCE, HINSTANCE, char*, int )
 {
-	engine::g_world.run( );
+	engine::g_world.run( math::u32x2( 800, 600 ) );
 	return 0;
 }

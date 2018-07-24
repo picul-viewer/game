@@ -19,7 +19,7 @@ namespace engine {
 class world
 {
 public:
-	void run( );
+	void run( math::u32x2 in_window_dimensions );
 	void exit( );
 
 	scene* create_scene( ) const;
