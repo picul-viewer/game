@@ -40,7 +40,6 @@ public:
 
 protected:
 	int m_handle;
-	uptr m_size;
 
 };
 

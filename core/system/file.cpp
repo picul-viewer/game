@@ -31,10 +31,6 @@ file::file( pcstr path, open_mode mode )
 	}
 
 	m_handle = _open( path, open_flag );
-
-	_lseeki64( m_handle, 0, SEEK_END );
-	m_size = _telli64( m_handle );
-	_lseeki64( m_handle, 0, SEEK_SET );
 }
 
 file::~file( )
@@ -52,7 +48,9 @@ void file::close( )
 
 uptr file::size( ) const
 {
-	return m_size;
+	s64 const size = _filelengthi64( m_handle );
+	ASSERT( size >= 0 );
+	return (uptr)size;
 }
 
 void file::seek( ptr position, seek_mode mode )
