@@ -1,5 +1,21 @@
 #include "shader_containers.h"
 
+#ifdef DEBUG
+#	define VERTEX_PATH( name )		( "resources/shaders_debug/vertex/" name )
+#	define PIXEL_PATH( name )		( "resources/shaders_debug/pixel/" name )
+#	define GEOMETRY_PATH( name )	( "resources/shaders_debug/geometry/" name )
+#	define HULL_PATH( name )		( "resources/shaders_debug/hull/" name )
+#	define DOMAIN_PATH( name )		( "resources/shaders_debug/domain/" name )
+#	define COMPUTE_PATH( name )		( "resources/shaders_debug/compute/" name )
+#else
+#	define VERTEX_PATH( name )		( "resources/shaders/vertex/" name )
+#	define PIXEL_PATH( name )		( "resources/shaders/pixel/" name )
+#	define GEOMETRY_PATH( name )	( "resources/shaders/geometry/" name )
+#	define HULL_PATH( name )		( "resources/shaders/hull/" name )
+#	define DOMAIN_PATH( name )		( "resources/shaders/domain/" name )
+#	define COMPUTE_PATH( name )		( "resources/shaders/compute/" name )
+#endif // #ifdef DEBUG
+
 namespace render {
 
 namespace __render_shader_containers_detail {
@@ -12,7 +28,7 @@ pcstr vertex_shader_path_provider::get( vertex_shader_type type )
 	switch ( type )
 	{
 	case vertex_shader_forward_default:
-		return "forward_default_0000000000000000.vs";
+		return VERTEX_PATH( "forward_default_0000000000000000" );
 	default:
 		UNREACHABLE_CODE
 	}
@@ -25,7 +41,7 @@ pcstr pixel_shader_path_provider::get( pixel_shader_type type )
 	switch ( type )
 	{
 	case pixel_shader_forward_default:
-		return "forward_default_0000000000000000.ps";
+		return PIXEL_PATH( "forward_default_0000000000000000" );
 	default:
 		UNREACHABLE_CODE
 	}
