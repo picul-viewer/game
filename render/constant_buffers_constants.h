@@ -2,7 +2,6 @@
 #define __render_constant_buffers_constants_h_included_
 
 #include <types.h>
-#include <macros.h>
 #include <math/vector.h>
 
 namespace render {

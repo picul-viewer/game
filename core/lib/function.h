@@ -631,7 +631,7 @@ protected:
 	enum { ArenaSize = Size - sizeof(invoker_type) };
 
 	invoker_type m_invoker;
-	byte m_data[ArenaSize];
+	u8 m_data[ArenaSize];
 
 };
 

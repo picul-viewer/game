@@ -2,7 +2,6 @@
 #define __core_input_h_included_
 
 #include <types.h>
-#include <macros.h>
 #include <math/vector.h>
 
 namespace sys {

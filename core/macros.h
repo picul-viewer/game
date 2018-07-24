@@ -1,19 +1,20 @@
 #ifndef __core_macros_h_included_
 #define __core_macros_h_included_
 
-#include <windows.h>
 #include <stdio.h>
 
 #define NO_OP {}
 
 namespace macros {
 
+void debug_string( char const* message );
+
 template<typename ... Args>
 inline void logger( char const* message, Args ... args )
 {
 	char text[8192] = { };
 	sprintf( text, message, args ... );
-	OutputDebugString( text );
+	debug_string( text );
 }
 
 }
@@ -69,9 +70,5 @@ inline void fatal_error( char const* file, char const* func, int line, char cons
 #endif // #ifdef DEBUG
 
 #define UNREACHABLE_CODE FATAL_ERROR( "unreachable code" )
-
-#define mem_align(n) __declspec(align(n))
-
-#define aligned(p, n) ((uptr)p % n == 0)
 
 #endif // #ifndef __core_macros_h_included_

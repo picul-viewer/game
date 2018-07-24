@@ -191,4 +191,8 @@ protected:
 	pvoid data;
 };
 
+#define mem_align(n) __declspec(align(n))
+
+#define aligned(p, n) ((uptr)p % n == 0)
+
 #endif // #ifndef __core_types_h_included_

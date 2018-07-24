@@ -82,7 +82,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="game\aabb.h" />
-    <ClInclude Include="game\aabb_inline.h" />
     <ClInclude Include="game\bvh.h" />
     <ClInclude Include="game\bvh_inline.h" />
     <ClInclude Include="game\camera.h" />
@@ -147,6 +146,7 @@
     <ClCompile Include="lib\alloc_string.cpp" />
     <ClCompile Include="lib\hash.cpp" />
     <ClCompile Include="lib\weak_string.cpp" />
+    <ClCompile Include="macros.cpp" />
     <ClCompile Include="system\file.cpp" />
     <ClCompile Include="system\input.cpp" />
     <ClCompile Include="system\window_input.cpp" />

@@ -6,6 +6,7 @@
 #include <lib/weak_string.h>
 #include <lib/fixed_string.h>
 
+#include <Windows.h>
 #include <vector>
 
 namespace resource_compiler {

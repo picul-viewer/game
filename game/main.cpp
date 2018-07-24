@@ -1,5 +1,6 @@
 #include <types.h>
 #include <engine/world.h>
+#include <Windows.h>
 
 int __stdcall WinMain( HINSTANCE, HINSTANCE, char*, int )
 {

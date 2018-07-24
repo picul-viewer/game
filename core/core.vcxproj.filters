@@ -113,9 +113,6 @@
     <ClInclude Include="game\aabb.h">
       <Filter>game\collision\aabb</Filter>
     </ClInclude>
-    <ClInclude Include="game\aabb_inline.h">
-      <Filter>game\collision\aabb</Filter>
-    </ClInclude>
     <ClInclude Include="math\math_common.h">
       <Filter>math</Filter>
     </ClInclude>
@@ -304,5 +301,6 @@
     <ClCompile Include="system\input.cpp">
       <Filter>system\window</Filter>
     </ClCompile>
+    <ClCompile Include="macros.cpp" />
   </ItemGroup>
 </Project>
