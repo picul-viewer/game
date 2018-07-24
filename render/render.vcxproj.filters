@@ -344,5 +344,8 @@
     <ClInclude Include="stage_initialization.h">
       <Filter>renderer\stages\stage_initialization</Filter>
     </ClInclude>
+    <ClInclude Include="pipeline_state_pool_inline.h">
+      <Filter>resources\utils\pipeline_state_pool</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

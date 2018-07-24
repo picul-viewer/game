@@ -93,6 +93,7 @@
     <ClInclude Include="mesh_box.h" />
     <ClInclude Include="mesh_quad.h" />
     <ClInclude Include="constant_buffers_constants.h" />
+    <ClInclude Include="pipeline_state_pool_inline.h" />
     <ClInclude Include="render_parameters.h" />
     <ClInclude Include="pipeline_state_pool.h" />
     <ClInclude Include="profiler.h" />

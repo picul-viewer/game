@@ -1,6 +1,9 @@
 #include "pipeline_state_pool.h"
+#include <macros.h>
 
 namespace render {
+
+namespace __render_pipeline_state_pool_detail {
 
 bool operator==( depth_stencil_state::cook const& l, depth_stencil_state::cook const& r )
 {
@@ -19,22 +22,6 @@ bool operator==( depth_stencil_state::cook const& l, depth_stencil_state::cook c
 		( l.desc.BackFace.StencilFailOp			== r.desc.BackFace.StencilFailOp		) &&
 		( l.desc.BackFace.StencilDepthFailOp	== r.desc.BackFace.StencilDepthFailOp	) &&
 		( l.desc.BackFace.StencilPassOp			== r.desc.BackFace.StencilPassOp		);
-}
-
-template<u32 DS_max, u32 B_max, u32 R_max>
-depth_stencil_state pipeline_state_pool<DS_max, B_max, R_max>::create_depth_stencil( depth_stencil_state::cook const& in_cook )
-{
-	u32 i = 0;
-
-	for ( ; ( i < DS_max ) && ( m_depth_stencil_data[i].state != nullptr ); ++i )
-		if ( m_depth_stencil_data[i].cook == in_cook )
-			return m_depth_stencil_data[i].state;
-
-	ASSERT( i < DS_max );
-	m_depth_stencil_data[i].cook	= in_cook;
-	m_depth_stencil_data[i].state.create( in_cook );
-
-	return m_depth_stencil_data[i].state;
 }
 
 bool operator==( D3D11_RENDER_TARGET_BLEND_DESC const& l, D3D11_RENDER_TARGET_BLEND_DESC const& r )
@@ -74,22 +61,6 @@ bool operator==( blend_state::cook const& l, blend_state::cook const& r )
 	}
 }
 
-template<u32 DS_max, u32 B_max, u32 R_max>
-blend_state pipeline_state_pool<DS_max, B_max, R_max>::create_blend( blend_state::cook const& in_cook )
-{
-	u32 i = 0;
-
-	for ( ; ( i < B_max ) && ( m_blend_data[i].state != nullptr ); ++i )
-		if ( m_blend_data[i].cook == in_cook )
-			return m_blend_data[i].state;
-
-	ASSERT( i < B_max );
-	m_blend_data[i].cook	= in_cook;
-	m_blend_data[i].state.create( in_cook );
-
-	return m_blend_data[i].state;
-}
-
 bool operator==( rasterizer_state::cook const& l, rasterizer_state::cook const& r )
 {
 	return
@@ -105,31 +76,24 @@ bool operator==( rasterizer_state::cook const& l, rasterizer_state::cook const& 
 		( l.desc.AntialiasedLineEnable	== l.desc.AntialiasedLineEnable	);
 }
 
-template<u32 DS_max, u32 B_max, u32 R_max>
-rasterizer_state pipeline_state_pool<DS_max, B_max, R_max>::create_rasterizer( rasterizer_state::cook const& in_cook )
+template<typename DataType>
+typename DataType::data_type create( typename DataType::cook_type const& in_cook, DataType* in_data, u32 in_count )
 {
 	u32 i = 0;
 
-	for ( ; ( i < R_max ) && ( m_rasterizer_data[i].state != nullptr ); ++i )
-		if ( m_rasterizer_data[i].cook == in_cook )
-			return m_rasterizer_data[i].state;
+	for ( ; in_data[i].state.get( ) != nullptr; ++i )
+	{
+		ASSERT( i < in_count );
+		if ( in_data[i].cook == in_cook )
+			return in_data[i].state;
+	}
 
-	ASSERT( i < R_max );
-	m_rasterizer_data[i].cook	= in_cook;
-	m_rasterizer_data[i].state.create( in_cook );
+	in_data[i].cook	= in_cook;
+	in_data[i].state.create( in_cook );
 
-	return m_rasterizer_data[i].state;
+	return in_data[i].state;
 }
 
-template<u32 DS_max, u32 B_max, u32 R_max>
-void pipeline_state_pool<DS_max, B_max, R_max>::destroy( )
-{
-	for ( u32 i = 0; ( i < c_DS_max ) && ( m_depth_stencil_data[i].state != nullptr ); ++i )
-		m_depth_stencil_data[i].state.destroy( );
-	for ( u32 i = 0; ( i < c_B_max ) && ( m_blend_data[i].state != nullptr ); ++i )
-		m_blend_data[i].state.destroy( );
-	for ( u32 i = 0; ( i < c_R_max ) && ( m_rasterizer_data[i].state != nullptr ); ++i )
-		m_rasterizer_data[i].state.destroy( );
-}
+} // namespace __render_pipeline_state_pool_detail
 
-}
+} // namespace render
