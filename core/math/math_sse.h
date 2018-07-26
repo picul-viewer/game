@@ -180,30 +180,22 @@ inline matrix matrix_multiply( matrix const& left, matrix const& right )
 	return result;
 }
 
-// Store result in v
 inline vector modify_by_transform( vector const& v, matrix const& m )
 {
-	__m128 l0 = m[0];
-	__m128 l1 = m[1];
-	__m128 l2 = m[2];
-	__m128 l3 = m[3];
+	__m128 ml0 = _mm_mul_ps( m[0], v );
+	__m128 ml1 = _mm_mul_ps( m[1], v );
+	__m128 ml2 = _mm_mul_ps( m[2], v );
+	__m128 ml3 = _mm_mul_ps( m[3], v );
 
-	_MM_TRANSPOSE4_PS( l0, l1, l2, l3 );
+	_MM_TRANSPOSE4_PS( ml0, ml1, ml2, ml3 );
 
-	__m128 vec0 = _mm_shuffle_ps( v, v, _MM_SHUFFLE( 0, 0, 0, 0 ) );
-	__m128 vec1 = _mm_shuffle_ps( v, v, _MM_SHUFFLE( 1, 1, 1, 1 ) );
-	__m128 vec2 = _mm_shuffle_ps( v, v, _MM_SHUFFLE( 2, 2, 2, 2 ) );
-	__m128 vec3 = _mm_shuffle_ps( v, v, _MM_SHUFFLE( 3, 3, 3, 3 ) );
-
-	__m128 res = _mm_add_ps(
-		_mm_add_ps( _mm_mul_ps( l0, vec0 ), _mm_mul_ps( l1, vec1 ) ),
-		_mm_add_ps( _mm_mul_ps( l2, vec2 ), _mm_mul_ps( l3, vec3 ) ) );
+	__m128 res = _mm_add_ps( _mm_add_ps( ml0, ml1 ), _mm_add_ps( ml2, ml3 ) );
 
 	return res;
 }
 
 // Need four input components in 'v', but assume that w=1
-// Store result in v, only x,y,z are relevant
+// Only x,y,z are relevant in result
 inline vector modify_position_by_transform( vector const& v, matrix const& m )
 {
 	__m128 l0 = m[0];
