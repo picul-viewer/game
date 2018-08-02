@@ -11,8 +11,7 @@ public:
 	enum open_mode
 	{
 		open_read,
-		open_write_create,
-		open_write_append
+		open_write
 	};
 
 	enum seek_mode
@@ -27,19 +26,20 @@ public:
 	file( pcstr path, open_mode mode );
 	~file( );
 
+	void open( pcstr path, open_mode mode );
 	void close( );
 
 	uptr size( ) const;
 
 	void seek( ptr position, seek_mode mode = seek_from_begin );
 
-	uptr read( pvoid buffer, uptr size );
-	uptr write( pvoid buffer, uptr size );
+	void read( pvoid buffer, uptr size );
+	void write( pvoid buffer, uptr size );
 
 	bool is_valid( ) const;
 
 protected:
-	int m_handle;
+	pvoid m_handle;
 
 };
 

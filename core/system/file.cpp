@@ -1,36 +1,44 @@
 #include "file.h"
 
-#include <io.h>
-#include <fcntl.h>
+#include <Windows.h>
 
 #include <macros.h>
 
 namespace sys {
 
 file::file( ) :
-	m_handle( -1 )
+	m_handle( INVALID_HANDLE_VALUE )
 { }
 
 file::file( pcstr path, open_mode mode )
 {
-	int open_flag = 0;
+	open( path, mode );
+}
+
+void file::open( pcstr path, open_mode mode )
+{
+	DWORD access_flags = 0;
+	DWORD share_flags = 0;
+	DWORD creation = 0;
 
 	switch ( mode )
 	{
 	case open_read:
-		open_flag = _O_RDONLY;
+		access_flags	= GENERIC_READ;
+		share_flags		= FILE_SHARE_READ;
+		creation		= OPEN_EXISTING;
 		break;
-	case open_write_create:
-		open_flag = _O_WRONLY | _O_CREAT;
-		break;
-	case open_write_append:
-		open_flag = _O_WRONLY | _O_APPEND;
+	case open_write:
+		access_flags	= GENERIC_WRITE;
+		creation		= CREATE_ALWAYS;
 		break;
 	default:
 		UNREACHABLE_CODE
 	}
 
-	m_handle = _open( path, open_flag );
+	m_handle = CreateFile( path, access_flags, share_flags, nullptr, creation, FILE_ATTRIBUTE_NORMAL, nullptr );
+
+	ASSERT( m_handle != INVALID_HANDLE_VALUE, "open file error: \"%s\"\n", path );
 }
 
 file::~file( )
@@ -41,59 +49,74 @@ file::~file( )
 
 void file::close( )
 {
-	ASSERT( m_handle > 0 );
-	_close( m_handle );
-	m_handle = -1;
+	ASSERT( is_valid( ) );
+	CloseHandle( m_handle );
+	m_handle = INVALID_HANDLE_VALUE;
 }
 
 uptr file::size( ) const
 {
-	s64 const size = _filelengthi64( m_handle );
-	ASSERT( size >= 0 );
-	return (uptr)size;
+	LARGE_INTEGER size;
+	BOOL result = GetFileSizeEx( m_handle, &size );
+
+	ASSERT( result == TRUE, "FS error: 0x%016d\n", GetLastError( ) );
+	ASSERT( size.QuadPart >= 0 )
+
+	return (uptr)size.QuadPart;
 }
 
 void file::seek( ptr position, seek_mode mode )
 {
-	int origin = -1;
+	DWORD origin = -1;
 
 	switch ( mode )
 	{
 	case seek_from_begin:
-		origin = SEEK_SET;
+		origin = FILE_BEGIN;
 		break;
 	case seek_from_current:
-		origin = SEEK_CUR;
+		origin = FILE_CURRENT;
 		break;
 	case seek_from_end:
-		origin = SEEK_END;
+		origin = FILE_END;
 		break;
 	default:
 		UNREACHABLE_CODE
 	}
 
-	_lseeki64( m_handle, position, origin );
+
+	BOOL result = SetFilePointerEx( m_handle, *(LARGE_INTEGER*)&position, nullptr, origin );
+
+	ASSERT( result == TRUE, "FS error: 0x%016d\n", GetLastError( ) );
 }
 
-uptr file::read( pvoid buffer, uptr size )
+void file::read( pvoid buffer, uptr size )
 {
 	ASSERT( buffer );
 	ASSERT( size <= 0x7FFFFFFF );
 
-	return _read( m_handle, buffer, (u32)size );
+	DWORD bytes_read;
+	BOOL result = ReadFile( m_handle, buffer, (DWORD)size, &bytes_read, nullptr );
+	
+	ASSERT( result == TRUE, "FS error: 0x%016d\n", GetLastError( ) );
+	ASSERT( bytes_read == size );
 }
 
-uptr file::write( pvoid buffer, uptr size )
+void file::write( pvoid buffer, uptr size )
 {
 	ASSERT( buffer );
 	ASSERT( size <= 0x7FFFFFFF );
 
-	return _write( m_handle, buffer, (u32)size );
+	DWORD bytes_written;
+	BOOL result = WriteFile( m_handle, buffer, (DWORD)size, &bytes_written, nullptr );
+
+	ASSERT( result == TRUE, "FS error: 0x%016d\n", GetLastError( ) );
+	ASSERT( bytes_written == size );
 }
 
 bool file::is_valid( ) const
 {
-	return m_handle >= 0;
+	return m_handle != INVALID_HANDLE_VALUE;
 }
 
 }
