@@ -2,7 +2,7 @@
 
 #include "samplers.h"
 
-float4 main( in vertex_output output ) : SV_Target0
+float4 main( in vertex_output input ) : SV_Target0
 {
-	return	s_diffuse.Sample( s_texture_sampler, input.tex_coords );
+	return	t_diffuse.Sample( s_texture_sampler, input.tex_coords );
 }
