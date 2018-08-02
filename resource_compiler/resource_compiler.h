@@ -6,57 +6,38 @@
 #include <lib/weak_string.h>
 #include <lib/fixed_string.h>
 
-#include <Windows.h>
-#include <vector>
+#include "shader_compiler.h"
+#include "fbx_compiler.h"
 
 namespace resource_compiler {
 
-class strategy
+class resource_compiler
 {
 public:
-	virtual void on_start( ) { }
-	virtual void on_finish( ) { }
-
-	virtual void compile( u64 relevant_date,
-						  weak_const_string input_path,
-						  weak_const_string output_directory ) = 0;
-};
-
-struct category
-{
-	weak_const_string input_path;
-	weak_const_string output_path;
-	weak_const_string filename_ending;
-	strategy* strategy;
-
-	category( ) = default;
-	category( weak_const_string input_path, weak_const_string output_path, weak_const_string filename_ending, resource_compiler::strategy* strategy );
-};
-
-inline u64 filetime_to_u64( FILETIME data );
-
-class manager
-{
-public:
-	manager( uptr category_count );
-	~manager( ) = default;
-
-	void add_category( weak_const_string input_path, weak_const_string output_path, weak_const_string filename_ending, resource_compiler::strategy* strategy );
+	void create( );
+	void destroy( );
 
 	void compile( weak_const_string input_path, weak_const_string output_path );
 
 protected:
+	typedef void ( resource_compiler::*scan_functor )( u64, pcstr, pcstr );
+
 	void scan(
 		uptr input_path_size, str512& input_path,
 		uptr output_path_size, str512& output_path,
 		uptr filename_ending_size, weak_const_string filename_ending,
-		resource_compiler::strategy* strategy );
+		scan_functor functor );
 
-	void compile_category( category& category );
+	void compile_fbx( u64 relevant_date, pcstr input_file_name, pcstr output_directory );
 
-	std::vector<category> m_categories;
-	weak_const_string m_input_path;
-	weak_const_string m_output_path;
+protected:
+	shader_compiler m_shader_compiler_dbg_4_0;
+	shader_compiler m_shader_compiler_rel_4_0;
+	shader_compiler m_shader_compiler_dbg_5_0;
+	shader_compiler m_shader_compiler_rel_5_0;
+
+	fbx_compiler m_fbx_compiler;
+
 };
 
 } // namespace resource_compiler

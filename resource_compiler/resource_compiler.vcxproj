@@ -59,7 +59,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)/core;$(SolutionDir);C:\Program Files\Autodesk\FBX\FBX SDK\2018.1.1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libfbxsdk-mt.lib;Shlwapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Program Files\Autodesk\FBX\FBX SDK\2018.1.1\lib\vs2015\$(PlatformShortName)\$(ConfigurationName);$(SolutionDir)build\$(Configuration)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -82,24 +82,27 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libfbxsdk-mt.lib;Shlwapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Program Files\Autodesk\FBX\FBX SDK\2018.1.1\lib\vs2015\$(PlatformShortName)\$(ConfigurationName);$(SolutionDir)build\$(Configuration)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="fbx_mesh_strategy.cpp" />
+    <ClCompile Include="fbx_compiler.cpp" />
     <ClCompile Include="resource_compiler.cpp" />
-    <ClCompile Include="shader_strategy.cpp" />
+    <ClCompile Include="shader_compiler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="fbx_mesh_strategy.h" />
+    <ClInclude Include="fbx_compiler.h" />
     <ClInclude Include="resource_compiler.h" />
-    <ClInclude Include="shader_strategy.h" />
+    <ClInclude Include="shader_compiler.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">
       <Project>{b7376639-83bd-4434-a00a-7a2551608722}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\render\render.vcxproj">
+      <Project>{58b676b2-5b1b-49e9-a2e4-0b71c90af057}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,9 +1,8 @@
-#include "fbx_mesh_strategy.h"
+#include "fbx_compiler.h"
 
 #include <macros.h>
 
 #include <fbxsdk.h>
-#include <map>
 #include <Shlwapi.h>
 
 #include <math/vector.h>
@@ -15,15 +14,18 @@
 
 #include <lib/std_map.h>
 
+#include <system/path.h>
+#include <system/file.h>
+
 namespace resource_compiler {
 
-void fbx_mesh_strategy::on_start( )
+void fbx_compiler::create( )
 {
 	m_fbx_manager = FbxManager::Create( );
 	m_importer = FbxImporter::Create( m_fbx_manager, "" );
 }
 
-void fbx_mesh_strategy::on_finish( )
+void fbx_compiler::destroy( )
 {
 	m_importer->Destroy( );
 	m_fbx_manager->Destroy( );
@@ -189,7 +191,7 @@ static inline bool process_mesh( FbxMesh* mesh, VertexType*& vertices, u32*& ind
 }
 
 template<typename VertexType>
-static inline void write_to_file( FbxMesh* mesh, weak_const_string path, u32 configure_mask )
+static inline void write_to_file( FbxMesh* mesh, sys::path const& path, u32 configure_mask )
 {
 	VertexType* vertices;
 	u32* indices;
@@ -197,8 +199,11 @@ static inline void write_to_file( FbxMesh* mesh, weak_const_string path, u32 con
 	u32 index_count;
 
 	bool use_16bit_indices = process_mesh( mesh, vertices, indices, vertex_count, index_count );
-
-	ASSERT( index_count < ( 1u << 29 ), "the mesh is too big" );
+	if ( index_count >= ( 1u << 29 ) )
+	{
+		LOG( "fbx_compiler: the mesh is too big: \"%s\"\n", path.c_str( ) );
+		return;
+	}
 
 	u32 indices_size = index_count * ( use_16bit_indices ? sizeof(u16) : sizeof(u32) );
 	u32 vertices_size = vertex_count * sizeof(VertexType);
@@ -218,41 +223,47 @@ static inline void write_to_file( FbxMesh* mesh, weak_const_string path, u32 con
 	memcpy( file_data + sizeof(u32) + indices_size, &vertices_size, sizeof(u32) );
 	memcpy( file_data + sizeof(u32) + indices_size + sizeof(u32), vertices, vertices_size );
 
-	HANDLE file = CreateFile( path.c_str( ), GENERIC_WRITE | DELETE, 0, nullptr, CREATE_ALWAYS, 0, nullptr );
+	sys::file f( path.c_str( ), sys::file::open_write );
+	if ( !f.is_valid( ) )
+	{
+		LOG( "fbx_compiler: unable to create a file: \"%s\"\n", path.c_str( ) );
+		return;
+	}
 
-	DWORD bytes_write = 0;
-	WriteFile( file, file_data, total_size, &bytes_write, nullptr );
-	ASSERT( bytes_write == total_size );
-
-	CloseHandle( file );
+	f.write( file_data, total_size );
+	f.close( );
 
 	mem_allocator( ).deallocate( vertices );
 	mem_allocator( ).deallocate( indices );
 	mem_allocator( ).deallocate( file_data );
 }
 
-void fbx_mesh_strategy::compile( u64 relevant_date, weak_const_string input_path, weak_const_string output_directory )
+void fbx_compiler::compile( u64 relevant_date, weak_const_string input_file_name, weak_const_string output_directory )
 {
-	str512 file_name = PathFindFileName( input_path.c_str( ) );
+	little_string file_name = sys::path::get_file_name( input_file_name );
 
 #ifdef DEBUG
-	ASSERT( file_name.copy( file_name.length( ) - 4, 4 ) == weak_const_string( ".fbx" ) );
+	ASSERT( file_name.copy( file_name.length( ) - 4, 4 ) == ".fbx" );
 #endif // #ifdef DEBUG
 	
-	PathRemoveExtension( file_name.data( ) );
+	sys::path::remove_file_extension( file_name.data( ) );
 
-	file_name.append( weak_const_string( ".mesh" ) );
+	file_name.append( ".mesh" );
 
-	str512 output_path = str512( output_directory );
-	PathAppend( output_path.data( ), file_name.c_str( ) );
+	sys::path output_path = str512( output_directory );
+	output_path += file_name;
 	
 	WIN32_FIND_DATA output_data;
 	if ( FindFirstFile( output_path.c_str( ), &output_data ) != INVALID_HANDLE_VALUE )
-		if ( filetime_to_u64( output_data.ftLastWriteTime ) > relevant_date )
+		if ( *(u64*)&output_data.ftLastWriteTime > relevant_date )
 			return;
 
-	bool status = m_importer->Initialize( input_path.c_str( ) );
-	ASSERT( status );
+	bool status = m_importer->Initialize( input_file_name.c_str( ) );
+	if ( !status )
+	{
+		LOG( "fbx_compiler: importer initialization error: \"%s\"\n", output_path.c_str( ) );
+		return;
+	}
 
 	FbxScene* scene = FbxScene::Create( m_fbx_manager, "" );
 	m_importer->Import( scene );
@@ -271,11 +282,13 @@ void fbx_mesh_strategy::compile( u64 relevant_date, weak_const_string input_path
 		}
 	}
 
-	ASSERT( mesh != nullptr );
-
-	ASSERT( mesh->IsTriangleMesh( ), "only triangle meshes are supported" );
+	if ( ( mesh == nullptr ) || ( !mesh->IsTriangleMesh( ) ) )
+	{
+		LOG( "fbx_compiler: bad input file: \"%s\"\n", output_path.c_str( ) );
+		return;
+	}
 	
-	bool is_bumpmapped = mesh->GetElementTangentCount( ) && mesh->GetElementBinormalCount( );
+	bool const is_bumpmapped = mesh->GetElementTangentCount( ) && mesh->GetElementBinormalCount( );
 
 	if ( is_bumpmapped )
 		write_to_file<bumpmapped_vertex>( mesh, output_path.c_str( ), 0x80000000 );
