@@ -15,6 +15,8 @@ public:
 	
 	void create( thread_func_type func, u32 stack_size, void* arg );
 	void destroy( u32 wait_ms = 0 );
+	void destroy( u32 wait_ms, u32 count );
+	void destroy_any( u32 wait_ms, u32 count );
 
 	void suspend( );
 	void resume( );

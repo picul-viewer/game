@@ -18,6 +18,16 @@ void thread::destroy( u32 wait_ms )
 	WaitForSingleObject( m_id, wait_ms );
 }
 
+void thread::destroy( u32 wait_ms, u32 count )
+{
+	WaitForMultipleObjects( count, &m_id, TRUE, wait_ms );
+}
+
+void thread::destroy_any( u32 wait_ms, u32 count )
+{
+	WaitForMultipleObjects( count, &m_id, FALSE, wait_ms );
+}
+
 void thread::suspend( )
 {
 	SuspendThread( m_id );
