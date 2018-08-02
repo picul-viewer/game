@@ -2,7 +2,8 @@
 #define __core_config_h_included_
 
 #include <types.h>
-#include <lib/weak_string.h>
+#include <lib/strings.h>
+#include <lib/memory.h>
 
 class config
 {
@@ -55,7 +56,7 @@ T const& config::read( )
 pstr config::read_str( )
 {
 	pstr value	= (pstr)m_pointer;
-	m_pointer	+= weak_const_string( value ).length( ) + 1;
+	m_pointer	+= strings::length( value ) + 1;
 	ASSERT		( m_pointer < m_data + m_size );
 	return		value;
 }
@@ -70,9 +71,9 @@ void config::write( T const& value )
 
 void config::write_str( pcstr value )
 {
-	uptr l			= weak_const_string( value ).length( ) + 1;
+	uptr l			= strings::length( value ) + 1;
 	ASSERT			( m_pointer + l < m_data + m_size );
-	strncpy			( (char*)m_pointer, value, l );
+	memory::copy	( (char*)m_pointer, value, ( l + 1 ) );
 	m_pointer		+= l;
 }
 

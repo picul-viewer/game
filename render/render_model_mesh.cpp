@@ -57,8 +57,7 @@ void render_model_mesh::load( render_model_mesh* out_resource, weak_const_string
 	ASSERT				( size < 64 * Kb );
 	pvoid const memory	= alloca( size );
 
-	uptr read_count		= f.read( memory, size );
-	ASSERT				( read_count == size );
+	f.read				( memory, size );
 	f.close				( );
 
 	config cfg			( memory, size );

@@ -128,8 +128,7 @@ void mesh::load( mesh* out_resource, weak_const_string in_filename )
 	sys::file f							( in_filename.c_str( ), sys::file::open_read );
 	uptr const size						= f.size( );
 	pvoid const memory					= mem_allocator( ).allocate( size );
-	uptr read_count						= f.read( memory, size );
-	ASSERT								( read_count == size );
+	f.read								( memory, size );
 	f.close								( );
 
 	config cfg							( memory, size );

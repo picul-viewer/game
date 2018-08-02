@@ -43,7 +43,7 @@ Resource* resource_pool<Resource>::get( weak_const_string const& in_filename )
 	{
 		alloc_string	resource_path( m_string_pool, in_filename );
 
-		auto inserted	= m_pool_data.insert( weak_const_string( resource_path ), filename_hash, Resource( ) );
+		auto inserted	= m_pool_data.insert( resource_path, filename_hash, Resource( ) );
 		resource		= &inserted->value( );
 		
 		Resource::load	( resource, in_filename );

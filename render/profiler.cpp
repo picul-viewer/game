@@ -4,7 +4,7 @@
 #include "render_api.h"
 
 #include <macros.h>
-#include <lib/weak_string.h>
+#include <lib/strings.h>
 #include <lib/memory.h>
 
 namespace render {
@@ -125,7 +125,7 @@ void profiler::output_statistics( uptr in_delay, uptr in_captions_width, uptr in
 	{
 		ASSERT( index + in_captions_width < in_max_output_size );
 
-		uptr l = weak_const_string( m_events[i].m_name ).length( );
+		uptr l = strings::length( m_events[i].m_name );
 		ASSERT( left_offset + l < in_captions_width );
 		uptr right_offset = in_captions_width - ( left_offset + l );
 
