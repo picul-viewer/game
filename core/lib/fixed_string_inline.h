@@ -3,6 +3,8 @@
 
 #include <macros.h>
 #include <cstring>
+#include "weak_string.h"
+#include <lib/memory.h>
 
 template<uptr MaxSize>
 fixed_string<MaxSize>::fixed_string( )
@@ -11,34 +13,51 @@ fixed_string<MaxSize>::fixed_string( )
 }
 
 template<uptr MaxSize>
-fixed_string<MaxSize>::fixed_string( const char* str )
-{
-	ASSERT( strlen( str ) < MaxSize - 1 );
-	strcpy( m_data, str );
-}
-
-template<uptr MaxSize>
-fixed_string<MaxSize>::fixed_string( const char* str, uptr size )
-{
-	ASSERT( size < MaxSize - 1 );
-	strncpy( m_data, str, size );
-	m_data[size] = '\0';
-}
+fixed_string<MaxSize>::fixed_string( pcstr str ) :
+	fixed_string( weak_const_string( str ) )
+{ }
 
 template<uptr MaxSize>
 template<typename StringClass>
 fixed_string<MaxSize>::fixed_string( i_const_string<StringClass> const& str )
 {
-	ASSERT( str.length( ) < MaxSize - 1 );
-	strcpy( m_data, str.c_str( ) );
+	StringClass const& str_casted = static_cast<StringClass const&>( str );
+	ASSERT( str_casted.c_str( ) );
+
+	ASSERT( str_casted.length( ) < MaxSize - 1 );
+	memory::copy( m_data, str_casted.c_str( ), ( str_casted.length( ) + 1 ) * sizeof(char) );
+}
+
+template<uptr MaxSize>
+fixed_string<MaxSize>::fixed_string( pcstr str, uptr size )
+{
+	ASSERT( str );
+	ASSERT( size < MaxSize - 1 );
+	memory::copy( m_data, str, size * sizeof(char) );
+	m_data[size] = '\0';
+}
+
+template<uptr MaxSize>
+fixed_string<MaxSize>& fixed_string<MaxSize>::operator=( pcstr str )
+{
+	return *this = weak_const_string( str );
 }
 
 template<uptr MaxSize>
 template<typename StringClass>
 fixed_string<MaxSize>& fixed_string<MaxSize>::operator=( i_const_string<StringClass> const& str )
 {
-	ASSERT( str.length( ) < MaxSize - 1 );
-	strcpy( m_data, str.c_str( ) );
+	StringClass const& str_casted = static_cast<StringClass const&>( str );
+	ASSERT( str_casted.c_str( ) );
+
+	ASSERT( str_casted.length( ) < MaxSize - 1 );
+	memory::copy( m_data, str_casted.c_str( ), ( str_casted.length( ) + 1 ) * sizeof(char) );
+}
+
+template<uptr MaxSize>
+fixed_string<MaxSize>& fixed_string<MaxSize>::assign( pcstr str )
+{
+	return *this = str;
 }
 
 template<uptr MaxSize>
@@ -49,13 +68,28 @@ fixed_string<MaxSize>& fixed_string<MaxSize>::assign( i_const_string<StringClass
 }
 
 template<uptr MaxSize>
+fixed_string<MaxSize>& fixed_string<MaxSize>::operator+=( pcstr str )
+{
+	return *this += weak_const_string( str );
+}
+
+template<uptr MaxSize>
 template<typename StringClass>
 fixed_string<MaxSize>& fixed_string<MaxSize>::operator+=( i_const_string<StringClass> const& str )
 {
+	StringClass const& str_casted = static_cast<StringClass const&>( str );
+	ASSERT( str_casted.c_str( ) );
+
 	uptr l = length( );
-	ASSERT( l + str.length( ) < MaxSize - 1 );
-	strcpy( m_data + l, str.c_str( ) );
+	ASSERT( l + str_casted.length( ) < MaxSize - 1 );
+	memory::copy( m_data + l, str_casted.c_str( ), ( str_casted.length( ) + 1 ) * sizeof(char) );
 	return *this;
+}
+
+template<uptr MaxSize>
+fixed_string<MaxSize>& fixed_string<MaxSize>::append( pcstr str )
+{
+	return *this += str;
 }
 
 template<uptr MaxSize>
@@ -66,13 +100,13 @@ fixed_string<MaxSize>& fixed_string<MaxSize>::append( i_const_string<StringClass
 }
 
 template<uptr MaxSize>
-char* fixed_string<MaxSize>::data( ) const
+pcstr fixed_string<MaxSize>::c_str( ) const
 {
-	return (char*)m_data;
+	return m_data;
 }
 
 template<uptr MaxSize>
-const char* fixed_string<MaxSize>::c_str( ) const
+pstr fixed_string<MaxSize>::data( )
 {
 	return m_data;
 }
@@ -83,14 +117,23 @@ fixed_string<MaxSize> fixed_string<MaxSize>::copy( uptr start, uptr length ) con
 	return fixed_string<MaxSize>( m_data + start, length );
 }
 
+template<uptr MaxSize>
+fixed_string<MaxSize> operator+( fixed_string<MaxSize> const& l, pcstr r )
+{
+	return l + weak_const_string( r );
+}
+
 template<uptr MaxSize, typename StringClass>
 fixed_string<MaxSize> operator+( fixed_string<MaxSize> const& l, i_const_string<StringClass> const& r )
 {
-	uptr ll = l.length( ), rl = r.length( );
+	StringClass const& r_casted = static_cast<StringClass const&>( r );
+	ASSERT( r_casted.c_str( ) );
+
+	uptr ll = l.length( ), rl = r_casted.length( );
 	ASSERT( ll + rl < MaxSize - 1 );
 	fixed_string<MaxSize> result;
-	strcpy( result.data( ), l.data( ) );
-	strcpy( result.data( ) + ll, r.c_str( ) );
+	memory::copy( result.data( ), l.c_str( ), ll * sizeof(char) );
+	memory::copy( result.data( ) + ll, r_casted.c_str( ), rl * sizeof(char) );
 	result.data( )[ll + rl] = '\0';
 	return result;
 }

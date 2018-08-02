@@ -16,10 +16,15 @@ public:
 	char operator[]( uptr index ) const;
 	char at( uptr index ) const;
 	
-	char const* c_str( ) const;
+	//pcstr c_str( ) const; - needs to be declared in implementation
+	operator pcstr( ) const;
 
-	uptr find( const char* str, uptr pos = 0 ) const;
+	uptr find( pcstr str, uptr pos = 0 ) const;
 	uptr find( char c, uptr pos = 0 ) const;
+	
+	uptr rfind( char c ) const;
+	uptr rfind( char c, uptr pos ) const;
+
 };
 
 template<typename LStringClass, typename RStringClass>
@@ -35,6 +40,32 @@ bool operator<( i_const_string<LStringClass> const& left, i_const_string<RString
 template<typename LStringClass, typename RStringClass>
 bool operator>( i_const_string<LStringClass> const& left, i_const_string<RStringClass> const& right );
 
+template<typename LStringClass>
+bool operator==( i_const_string<LStringClass> const& left, pcstr right );
+template<typename LStringClass>
+bool operator!=( i_const_string<LStringClass> const& left, pcstr right );
+template<typename LStringClass>
+bool operator<=( i_const_string<LStringClass> const& left, pcstr right );
+template<typename LStringClass>
+bool operator>=( i_const_string<LStringClass> const& left, pcstr right );
+template<typename LStringClass>
+bool operator<( i_const_string<LStringClass> const& left, pcstr right );
+template<typename LStringClass>
+bool operator>( i_const_string<LStringClass> const& left, pcstr right );
+
+template<typename RStringClass>
+bool operator==( pcstr left, i_const_string<RStringClass> const& right );
+template<typename RStringClass>
+bool operator!=( pcstr left, i_const_string<RStringClass> const& right );
+template<typename RStringClass>
+bool operator<=( pcstr left, i_const_string<RStringClass> const& right );
+template<typename RStringClass>
+bool operator>=( pcstr left, i_const_string<RStringClass> const& right );
+template<typename RStringClass>
+bool operator<( pcstr left, i_const_string<RStringClass> const& right );
+template<typename RStringClass>
+bool operator>( pcstr left, i_const_string<RStringClass> const& right );
+
 template<typename StringClass>
 class i_string : public i_const_string<StringClass>
 {
@@ -46,7 +77,8 @@ public:
 	char& operator[]( uptr index );
 	char& at( uptr index );
 	
-	char* data( ) const;
+	//pstr data( ); - needs to be declared in implementation
+	operator pstr( );
 
 	void replace( char value, char new_value );
 };

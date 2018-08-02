@@ -58,6 +58,9 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(SolutionDir)/core;$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Lib>
+      <AdditionalDependencies>Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -79,6 +82,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib>
+      <AdditionalDependencies>Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="game\aabb.h" />
@@ -115,7 +121,9 @@
     <ClInclude Include="lib\queue_inline.h" />
     <ClInclude Include="lib\std_map.h" />
     <ClInclude Include="lib\std_map_inline.h" />
+    <ClInclude Include="lib\strings.h" />
     <ClInclude Include="lib\weak_string.h" />
+    <ClInclude Include="lib\weak_string_inline.h" />
     <ClInclude Include="macros.h" />
     <ClInclude Include="math\math_3d.h" />
     <ClInclude Include="math\math_common.h" />
@@ -125,6 +133,7 @@
     <ClInclude Include="math\vector.h" />
     <ClInclude Include="system\file.h" />
     <ClInclude Include="system\input.h" />
+    <ClInclude Include="system\path_inline.h" />
     <ClInclude Include="system\window_input.h" />
     <ClInclude Include="system\path.h" />
     <ClInclude Include="system\timer.h" />
@@ -144,6 +153,7 @@
     <ClCompile Include="game\text_config.cpp" />
     <ClCompile Include="lib\allocator.cpp" />
     <ClCompile Include="lib\alloc_string.cpp" />
+    <ClCompile Include="lib\strings.cpp" />
     <ClCompile Include="lib\hash.cpp" />
     <ClCompile Include="lib\weak_string.cpp" />
     <ClCompile Include="macros.cpp" />

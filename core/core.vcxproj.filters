@@ -245,6 +245,15 @@
     <ClInclude Include="system\input.h">
       <Filter>system\window</Filter>
     </ClInclude>
+    <ClInclude Include="system\path_inline.h">
+      <Filter>system\fs\path</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\weak_string_inline.h">
+      <Filter>lib\string</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\strings.h">
+      <Filter>lib\string</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\camera.cpp">
@@ -302,5 +311,8 @@
       <Filter>system\window</Filter>
     </ClCompile>
     <ClCompile Include="macros.cpp" />
+    <ClCompile Include="lib\strings.cpp">
+      <Filter>lib\string</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
