@@ -2,8 +2,8 @@
 #define __render_render_model_mesh_h_included_
 
 #include <types.h>
-#include <game/aabb.h>
-#include <game/config.h>
+#include <math/aabb.h>
+#include <lib/config.h>
 #include "mesh.h"
 #include "texture.h"
 

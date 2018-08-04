@@ -2,8 +2,10 @@
 #define __core_octree_h_included_
 
 #include <types.h>
-#include <math/vector.h>
-#include <game/aabb.h>
+
+#include "vector.h"
+#include "aabb.h"
+#include "frustum.h"
 
 template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
 class octree

@@ -6,7 +6,8 @@
 #include <macros.h>
 #include <lib/weak_string.h>
 #include <lib/allocator.h>
-#include <game/config.h>
+#include <lib/config.h>
+
 #include <system/file.h>
 
 namespace render

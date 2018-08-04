@@ -3,9 +3,9 @@
 
 #include <types.h>
 
-#include <math/vector.h>
-#include <math/matrix.h>
-#include <math/math_sse.h>
+#include "vector.h"
+#include "matrix.h"
+#include "math_sse.h"
 
 struct aabb
 {

@@ -3,7 +3,7 @@
 
 #include <types.h>
 #include <math/matrix.h>
-#include <game/config.h>
+#include <lib/config.h>
 
 namespace render { class object; }
 

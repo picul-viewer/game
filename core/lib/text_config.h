@@ -2,7 +2,7 @@
 #define __core_text_config_h_included_
 
 #include <types.h>
-#include <lib/weak_string.h>
+#include "weak_string.h"
 
 class text_config
 {

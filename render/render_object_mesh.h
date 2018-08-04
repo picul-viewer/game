@@ -4,8 +4,9 @@
 #include <types.h>
 
 #include <math/math_sse.h>
-#include <game/aabb.h>
-#include <game/config.h>
+#include <math/aabb.h>
+
+#include <lib/config.h>
 
 #include "render_object.h"
 

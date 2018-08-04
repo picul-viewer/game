@@ -2,7 +2,7 @@
 #include "scene.h"
 #include "resources.h"
 
-#include <game/camera.h>
+#include <math/camera.h>
 
 namespace render {
 

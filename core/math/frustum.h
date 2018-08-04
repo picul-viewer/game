@@ -3,9 +3,7 @@
 
 #include <types.h>
 
-#include <math/math_sse.h>
-#include <game/aabb.h>
-
+#include "math_sse.h"
 #include "aabb.h"
 
 enum intersection

@@ -1,6 +1,6 @@
 #include "camera.h"
 
-#include <math/math_3d.h>
+#include "math_3d.h"
 
 void camera::mult_view_projection( )
 {

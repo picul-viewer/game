@@ -9,8 +9,8 @@
 #include <lib/array.h>
 #include <lib/pool.h>
 
-#include <game/camera.h>
-#include <game/bvh.h>
+#include <math/camera.h>
+#include <math/bvh.h>
 
 #include "object.h"
 

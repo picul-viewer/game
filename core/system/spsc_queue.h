@@ -3,8 +3,8 @@
 
 #include <types.h>
 
-#include <threads/interlocked.h>
-#include <threads/threading_event.h>
+#include "interlocked.h"
+#include "threading_event.h"
 
 // Single producer, single consumer
 template<typename T, uptr RecordSize = sizeof(T)>

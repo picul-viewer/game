@@ -1,44 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="threads">
-      <UniqueIdentifier>{0f1a02ca-c1f4-4392-b638-bdb502e5aada}</UniqueIdentifier>
-    </Filter>
     <Filter Include="math">
       <UniqueIdentifier>{94bdc342-06bd-47a4-ba96-8d4cc0e700fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="game">
-      <UniqueIdentifier>{c166c768-2b7c-40af-acc9-9e84ee09925c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="game\collision">
-      <UniqueIdentifier>{5fdc8b69-a335-4f53-8881-b0ab891cf780}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="game\collision\aabb">
-      <UniqueIdentifier>{fd4140ad-9e69-4126-aa99-8c9affc38218}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="game\config">
-      <UniqueIdentifier>{14f4ca49-603a-4383-a8a0-1f33cef5217b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="game\camera">
-      <UniqueIdentifier>{099c42dc-0a2d-40ba-9bcb-543368d5bd44}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="game\collision\frustum">
-      <UniqueIdentifier>{b6dd4c58-dc7a-443c-830a-8fa82f8f13e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="game\collision\octree">
-      <UniqueIdentifier>{c5a2eee5-523d-4541-8da3-e65dda67c54f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="game\collision\bvh">
-      <UniqueIdentifier>{8549c605-189d-48d1-9f64-6cedb7d34d91}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="threads\api">
-      <UniqueIdentifier>{23b05134-1f20-4175-b204-00e3dc1ffd55}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="threads\api\thread">
-      <UniqueIdentifier>{361eee4f-ab60-45b5-8fa5-1b15070f9057}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="threads\api\threading_event">
-      <UniqueIdentifier>{7b694da7-b212-44b9-bf03-fa58d3c0f6bb}</UniqueIdentifier>
     </Filter>
     <Filter Include="system">
       <UniqueIdentifier>{c8aca1f1-b24e-49e3-8ebb-12e5e62c12ed}</UniqueIdentifier>
@@ -48,12 +12,6 @@
     </Filter>
     <Filter Include="system\timer">
       <UniqueIdentifier>{6c8255af-79d7-4870-a685-48db5f83c6fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="threads\api\interlocked">
-      <UniqueIdentifier>{228245d0-c358-42c5-8627-bee6d6b8d673}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="threads\spsc_queue">
-      <UniqueIdentifier>{1c0e13e9-8a35-4ac8-810b-2380f460e23b}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib">
       <UniqueIdentifier>{39fdb027-407f-4fc2-b8e2-0b3d835e11ca}</UniqueIdentifier>
@@ -85,6 +43,42 @@
     <Filter Include="system\fs\file">
       <UniqueIdentifier>{a01e2e6f-0baf-412c-89be-9807a5f6dc29}</UniqueIdentifier>
     </Filter>
+    <Filter Include="system\threads">
+      <UniqueIdentifier>{23b05134-1f20-4175-b204-00e3dc1ffd55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\thread">
+      <UniqueIdentifier>{361eee4f-ab60-45b5-8fa5-1b15070f9057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\threading_event">
+      <UniqueIdentifier>{7b694da7-b212-44b9-bf03-fa58d3c0f6bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\interlocked">
+      <UniqueIdentifier>{228245d0-c358-42c5-8627-bee6d6b8d673}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\spsc_queue">
+      <UniqueIdentifier>{1c0e13e9-8a35-4ac8-810b-2380f460e23b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\config">
+      <UniqueIdentifier>{14f4ca49-603a-4383-a8a0-1f33cef5217b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\camera">
+      <UniqueIdentifier>{099c42dc-0a2d-40ba-9bcb-543368d5bd44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\collision">
+      <UniqueIdentifier>{5fdc8b69-a335-4f53-8881-b0ab891cf780}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\collision\aabb">
+      <UniqueIdentifier>{fd4140ad-9e69-4126-aa99-8c9affc38218}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\collision\frustum">
+      <UniqueIdentifier>{b6dd4c58-dc7a-443c-830a-8fa82f8f13e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\collision\octree">
+      <UniqueIdentifier>{c5a2eee5-523d-4541-8da3-e65dda67c54f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\collision\bvh">
+      <UniqueIdentifier>{8549c605-189d-48d1-9f64-6cedb7d34d91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -104,56 +98,14 @@
     <ClInclude Include="math\math_sse.h">
       <Filter>math</Filter>
     </ClInclude>
-    <ClInclude Include="game\camera.h">
-      <Filter>game\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="game\config.h">
-      <Filter>game\config</Filter>
-    </ClInclude>
-    <ClInclude Include="game\aabb.h">
-      <Filter>game\collision\aabb</Filter>
-    </ClInclude>
     <ClInclude Include="math\math_common.h">
       <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="game\frustum.h">
-      <Filter>game\collision\frustum</Filter>
-    </ClInclude>
-    <ClInclude Include="game\octree.h">
-      <Filter>game\collision\octree</Filter>
-    </ClInclude>
-    <ClInclude Include="game\octree_inline.h">
-      <Filter>game\collision\octree</Filter>
-    </ClInclude>
-    <ClInclude Include="game\bvh.h">
-      <Filter>game\collision\bvh</Filter>
-    </ClInclude>
-    <ClInclude Include="game\bvh_inline.h">
-      <Filter>game\collision\bvh</Filter>
-    </ClInclude>
-    <ClInclude Include="threads\thread.h">
-      <Filter>threads\api\thread</Filter>
-    </ClInclude>
-    <ClInclude Include="threads\threading_event.h">
-      <Filter>threads\api\threading_event</Filter>
     </ClInclude>
     <ClInclude Include="system\timer.h">
       <Filter>system\timer</Filter>
     </ClInclude>
     <ClInclude Include="system\window.h">
       <Filter>system\window</Filter>
-    </ClInclude>
-    <ClInclude Include="game\text_config.h">
-      <Filter>game\config</Filter>
-    </ClInclude>
-    <ClInclude Include="threads\interlocked.h">
-      <Filter>threads\api\interlocked</Filter>
-    </ClInclude>
-    <ClInclude Include="threads\spsc_queue.h">
-      <Filter>threads\spsc_queue</Filter>
-    </ClInclude>
-    <ClInclude Include="threads\spsc_queue_inline.h">
-      <Filter>threads\spsc_queue</Filter>
     </ClInclude>
     <ClInclude Include="lib\array.h">
       <Filter>lib\array</Filter>
@@ -254,31 +206,52 @@
     <ClInclude Include="lib\strings.h">
       <Filter>lib\string</Filter>
     </ClInclude>
+    <ClInclude Include="system\interlocked.h">
+      <Filter>system\threads\interlocked</Filter>
+    </ClInclude>
+    <ClInclude Include="system\spsc_queue.h">
+      <Filter>system\threads\spsc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\spsc_queue_inline.h">
+      <Filter>system\threads\spsc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\thread.h">
+      <Filter>system\threads\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="system\threading_event.h">
+      <Filter>system\threads\threading_event</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\config.h">
+      <Filter>lib\config</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\text_config.h">
+      <Filter>lib\config</Filter>
+    </ClInclude>
+    <ClInclude Include="math\camera.h">
+      <Filter>math\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="math\aabb.h">
+      <Filter>math\collision\aabb</Filter>
+    </ClInclude>
+    <ClInclude Include="math\bvh.h">
+      <Filter>math\collision\bvh</Filter>
+    </ClInclude>
+    <ClInclude Include="math\bvh_inline.h">
+      <Filter>math\collision\bvh</Filter>
+    </ClInclude>
+    <ClInclude Include="math\frustum.h">
+      <Filter>math\collision\frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="math\octree.h">
+      <Filter>math\collision\octree</Filter>
+    </ClInclude>
+    <ClInclude Include="math\octree_inline.h">
+      <Filter>math\collision\octree</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="game\camera.cpp">
-      <Filter>game\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="game\config.cpp">
-      <Filter>game\config</Filter>
-    </ClCompile>
-    <ClCompile Include="game\aabb.cpp">
-      <Filter>game\collision\aabb</Filter>
-    </ClCompile>
-    <ClCompile Include="game\frustum.cpp">
-      <Filter>game\collision\frustum</Filter>
-    </ClCompile>
-    <ClCompile Include="threads\thread.cpp">
-      <Filter>threads\api\thread</Filter>
-    </ClCompile>
-    <ClCompile Include="threads\threading_event.cpp">
-      <Filter>threads\api\threading_event</Filter>
-    </ClCompile>
     <ClCompile Include="system\timer.cpp">
       <Filter>system\timer</Filter>
-    </ClCompile>
-    <ClCompile Include="game\text_config.cpp">
-      <Filter>game\config</Filter>
     </ClCompile>
     <ClCompile Include="lib\hash.cpp">
       <Filter>lib\map</Filter>
@@ -291,9 +264,6 @@
     </ClCompile>
     <ClCompile Include="lib\weak_string.cpp">
       <Filter>lib\string</Filter>
-    </ClCompile>
-    <ClCompile Include="threads\interlocked.cpp">
-      <Filter>threads\api\interlocked</Filter>
     </ClCompile>
     <ClCompile Include="system\path.cpp">
       <Filter>system\fs\path</Filter>
@@ -313,6 +283,30 @@
     <ClCompile Include="macros.cpp" />
     <ClCompile Include="lib\strings.cpp">
       <Filter>lib\string</Filter>
+    </ClCompile>
+    <ClCompile Include="system\interlocked.cpp">
+      <Filter>system\threads\interlocked</Filter>
+    </ClCompile>
+    <ClCompile Include="system\thread.cpp">
+      <Filter>system\threads\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="system\threading_event.cpp">
+      <Filter>system\threads\threading_event</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\config.cpp">
+      <Filter>lib\config</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\text_config.cpp">
+      <Filter>lib\config</Filter>
+    </ClCompile>
+    <ClCompile Include="math\camera.cpp">
+      <Filter>math\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="math\aabb.cpp">
+      <Filter>math\collision\aabb</Filter>
+    </ClCompile>
+    <ClCompile Include="math\frustum.cpp">
+      <Filter>math\collision\frustum</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

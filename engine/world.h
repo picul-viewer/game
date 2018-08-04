@@ -3,16 +3,15 @@
 
 #include <types.h>
 #include <math/vector.h>
+#include <math/camera.h>
 
 #include <system/window.h>
 
-#include <threads/thread.h>
-#include <threads/threading_event.h>
+#include <system/thread.h>
+#include <system/threading_event.h>
 
 #include "scene.h"
 #include "object.h"
-
-#include <game/camera.h>
 
 namespace engine {
 

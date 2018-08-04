@@ -2,7 +2,7 @@
 #define __core_camera_h_included_
 
 #include <types.h>
-#include <math/matrix.h>
+#include "matrix.h"
 
 class camera
 {

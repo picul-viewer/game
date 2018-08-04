@@ -87,15 +87,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="game\aabb.h" />
-    <ClInclude Include="game\bvh.h" />
-    <ClInclude Include="game\bvh_inline.h" />
-    <ClInclude Include="game\camera.h" />
-    <ClInclude Include="game\config.h" />
-    <ClInclude Include="game\frustum.h" />
-    <ClInclude Include="game\octree.h" />
-    <ClInclude Include="game\octree_inline.h" />
-    <ClInclude Include="game\text_config.h" />
     <ClInclude Include="lib\algorithms.h" />
     <ClInclude Include="lib\allocator.h" />
     <ClInclude Include="lib\allocator_inline.h" />
@@ -105,6 +96,7 @@
     <ClInclude Include="lib\array_inline.h" />
     <ClInclude Include="lib\basic_string.h" />
     <ClInclude Include="lib\basic_string_inline.h" />
+    <ClInclude Include="lib\config.h" />
     <ClInclude Include="lib\embedded_list.h" />
     <ClInclude Include="lib\embedded_list_inline.h" />
     <ClInclude Include="lib\fixed_string.h" />
@@ -122,50 +114,58 @@
     <ClInclude Include="lib\std_map.h" />
     <ClInclude Include="lib\std_map_inline.h" />
     <ClInclude Include="lib\strings.h" />
+    <ClInclude Include="lib\text_config.h" />
     <ClInclude Include="lib\weak_string.h" />
     <ClInclude Include="lib\weak_string_inline.h" />
     <ClInclude Include="macros.h" />
+    <ClInclude Include="math\aabb.h" />
+    <ClInclude Include="math\bvh.h" />
+    <ClInclude Include="math\bvh_inline.h" />
+    <ClInclude Include="math\camera.h" />
+    <ClInclude Include="math\frustum.h" />
     <ClInclude Include="math\math_3d.h" />
     <ClInclude Include="math\math_common.h" />
     <ClInclude Include="math\math_sse.h" />
     <ClInclude Include="math\matrix.h" />
+    <ClInclude Include="math\octree.h" />
+    <ClInclude Include="math\octree_inline.h" />
     <ClInclude Include="math\quaternion.h" />
     <ClInclude Include="math\vector.h" />
     <ClInclude Include="system\file.h" />
     <ClInclude Include="system\input.h" />
+    <ClInclude Include="system\interlocked.h" />
     <ClInclude Include="system\path_inline.h" />
+    <ClInclude Include="system\spsc_queue.h" />
+    <ClInclude Include="system\spsc_queue_inline.h" />
+    <ClInclude Include="system\thread.h" />
+    <ClInclude Include="system\threading_event.h" />
     <ClInclude Include="system\window_input.h" />
     <ClInclude Include="system\path.h" />
     <ClInclude Include="system\timer.h" />
     <ClInclude Include="system\window.h" />
-    <ClInclude Include="threads\threading_event.h" />
-    <ClInclude Include="threads\interlocked.h" />
-    <ClInclude Include="threads\spsc_queue.h" />
-    <ClInclude Include="threads\spsc_queue_inline.h" />
-    <ClInclude Include="threads\thread.h" />
     <ClInclude Include="types.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="game\aabb.cpp" />
-    <ClCompile Include="game\camera.cpp" />
-    <ClCompile Include="game\config.cpp" />
-    <ClCompile Include="game\frustum.cpp" />
-    <ClCompile Include="game\text_config.cpp" />
     <ClCompile Include="lib\allocator.cpp" />
     <ClCompile Include="lib\alloc_string.cpp" />
+    <ClCompile Include="lib\config.cpp" />
     <ClCompile Include="lib\strings.cpp" />
     <ClCompile Include="lib\hash.cpp" />
+    <ClCompile Include="lib\text_config.cpp" />
     <ClCompile Include="lib\weak_string.cpp" />
     <ClCompile Include="macros.cpp" />
+    <ClCompile Include="math\aabb.cpp" />
+    <ClCompile Include="math\camera.cpp" />
+    <ClCompile Include="math\frustum.cpp" />
     <ClCompile Include="system\file.cpp" />
     <ClCompile Include="system\input.cpp" />
+    <ClCompile Include="system\interlocked.cpp" />
+    <ClCompile Include="system\thread.cpp" />
+    <ClCompile Include="system\threading_event.cpp" />
     <ClCompile Include="system\window_input.cpp" />
     <ClCompile Include="system\path.cpp" />
     <ClCompile Include="system\timer.cpp" />
     <ClCompile Include="system\window.cpp" />
-    <ClCompile Include="threads\interlocked.cpp" />
-    <ClCompile Include="threads\threading_event.cpp" />
-    <ClCompile Include="threads\thread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

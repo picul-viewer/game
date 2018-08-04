@@ -1,7 +1,7 @@
 #include "resource_compiler.h"
 
 #include <system/path.h>
-#include <threads/thread.h>
+#include <system/thread.h>
 
 #include <Shlwapi.h>
 

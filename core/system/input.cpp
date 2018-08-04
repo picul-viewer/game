@@ -1,7 +1,7 @@
 #include "input.h"
 
 #include <macros.h>
-#include <threads/interlocked.h>
+#include "interlocked.h"
 
 namespace sys {
 

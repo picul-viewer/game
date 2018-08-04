@@ -1,6 +1,6 @@
 #include "config.h"
-#include <lib/memory.h>
-#include <lib/hash.h>
+#include "memory.h"
+#include "hash.h"
 
 config::config( pointer data, uptr size ) :
 	m_data		( data ),

@@ -3,8 +3,8 @@
 
 #include <types.h>
 #include <lib/embedded_list.h>
+#include <lib/config.h>
 
-#include <game/config.h>
 #include "dx_include.h"
 
 #include "render_object.h"

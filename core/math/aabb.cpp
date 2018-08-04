@@ -1,7 +1,7 @@
 #include "aabb.h"
 
 #include <macros.h>
-#include <math/math_common.h>
+#include "math_common.h"
 
 aabb& aabb::get_box( )
 {

@@ -3,8 +3,8 @@
 
 #include <types.h>
 #include <lib/array.h>
-#include <game/aabb.h>
-#include <game/frustum.h>
+#include "aabb.h"
+#include "frustum.h"
 
 template<typename T>
 class static_bvh

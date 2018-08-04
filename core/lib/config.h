@@ -2,8 +2,8 @@
 #define __core_config_h_included_
 
 #include <types.h>
-#include <lib/strings.h>
-#include <lib/memory.h>
+#include "strings.h"
+#include "memory.h"
 
 class config
 {

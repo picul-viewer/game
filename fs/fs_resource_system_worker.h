@@ -5,8 +5,8 @@
 
 #include <lib/function.h>
 
-#include <threads/thread.h>
-#include <threads/spsc_queue.h>
+#include <system/thread.h>
+#include <system/spsc_queue.h>
 
 namespace fs {
 
