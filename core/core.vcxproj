@@ -143,6 +143,7 @@
     <ClInclude Include="system\path.h" />
     <ClInclude Include="system\timer.h" />
     <ClInclude Include="system\window.h" />
+    <ClInclude Include="system\window_input_state.h" />
     <ClInclude Include="types.h" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +167,7 @@
     <ClCompile Include="system\path.cpp" />
     <ClCompile Include="system\timer.cpp" />
     <ClCompile Include="system\window.cpp" />
+    <ClCompile Include="system\window_input_state.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

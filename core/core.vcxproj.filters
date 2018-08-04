@@ -79,6 +79,9 @@
     <Filter Include="math\collision\bvh">
       <UniqueIdentifier>{8549c605-189d-48d1-9f64-6cedb7d34d91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="system\window\input">
+      <UniqueIdentifier>{d8142759-0db1-477b-b18e-4aee2953cfe4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -191,12 +194,6 @@
     <ClInclude Include="system\file.h">
       <Filter>system\fs\file</Filter>
     </ClInclude>
-    <ClInclude Include="system\window_input.h">
-      <Filter>system\window</Filter>
-    </ClInclude>
-    <ClInclude Include="system\input.h">
-      <Filter>system\window</Filter>
-    </ClInclude>
     <ClInclude Include="system\path_inline.h">
       <Filter>system\fs\path</Filter>
     </ClInclude>
@@ -248,6 +245,15 @@
     <ClInclude Include="math\octree_inline.h">
       <Filter>math\collision\octree</Filter>
     </ClInclude>
+    <ClInclude Include="system\input.h">
+      <Filter>system\window\input</Filter>
+    </ClInclude>
+    <ClInclude Include="system\window_input.h">
+      <Filter>system\window\input</Filter>
+    </ClInclude>
+    <ClInclude Include="system\window_input_state.h">
+      <Filter>system\window\input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="system\timer.cpp">
@@ -272,12 +278,6 @@
       <Filter>system\fs\file</Filter>
     </ClCompile>
     <ClCompile Include="system\window.cpp">
-      <Filter>system\window</Filter>
-    </ClCompile>
-    <ClCompile Include="system\window_input.cpp">
-      <Filter>system\window</Filter>
-    </ClCompile>
-    <ClCompile Include="system\input.cpp">
       <Filter>system\window</Filter>
     </ClCompile>
     <ClCompile Include="macros.cpp" />
@@ -307,6 +307,15 @@
     </ClCompile>
     <ClCompile Include="math\frustum.cpp">
       <Filter>math\collision\frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="system\input.cpp">
+      <Filter>system\window\input</Filter>
+    </ClCompile>
+    <ClCompile Include="system\window_input.cpp">
+      <Filter>system\window\input</Filter>
+    </ClCompile>
+    <ClCompile Include="system\window_input_state.cpp">
+      <Filter>system\window\input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

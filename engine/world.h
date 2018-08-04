@@ -32,6 +32,7 @@ protected:
 
 	void window_resize( math::u32x2 const& new_dimensions );
 	void window_activate( bool is_active );
+	void window_input( pvoid handle );
 
 	void window_thread( );
 

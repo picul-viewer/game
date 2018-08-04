@@ -41,7 +41,7 @@ static LRESULT CALLBACK window_procedure( HWND hwnd, UINT message, WPARAM w_para
 		
 		case WM_INPUT:
 		{
-			sys::g_window_input.on_message( (pvoid)l_param );
+			g_world.window_input( (pvoid)l_param );
 			break;
 		}
 
@@ -77,6 +77,11 @@ void world::window_activate( bool is_active )
 	m_is_active = is_active;
 
 	// Activate/deactivate
+}
+
+void world::window_input( pvoid handle )
+{
+	// Input
 }
 
 void world::window_thread( )
