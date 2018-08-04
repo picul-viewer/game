@@ -15,6 +15,7 @@ public:
 	void create( pcstr title, math::s32x2 const& dimensions, bool fullscreen, pointer window_procedure );
 	void destroy( );
 	void run( );
+	void exit( );
 
 	inline pvoid get_hwnd( ) const { return m_hwnd; }
 

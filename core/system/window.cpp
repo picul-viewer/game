@@ -78,4 +78,9 @@ void window::run( )
 	while ( msg.message != WM_QUIT );
 }
 
+void window::exit( )
+{
+	SendMessage( (HWND)m_hwnd, WM_CLOSE, 0, 0 );
+}
+
 } // namespace sys
