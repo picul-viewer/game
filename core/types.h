@@ -95,11 +95,11 @@ struct link_counter
 	inline T const& operator*( ) const { return data; }
 };
 
-enum
+enum : uptr
 {
-	Kb	= 1024,
-	Mb	= 1024 * Kb,
-	Gb	= 1024 * Mb
+	Kb	= 1024LL,
+	Mb	= 1024LL * Kb,
+	Gb	= 1024LL * Mb
 };
 
 template<uptr size>
