@@ -14,12 +14,20 @@ void world::run( pvoid in_hwnd, math::u16x2 in_resolution, bool in_is_windowed, 
 	g_parameters.is_windowed		= in_is_windowed;
 	g_parameters.is_d3d_debug		= in_allow_debug;
 
-	//
+	m_alive							= true;
+
+	g_renderer.create				( );
+
+	do
+		g_renderer.render			( );
+	while ( m_alive );
+
+	g_renderer.destroy				( );
 }
 
 void world::exit( )
 {
-	m_alive = true;
+	m_alive							= false;
 }
 
 parameters& world::get_parameters( ) const

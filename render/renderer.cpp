@@ -2,6 +2,8 @@
 
 #include "render_api.h"
 
+#include "resources.h"
+
 #include "resource_views.h"
 #include "render_targets.h"
 
@@ -30,6 +32,10 @@ void renderer::create( )
 		max_render_meshes
 	);
 
+	g_api.create( );
+
+	g_resources.create( );
+
 	m_stage_initialization.create( );
 	m_stage_forward_default.create( );
 }
@@ -38,7 +44,11 @@ void renderer::destroy( )
 {
 	m_stage_initialization.destroy( );
 	m_stage_forward_default.destroy( );
+	
+	g_resources.destroy( );
 
+	g_api.destroy( );
+	
 	virtual_mem_allocator( ).deallocate( m_render_objects_memory );
 }
 
