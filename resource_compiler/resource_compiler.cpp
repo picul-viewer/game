@@ -27,6 +27,47 @@ void resource_compiler::destroy( )
 	m_fbx_compiler.destroy( );
 }
 
+struct shader_compiler_data
+{
+	shader_compiler* compiler;
+	pcstr input_path;
+	pcstr output_path;
+};
+
+void shader_compiler_thread_function( void* param )
+{
+	shader_compiler_data* data = (shader_compiler_data*)param;
+
+	data->compiler->compile( data->input_path, data->output_path );
+}
+
+typedef decltype(&resource_compiler::scan) scan_decl;
+
+struct scan_execute_data
+{
+	resource_compiler* this_ptr;
+	scan_decl this_scan_functor;
+	weak_const_string input_path;
+	weak_const_string output_path;
+	weak_const_string extension;
+	resource_compiler::scan_functor functor;
+};
+
+void scan_thread_function( void* param )
+{
+	scan_execute_data* data = (scan_execute_data*)param;
+	scan_decl scan = data->this_scan_functor;
+	resource_compiler::scan_functor functor = data->functor;
+
+	str512 input = data->input_path;
+	str512 output = data->output_path;
+
+	( data->this_ptr->*scan )( input.length( ), input,
+								output.length( ), output,
+								data->extension.length( ), data->extension,
+								functor );
+};
+
 void resource_compiler::compile( weak_const_string input_path, weak_const_string output_path )
 {
 	enum resource_compiler_threads
@@ -75,37 +116,10 @@ void resource_compiler::compile( weak_const_string input_path, weak_const_string
 
 		for ( u32 i = 0; i < 4; ++i )
 		{
-			threads[thread_index].create( thread_function, 1 * Mb, &shader_thread_data[i] );
+			threads[thread_index].create( thread::func_helper<&shader_compiler_thread_function>, 1 * Mb, &shader_thread_data[i] );
 			++thread_index;
 		}
 	}
-
-	typedef decltype(&resource_compiler::scan) scan_decl;
-
-	struct scan_execute_data
-	{
-		resource_compiler* this_ptr;
-		scan_decl this_scan_functor;
-		weak_const_string input_path;
-		weak_const_string output_path;
-		weak_const_string extension;
-		scan_functor functor;
-	};
-
-	auto scan_thread_function = []( void* param )
-	{
-		scan_execute_data* data = (scan_execute_data*)param;
-		scan_decl scan = data->this_scan_functor;
-		scan_functor functor = data->functor;
-
-		str512 input = data->input_path;
-		str512 output = data->output_path;
-
-		( data->this_ptr->*scan )( input.length( ), input,
-								   output.length( ), output,
-								   data->extension.length( ), data->extension,
-								   functor );
-	};
 
 	scan_execute_data fbx_thread_data;
 
@@ -120,7 +134,7 @@ void resource_compiler::compile( weak_const_string input_path, weak_const_string
 
 		fbx_thread_data = { this, &resource_compiler::scan, input.c_str( ), output.c_str( ), ".fbx", &resource_compiler::compile_fbx };
 
-		threads[thread_index].create( scan_thread_function, 1 * Mb, &fbx_thread_data );
+		threads[thread_index].create( thread::func_helper<&scan_thread_function>, 1 * Mb, &fbx_thread_data );
 		++thread_index;
 	}
 

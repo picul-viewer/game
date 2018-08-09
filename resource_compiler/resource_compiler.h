@@ -19,7 +19,7 @@ public:
 
 	void compile( weak_const_string input_path, weak_const_string output_path );
 
-protected:
+public:
 	typedef void ( resource_compiler::*scan_functor )( u64, pcstr, pcstr );
 
 	void scan(
@@ -28,6 +28,7 @@ protected:
 		uptr filename_ending_size, weak_const_string filename_ending,
 		scan_functor functor );
 
+protected:
 	void compile_fbx( u64 relevant_date, pcstr input_file_name, pcstr output_directory );
 
 protected:

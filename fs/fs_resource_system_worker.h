@@ -31,7 +31,6 @@ protected:
 		callback_type callback;
 	};
 
-	static void thread_func( void* arg );
 	void work( );
 
 	static void read_impl( query query );

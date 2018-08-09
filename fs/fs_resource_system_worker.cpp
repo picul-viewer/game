@@ -4,13 +4,6 @@
 
 namespace fs {
 
-void fs_resource_system_worker::thread_func( void* arg )
-{
-	fs_resource_system_worker* this_ptr = (fs_resource_system_worker*)arg;
-
-	this_ptr->work( );
-}
-
 void fs_resource_system_worker::work( )
 {
 	query_queue::value_type query;
@@ -34,7 +27,7 @@ void fs_resource_system_worker::create( )
 
 	m_keep_alive	= true;
 
-	m_thread.create	( thread_func, 0, this );
+	m_thread.create	( thread::method_helper<fs_resource_system_worker, &fs_resource_system_worker::work>, 0, this );
 }
 
 void fs_resource_system_worker::destroy( )

@@ -3,14 +3,14 @@
 #include <process.h>
 #include <Windows.h>
 
-thread::thread( thread_func_type func, u32 stack_size, void* arg )
+thread::thread( thread_func_type func, u32 stack_size, pvoid arg )
 {
 	create( func, stack_size, arg );
 }
 
-void thread::create( thread_func_type func, u32 stack_size, void* arg )
+void thread::create( thread_func_type func, u32 stack_size, pvoid arg )
 {
-	m_id = (HANDLE)_beginthread( func, stack_size, arg );
+	m_id = (HANDLE)CreateThread( nullptr, stack_size, func, arg, 0, nullptr );
 }
 
 void thread::destroy( u32 wait_ms )
