@@ -113,6 +113,8 @@ static inline void compile_shaders( weak_const_string input_directory,
 
 					result_errors->Release( );
 				}
+				else
+					LOG( "shader_compiler: %s shader (%s) compiled successfully: \"%s\"\n", shader_type, common_output_folder.c_str( ), shader_name );
 
 				ASSERT( result_code );
 

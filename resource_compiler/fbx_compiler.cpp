@@ -296,6 +296,8 @@ void fbx_compiler::compile( u64 relevant_date, weak_const_string input_file_name
 		write_to_file<vertex>( mesh, output_path.c_str( ), 0x00000000 );
 
 	scene->Destroy( );
+
+	LOG( "fbx_compiler: fbx mesh compiled successfully: \"%s\"\n", output_path.c_str( ) );
 }
 
 } // namespace resource_compiler
