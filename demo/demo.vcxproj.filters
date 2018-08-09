@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="world.cpp">
+      <Filter>common\world</Filter>
+    </ClCompile>
+    <ClCompile Include="world_interface.cpp">
+      <Filter>common\world</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="common">
+      <UniqueIdentifier>{472820dd-682b-4bae-b304-19868e9ec68f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\world">
+      <UniqueIdentifier>{01c953e5-0994-411d-a330-3f12ccff5440}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="world.h">
+      <Filter>common\world</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
