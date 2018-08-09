@@ -12,7 +12,7 @@ class shader_and_input_layout_container
 public:
 	shader_and_input_layout_container( );
 	
-	void create( );
+	void create( pcstr in_root_path );
 	void destroy( );
 
 	ShaderType operator[]( uptr in_index );

@@ -11,7 +11,7 @@ class shader_container
 public:
 	shader_container( );
 	
-	void create( );
+	void create( pcstr in_root_path );
 	void destroy( );
 
 	ShaderType operator[]( uptr in_index );

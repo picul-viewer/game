@@ -20,7 +20,7 @@ shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumerator
 }
 
 template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax, typename ShaderPathProvider>
-void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathProvider>::create( )
+void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathProvider>::create( pcstr in_root_path )
 {
 	ASSERT( m_created == false );
 
@@ -29,8 +29,8 @@ void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnume
 
 	for ( uptr i = 0; i < ShaderEnumeratorMax; ++i )
 	{
-		weak_const_string path = weak_const_string( ShaderPathProvider::get( (ShaderEnumerator)i ) );
-		uptr length = path.length( );
+		weak_const_string name = ShaderPathProvider::get( (ShaderEnumerator)i );
+		uptr const length = name.length( );
 
 		// Assume that vertex type defined in LSByte of configuration.
 		u8 vtype = 0;
@@ -38,7 +38,7 @@ void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnume
 		ASSERT( length > 2 );
 
 		{
-			char c = path[length - 2];
+			char c = name[length - 2];
 			if ( ( c >= '0' ) && ( c <= '9' ) )
 				vtype += 16 * ( c - '0' );
 			else
@@ -49,7 +49,7 @@ void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnume
 		}
 
 		{
-			char c = path[length - 1];
+			char c = name[length - 1];
 			if ( ( c >= '0' ) && ( c <= '9' ) )
 				vtype += c - '0';
 			else
@@ -59,9 +59,13 @@ void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnume
 			}
 		}
 
-		sys::file f( path.c_str( ), sys::file::open_read );
+		sys::path p = in_root_path;
+		p += name;
 
-		uptr shader_size = f.size( );
+		sys::file f( p.c_str( ), sys::file::open_read );
+		ASSERT( f.is_valid( ) );
+
+		uptr const shader_size = f.size( );
 		ASSERT( shader_size < max_shader_size );
 		f.read( memory, shader_size );
 

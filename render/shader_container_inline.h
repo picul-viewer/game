@@ -3,6 +3,8 @@
 
 #include <macros.h>
 #include <lib/memory.h>
+
+#include <system/path.h>
 #include <system/file.h>
 
 #include "shader.h"
@@ -20,7 +22,7 @@ shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathPr
 }
 
 template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax, typename ShaderPathProvider>
-void shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathProvider>::create( )
+void shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathProvider>::create( pcstr in_root_path )
 {
 	ASSERT( m_created == false );
 
@@ -29,9 +31,13 @@ void shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderP
 
 	for ( uptr i = 0; i < ShaderEnumeratorMax; ++i )
 	{
-		sys::file f( ShaderPathProvider::get( (ShaderEnumerator)i ), sys::file::open_read );
+		sys::path p = in_root_path;
+		p += ShaderPathProvider::get( (ShaderEnumerator)i );
 
-		uptr shader_size = f.size( );
+		sys::file f( p.c_str( ), sys::file::open_read );
+		ASSERT( f.is_valid( ) );
+
+		uptr const shader_size = f.size( );
 		ASSERT( shader_size < max_shader_size );
 		f.read( memory, shader_size );
 
