@@ -63,7 +63,8 @@ buffer::buffer( ) :
 void buffer::create( cook const& in_cook, pcvoid in_data )
 {
 	D3D11_SUBRESOURCE_DATA subresource_data = { in_data };
-	g_api.get_device( )->CreateBuffer( &in_cook.buffer_desc, &subresource_data, &m_buffer );
+	D3D11_SUBRESOURCE_DATA* subresource_data_ptr = ( in_data == nullptr ) ? nullptr : &subresource_data;
+	g_api.get_device( )->CreateBuffer( &in_cook.buffer_desc, subresource_data_ptr, &m_buffer );
 }
 
 void buffer::create( cook const& in_cook )

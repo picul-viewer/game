@@ -18,6 +18,7 @@ void vertex_shader::set( ID3D11VertexShader* in_shader, ID3D11InputLayout* in_la
 void vertex_shader::destroy( )
 {
 	m_shader->Release( );
+	m_layout->Release( );
 }
 
 void vertex_shader::bind( ) const

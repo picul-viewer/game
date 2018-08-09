@@ -118,7 +118,7 @@ void resources::create_default_meshes( )
 		m_default_meshes[mesh_index].create_vertex_buffer( 0, vertex_cook, box::vertices, stride );
 
 		buffer::cook index_cook;
-		vertex_cook.set_index_buffer( sizeof(box::indices) );
+		index_cook.set_index_buffer( sizeof(box::indices) );
 		m_default_meshes[mesh_index].create_index_buffer( index_cook, box::indices, DXGI_FORMAT_R16_UINT );
 
 		m_default_meshes[mesh_index].set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
@@ -134,7 +134,7 @@ void resources::create_default_meshes( )
 		m_default_meshes[mesh_index].create_vertex_buffer( 0, vertex_cook, quad::vertices, stride );
 
 		buffer::cook index_cook;
-		vertex_cook.set_index_buffer( sizeof(quad::indices) );
+		index_cook.set_index_buffer( sizeof(quad::indices) );
 		m_default_meshes[mesh_index].create_index_buffer( index_cook, quad::indices, DXGI_FORMAT_R16_UINT );
 
 		m_default_meshes[mesh_index].set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );

@@ -33,6 +33,7 @@ void technique::apply( u8 in_stencil_ref,
 	m_geometry_shader.bind( );
 	m_pixel_shader.bind( );
 }
+
 void technique::set_vertex_shader( vertex_shader_type in_shader_type )
 {
 	m_vertex_shader = g_resources.get_vertex_shader_container( )[in_shader_type];

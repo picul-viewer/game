@@ -40,7 +40,7 @@ void api::create( )
 		&swap_chain_desc, &m_swap_chain, &m_device, &m_feature_level, &m_context );
 
 	if ( hr != S_OK )
-		LOG( "render device and swap chain were not created!" );
+		LOG( "render device and swap chain were not created!\n" );
 
 	m_swap_chain->GetBuffer( 0, __uuidof(ID3D11Texture2D), (void**)&m_backbuffer );
 }
