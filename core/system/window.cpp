@@ -52,30 +52,19 @@ void window::destroy( )
 {
 	ASSERT				( m_hwnd );
 
-	enum { class_name_max_length = 256 };
-	char class_name[class_name_max_length];
-	RealGetWindowClass	( (HWND)m_hwnd, class_name, class_name_max_length );
-
 	DestroyWindow		( (HWND)m_hwnd );
 	m_hwnd				= nullptr;
-	
-	HINSTANCE inst		= GetModuleHandle( nullptr );
-	UnregisterClass		( class_name, inst );
 }
 
 void window::run( )
 {
 	MSG msg;
 
-	do
+	while ( GetMessage( &msg, nullptr, 0, 0 ) )
 	{
-		if ( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
-		{
-			TranslateMessage( &msg );
-			DispatchMessage	( &msg );
-		}
+		TranslateMessage( &msg );
+		DispatchMessage	( &msg );
 	}
-	while ( msg.message != WM_QUIT );
 }
 
 void window::exit( )
