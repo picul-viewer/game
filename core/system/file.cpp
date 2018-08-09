@@ -38,7 +38,7 @@ void file::open( pcstr path, open_mode mode )
 
 	m_handle = CreateFile( path, access_flags, share_flags, nullptr, creation, FILE_ATTRIBUTE_NORMAL, nullptr );
 
-	ASSERT( m_handle != INVALID_HANDLE_VALUE, "open file error: \"%s\"\n", path );
+	ASSERT( m_handle != INVALID_HANDLE_VALUE, "open file error: \"%s\"\nerror type: %d\n", path, GetLastError( ) );
 }
 
 file::~file( )
