@@ -82,6 +82,15 @@
     <Filter Include="system\window\input">
       <UniqueIdentifier>{d8142759-0db1-477b-b18e-4aee2953cfe4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\memory\allocators">
+      <UniqueIdentifier>{7c2385b5-3c29-4ef3-84f4-fce9338847e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\memory\allocators\allocator">
+      <UniqueIdentifier>{cca4e846-a787-497a-aa2e-70db531959e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\memory\allocators\pool">
+      <UniqueIdentifier>{48ff0b0c-b6ea-4d11-a7e2-02a3c40bff4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -137,22 +146,7 @@
     <ClInclude Include="lib\std_map_inline.h">
       <Filter>lib\map</Filter>
     </ClInclude>
-    <ClInclude Include="lib\allocator.h">
-      <Filter>lib\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\allocator_inline.h">
-      <Filter>lib\memory</Filter>
-    </ClInclude>
     <ClInclude Include="lib\memory.h">
-      <Filter>lib\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\pool.h">
-      <Filter>lib\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\pool_inline.h">
-      <Filter>lib\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\poolset.h">
       <Filter>lib\memory</Filter>
     </ClInclude>
     <ClInclude Include="lib\queue.h">
@@ -254,6 +248,21 @@
     <ClInclude Include="system\window_input_state.h">
       <Filter>system\window\input</Filter>
     </ClInclude>
+    <ClInclude Include="lib\allocator.h">
+      <Filter>lib\memory\allocators\allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\allocator_inline.h">
+      <Filter>lib\memory\allocators\allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\pool.h">
+      <Filter>lib\memory\allocators\pool</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\pool_inline.h">
+      <Filter>lib\memory\allocators\pool</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\poolset.h">
+      <Filter>lib\memory\allocators\pool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="system\timer.cpp">
@@ -261,9 +270,6 @@
     </ClCompile>
     <ClCompile Include="lib\hash.cpp">
       <Filter>lib\map</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\allocator.cpp">
-      <Filter>lib\memory</Filter>
     </ClCompile>
     <ClCompile Include="lib\alloc_string.cpp">
       <Filter>lib\string</Filter>
@@ -316,6 +322,9 @@
     </ClCompile>
     <ClCompile Include="system\window_input_state.cpp">
       <Filter>system\window\input</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\allocator.cpp">
+      <Filter>lib\memory\allocators\allocator</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
