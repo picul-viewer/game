@@ -139,7 +139,7 @@ bool operator<( bumpmapped_vertex const& l, bumpmapped_vertex const& r )
 template<typename VertexType>
 static inline bool process_mesh( FbxMesh* mesh, VertexType*& vertices, u32*& indices, u32& vertex_count, u32& index_count )
 {
-	map<VertexType, u32> vertices_map;
+	map<VertexType, u32, Memory_Page_Size, 4096> vertices_map;
 	u32 current_index = 0;
 
 	u32 polygon_count = mesh->GetPolygonCount( );
