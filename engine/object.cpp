@@ -5,7 +5,7 @@
 
 namespace engine {
 
-void object::create( config& in_config )
+void object::create( binary_config& in_config )
 {
 	bool const create_render = in_config.read<bool>( );
 		

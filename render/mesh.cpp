@@ -6,7 +6,7 @@
 #include <macros.h>
 #include <lib/weak_string.h>
 #include <lib/allocator.h>
-#include <lib/config.h>
+#include <lib/binary_config.h>
 
 #include <system/file.h>
 
@@ -132,7 +132,7 @@ void mesh::load( mesh* out_resource, weak_const_string in_filename )
 	f.read								( memory, size );
 	f.close								( );
 
-	config cfg							( memory, size );
+	binary_config cfg					( memory, size );
 
 	const u32 index_data				= cfg.read<u32>( );
 	
@@ -145,7 +145,7 @@ void mesh::load( mesh* out_resource, weak_const_string in_filename )
 	u32 indices_size					= out_resource->m_index_count * format_get_bits_per_pixel( out_resource->m_index_format );
 	buffer::cook cook;
 	cook.set_index_buffer				( indices_size );
-	out_resource->m_index_buffer.create	( cook, cfg.current( ) );
+	out_resource->m_index_buffer.create	( cook, cfg.get_pointer( ) );
 	cfg									+= indices_size;
 
 	out_resource->m_primitive_topology	= D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -167,7 +167,7 @@ void mesh::load( mesh* out_resource, weak_const_string in_filename )
 		u32 vertices_size					= cfg.read<u32>( );
 		buffer::cook cook;
 		cook.set_vertex_buffer				( vertices_size );
-		out_resource->m_vertex_buffers[i].create( cook, cfg.current( ) );
+		out_resource->m_vertex_buffers[i].create( cook, cfg.get_pointer( ) );
 		cfg									+= vertices_size;
 	}
 

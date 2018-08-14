@@ -8,12 +8,12 @@ namespace render {
 render_model_mesh::render_model_mesh( )
 { }
 
-void render_model_mesh::create( config& in_config )
+void render_model_mesh::create( binary_config& in_config )
 {
 	math::sse::vector aabb_min, aabb_max;
-	aabb_min.loadu				( (float const*)in_config.current( ) );
+	aabb_min.loadu				( (float const*)in_config.get_pointer( ) );
 	in_config					+= sizeof( math::float3 );
-	aabb_min.loadu				( (float const*)in_config.current( ) );
+	aabb_min.loadu				( (float const*)in_config.get_pointer( ) );
 	in_config					+= sizeof( math::float3 );
 	m_aabb.set_min_max			( aabb_min, aabb_max );
 
@@ -60,7 +60,7 @@ void render_model_mesh::load( render_model_mesh* out_resource, weak_const_string
 	f.read				( memory, size );
 	f.close				( );
 
-	config cfg			( memory, size );
+	binary_config cfg	( memory, size );
 	out_resource->create( cfg );
 }
 

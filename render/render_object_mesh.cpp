@@ -4,7 +4,7 @@
 
 namespace render {
 
-void render_object_mesh::create( config& in_config )
+void render_object_mesh::create( binary_config& in_config )
 {
 	pcstr render_model_path	= in_config.read_str( );
 	m_render_model			= g_resources.get_render_model_mesh_pool( ).get( render_model_path );

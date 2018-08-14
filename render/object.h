@@ -3,7 +3,7 @@
 
 #include <types.h>
 #include <lib/embedded_list.h>
-#include <lib/config.h>
+#include <lib/binary_config.h>
 
 #include "render_object.h"
 
@@ -12,7 +12,7 @@ namespace render {
 class object
 {
 public:
-	void create( config& in_config );
+	void create( binary_config& in_config );
 	void destroy( );
 	
 	template<typename Pred>

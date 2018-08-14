@@ -3,7 +3,7 @@
 
 #include <types.h>
 #include <math/matrix.h>
-#include <lib/config.h>
+#include <lib/binary_config.h>
 
 namespace render { class object; }
 
@@ -12,7 +12,7 @@ namespace engine {
 class object
 {
 public:
-	void create( config& in_config );
+	void create( binary_config& in_config );
 	void destroy( );
 
 	inline render::object* render( ) { return m_render; }

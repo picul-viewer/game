@@ -3,7 +3,7 @@
 
 #include <types.h>
 #include <math/aabb.h>
-#include <lib/config.h>
+#include <lib/binary_config.h>
 #include "mesh.h"
 #include "texture.h"
 
@@ -14,7 +14,7 @@ class render_model_mesh
 public:
 	render_model_mesh( );
 
-	void create( config& in_config );
+	void create( binary_config& in_config );
 	void destroy( );
 	
 	void render( ) const;

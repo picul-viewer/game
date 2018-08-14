@@ -6,7 +6,7 @@
 
 namespace render {
 
-void object::create( config& in_config )
+void object::create( binary_config& in_config )
 {
 	u16 const objects_count			= in_config.read<u16>( );
 

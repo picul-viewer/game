@@ -6,7 +6,7 @@
 #include <math/math_sse.h>
 #include <math/aabb.h>
 
-#include <lib/config.h>
+#include <lib/binary_config.h>
 
 #include "render_object.h"
 
@@ -17,7 +17,7 @@ namespace render {
 class render_object_mesh : public render_object
 {
 public:
-	void create( config& in_config );
+	void create( binary_config& in_config );
 	void destroy( );
 
 	void update( math::sse::matrix3 in_transform );
