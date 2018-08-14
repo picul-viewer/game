@@ -46,8 +46,8 @@ void resources::create( )
 			"resources\\shaders\\debug_4_0\\pixel";
 #else
 		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			"resources\\shaders\\release_4_0\\pixel";
 			"resources\\shaders\\release_5_0\\pixel" :
+			"resources\\shaders\\release_4_0\\pixel";
 #endif // #ifdef DEBUG
 
 		m_pixel_shader_container.create( root_path );
