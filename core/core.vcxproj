@@ -96,6 +96,7 @@
     <ClInclude Include="lib\array_inline.h" />
     <ClInclude Include="lib\basic_string.h" />
     <ClInclude Include="lib\basic_string_inline.h" />
+    <ClInclude Include="lib\binary_config.h" />
     <ClInclude Include="lib\config.h" />
     <ClInclude Include="lib\embedded_list.h" />
     <ClInclude Include="lib\embedded_list_inline.h" />
@@ -149,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="lib\allocator.cpp" />
     <ClCompile Include="lib\alloc_string.cpp" />
+    <ClCompile Include="lib\binary_config.cpp" />
     <ClCompile Include="lib\config.cpp" />
     <ClCompile Include="lib\strings.cpp" />
     <ClCompile Include="lib\hash.cpp" />

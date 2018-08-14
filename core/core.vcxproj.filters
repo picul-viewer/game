@@ -212,9 +212,6 @@
     <ClInclude Include="system\threading_event.h">
       <Filter>system\threads\threading_event</Filter>
     </ClInclude>
-    <ClInclude Include="lib\config.h">
-      <Filter>lib\config</Filter>
-    </ClInclude>
     <ClInclude Include="lib\text_config.h">
       <Filter>lib\config</Filter>
     </ClInclude>
@@ -263,6 +260,12 @@
     <ClInclude Include="lib\poolset.h">
       <Filter>lib\memory\allocators\pool</Filter>
     </ClInclude>
+    <ClInclude Include="lib\binary_config.h">
+      <Filter>lib\config</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\config.h">
+      <Filter>lib\config</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="system\timer.cpp">
@@ -299,9 +302,6 @@
     <ClCompile Include="system\threading_event.cpp">
       <Filter>system\threads\threading_event</Filter>
     </ClCompile>
-    <ClCompile Include="lib\config.cpp">
-      <Filter>lib\config</Filter>
-    </ClCompile>
     <ClCompile Include="lib\text_config.cpp">
       <Filter>lib\config</Filter>
     </ClCompile>
@@ -325,6 +325,12 @@
     </ClCompile>
     <ClCompile Include="lib\allocator.cpp">
       <Filter>lib\memory\allocators\allocator</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\binary_config.cpp">
+      <Filter>lib\config</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\config.cpp">
+      <Filter>lib\config</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

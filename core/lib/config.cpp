@@ -4,26 +4,13 @@
 
 config::config( pointer data, uptr size ) :
 	m_data		( data ),
-	m_size		( size ),
-	m_pointer	( data )
+	m_size		( size )
 { }
 
 void config::create( pointer data, uptr size )
 {
 	m_data		= data;
 	m_size		= size;
-	m_pointer	= data;
-}
-
-void config::operator+=( ptr size )
-{
-	m_pointer += size;
-	ASSERT( ( m_pointer >= m_data ) && ( m_pointer < m_data + size ) );
-}
-
-void config::reset( )
-{
-	m_pointer = m_data;
 }
 
 pointer config::data( ) const
@@ -31,17 +18,7 @@ pointer config::data( ) const
 	return m_data;
 }
 
-pointer config::current( ) const
-{
-	return m_pointer;
-}
-
 uptr config::size( ) const
-{
-	return m_pointer - m_data;
-}
-
-uptr config::capacity( ) const
 {
 	return m_size;
 }
