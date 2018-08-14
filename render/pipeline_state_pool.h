@@ -2,7 +2,6 @@
 #define __render_pipeline_state_pool_h_included_
 
 #include <types.h>
-#include "dx_include.h"
 #include "pipeline_state.h"
 
 namespace render {

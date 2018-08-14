@@ -2,7 +2,6 @@
 #define __render_scene_h_included_
 
 #include <types.h>
-#include "dx_include.h"
 
 #include <math/math_3d.h>
 

@@ -2,7 +2,6 @@
 #define __render_texture_h_included_
 
 #include <types.h>
-#include "dx_include.h"
 
 #include <lib/weak_string.h>
 #include "resource_views.h"

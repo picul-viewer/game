@@ -2,7 +2,8 @@
 #define __render_input_layout_h_included_
 
 #include <types.h>
-#include "dx_include.h"
+
+struct D3D11_INPUT_ELEMENT_DESC;
 
 namespace render {
 

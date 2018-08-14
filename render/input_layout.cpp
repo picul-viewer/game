@@ -1,4 +1,5 @@
 #include "input_layout.h"
+#include "dx_include.h"
 #include "mesh.h"
 
 #include <macros.h>

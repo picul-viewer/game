@@ -1,6 +1,4 @@
 #include <types.h>
-#include "dx_include.h"
-
 #include <math/vector.h>
 
 namespace render {

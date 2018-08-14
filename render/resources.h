@@ -2,7 +2,6 @@
 #define __render_resources_h_included_
 
 #include <types.h>
-#include "dx_include.h"
 
 #include "resource_views.h"
 #include "render_targets.h"

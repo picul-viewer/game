@@ -2,7 +2,6 @@
 #define __render_world_h_included_
 
 #include <types.h>
-#include "dx_include.h"
 #include <math/vector.h>
 
 #include "render_parameters.h"

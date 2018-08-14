@@ -2,7 +2,6 @@
 #define __render_shader_containers_h_included_
 
 #include <types.h>
-#include "dx_include.h"
 
 #include "shader.h"
 #include "shader_container.h"

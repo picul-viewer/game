@@ -2,7 +2,6 @@
 #define __render_render_object_h_included_
 
 #include <types.h>
-#include "dx_include.h"
 
 namespace render {
 
