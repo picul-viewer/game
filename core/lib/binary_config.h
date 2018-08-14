@@ -8,6 +8,8 @@
 class binary_config
 {
 public:
+	binary_config( );
+
 	binary_config( config const& cfg );
 	binary_config( pointer data, uptr size );
 	void create( config const& cfg );

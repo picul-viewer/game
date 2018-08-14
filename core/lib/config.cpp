@@ -2,6 +2,9 @@
 #include "memory.h"
 #include "hash.h"
 
+config::config( )
+{ }
+
 config::config( pointer data, uptr size ) :
 	m_data		( data ),
 	m_size		( size )

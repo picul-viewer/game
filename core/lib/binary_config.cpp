@@ -2,6 +2,9 @@
 #include "memory.h"
 #include "strings.h"
 
+binary_config::binary_config( )
+{ }
+
 binary_config::binary_config( config const& cfg ) :
 	binary_config( cfg.data( ), cfg.size( ) )
 { }
