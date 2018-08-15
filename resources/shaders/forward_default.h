@@ -11,7 +11,8 @@ Texture2D	t_specular	: register( t1 );
 
 struct vertex_output
 {
-	float2 tex_coords : TEXCOORD;
+	float4 position		: SV_Position;
+	float2 tex_coords	: TEXCOORD0;
 };
 
 #endif // #ifndef __shader_forward_default_constants_h_included_

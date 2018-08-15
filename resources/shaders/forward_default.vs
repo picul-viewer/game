@@ -3,9 +3,9 @@
 #include "common.h"
 #include "vertex_input_mesh.h"
 
-float4 main( in vertex_input input, out vertex_output output ) : SV_Position
+void main( in vertex_input input, out vertex_output output )
 {
 	output.tex_coords	= input.tex_coords;
 	
-	return transform_position( input.position, c_WVP );
+	output.position		= transform_position( input.position, c_WVP );
 }
