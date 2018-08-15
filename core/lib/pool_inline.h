@@ -284,7 +284,7 @@ void dynamic_allocation_multipool<PageSize, PageMaxCount>::clear( )
 template<uptr PageSize, uptr PageMaxCount>
 pointer dynamic_allocation_multipool<PageSize, PageMaxCount>::allocate( uptr size )
 {
-	if ( m_last_pointer + size <= m_page_pointer + pool_page_size_helper<PageSize>::value )
+	if ( m_last_pointer + size > m_page_pointer + pool_page_size_helper<PageSize>::value )
 	{
 		m_page_pointer					+= pool_page_size_helper<PageSize>::value;
 		ASSERT							( m_page_pointer < m_data + pool_page_size_helper<PageSize>::value * PageMaxCount );
