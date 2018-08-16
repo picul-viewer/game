@@ -130,7 +130,7 @@ inline u32 format_get_bits_per_pixel( DXGI_FORMAT format )
 	case DXGI_FORMAT_BC4_TYPELESS:
 	case DXGI_FORMAT_BC4_UNORM:
 	case DXGI_FORMAT_BC4_SNORM:
-		return 4;
+		return 8;
 
 	case DXGI_FORMAT_BC2_TYPELESS:
 	case DXGI_FORMAT_BC2_UNORM:
@@ -147,7 +147,7 @@ inline u32 format_get_bits_per_pixel( DXGI_FORMAT format )
 	case DXGI_FORMAT_BC7_TYPELESS:
 	case DXGI_FORMAT_BC7_UNORM:
 	case DXGI_FORMAT_BC7_UNORM_SRGB:
-		return 8;
+		return 16;
 
 	default:
 		return 0;

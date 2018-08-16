@@ -3,6 +3,8 @@
 #include "dx_include.h"
 
 #include <lib/allocator.h>
+#include <lib/binary_config.h>
+
 #include <system/file.h>
 #include "render_api.h"
 
@@ -39,7 +41,7 @@ void create_resource(
 	D3D11_SUBRESOURCE_DATA*		in_data,
 	ID3D11ShaderResourceView**	out_srv )
 {
-	out_srv = nullptr;
+	*out_srv = nullptr;
 
 	if ( in_force_srgb )
 		in_format = format_make_srgb( in_format );
@@ -80,7 +82,7 @@ void create_resource(
 
 			g_api.get_device( )->CreateShaderResourceView( texture, &srv_desc, out_srv );
 			
-			ASSERT( out_srv != nullptr );
+			ASSERT( *out_srv != nullptr );
 
 			texture->Release( );
 			break;
@@ -143,7 +145,7 @@ void create_resource(
 
 			g_api.get_device( )->CreateShaderResourceView( texture, &srv_desc, out_srv );
 			
-			ASSERT( out_srv != nullptr );
+			ASSERT( *out_srv != nullptr );
 
 			texture->Release( );
 			break;
@@ -175,7 +177,7 @@ void create_resource(
 
 			g_api.get_device( )->CreateShaderResourceView( texture, &srv_desc, out_srv );
 			
-			ASSERT( out_srv != nullptr );
+			ASSERT( *out_srv != nullptr );
 
 			texture->Release();
 			break;
@@ -422,8 +424,8 @@ void fill_init_data( uptr						width,
 					 uptr						mip_count,
 					 uptr						array_size,
 					 DXGI_FORMAT				format,
-					 uptr						bit_size,
 					 const u8*					bit_data,
+					 const u8*					bit_data_end,
 					 D3D11_SUBRESOURCE_DATA*	init_data )
 {
 	ASSERT( bit_data );
@@ -432,7 +434,6 @@ void fill_init_data( uptr						width,
 	uptr num_bytes = 0;
 	uptr row_bytes = 0;
 	const u8* src_bits = bit_data;
-	const u8* end_bits = bit_data + bit_size;
 
 	uptr index = 0;
 	for ( uptr j = 0; j < array_size; ++j )
@@ -451,13 +452,13 @@ void fill_init_data( uptr						width,
 			init_data[index].SysMemSlicePitch	= (UINT)num_bytes;
 			++index;
 
-			ASSERT( src_bits + ( num_bytes * d ) <= end_bits );
+			ASSERT( src_bits + ( num_bytes * d ) <= bit_data_end );
 
 			src_bits += num_bytes * d;
 
 			w = ( w != 1 ) ? w >> 1 : 1;
-			h = ( w != 0 ) ? h >> 1 : 1;
-			d = ( w != 0 ) ? d >> 1 : 1;
+			h = ( h != 1 ) ? h >> 1 : 1;
+			d = ( d != 1 ) ? d >> 1 : 1;
 		}
 	}
 }
@@ -470,14 +471,12 @@ void texture::load( texture* out_resource, weak_const_string in_filename )
 	f.read				( memory, size );
 	f.close				( );
 
-	ASSERT( size >= sizeof(u32) + sizeof(dds_header) );
+	binary_config		cfg( memory, size );
 
-	pointer data		= memory;
+	u32 magic_number	= cfg.read<u32>( );
+	ASSERT				( magic_number == c_dds_magic );
 
-	u32 magic_number = data.get<u32>( );
-	ASSERT( magic_number == c_dds_magic );
-
-	dds_header const& header = *(dds_header*)( data + sizeof( u32 ) );
+	dds_header const& header = cfg.read<dds_header>( );
 	ASSERT( header.size == sizeof(dds_header) );
 	ASSERT( header.ddspf.size == sizeof(dds_pixel_format) );
 	
@@ -494,21 +493,18 @@ void texture::load( texture* out_resource, weak_const_string in_filename )
 	if ( mip_count == 0 )
 		mip_count = 1;
 
-	dds_header_dxt10* dxt_header = nullptr;
 	if ( ( header.ddspf.flags & c_dds_fourcc ) &&
 		( MAKEFOURCC('D', 'X', '1', '0') == header.ddspf.fourcc ) )
 	{
-		ASSERT( size >= sizeof(dds_header) + sizeof(u32) + sizeof(dds_header_dxt10) );
+		dds_header_dxt10 const& dxt_header = cfg.read<dds_header_dxt10>( );
 
-		dxt_header = (dds_header_dxt10*)( data + sizeof(dds_header) + sizeof(u32) );
-
-		array_size = dxt_header->array_size;
+		array_size = dxt_header.array_size;
 		ASSERT( array_size );
 
-		format = dxt_header->format;
-		ASSERT( format_get_bits_per_pixel( dxt_header->format ) != 0 );
+		format = dxt_header.format;
+		ASSERT( format_get_bits_per_pixel( dxt_header.format ) != 0 );
 		
-		res_dim = dxt_header->resource_dimension;
+		res_dim = dxt_header.resource_dimension;
 		switch ( res_dim )
 		{
 		case D3D11_RESOURCE_DIMENSION_TEXTURE1D:
@@ -519,7 +515,7 @@ void texture::load( texture* out_resource, weak_const_string in_filename )
 			break;
 
 		case D3D11_RESOURCE_DIMENSION_TEXTURE2D:
-			if ( dxt_header->misc_flag & D3D11_RESOURCE_MISC_TEXTURECUBE )
+			if ( dxt_header.misc_flag & D3D11_RESOURCE_MISC_TEXTURECUBE )
 			{
 				array_size	*= 6;
 				is_cube_map	= true;
@@ -597,7 +593,7 @@ void texture::load( texture* out_resource, weak_const_string in_filename )
 
 	D3D11_SUBRESOURCE_DATA* init_data = (D3D11_SUBRESOURCE_DATA*)_alloca( mip_count * array_size * sizeof(D3D11_SUBRESOURCE_DATA) );
 
-	fill_init_data( width, height, depth, mip_count, array_size, format, size, data, init_data );
+	fill_init_data( width, height, depth, mip_count, array_size, format, cfg.get_pointer( ), (pcbyte)memory + size, init_data );
 
 	create_resource( res_dim, width, height, depth, (u32)mip_count, array_size,
 					 format, D3D11_USAGE_IMMUTABLE, D3D11_BIND_SHADER_RESOURCE,
