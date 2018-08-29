@@ -3,7 +3,6 @@
 
 #include <types.h>
 #include <math/vector.h>
-#include <math/camera.h>
 
 #include <system/window.h>
 
@@ -18,6 +17,8 @@ namespace engine {
 class world
 {
 public:
+	world( );
+
 	void run( math::u32x2 in_window_dimensions );
 	void exit( );
 
@@ -25,8 +26,6 @@ public:
 	void set_current_scene( scene* in_scene ) const;
 	void destroy_scene( scene* in_scene ) const;
 	
-	void set_current_camera( camera* in_camera ) const;
-
 protected:
 	struct helper;
 

@@ -51,6 +51,10 @@ static LRESULT CALLBACK window_procedure( HWND hwnd, UINT message, WPARAM w_para
 
 };
 
+world::world( ) :
+	m_window_created( false )
+{ }
+
 void world::window_resize( math::u32x2 const& new_dimensions )
 {
 	if ( new_dimensions == m_window_dimensions )
@@ -119,16 +123,18 @@ void world::game_thread( )
 
 void world::initialize( )
 {
-	m_window_created = false;
+	g_resources.create( );
 
 	m_threads[thread_window].create( thread::method_helper<world, &world::window_thread>, 1 * Mb, this );
-
+	
 	m_threads[thread_game].create( thread::method_helper<world, &world::game_thread>, 4 * Mb, this );
 }
 
 void world::deinitialize( )
 {
 	m_threads->destroy( INFINITE, thread_count );
+	
+	g_resources.destroy( );
 }
 
 void world::run( math::u32x2 in_window_dimensions )
@@ -170,11 +176,6 @@ void world::destroy_scene( scene* in_scene ) const
 {
 	in_scene->destroy( );
 	g_resources.get_scene_pool( ).deallocate( in_scene );
-}
-
-void world::set_current_camera( camera* in_camera ) const
-{
-	render::g_world.set_current_camera( in_camera );
 }
 
 world g_world;
