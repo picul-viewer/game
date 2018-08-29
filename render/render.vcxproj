@@ -82,6 +82,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="buffer.h" />
+    <ClInclude Include="camera.h" />
     <ClInclude Include="constant_buffer.h" />
     <ClInclude Include="constant_buffer_inline.h" />
     <ClInclude Include="dx_include.h" />
@@ -129,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp" />
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="constant_buffer.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="object.cpp" />

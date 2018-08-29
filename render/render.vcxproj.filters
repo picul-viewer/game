@@ -118,6 +118,9 @@
     <Filter Include="renderer\stages\stage_initialization">
       <UniqueIdentifier>{45451be4-67f2-41c8-9245-ed5fba41f851}</UniqueIdentifier>
     </Filter>
+    <Filter Include="renderer\utils\camera">
+      <UniqueIdentifier>{14fef490-01c9-4cc3-abcf-8e4f3cab34f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
@@ -209,6 +212,9 @@
     </ClCompile>
     <ClCompile Include="stage_initialization.cpp">
       <Filter>renderer\stages\stage_initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>renderer\utils\camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -346,6 +352,9 @@
     </ClInclude>
     <ClInclude Include="pipeline_state_pool_inline.h">
       <Filter>resources\utils\pipeline_state_pool</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>renderer\utils\camera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

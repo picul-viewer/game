@@ -8,7 +8,6 @@
 #include <lib/array.h>
 #include <lib/pool.h>
 
-#include <math/camera.h>
 #include <math/bvh.h>
 
 #include "object.h"

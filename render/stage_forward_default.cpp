@@ -45,19 +45,17 @@ void stage_forward_default::execute( )
 
 	m_forward_default_effect.apply( );
 
-	camera& current_camera					= *g_renderer.m_camera;
-
 	constant_buffer& per_instance_buffer	= g_resources.get_default_constant_buffer( resources::default_constant_buffer_type_per_instance );
 
 	for ( uptr i = 0; i < g_renderer.m_render_meshes.size( ); ++i )
 	{
 		render_object_mesh const* object	= g_renderer.m_render_meshes[i];
 
-		math::sse::matrix world_transform	= math::sse::matrix( object->get_transform( ) );
+		math::sse::matrix world				= math::sse::matrix( object->get_transform( ) );
 
-		math::sse::matrix view_projection	= current_camera.get_view_projection( );
+		math::sse::matrix const& view_proj	= g_renderer.m_render_camera.get_view_projection( );
 
-		math::sse::matrix wvp				= math::sse::combine_transforms( view_projection, world_transform );
+		math::sse::matrix const& wvp		= math::sse::combine_transforms( world, view_proj );
 
 		forward_default_per_instance_data	per_instance_data;
 		per_instance_data.m_WVP				= math::float4x4( wvp );

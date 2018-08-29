@@ -10,7 +10,7 @@
 
 #include "render_object_mesh.h"
 
-class camera;
+#include "camera.h"
 
 namespace render {
 
@@ -23,7 +23,6 @@ public:
 	void destroy( );
 	
 	inline void set_scene( scene* in_scene ) { m_next_scene = in_scene; }
-	inline void set_camera( camera* in_camera ) { m_next_camera = in_camera; }
 
 	void render( );
 
@@ -53,11 +52,10 @@ protected:
 	typedef buffer_array<render_object_mesh const*> render_meshes_type;
 	
 protected:
+	camera					m_render_camera;
+
 	scene*					m_scene;
 	scene*					m_next_scene;
-
-	camera*					m_camera;
-	camera*					m_next_camera;
 
 	pointer					m_render_objects_memory;
 

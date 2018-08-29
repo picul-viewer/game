@@ -25,8 +25,6 @@ public:
 	void set_current_scene( scene* in_scene ) const;
 	void destroy_scene( scene* in_scene ) const;
 
-	void set_current_camera( camera* in_camera ) const;
-
 	object* create_object( ) const;
 	void destroy_object( object* in_object ) const;
 

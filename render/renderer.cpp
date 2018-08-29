@@ -22,9 +22,6 @@ void renderer::create( )
 	m_scene			= nullptr;
 	m_next_scene	= nullptr;
 	
-	m_camera		= nullptr;
-	m_next_camera	= nullptr;
-
 	m_render_objects_memory = virtual_mem_allocator( ).allocate( render_objects_memory_size );
 
 	m_render_meshes.set(
@@ -61,8 +58,7 @@ void renderer::render_scene( )
 void renderer::render( )
 {
 	bool const is_rendering_scene =
-		( m_scene != nullptr ) &&
-		( m_camera != nullptr );
+		( m_scene != nullptr );
 
 	if ( is_rendering_scene )
 		render_scene( );
@@ -75,7 +71,6 @@ void renderer::end_frame( )
 	g_parameters_manager.update( );
 
 	m_scene		= m_next_scene;
-	m_camera	= m_next_camera;
 }
 
 renderer g_renderer;
