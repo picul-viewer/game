@@ -47,4 +47,21 @@ void object::destroy( )
 	} );
 }
 
+struct update_render_object
+{
+	template<typename T>
+	void operator( )( T* in_object, math::float4x3 const& in_transform ) const
+	{
+		in_object->update( in_transform );
+	}
+};
+
+void object::update( math::float4x3 const& in_transform )
+{
+	m_objects.for_each( [in_transform]( render_object* current )
+	{
+		g_resources.get_render_object_allocator( ).execute( current, update_render_object( ), in_transform );
+	} );
+}
+
 } // namespace render

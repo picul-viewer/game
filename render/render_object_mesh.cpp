@@ -17,7 +17,7 @@ void render_object_mesh::destroy( )
 	//
 }
 
-void render_object_mesh::update( math::sse::matrix3 in_transform )
+void render_object_mesh::update( math::float4x3 const& in_transform )
 {
 	m_transform		= math::sse::combine_transforms( m_local_transform, in_transform );
 

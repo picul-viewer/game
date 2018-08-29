@@ -2,6 +2,7 @@
 #define __render_object_h_included_
 
 #include <types.h>
+#include <math/matrix.h>
 #include <lib/embedded_list.h>
 #include <lib/binary_config.h>
 
@@ -15,6 +16,8 @@ public:
 	void create( binary_config& in_config );
 	void destroy( );
 	
+	void update( math::float4x3 const& in_transform );
+
 	template<typename Pred>
 	inline void for_each( Pred const& functor )
 	{

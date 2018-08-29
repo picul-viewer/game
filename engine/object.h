@@ -15,7 +15,9 @@ public:
 	void create( binary_config& in_config );
 	void destroy( );
 
-	inline render::object* render( ) { return m_render; }
+	void update( math::float4x3 const& in_transform );
+
+	inline render::object* get_render( ) { return m_render; }
 
 protected:
 	// Aligned by 64 bytes

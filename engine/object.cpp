@@ -25,4 +25,10 @@ void object::destroy( )
 	}
 }
 
+void object::update( math::float4x3 const& in_transform )
+{
+	if ( m_render )
+		m_render->update( in_transform );
+}
+
 } // namespace engine

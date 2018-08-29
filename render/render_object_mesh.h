@@ -20,7 +20,7 @@ public:
 	void create( binary_config& in_config );
 	void destroy( );
 
-	void update( math::sse::matrix3 in_transform );
+	void update( math::float4x3 const& in_transform );
 
 	void render( ) const;
 
