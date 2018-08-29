@@ -91,9 +91,8 @@ static inline void compile_shaders( weak_const_string input_directory,
 			macros[1].Name = nullptr;
 			macros[1].Definition = nullptr;
 
-			u32 flags = is_debug ?
-				( D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION ) :
-				D3DCOMPILE_OPTIMIZATION_LEVEL3;
+			u32 flags = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR |
+				( is_debug ? ( D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION ) : D3DCOMPILE_OPTIMIZATION_LEVEL3 );
 
 			ID3DBlob* result_code = nullptr;
 			ID3DBlob* result_errors = nullptr;
