@@ -7,27 +7,40 @@
 
 namespace render {
 
+world::world( ) :
+	m_alive		( false ),
+	m_created	( false )
+{ }
+
 void world::run( pvoid in_hwnd, math::u16x2 in_resolution, bool in_is_windowed, bool in_allow_debug )
 {
-	g_parameters.hwnd				= in_hwnd;
-	g_parameters.screen_resolution	= in_resolution;
-	g_parameters.is_windowed		= in_is_windowed;
-	g_parameters.is_d3d_debug		= in_allow_debug;
+	m_alive						= true;
 
-	m_alive							= true;
+	parameters& params			= get_parameters( );
+	params.hwnd					= in_hwnd;
+	params.screen_resolution	= in_resolution;
+	params.is_windowed			= in_is_windowed;
+	params.is_d3d_debug			= in_allow_debug;
+	g_parameters_manager.update	( );
 
-	g_renderer.create				( );
+	g_renderer.create			( );
+	m_created					= true;
 
 	do
-		g_renderer.render			( );
+		g_renderer.render		( );
 	while ( m_alive );
 
-	g_renderer.destroy				( );
+	g_renderer.destroy			( );
 }
 
 void world::exit( )
 {
-	m_alive							= false;
+	m_alive						= false;
+}
+
+bool world::is_created( ) const
+{
+	return m_created;
 }
 
 parameters& world::get_parameters( ) const

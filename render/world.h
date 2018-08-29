@@ -16,8 +16,12 @@ class object;
 class world
 {
 public:
+	world( );
+
 	void run( pvoid in_hwnd, math::u16x2 in_resolution, bool in_is_windowed, bool in_allow_debug );
 	void exit( );
+
+	bool is_created( ) const;
 
 	parameters& get_parameters( ) const;
 
@@ -30,6 +34,7 @@ public:
 
 protected:
 	volatile bool m_alive;
+	volatile bool m_created;
 
 };
 
