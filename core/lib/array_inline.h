@@ -6,16 +6,16 @@
 template<typename T, typename Tcref>
 buffer_array<T, Tcref>::buffer_array( pointer buffer, uptr capacity, uptr size ) :
 	m_begin		( buffer ),
-	m_end		( buffer + size ),
-	m_max_end	( buffer + capacity )
+	m_end		( m_begin + size ),
+	m_max_end	( m_begin + capacity )
 { }
 
 template<typename T, typename Tcref>
 void buffer_array<T, Tcref>::set( pointer buffer, uptr capacity, uptr size )
 {
 	m_begin		= buffer;
-	m_end		= buffer + size;
-	m_max_end	= buffer + capacity;
+	m_end		= m_begin + size;
+	m_max_end	= m_begin + capacity;
 }
 
 template<typename T, typename Tcref>
