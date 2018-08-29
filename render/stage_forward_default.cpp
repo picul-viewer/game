@@ -1,6 +1,8 @@
 #include "stage_forward_default.h"
 #include "resources.h"
 #include "renderer.h"
+#include "render_parameters.h"
+#include "render_api.h"
 
 namespace render {
 
@@ -40,6 +42,15 @@ void stage_forward_default::execute( )
 {
 	render_target_view& backbuffer			= g_resources.get_backbuffer( );
 	render_target_tex2d& depth_buffer		= g_resources.get_depth_buffer( );
+
+	D3D11_VIEWPORT viewport;
+	viewport.TopLeftX						= 0.0f;
+	viewport.TopLeftY						= 0.0f;
+	viewport.Width							= g_parameters.screen_resolution.x;
+	viewport.Height							= g_parameters.screen_resolution.y;
+	viewport.MinDepth						= 0.0f;
+	viewport.MaxDepth						= 1.0f;
+	g_api.get_context( )->RSSetViewports	( 1, &viewport );
 
 	backbuffer.bind							( depth_buffer.get_dsv( ) );
 

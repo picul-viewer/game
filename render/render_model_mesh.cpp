@@ -12,9 +12,9 @@ void render_model_mesh::create( binary_config& in_config )
 {
 	math::sse::vector aabb_min, aabb_max;
 	aabb_min.loadu				( (float const*)in_config.get_pointer( ) );
-	in_config					+= sizeof( math::float3 );
-	aabb_min.loadu				( (float const*)in_config.get_pointer( ) );
-	in_config					+= sizeof( math::float3 );
+	in_config					+= sizeof(math::float3);
+	aabb_max.loadu				( (float const*)in_config.get_pointer( ) );
+	in_config					+= sizeof(math::float3);
 	m_aabb.set_min_max			( aabb_min, aabb_max );
 
 	pcstr mesh_path				= in_config.read<pcstr>( );

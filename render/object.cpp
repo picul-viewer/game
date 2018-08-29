@@ -21,6 +21,8 @@ void object::create( binary_config& in_config )
 			render_object_mesh* obj	= g_resources.get_render_object_allocator( ).allocate<render_object_mesh>( );
 			obj->create				( in_config );
 			m_objects.insert		( obj );
+
+			break;
 		}
 		default:
 			UNREACHABLE_CODE;

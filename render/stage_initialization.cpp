@@ -17,7 +17,7 @@ void stage_initialization::execute( )
 {
 	// Initialize renderer
 	g_resources.get_backbuffer( ).clear( math::float4( 0.0f ) );
-	g_resources.get_depth_buffer( ).get_dsv( ).clear( 0.0f, 0u );
+	g_resources.get_depth_buffer( ).get_dsv( ).clear( 1.0f, 0u );
 
 	// Process scene objects
 	auto static_render_object_mesh_container = g_renderer.m_scene->get_static_render_objects_mesh_container( );

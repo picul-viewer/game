@@ -19,8 +19,8 @@ public:
 	
 	void render( ) const;
 	
-	inline aabb_aligned& get_aabb( ) { return m_aabb; }
-	inline aabb_aligned const& get_aabb( ) const { return m_aabb; }
+	inline math::aabb_aligned& get_aabb( ) { return m_aabb; }
+	inline math::aabb_aligned const& get_aabb( ) const { return m_aabb; }
 	
 	inline mesh* get_mesh( ) const { return m_mesh; }
 
@@ -31,7 +31,7 @@ public:
 	static void load( render_model_mesh* out_resource, weak_const_string in_filename );
 
 protected:
-	aabb_aligned		m_aabb;
+	math::aabb_aligned	m_aabb;
 
 	mesh*				m_mesh;
 

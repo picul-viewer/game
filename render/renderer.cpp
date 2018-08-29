@@ -68,6 +68,8 @@ void renderer::render( )
 
 void renderer::end_frame( )
 {
+	g_api.get_swap_chain( )->Present( 0, 0 );
+
 	g_parameters_manager.update( );
 
 	m_scene		= m_next_scene;

@@ -19,7 +19,7 @@ namespace render {
 class scene
 {
 public:
-	typedef static_bvh<render_object_mesh>
+	typedef math::static_bvh<render_object_mesh>
 		static_render_objects_mesh_container;
 	//typedef static_bvh<render_object_light>
 	//	static_render_objects_light;
@@ -54,7 +54,7 @@ protected:
 	//typedef buffer_array<
 	//	render_object_light> static_render_objects_light_array;
 
-	typedef dynamic_allocation_pool<static_bvh_node_size::value, Memory_Page_Size, 256>
+	typedef dynamic_allocation_pool<math::static_bvh_node_size::value, Memory_Page_Size, 256>
 		bvh_node_pool;
 
 	pointer									m_static_objects_memory;

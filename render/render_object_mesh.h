@@ -27,7 +27,7 @@ public:
 	inline render_model_mesh* get_render_model( ) const { return m_render_model; }
 
 	inline math::sse::matrix3 const& get_transform( ) const { return m_transform; }
-	inline aabb_aligned const& get_aabb( ) const { return m_aabb; }
+	inline math::aabb_aligned const& get_aabb( ) const { return m_aabb; }
 
 protected:
 	render_model_mesh*	m_render_model;
@@ -35,7 +35,7 @@ protected:
 	// This is 16-byte aligned
 	math::sse::matrix3	m_local_transform;
 	math::sse::matrix3	m_transform;
-	aabb_aligned		m_aabb;
+	math::aabb_aligned	m_aabb;
 };
 
 } // namespace render
