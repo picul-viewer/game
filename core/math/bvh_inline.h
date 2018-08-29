@@ -98,12 +98,12 @@ typename static_bvh<T>::node* static_bvh<T>::build( NodeAllocator& node_allocato
 		
 		std::sort( objects[sorting1], objects[sorting1] + count, [sorting1]( T* l, T* r )
 		{
-			return l->get_aabb( ).get_box( ).max.data[sorting1] < r->get_aabb( ).get_box( ).max.data[sorting1];
+			return l->get_aabb( ).get_box( ).get_max( ).data[sorting1] < r->get_aabb( ).get_box( ).get_max( ).data[sorting1];
 		} );
 		
 		std::sort( objects[sorting2], objects[sorting2] + count, [sorting2]( T* l, T* r )
 		{
-			return l->get_aabb( ).get_box( ).max.data[sorting2] < r->get_aabb( ).get_box( ).max.data[sorting2];
+			return l->get_aabb( ).get_box( ).get_max( ).data[sorting2] < r->get_aabb( ).get_box( ).get_max( ).data[sorting2];
 		} );
 	}
 
@@ -185,7 +185,7 @@ void static_bvh<T>::create( NodeAllocator& node_allocator, buffer_array<T*>& obj
 	// Pre-sort by max.x -> sorting == 0
 	std::sort( objects.begin( ), objects.end( ), []( T* l, T* r )
 	{
-		return l->get_aabb( ).get_box( ).max.x < r->get_aabb( ).get_box( ).max.x;
+		return l->get_aabb( ).get_box( ).get_max( ).x < r->get_aabb( ).get_box( ).get_max( ).x;
 	} );
 
 	m_root = build( node_allocator, objects.begin( ), objects.size( ), aabbs, 0 );
