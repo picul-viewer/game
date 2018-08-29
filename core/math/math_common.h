@@ -7,17 +7,18 @@ namespace math
 {
 
 template<typename T>
-inline T max( T a, T b )
-{
-	return ( a > b ) ? a : b;
-}
-
-template<typename T>
 inline T min( T a, T b )
 {
 	return ( a < b ) ? a : b;
 }
 
+template<typename T>
+inline T max( T a, T b )
+{
+	return ( a > b ) ? a : b;
+}
+
+// For vectors
 template<template<typename> typename V, typename T>
 inline V<T> min( V<T> const& a, V<T> const& b )
 {
@@ -32,14 +33,52 @@ inline V<T> max( V<T> const& a, V<T> const& b )
 
 inline float abs( float n )
 {
-	u32 res = *(u32*)&n & 0x7FFFFFFF;
-	return *(float*)&res;
+	return ( n >= 0.0f ) ? n : -n;
 }
 
 inline double abs( double n )
 {
-	u64 res = *(u64*)&n & 0x7FFFFFFFFFFFFFFF;
-	return *(double*)&res;
+	return ( n >= 0.0 ) ? n : -n;
+}
+
+inline float sqrt( float n )
+{
+	return sqrtf( n );
+}
+
+inline double sqrt( double n )
+{
+	return ::sqrt( n );
+}
+
+inline float sin( float n )
+{
+	return sinf( n );
+}
+
+inline double sin( double n )
+{
+	return ::sin( n );
+}
+
+inline float cos( float n )
+{
+	return cosf( n );
+}
+
+inline double cos( double n )
+{
+	return ::cos( n );
+}
+
+inline float tan( float n )
+{
+	return tanf( n );
+}
+
+inline double tan( double n )
+{
+	return ::tan( n );
 }
 
 // returns n * ( 2 ^ power )

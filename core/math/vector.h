@@ -3,6 +3,7 @@
 
 #include <types.h>
 #include <math.h>
+#include "math_common.h"
 
 namespace math {
 
@@ -25,9 +26,10 @@ struct vec2
 		T data[2];
 	};
 
-	vec2( ) { }
-	vec2( T v ) : x( v ), y( v ) { }
-	vec2( T x, T y ) : x( x ), y( y ) { }
+	vec2( ) = default;
+	vec2( vec2<T> const& v ) : x( v.x ), y( v.y ) { }
+	explicit vec2( T v ) : x( v ), y( v ) { }
+	explicit vec2( T x, T y ) : x( x ), y( y ) { }
 
 	template<typename U> operator vec2<U>( ) const { return vec2<U>( (U)x, (U)y ); }
 	template<typename U> operator vec3<U>( ) const { return vec3<U>( (U)x, (U)y, (U)0 ); }
@@ -46,10 +48,11 @@ struct vec3
 		T data[3];
 	};
 
-	vec3( ) { }
-	vec3( T v ) : x( v ), y( v ), z( v ) { }
-	vec3( T x, T y, T z ) : x( x ), y( y ), z( z ) { }
-	vec3( const vec2<T>& xy, T z ) : vx( xy ), vy( z ) { }
+	vec3( ) = default;
+	vec3( vec2<T> const& v, T z ) : vx( v ), vy( z ) { }
+	vec3( vec3<T> const& v ) : x( v.x ), y( v.y ), z( v.z ) { }
+	explicit vec3( T v ) : x( v ), y( v ), z( v ) { }
+	explicit vec3( T x, T y, T z ) : x( x ), y( y ), z( z ) { }
 
 	template<typename U> operator vec2<U>( ) const { return vec2<U>( (U)x, (U)y ); }
 	template<typename U> operator vec3<U>( ) const { return vec3<U>( (U)x, (U)y, (U)z ); }
@@ -68,11 +71,12 @@ struct vec4
 		T data[4];
 	};
 	
-	vec4( ) { }
-	vec4( T v ) : x( v ), y( v ), z( v ), w( v ) { }
-	vec4( T x, T y, T z, T w ) : x( x ), y( y ), z( z ), w( w ) { }
-	vec4( const vec2<T>& xy, T z, T w ) : vx( xy.x, z ), vy( w ) { }
-	vec4( const vec3<T>& xyz, T w ) : vx( xyz ), vy( w ) { }
+	vec4( ) = default;
+	vec4( vec2<T> const& v, T z, T w ) : vx( v, z ), vy( w ) { }
+	vec4( vec3<T> const& v, T w ) : vx( v ), vy( w ) { }
+	vec4( vec4<T> const& v ) : x( v.x ), y( v.y ), z( v.z ), w( v.w ) { }
+	explicit vec4( T v ) : x( v ), y( v ), z( v ), w( v ) { }
+	explicit vec4( T x, T y, T z, T w ) : x( x ), y( y ), z( z ), w( w ) { }
 
 	template<typename U> operator vec2<U>( ) const { return vec2<U>( (U)x, (U)y ); }
 	template<typename U> operator vec3<U>( ) const { return vec3<U>( (U)x, (U)y, (U)z ); }
@@ -121,7 +125,7 @@ T operator-( T const& l, typename T::value_type r ) { return T( l.vx - r, l.vy -
 template<typename T>
 T operator*( T const& l, typename T::value_type r ) { return T( l.vx * r, l.vy * r ); }
 template<typename T>
-T operator/( T const& l, typename T::value_type r ) { return T( l.vx / r, l.vy / r ); }
+T operator/( T const& l, typename T::value_type r ) { return l * ( (typename T::value_type)1 / r ); }
 
 template<typename T>
 T operator+( typename T::value_type l, T const& r ) { return T( l + r.vx, l + r.vy ); }
@@ -148,95 +152,71 @@ T& operator-=( T& l, typename T::value_type r ) { l.vx -= r; l.vy -= r; return l
 template<typename T>
 T& operator*=( T& l, typename T::value_type r ) { l.vx *= r; l.vy *= r; return l; }
 template<typename T>
-T& operator/=( T& l, typename T::value_type r ) { l.vx /= r; l.vy /= r; return l; }
+T& operator/=( T& l, typename T::value_type r ) { return l *= ( (typename T::value_type)1 / r ); }
 
-template<>
-struct vec2<float>
+
+template<typename T>
+inline T dot( vec2<T> const& l, vec2<T> const& r )
 {
-	typedef float value_type;
+	return l.x * r.x + l.y * r.y;
+}
 
-	union
-	{
-		struct { float x, y; };
-		struct { float vx; float vy; };
-		float data[2];
-	};
-	
-	vec2( ) { }
-	vec2( float v ) : x( v ), y( v ) { }
-	vec2( float x, float y ) : x( x ), y( y ) { }
-
-	template<typename U> operator vec2<U>( ) const { return vec2<U>( (U)x, (U)y ); }
-	template<typename U> operator vec3<U>( ) const { return vec3<U>( (U)x, (U)y, (U)0.0f ); }
-	template<typename U> operator vec4<U>( ) const { return vec4<U>( (U)x, (U)y, (U)0.0f, (U)0.0f ); }
-
-	inline float dot( vec2<float> const& v ) const { return x * v.x + y * v.y; }
-
-	inline float squared_length( ) const { return dot( *this ); }
-	inline float length( ) const { return sqrtf( squared_length( ) ); }
-	inline vec2<float> normalize( ) const { return *this / length( ); }
-	
-	inline float cross( vec2<float> const& v ) const { return x * v.y - y * v.x; }
-};
-
-template<>
-struct vec3<float>
+template<typename T>
+inline T dot( vec3<T> const& l, vec3<T> const& r )
 {
-	typedef float value_type;
-	
-	union
-	{
-		struct { float x, y, z; };
-		struct { vec2<float> vx; float vy; };
-		float data[3];
-	};
+	return l.x * r.x + l.y * r.y + l.z * r.z;
+}
 
-	vec3( ) { }
-	vec3( float v ) : x( v ), y( v ), z( v ) { }
-	vec3( float x, float y, float z ) : x( x ), y( y ), z( z ) { }
-	vec3( const vec2<float>& xy, float z ) : vx( xy ), vy( z ) { }
-
-	template<typename U> operator vec2<U>( ) const { return vec2<U>( (U)x, (U)y ); }
-	template<typename U> operator vec3<U>( ) const { return vec3<U>( (U)x, (U)y, (U)z ); }
-	template<typename U> operator vec4<U>( ) const { return vec4<U>( (U)x, (U)y, (U)z, (U)0 ); }
-
-	inline float dot( vec3<float> const& v ) const { return x * v.x + y * v.y + z * v.z; }
-
-	inline float squared_length( ) const { return dot( *this ); }
-	inline float length( ) const { return sqrtf( squared_length( ) ); }
-	inline vec3<float> normalize( ) const { return *this / length( ); }
-
-	inline vec3<float> cross( vec3<float> const& v ) const { return vec3<float>( y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x); }
-};
-
-template<>
-struct vec4<float>
+template<typename T>
+inline T dot( vec4<T> const& l, vec4<T> const& r )
 {
-	typedef float value_type;
-	
-	union
-	{
-		struct { float x, y, z, w; };
-		struct { vec3<float> vx; float vy; };
-		float data[4];
-	};
-	
-	vec4( ) { }
-	vec4( float v ) : x( v ), y( v ), z( v ), w( v ) { }
-	vec4( float x, float y, float z, float w ) : x( x ), y( y ), z( z ), w( w ) { }
-	vec4( const vec2<float>& xy, float z, float w ) : vx( xy.x, z ), vy( w ) { }
-	vec4( const vec3<float>& xyz, float w ) : vx( xyz ), vy( w ) { }
+	return l.x * r.x + l.y * r.y + l.z * r.z + l.w * r.w;
+}
 
-	template<typename U> operator vec2<U>( ) const { return vec2<U>( (U)x, (U)y ); }
-	template<typename U> operator vec3<U>( ) const { return vec3<U>( (U)x, (U)y, (U)z ); }
-	template<typename U> operator vec4<U>( ) const { return vec4<U>( (U)x, (U)y, (U)z, (U)w ); }
+template<typename T>
+inline typename T::value_type squared_length( T const& v )
+{
+	return dot( v, v );
+}
 
-	inline float dot( vec4<float> const& v ) const { return x * v.x + y * v.y + z * v.z + w * v.w; }
+template<typename T>
+inline typename T::value_type length( T const& v )
+{
+	return math::sqrt( squared_length( v ) );
+}
 
-	inline float squared_length( ) const { return dot( *this ); }
-	inline float length( ) const { return sqrtf( squared_length( ) ); }
-	inline vec4<float> normalize( ) const { return *this / length( ); }
-};
+namespace __math_vector_detail {
+
+template<typename T>
+struct math_floating_check { enum { value = false }; };
+template<>
+struct math_floating_check<float> { enum { value = true }; };
+template<>
+struct math_floating_check<double> { enum { value = true }; };
+
+}
+
+// Floating point only
+template<typename T>
+inline T normalize( T const& v )
+{
+	static_assert( __math_vector_detail::math_floating_check<typename T::value_type>::value, "this function may be used only for floating-point vectors" );
+	return v / length( v );
+}
+
+template<typename T>
+inline T cross( vec2<T> const& l, vec2<T> const& r )
+{
+	return l.x * r.y - l.y * r.x;
+}
+
+template<typename T>
+inline vec3<T> cross( vec3<T> const& l, vec3<T> const& r )
+{
+	return vec3<T>( l.y * r.z - l.z * r.y,
+					l.z * r.x - l.x * r.z,
+					l.x * r.y - l.y * r.x );
+}
 
 using u8x2  = vec2<u8>;
 using u8x3  = vec3<u8>;

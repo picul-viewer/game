@@ -12,9 +12,12 @@ struct quat : float4
 	inline quat( ) = default;
 	inline quat( float v ) : float4( v ) { }
 	inline quat( float x, float y, float z, float w ) : float4( x, y, z, w ) { }
-
-	inline quat const& inverse( ) { return quat( -x, -y, -z, w ); }
 };
+
+inline quat inverse( quat const& q )
+{
+	return quat( -q.x, -q.y, -q.z, q.w );
+}
 
 inline float3 const& mul( quat const& q, float3 const& v )
 {
