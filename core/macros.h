@@ -71,4 +71,14 @@ inline void fatal_error( char const* file, char const* func, int line, char cons
 
 #define UNREACHABLE_CODE FATAL_ERROR( "unreachable code" )
 
+namespace macros {
+
+void pause( );
+
+}
+
+#define PAUSE( ) { macros::pause( ); }
+
+#define SPIN_LOCK( expression ) { while ( expression ) macros::pause( ); }
+
 #endif // #ifndef __core_macros_h_included_

@@ -82,8 +82,7 @@ void world::window_input( pvoid handle )
 
 void world::render_thread( )
 {
-	while (!m_window_created)
-		_mm_pause( );
+	SPIN_LOCK( !m_window_created );
 
 	ASSERT( ( ( m_window_dimensions.x & 0xFFFF ) == m_window_dimensions.x ) &&
 			( ( m_window_dimensions.y & 0xFFFF ) == m_window_dimensions.y ) );
