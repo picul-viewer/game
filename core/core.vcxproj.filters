@@ -61,9 +61,6 @@
     <Filter Include="lib\config">
       <UniqueIdentifier>{14f4ca49-603a-4383-a8a0-1f33cef5217b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="math\camera">
-      <UniqueIdentifier>{099c42dc-0a2d-40ba-9bcb-543368d5bd44}</UniqueIdentifier>
-    </Filter>
     <Filter Include="math\collision">
       <UniqueIdentifier>{5fdc8b69-a335-4f53-8881-b0ab891cf780}</UniqueIdentifier>
     </Filter>
@@ -215,9 +212,6 @@
     <ClInclude Include="lib\text_config.h">
       <Filter>lib\config</Filter>
     </ClInclude>
-    <ClInclude Include="math\camera.h">
-      <Filter>math\camera</Filter>
-    </ClInclude>
     <ClInclude Include="math\aabb.h">
       <Filter>math\collision\aabb</Filter>
     </ClInclude>
@@ -304,9 +298,6 @@
     </ClCompile>
     <ClCompile Include="lib\text_config.cpp">
       <Filter>lib\config</Filter>
-    </ClCompile>
-    <ClCompile Include="math\camera.cpp">
-      <Filter>math\camera</Filter>
     </ClCompile>
     <ClCompile Include="math\aabb.cpp">
       <Filter>math\collision\aabb</Filter>

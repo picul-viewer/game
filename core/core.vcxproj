@@ -122,7 +122,6 @@
     <ClInclude Include="math\aabb.h" />
     <ClInclude Include="math\bvh.h" />
     <ClInclude Include="math\bvh_inline.h" />
-    <ClInclude Include="math\camera.h" />
     <ClInclude Include="math\frustum.h" />
     <ClInclude Include="math\math_3d.h" />
     <ClInclude Include="math\math_common.h" />
@@ -158,7 +157,6 @@
     <ClCompile Include="lib\weak_string.cpp" />
     <ClCompile Include="macros.cpp" />
     <ClCompile Include="math\aabb.cpp" />
-    <ClCompile Include="math\camera.cpp" />
     <ClCompile Include="math\frustum.cpp" />
     <ClCompile Include="system\file.cpp" />
     <ClCompile Include="system\input.cpp" />
