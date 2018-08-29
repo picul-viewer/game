@@ -3,6 +3,8 @@
 
 #include <lib/memory.h>
 
+namespace math {
+
 template<typename T>
 static_bvh<T>::static_bvh( )
 {
@@ -212,7 +214,28 @@ void static_bvh<T>::destroy_impl( node* n )
 
 template<typename T>
 template<typename Callback>
-void static_bvh<T>::query_visibility( frustum_aligned const& frustum, Callback callback )
+void static_bvh<T>::for_each( Callback const& callback )
+{
+	if ( m_root )
+		for_each_impl( m_root, callback );
+}
+
+template<typename T>
+template<typename Callback>
+void static_bvh<T>::for_each_impl( node* n, Callback const& callback )
+{
+	if ( n->right )
+	{
+		for_each_impl( n->left, callback );
+		for_each_impl( n->right, callback );
+	}
+	else
+		callback( n->object );
+}
+
+template<typename T>
+template<typename FrustumType, typename Callback>
+void static_bvh<T>::query_visibility( FrustumType const& frustum, Callback const& callback )
 {
 	if ( m_root )
 		query_visibility_impl( m_root, frustum, callback );
@@ -220,7 +243,7 @@ void static_bvh<T>::query_visibility( frustum_aligned const& frustum, Callback c
 
 template<typename T>
 template<typename Callback>
-void static_bvh<T>::query_visibility_impl_inside( node* n, Callback callback )
+void static_bvh<T>::query_visibility_impl_inside( node* n, Callback const& callback )
 {
 	if ( n->right )
 	{
@@ -232,8 +255,8 @@ void static_bvh<T>::query_visibility_impl_inside( node* n, Callback callback )
 }
 
 template<typename T>
-template<typename Callback>
-void static_bvh<T>::query_visibility_impl( node* n, frustum_aligned const& frustum, Callback callback )
+template<typename FrustumType, typename Callback>
+void static_bvh<T>::query_visibility_impl( node* n, FrustumType const& frustum, Callback const& callback )
 {
 	if ( n->right )
 	{
@@ -261,5 +284,7 @@ void static_bvh<T>::query_visibility_impl( node* n, frustum_aligned const& frust
 			callback( n->object );
 	}
 }
+
+} // namespace math
 
 #endif // #ifndef __core_bvh_inline_h_included_

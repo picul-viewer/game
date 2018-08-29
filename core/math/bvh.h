@@ -6,6 +6,8 @@
 #include "aabb.h"
 #include "frustum.h"
 
+namespace math {
+
 template<typename T>
 class static_bvh
 {
@@ -15,9 +17,11 @@ public:
 	template<typename NodeAllocator>
 	void create( NodeAllocator& node_allocator, buffer_array<T*>& objects );
 	void destroy( );
-
+	
 	template<typename Callback>
-	void query_visibility( frustum_aligned const& frustum, Callback callback );
+	void for_each( Callback const& callback );
+	template<typename FrustumType, typename Callback>
+	void query_visibility( FrustumType const& frustum, Callback const& callback );
 
 protected:
 	struct node
@@ -33,11 +37,13 @@ protected:
 	
 	template<typename NodeAllocator>
 	node* build( NodeAllocator& node_allocator, T** first, uptr count, aabb_aligned* aabbs, u32 sorting );
-
+	
 	template<typename Callback>
-	void query_visibility_impl_inside( node* n, Callback callback );
+	void for_each_impl( node* n, Callback const& callback );
 	template<typename Callback>
-	void query_visibility_impl( node* n, frustum_aligned const& frustum, Callback callback );
+	void query_visibility_impl_inside( node* n, Callback const& callback );
+	template<typename FrustumType, typename Callback>
+	void query_visibility_impl( node* n, FrustumType const& frustum, Callback const& callback );
 
 	void destroy_impl( node* n );
 
@@ -48,6 +54,8 @@ struct static_bvh_node_size
 {
 	static const uptr value = sizeof(aabb_aligned) + 2 * sizeof(pointer);
 };
+
+} // namespace math
 
 #include "bvh_inline.h"
 
