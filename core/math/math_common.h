@@ -81,6 +81,36 @@ inline double tan( double n )
 	return ::tan( n );
 }
 
+inline float log( float n )
+{
+	return logf( n );
+}
+
+inline double log( double n )
+{
+	return ::log( n );
+}
+
+inline float log2( float n )
+{
+	return log2f( n );
+}
+
+inline double log2( double n )
+{
+	return ::log2( n );
+}
+
+inline float log10( float n )
+{
+	return log10f( n );
+}
+
+inline double log10( double n )
+{
+	return ::log10( n );
+}
+
 // returns n * ( 2 ^ power )
 inline float const mul_by_pot( float n, u32 power )
 {

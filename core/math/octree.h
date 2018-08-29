@@ -7,6 +7,8 @@
 #include "aabb.h"
 #include "frustum.h"
 
+namespace math {
+
 template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
 class octree
 {
@@ -41,8 +43,8 @@ protected:
 
 	void destroy_impl( node* n );
 
-	math::float4 m_box_center;
-	math::float4 m_box_half_radius;
+	float4 m_box_center;
+	float4 m_box_half_radius;
 	NodeAllocator* m_nodes;
 	node* m_root;
 	u32 max_depth;
@@ -53,6 +55,8 @@ struct octree_node_size
 {
 	static const uptr value = 8 * sizeof(pointer) + sizeof(NodeObjectContainer);
 };
+
+} // namespace math
 
 #include "octree_inline.h"
 

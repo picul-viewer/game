@@ -1,6 +1,8 @@
 #ifndef __core_octree_inline_h_included_
 #define __core_octree_inline_h_included_
 
+namespace math {
+
 template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
 octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::octree( )
 {
@@ -47,9 +49,9 @@ void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::create( NodeAllocat
 	calculate_bounds( box );
 	m_root = new_node( );
 
-	math::float3 const& radius_scaled = m_box_half_radius * ( 1.0f / node_min_radius );
-	math::float3 const depth( log2f( radius_scaled.x ), log2f( radius_scaled.y ), log2f( radius_scaled.z ) );
-	max_depth = (u32)(int)math::max( math::max( depth.x, depth.y ), depth.z );
+	float3 const& radius_scaled = m_box_half_radius * node_min_radius;
+	float3 const depth( log2( radius_scaled.x ), log2( radius_scaled.y ), log2( radius_scaled.z ) );
+	max_depth = (u32)max( max( depth.x, depth.y ), depth.z );
 }
 
 template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
@@ -234,5 +236,7 @@ void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::query_visibility_im
 			callback( current );
 	} );
 }
+
+} // namespace math
 
 #endif // #ifndef __core_octree_inline_h_included_
