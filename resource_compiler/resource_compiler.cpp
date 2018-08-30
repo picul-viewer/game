@@ -86,33 +86,35 @@ void resource_compiler::compile( weak_const_string input_path, weak_const_string
 
 	u32 thread_index = 0;
 
-	struct shader_compiler_data
-	{
-		shader_compiler* compiler;
-		pcstr input_path;
-		pcstr output_path;
-	} shader_thread_data[4];
+	shader_compiler_data shader_thread_data[4];
+
+	sys::path shader_input;
+	sys::path shader_output;
 
 	{
-		sys::path input( input_path );
-		input += "shaders";
+		shader_input = input_path;
+		shader_input += "shaders";
 		
-		sys::path output( output_path );
-		output += "shaders";
+		shader_output = output_path;
+		shader_output += "shaders";
 
-		output.create_directory( );
+		shader_output.create_directory( );
 
-		auto thread_function = []( void* param )
-		{
-			shader_compiler_data* data = (shader_compiler_data*)param;
+		shader_thread_data[0].compiler = &m_shader_compiler_dbg_4_0;
+		shader_thread_data[0].input_path = shader_input.c_str( );
+		shader_thread_data[0].output_path = shader_output.c_str( );
 
-			data->compiler->compile( data->input_path, data->output_path );
-		};
+		shader_thread_data[1].compiler = &m_shader_compiler_rel_4_0;
+		shader_thread_data[1].input_path = shader_input.c_str( );
+		shader_thread_data[1].output_path = shader_output.c_str( );
 
-		shader_thread_data[0] = { &m_shader_compiler_dbg_4_0, input.c_str( ), output.c_str( ) };
-		shader_thread_data[1] = { &m_shader_compiler_rel_4_0, input.c_str( ), output.c_str( ) };
-		shader_thread_data[2] = { &m_shader_compiler_dbg_5_0, input.c_str( ), output.c_str( ) };
-		shader_thread_data[3] = { &m_shader_compiler_rel_5_0, input.c_str( ), output.c_str( ) };
+		shader_thread_data[2].compiler = &m_shader_compiler_dbg_5_0;
+		shader_thread_data[2].input_path = shader_input.c_str( );
+		shader_thread_data[2].output_path = shader_output.c_str( );
+
+		shader_thread_data[3].compiler = &m_shader_compiler_rel_5_0;
+		shader_thread_data[3].input_path = shader_input.c_str( );
+		shader_thread_data[3].output_path = shader_output.c_str( );
 
 		for ( u32 i = 0; i < 4; ++i )
 		{
@@ -122,17 +124,20 @@ void resource_compiler::compile( weak_const_string input_path, weak_const_string
 	}
 
 	scan_execute_data fbx_thread_data;
+	
+	sys::path fbx_input;
+	sys::path fbx_output;
 
 	{
-		sys::path input( input_path );
-		input += "meshes";
+		fbx_input = input_path;
+		fbx_input += "meshes";
 		
-		sys::path output( output_path );
-		output += "meshes";
+		fbx_output = output_path;
+		fbx_output += "meshes";
 
-		output.create_directory( );
+		fbx_output.create_directory( );
 
-		fbx_thread_data = { this, &resource_compiler::scan, input.c_str( ), output.c_str( ), ".fbx", &resource_compiler::compile_fbx };
+		fbx_thread_data = { this, &resource_compiler::scan, fbx_input.c_str( ), fbx_output.c_str( ), ".fbx", &resource_compiler::compile_fbx };
 
 		threads[thread_index].create( thread::func_helper<&scan_thread_function>, 1 * Mb, &fbx_thread_data );
 		++thread_index;
@@ -140,7 +145,7 @@ void resource_compiler::compile( weak_const_string input_path, weak_const_string
 
 	ASSERT( thread_index == threads_count );
 
-	threads[0].destroy( INFINITE, threads_count );
+	threads->destroy( INFINITE, threads_count );
 }
 
 void resource_compiler::scan( uptr input_path_size, str512& input_path, uptr output_path_size, str512& output_path, uptr filename_ending_size, weak_const_string filename_ending, scan_functor functor )
