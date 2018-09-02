@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -11,20 +11,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{33FA037A-4BD7-4033-BCFC-F030F5AB47A9}</ProjectGuid>
-    <RootNamespace>engine</RootNamespace>
+    <ProjectGuid>{78C80B93-CB8E-43BC-84C3-9F8B1E23A842}</ProjectGuid>
+    <RootNamespace>utils</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -81,26 +82,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="object.h" />
-    <ClInclude Include="resources.h" />
-    <ClInclude Include="scene.h" />
-    <ClInclude Include="world.h" />
+    <ClInclude Include="resources_path.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="object.cpp" />
-    <ClCompile Include="resources.cpp" />
-    <ClCompile Include="scene.cpp" />
-    <ClCompile Include="world.cpp" />
+    <ClCompile Include="resources_path.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">
       <Project>{b7376639-83bd-4434-a00a-7a2551608722}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\render\render.vcxproj">
-      <Project>{58b676b2-5b1b-49e9-a2e4-0b71c90af057}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\utils\utils.vcxproj">
-      <Project>{78c80b93-cb8e-43bc-84c3-9f8b1e23a842}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
