@@ -1,5 +1,7 @@
 #include "resources.h"
 
+#include <utils/resources_path.h>
+
 #include "render_api.h"
 #include "render_parameters.h"
 
@@ -28,12 +30,12 @@ void resources::create( )
 	{
 #ifdef DEBUG
 		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			"resources\\shaders\\debug_5_0\\vertex" :
-			"resources\\shaders\\debug_4_0\\vertex";
+			GET_RESOURCE_PATH( "shaders\\debug_5_0\\vertex" ) :
+			GET_RESOURCE_PATH( "shaders\\debug_4_0\\vertex" );
 #else
 		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			"resources\\shaders\\release_5_0\\vertex" :
-			"resources\\shaders\\release_4_0\\vertex";
+			GET_RESOURCE_PATH( "shaders\\release_5_0\\vertex" ) :
+			GET_RESOURCE_PATH( "shaders\\release_4_0\\vertex" );
 #endif // #ifdef DEBUG
 
 		m_vertex_shader_container.create( root_path );
@@ -42,12 +44,12 @@ void resources::create( )
 	{
 #ifdef DEBUG
 		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			"resources\\shaders\\debug_5_0\\pixel" :
-			"resources\\shaders\\debug_4_0\\pixel";
+			GET_RESOURCE_PATH( "shaders\\debug_5_0\\pixel" ) :
+			GET_RESOURCE_PATH( "shaders\\debug_4_0\\pixel" );
 #else
 		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			"resources\\shaders\\release_5_0\\pixel" :
-			"resources\\shaders\\release_4_0\\pixel";
+			GET_RESOURCE_PATH( "shaders\\release_5_0\\pixel" ) :
+			GET_RESOURCE_PATH( "shaders\\release_4_0\\pixel" );
 #endif // #ifdef DEBUG
 
 		m_pixel_shader_container.create( root_path );
@@ -56,12 +58,12 @@ void resources::create( )
 	{
 #ifdef DEBUG
 		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			"resources\\shaders\\debug_5_0\\geometry" :
-			"resources\\shaders\\debug_4_0\\geometry";
+			GET_RESOURCE_PATH( "shaders\\debug_5_0\\geometry" ) :
+			GET_RESOURCE_PATH( "shaders\\debug_4_0\\geometry" );
 #else
 		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			"resources\\shaders\\release_5_0\\geometry" :
-			"resources\\shaders\\release_4_0\\geometry";
+			GET_RESOURCE_PATH( "shaders\\release_5_0\\geometry" ) :
+			GET_RESOURCE_PATH( "shaders\\release_4_0\\geometry" );
 #endif // #ifdef DEBUG
 
 		m_geometry_shader_container.create( root_path );
@@ -70,12 +72,12 @@ void resources::create( )
 	{
 #ifdef DEBUG
 		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			"resources\\shaders\\debug_5_0\\hull" :
-			"resources\\shaders\\debug_4_0\\hull";
+			GET_RESOURCE_PATH( "shaders\\debug_5_0\\hull" ) :
+			GET_RESOURCE_PATH( "shaders\\debug_4_0\\hull" );
 #else
 		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			"resources\\shaders\\release_5_0\\hull" :
-			"resources\\shaders\\release_4_0\\hull";
+			GET_RESOURCE_PATH( "shaders\\release_5_0\\hull" ) :
+			GET_RESOURCE_PATH( "shaders\\release_4_0\\hull" );
 #endif // #ifdef DEBUG
 
 		m_hull_shader_container.create( root_path );
@@ -84,12 +86,12 @@ void resources::create( )
 	{
 #ifdef DEBUG
 		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			"resources\\shaders\\debug_5_0\\domain" :
-			"resources\\shaders\\debug_4_0\\domain";
+			GET_RESOURCE_PATH( "shaders\\debug_5_0\\domain" ) :
+			GET_RESOURCE_PATH( "shaders\\debug_4_0\\domain" );
 #else
 		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			"resources\\shaders\\release_5_0\\domain" :
-			"resources\\shaders\\release_4_0\\domain";
+			GET_RESOURCE_PATH( "shaders\\release_5_0\\domain" ) :
+			GET_RESOURCE_PATH( "shaders\\release_4_0\\domain" );
 #endif // #ifdef DEBUG
 
 		m_domain_shader_container.create( root_path );
@@ -98,12 +100,12 @@ void resources::create( )
 	{
 #ifdef DEBUG
 		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			"resources\\shaders\\debug_5_0\\vertex" :
-			"resources\\shaders\\debug_4_0\\vertex";
+			GET_RESOURCE_PATH( "shaders\\debug_5_0\\vertex" ) :
+			GET_RESOURCE_PATH( "shaders\\debug_4_0\\vertex" );
 #else
 		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			"resources\\shaders\\release_5_0\\vertex" :
-			"resources\\shaders\\release_4_0\\vertex";
+			GET_RESOURCE_PATH( "shaders\\release_5_0\\vertex" ) :
+			GET_RESOURCE_PATH( "shaders\\release_4_0\\vertex" );
 #endif // #ifdef DEBUG
 
 		m_compute_shader_container.create( root_path );

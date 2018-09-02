@@ -154,7 +154,7 @@ void resource_compiler::scan( uptr input_path_size, str512& input_path, uptr out
 		return;
 	
 	// creating mask
-	input_path += "/*";
+	input_path += "\\*";
 
 	WIN32_FIND_DATA file_data;
 	HANDLE file_handle = FindFirstFile( input_path.c_str( ), &file_data );
@@ -173,10 +173,10 @@ void resource_compiler::scan( uptr input_path_size, str512& input_path, uptr out
 
 			if ( file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
 			{
-				input_path += "/";
+				input_path += "\\";
 				input_path += file_data.cFileName;
 
-				output_path += "/";
+				output_path += "\\";
 				output_path += file_data.cFileName;
 								
 				scan( input_path_size + length + 1, input_path, output_path_size + length + 1, output_path, filename_ending_size, filename_ending, functor );
@@ -186,7 +186,7 @@ void resource_compiler::scan( uptr input_path_size, str512& input_path, uptr out
 			}
 			else if ( strings::equal( file_data.cFileName + length - filename_ending_size, filename_ending)  )
 			{
-				input_path += "/";
+				input_path += "\\";
 				input_path += file_data.cFileName;
 
 				( this->*functor )( filetime_to_u64( file_data.ftLastWriteTime ), input_path, output_path );
