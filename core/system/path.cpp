@@ -5,9 +5,10 @@
 
 namespace sys {
 
-path::path( pcstr str ) :
-	m_string( str )
-{ }
+path::path( pcstr str )
+{
+	GetFullPathName( str, 256, m_string.data( ), nullptr );
+}
 
 pcstr path::c_str( ) const
 {
@@ -59,11 +60,8 @@ pcstr path::get_file_name( pcstr in_path )
 
 void path::create_directory( pcstr in_path )
 {
-	str256 full_path;
-	GetFullPathName( in_path, 256, full_path.data( ), nullptr );
-
-	int result = SHCreateDirectoryEx( nullptr, full_path.data( ), nullptr );
-	ASSERT( ( result == ERROR_SUCCESS ) || ( result == ERROR_ALREADY_EXISTS ), "create directory error: \"%s\"\n", full_path.data( ) );
+	int result = SHCreateDirectoryEx( nullptr, in_path, nullptr );
+	ASSERT( ( result == ERROR_SUCCESS ) || ( result == ERROR_ALREADY_EXISTS ), "create directory error: \"%s\"\n", in_path );
 }
 
 void path::remove_file_extension( pstr in_path )

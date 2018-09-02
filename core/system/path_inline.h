@@ -5,7 +5,7 @@ namespace sys {
 
 template<typename StringClass>
 path::path( i_const_string<StringClass> const& str ) :
-	m_string( str )
+	path( static_cast<StringClass const&>( str ).c_str( ) )
 { }
 
 template<typename StringClass>
