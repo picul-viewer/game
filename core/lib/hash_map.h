@@ -109,6 +109,8 @@ struct hash_map_kv_store_16
 	inline void set_value	( V const& value	) { _value	= value;	}
 	inline void set_next	( u16 next			) { _next	= next;		}
 	inline void set_prev	( u16 prev			) { _prev	= prev;		}
+
+	static inline uptr size( K const&, V const& ) { return sizeof(hash_map_kv_store_16); }
 };
 
 template<typename K, typename V>
@@ -135,6 +137,8 @@ struct hash_map_kv_store_32
 	inline void set_value	( V const& value	) { _value	= value;	}
 	inline void set_next	( u32 next			) { _next	= next;		}
 	inline void set_prev	( u32 prev			) { _prev	= prev;		}
+	
+	static inline uptr size( K const&, V const& ) { return sizeof(hash_map_kv_store_32); }
 };
 
 template<typename KVStore, typename KVStorePool>

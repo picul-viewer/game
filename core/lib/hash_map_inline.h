@@ -37,7 +37,7 @@ inline KVStore* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStore
 
 	ASSERT( find_key_in_kv_list( first_kv, key ) == nullptr );
 
-	KVStore* new_kv = m_pool.allocate( sizeof(KVStore) );
+	KVStore* new_kv = m_pool.allocate( KVStore::size( key, value ) );
 	new ( new_kv ) KVStore( key, value );
 
 	if ( first_kv )
