@@ -74,7 +74,7 @@ void binary_config::write_str( pcstr value )
 	ASSERT			( m_data + l <= m_end );
 #endif // #ifdef DEBUG
 
-	memory::copy	( m_data, value, ( l + 1 ) * sizeof(char) );
+	strings::copy_n	( m_data, value, l + 1 );
 	m_data			+= l;
 }
 
@@ -88,7 +88,7 @@ void binary_config::write_config( config const& cfg )
 	ASSERT			( m_data + size <= m_end );
 #endif // #ifdef DEBUG
 
-	memory::copy	( m_data, cfg.data( ), size );
+	strings::copy_n	( m_data, cfg.data( ), size );
 	m_data			+= size;
 }
 

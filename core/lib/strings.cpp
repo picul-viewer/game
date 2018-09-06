@@ -83,4 +83,14 @@ bool greater( pcstr l, pcstr r )
 	return compare( l, r ) > 0;
 }
 
+void copy( pstr destination, pcstr source )
+{
+	strcpy( destination, source );
+}
+
+void copy_n( pstr destination, pcstr source, uptr size )
+{
+	strncpy( destination, source, size * sizeof(char) );
+}
+
 }

@@ -19,7 +19,7 @@ alloc_string::alloc_string( AllocatorType& allocator, i_const_string<StringClass
 
 	uptr const l = str_casted.length( );
 	m_data = (pstr)allocator.allocate( ( l + 1 ) * sizeof(char) );
-	memory::copy( m_data, str_casted.c_str( ), ( l + 1 ) * sizeof(char) );
+	strings::copy_n( m_data, str_casted.c_str( ), l + 1 );
 }
 
 template<typename AllocatorType>
@@ -28,7 +28,7 @@ alloc_string::alloc_string( AllocatorType& allocator, pcstr str, uptr size )
 	ASSERT( str );
 
 	m_data = (pstr)allocator.allocate( ( size + 1 ) * sizeof(char) );
-	memory::copy( m_data, str, size * sizeof(char) );
+	strings::copy_n( m_data, str, size );
 	m_data[size] = '\0';
 }
 

@@ -21,6 +21,9 @@ bool equal( pcstr l, pcstr r );
 bool less( pcstr l, pcstr r );
 bool greater( pcstr l, pcstr r );
 
+void copy( pstr destination, pcstr source );
+void copy_n( pstr destination, pcstr source, uptr size );
+
 }
 
 #endif // #ifndef __core_strings_h_included_
