@@ -10,13 +10,30 @@ hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePo
 
 template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
 template<typename TableAllocator>
-hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::hash_map_template( uptr table_length, TableAllocator& table_allocator, KVStorePool& kv_pool ) :
-	m_pool			( kv_pool ),
-	m_table			( table_allocator.allocate( sizeof(typename KVStoreIndex::value_type) * table_length ) ),
-	m_table_length	( table_length )
+hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::hash_map_template( uptr table_length, TableAllocator& table_allocator, KVStorePool& kv_pool )
 {
+	create( table_length, table_allocator, kv_pool );
+}
+
+template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
+template<typename TableAllocator>
+void hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::create( uptr table_length, TableAllocator& table_allocator, KVStorePool& kv_pool )
+{
+	m_pool			= kv_pool;
+	m_table			= table_allocator.allocate( sizeof(typename KVStoreIndex::value_type) * table_length );
+	m_table_length	= table_length;
+
 	for ( uptr i = 0; i < m_table_length; ++i )
 		m_table[i] = KVStoreIndex::null_value;
+}
+
+template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
+template<typename TableAllocator>
+void hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::destroy( TableAllocator& table_allocator )
+{
+	clear( );
+
+	table_allocator.deallocate( m_table );
 }
 
 template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>

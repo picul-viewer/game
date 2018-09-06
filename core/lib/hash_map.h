@@ -27,6 +27,11 @@ public:
 
 	template<typename TableAllocator>
 	hash_map_template( uptr table_length, TableAllocator& table_allocator, KVStorePool& kv_pool );
+	
+	template<typename TableAllocator>
+	void create( uptr table_length, TableAllocator& table_allocator, KVStorePool& kv_pool );
+	template<typename TableAllocator>
+	void destroy( TableAllocator& table_allocator );
 
 	inline KVStore* insert( K const& key, V const& value );
 	inline KVStore* insert( K const& key, hash_type hash, V const& value );
