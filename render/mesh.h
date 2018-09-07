@@ -5,6 +5,7 @@
 #include "dx_include.h"
 
 #include <lib/weak_string.h>
+#include <lib/binary_config.h>
 #include "buffer.h"
 
 namespace render {
@@ -14,7 +15,7 @@ class mesh
 public:
 	enum { max_vertex_buffers_count = 4 };
 	
-	mesh( );
+	void create( binary_config& in_config );
 
 	u32 add_ref( ) const;
 	u32 release( ) const;
@@ -36,9 +37,6 @@ public:
 	void create_index_buffer( buffer::cook const& in_cook, pcvoid in_data, DXGI_FORMAT in_format );
 	void set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY in_primitive_topology );
 	void set_dimensions( u32 in_index_count, u32 in_instance_count );
-
-public:
-	static void load( mesh* out_resource, weak_const_string in_filename );
 
 protected:
 	friend struct mesh_creator;

@@ -53,6 +53,8 @@ void renderer::render_scene( )
 {
 	m_stage_initialization.execute	( );
 	m_stage_forward_default.execute	( );
+
+	g_api.get_swap_chain( )->Present( 0, 0 );
 }
 
 void renderer::render( )
@@ -68,8 +70,6 @@ void renderer::render( )
 
 void renderer::end_frame( )
 {
-	g_api.get_swap_chain( )->Present( 0, 0 );
-
 	g_parameters_manager.update( );
 
 	m_scene		= m_next_scene;

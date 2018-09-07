@@ -4,6 +4,7 @@
 #include <types.h>
 
 #include <lib/weak_string.h>
+#include <lib/binary_config.h>
 #include "resource_views.h"
 
 namespace render {
@@ -11,13 +12,10 @@ namespace render {
 class texture : public shader_resource_view
 {
 public:
-	texture( );
+	void create( binary_config& in_config );
 
 	u32 add_ref( ) const;
 	u32 release( ) const;
-
-public:
-	static void load( texture* out_resource, weak_const_string in_filename );
 
 protected:
 	friend struct texture_creator;

@@ -20,6 +20,8 @@
 
 #include "render_model_mesh.h"
 
+#include "resource_path_registry.h"
+
 #include "scene.h"
 #include "object.h"
 
@@ -28,11 +30,6 @@ namespace render {
 class resources
 {
 public:
-	typedef resource_pool<mesh>		mesh_pool;
-	typedef resource_pool<texture>	texture_pool;
-
-	typedef resource_pool<render_model_mesh>	render_model_mesh_pool;
-
 	enum {
 		max_depth_stencil_states	= 32,
 		max_blend_states			= 16,
@@ -69,6 +66,10 @@ public:
 		
 		default_constant_buffer_type_count
 	};
+	
+	typedef resource_pool<mesh> mesh_pool;
+	typedef resource_pool<texture> texture_pool;
+	typedef resource_pool<render_model_mesh> render_model_mesh_pool;
 
 	typedef pool<sizeof(scene), Memory_Page_Size> scene_pool;
 	
@@ -80,9 +81,6 @@ public:
 	
 	inline render_target_view& get_backbuffer( ) { return m_backbuffer; }
 	inline render_target_tex2d& get_depth_buffer( ) { return m_depth_buffer; }
-
-	inline mesh_pool& get_mesh_pool( ) { return m_mesh_pool; }
-	inline texture_pool& get_texture_pool( ) { return m_texture_pool; }
 
 	inline pipeline_state_pool& get_pipeline_state_pool( ) { return m_pipeline_state_pool; }
 
@@ -99,6 +97,8 @@ public:
 	inline domain_shader_container&		get_domain_shader_container( ) { return m_domain_shader_container; }
 	inline compute_shader_container&	get_compute_shader_container( ) { return m_compute_shader_container; }
 	
+	inline mesh_pool& get_mesh_pool( ) { return m_mesh_pool; }
+	inline texture_pool& get_texture_pool( ) { return m_texture_pool; }
 	inline render_model_mesh_pool& get_render_model_mesh_pool( ) { return m_render_model_mesh_pool; }
 
 	inline scene_pool& get_scene_pool( ) { return m_scene_pool; }
@@ -123,9 +123,7 @@ protected:
 protected:
 	render_target_view			m_backbuffer;
 	render_target_tex2d			m_depth_buffer;
-
-	mesh_pool					m_mesh_pool;
-	texture_pool				m_texture_pool;
+	
 	pipeline_state_pool			m_pipeline_state_pool;
 
 	sampler						m_default_samplers[default_sampler_type_count];
@@ -141,6 +139,10 @@ protected:
 	domain_shader_container		m_domain_shader_container;
 	compute_shader_container	m_compute_shader_container;
 
+	resource_path_registry		m_resource_path_registry;
+
+	mesh_pool					m_mesh_pool;
+	texture_pool				m_texture_pool;
 	render_model_mesh_pool		m_render_model_mesh_pool;
 
 	scene_pool					m_scene_pool;

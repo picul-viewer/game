@@ -121,6 +121,9 @@
     <Filter Include="renderer\utils\camera">
       <UniqueIdentifier>{14fef490-01c9-4cc3-abcf-8e4f3cab34f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\utils\resource_path_registry">
+      <UniqueIdentifier>{9208cba1-aecb-426c-8f61-1b86a3a67ba0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
@@ -215,6 +218,9 @@
     </ClCompile>
     <ClCompile Include="camera.cpp">
       <Filter>renderer\utils\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="resource_path_registry.cpp">
+      <Filter>resources\utils\resource_path_registry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -355,6 +361,9 @@
     </ClInclude>
     <ClInclude Include="camera.h">
       <Filter>renderer\utils\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_path_registry.h">
+      <Filter>resources\utils\resource_path_registry</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

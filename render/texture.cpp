@@ -3,15 +3,11 @@
 #include "dx_include.h"
 
 #include <lib/allocator.h>
-#include <lib/binary_config.h>
 
 #include <system/file.h>
 #include "render_api.h"
 
 namespace render {
-
-texture::texture( )
-{ }
 
 u32 texture::add_ref( ) const
 {
@@ -424,16 +420,13 @@ void fill_init_data( uptr						width,
 					 uptr						mip_count,
 					 uptr						array_size,
 					 DXGI_FORMAT				format,
-					 const u8*					bit_data,
-					 const u8*					bit_data_end,
+					 binary_config&				config,
 					 D3D11_SUBRESOURCE_DATA*	init_data )
 {
-	ASSERT( bit_data );
 	ASSERT( init_data );
 
 	uptr num_bytes = 0;
 	uptr row_bytes = 0;
-	const u8* src_bits = bit_data;
 
 	uptr index = 0;
 	for ( uptr j = 0; j < array_size; ++j )
@@ -441,20 +434,17 @@ void fill_init_data( uptr						width,
 		uptr w = width;
 		uptr h = height;
 		uptr d = depth;
+
 		for ( size_t i = 0; i < mip_count; ++i )
 		{
 			get_surface_info( w, h, format, num_bytes, row_bytes );
 
 			ASSERT( index < mip_count * array_size );
 
-			init_data[index].pSysMem			= (pcvoid)src_bits;
+			init_data[index].pSysMem			= config.read_data( num_bytes * d );
 			init_data[index].SysMemPitch		= (UINT)row_bytes;
 			init_data[index].SysMemSlicePitch	= (UINT)num_bytes;
 			++index;
-
-			ASSERT( src_bits + ( num_bytes * d ) <= bit_data_end );
-
-			src_bits += num_bytes * d;
 
 			w = ( w != 1 ) ? w >> 1 : 1;
 			h = ( h != 1 ) ? h >> 1 : 1;
@@ -463,20 +453,15 @@ void fill_init_data( uptr						width,
 	}
 }
 
-void texture::load( texture* out_resource, weak_const_string in_filename )
+void texture::create( binary_config& in_config )
 {
-	sys::file f			( in_filename.c_str( ), sys::file::open_read );
-	uptr const size		= f.size( );
-	pvoid const memory	= mem_allocator( ).allocate( size );
-	f.read				( memory, size );
-	f.close				( );
+	ASSERT( in_config.is_valid( ) );
 
-	binary_config		cfg( memory, size );
-
-	u32 magic_number	= cfg.read<u32>( );
+	pvoid const memory	= in_config.get_pointer( );
+	u32 magic_number	= in_config.read<u32>( );
 	ASSERT				( magic_number == c_dds_magic );
 
-	dds_header const& header = cfg.read<dds_header>( );
+	dds_header const& header = in_config.read<dds_header>( );
 	ASSERT( header.size == sizeof(dds_header) );
 	ASSERT( header.ddspf.size == sizeof(dds_pixel_format) );
 	
@@ -496,7 +481,7 @@ void texture::load( texture* out_resource, weak_const_string in_filename )
 	if ( ( header.ddspf.flags & c_dds_fourcc ) &&
 		( MAKEFOURCC('D', 'X', '1', '0') == header.ddspf.fourcc ) )
 	{
-		dds_header_dxt10 const& dxt_header = cfg.read<dds_header_dxt10>( );
+		dds_header_dxt10 const& dxt_header = in_config.read<dds_header_dxt10>( );
 
 		array_size = dxt_header.array_size;
 		ASSERT( array_size );
@@ -593,13 +578,11 @@ void texture::load( texture* out_resource, weak_const_string in_filename )
 
 	D3D11_SUBRESOURCE_DATA* init_data = (D3D11_SUBRESOURCE_DATA*)_alloca( mip_count * array_size * sizeof(D3D11_SUBRESOURCE_DATA) );
 
-	fill_init_data( width, height, depth, mip_count, array_size, format, cfg.get_pointer( ), (pcbyte)memory + size, init_data );
+	fill_init_data( width, height, depth, mip_count, array_size, format, in_config, init_data );
 
 	create_resource( res_dim, width, height, depth, (u32)mip_count, array_size,
 					 format, D3D11_USAGE_IMMUTABLE, D3D11_BIND_SHADER_RESOURCE,
-					 0, 0, false, is_cube_map, init_data, &out_resource->m_srv );
-
-	mem_allocator( ).deallocate			( memory );
+					 0, 0, false, is_cube_map, init_data, &m_srv );
 }
 
 } // namespace render

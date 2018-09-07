@@ -6,15 +6,28 @@ namespace render {
 
 void render_object_mesh::create( binary_config& in_config )
 {
-	pcstr render_model_path	= in_config.read_str( );
-	m_render_model			= g_resources.get_render_model_mesh_pool( ).get( render_model_path );
+	ASSERT( in_config.is_valid( ) );
 
-	m_local_transform		= in_config.read<math::float4x3>( );
+	bool provide_render_model_config	= in_config.read<bool>( );
+
+	if ( provide_render_model_config )
+	{
+		m_render_model					= g_resources.get_render_model_mesh_pool( ).create_resource( );
+		m_render_model->create			( in_config );
+	}
+	else
+	{
+		pcstr render_model_path			= in_config.read_str( );
+		m_render_model					= g_resources.get_render_model_mesh_pool( ).get_resource( render_model_path );
+	}
+	
+	m_local_transform.loadu				( (float const*)in_config.read_data( sizeof(math::sse::matrix3) ) );
 }
 
 void render_object_mesh::destroy( )
 {
-	//
+	m_render_model->destroy				( );
+	g_resources.get_render_model_mesh_pool( ).destroy_resource( m_render_model );
 }
 
 void render_object_mesh::update( math::float4x3 const& in_transform )

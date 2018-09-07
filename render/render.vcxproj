@@ -101,6 +101,7 @@
     <ClInclude Include="render_object_allocator.h" />
     <ClInclude Include="render_object_allocator_inline.h" />
     <ClInclude Include="render_model_mesh.h" />
+    <ClInclude Include="resource_path_registry.h" />
     <ClInclude Include="shader_and_input_layout_container.h" />
     <ClInclude Include="shader_and_input_layout_container_inline.h" />
     <ClInclude Include="shader_container.h" />
@@ -141,6 +142,7 @@
     <ClCompile Include="render_model_mesh.cpp" />
     <ClCompile Include="render_object_allocator.cpp" />
     <ClCompile Include="render_parameters.cpp" />
+    <ClCompile Include="resource_path_registry.cpp" />
     <ClCompile Include="shader_containers.cpp" />
     <ClCompile Include="stage_forward_default.cpp" />
     <ClCompile Include="stage_initialization.cpp" />

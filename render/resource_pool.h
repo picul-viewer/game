@@ -3,7 +3,8 @@
 
 #include <types.h>
 #include <lib/weak_string.h>
-#include <lib/hash_map.h>
+#include <lib/pool.h>
+#include "resource_path_registry.h"
 
 namespace render {
 
@@ -11,21 +12,25 @@ template<typename Resource>
 class resource_pool
 {
 public:
+
+public:
 	resource_pool( );
 
-	void create( uptr in_hash_map_table_size );
+	void create( resource_path_registry& in_resource_path_registry );
 	void destroy( );
-
-	Resource* get( weak_const_string const& in_filename );
+	
+	Resource* create_resource( );
+	void destroy_resource( Resource* in_resource );
+	Resource* get_resource( weak_const_string const& in_path );
 
 protected:
-	typedef object_hash_map32<weak_const_string, Resource> pool_data;
-	typedef dynamic_pool<pool_data::kv_pool_element_size, 4 * Kb, 256> pool_data_allocator;
-	typedef dynamic_allocation_multipool<Memory_Page_Size, 256> string_pool;
+	static void load_resource( Resource* out_resource, weak_const_string const& in_path );
 
-	string_pool			m_string_pool;
-	pool_data_allocator	m_pool_data_allocator;
-	pool_data			m_pool_data;
+protected:
+	typedef dynamic_pool<sizeof(Resource), Memory_Page_Size, 256> resource_allocator;
+
+	resource_allocator		m_resource_allocator;
+	resource_path_registry*	m_path_registry;
 };
 
 } // namespace render

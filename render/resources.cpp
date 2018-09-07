@@ -114,15 +114,12 @@ void resources::create( )
 
 	m_render_object_allocator.create( );
 
-	enum { mesh_pool_hash_table_size = 256 };
-	enum { texture_pool_hash_table_size = 256 };
+	enum { resource_path_registry_table_length = 512 };
+	m_resource_path_registry.create( resource_path_registry_table_length, virtual_mem_allocator( ), mem_allocator( ) );
 
-	enum { render_model_mesh_pool_hash_table_size = 256 };
-
-	m_mesh_pool.create( mesh_pool_hash_table_size );
-	m_texture_pool.create( texture_pool_hash_table_size );
-
-	m_render_model_mesh_pool.create( render_model_mesh_pool_hash_table_size );
+	m_mesh_pool.create( m_resource_path_registry );
+	m_texture_pool.create( m_resource_path_registry );
+	m_render_model_mesh_pool.create( m_resource_path_registry );
 
 	m_scene_pool.create( );
 	m_object_pool.create( );
@@ -148,9 +145,10 @@ void resources::destroy( )
 	
 	m_render_object_allocator.destroy( );
 
+	m_resource_path_registry.destroy( virtual_mem_allocator( ) );
+
 	m_mesh_pool.destroy( );
 	m_texture_pool.destroy( );
-
 	m_render_model_mesh_pool.destroy( );
 	
 	m_scene_pool.destroy( );

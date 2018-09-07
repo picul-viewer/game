@@ -27,9 +27,6 @@ public:
 	inline texture* get_diffuse_texture( ) const { return m_diffuse; }
 	inline texture* get_specular_texture( ) const { return m_specular; }
 	
-public:
-	static void load( render_model_mesh* out_resource, weak_const_string in_filename );
-
 protected:
 	math::aabb_aligned	m_aabb;
 

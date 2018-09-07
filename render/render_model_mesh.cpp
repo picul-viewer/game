@@ -10,27 +10,94 @@ render_model_mesh::render_model_mesh( )
 
 void render_model_mesh::create( binary_config& in_config )
 {
+	ASSERT( in_config.is_valid( ) );
+
+	// Read AABB.
 	math::sse::vector aabb_min, aabb_max;
-	aabb_min.loadu				( (float const*)in_config.get_pointer( ) );
-	in_config					+= sizeof(math::float3);
-	aabb_max.loadu				( (float const*)in_config.get_pointer( ) );
-	in_config					+= sizeof(math::float3);
+	aabb_min.loadu				( (float const*)in_config.read_data( sizeof(math::float3) ) );
+	aabb_max.loadu				( (float const*)in_config.read_data( sizeof(math::float3) ) );
 	m_aabb.set_min_max			( aabb_min, aabb_max );
 
-	pcstr mesh_path				= in_config.read<pcstr>( );
-	m_mesh						= g_resources.get_mesh_pool( ).get( mesh_path );
+	// Read mesh.
+	u8 mesh_source_type			= in_config.read<u8>( );
+	switch ( mesh_source_type )
+	{
+		case 255:
+		{
+			pcstr path			= in_config.read_str( );
+			m_mesh				= g_resources.get_mesh_pool( ).get_resource( path );
+			break;
+		}
+		case 254:
+		{
+			pcstr path			= in_config.read<pcstr>( );
+			m_mesh				= g_resources.get_mesh_pool( ).get_resource( path );
+			break;
+		}
+		case 253:
+		{
+			m_mesh				= g_resources.get_mesh_pool( ).create_resource( );
+			m_mesh->create		( in_config );
+			break;
+		}
+		default:
+		{
+			m_mesh				= &g_resources.get_default_mesh( mesh_source_type );
+			break;
+		}
+	}
+	
+	// Read diffuse texture.
+	u8 diffuse_source_type		= in_config.read<u8>( );
+	switch ( diffuse_source_type )
+	{
+		case 0:
+		{
+			pcstr path			= in_config.read_str( );
+			m_diffuse			= g_resources.get_texture_pool( ).get_resource( path );
+			break;
+		}
+		case 1:
+		{
+			pcstr path			= in_config.read<pcstr>( );
+			m_diffuse			= g_resources.get_texture_pool( ).get_resource( path );
+			break;
+		}
+		case 2:
+		{
+			m_diffuse			= g_resources.get_texture_pool( ).create_resource( );
+			m_diffuse->create	( in_config );
+			break;
+		}
+		default:
+			UNREACHABLE_CODE
+	}
 
-	pcstr diffuse_texture_path	= in_config.read_str( );
-	if ( diffuse_texture_path[0] != '\0' )
-		m_diffuse				= g_resources.get_texture_pool( ).get( diffuse_texture_path );
-	else
-		m_diffuse				= nullptr;
-
-	pcstr specular_texture_path	= in_config.read_str( );
-	if ( specular_texture_path[0] != '\0' )
-		m_specular				= g_resources.get_texture_pool( ).get( specular_texture_path );
-	else
-		m_specular				= nullptr;
+	// Read specular texture.
+	u8 specular_source_type		= in_config.read<u8>( );
+	switch ( specular_source_type )
+	{
+		case 0:
+		{
+			pcstr path			= in_config.read_str( );
+			m_specular			= g_resources.get_texture_pool( ).get_resource( path );
+			break;
+		}
+		case 1:
+		{
+			pcstr path			= in_config.read<pcstr>( );
+			m_specular			= g_resources.get_texture_pool( ).get_resource( path );
+			break;
+		}
+		case 2:
+		{
+			m_specular			= g_resources.get_texture_pool( ).create_resource( );
+			m_specular->create	( in_config );
+			break;
+		}
+		default:
+			UNREACHABLE_CODE
+	}
 }
 
 void render_model_mesh::destroy( )
@@ -43,25 +110,10 @@ void render_model_mesh::destroy( )
 
 void render_model_mesh::render( ) const
 {
-	m_diffuse->bind_ps	( 0 );
-	m_specular->bind_ps	( 1 );
+	m_diffuse->bind_ps			( 0 );
+	m_specular->bind_ps			( 1 );
 
-	m_mesh->draw		( );
-}
-
-void render_model_mesh::load( render_model_mesh* out_resource, weak_const_string in_filename )
-{
-	sys::file f			( in_filename.c_str( ), sys::file::open_read );
-	uptr const size		= f.size( );
-
-	ASSERT				( size < 64 * Kb );
-	pvoid const memory	= alloca( size );
-
-	f.read				( memory, size );
-	f.close				( );
-
-	binary_config cfg	( memory, size );
-	out_resource->create( cfg );
+	m_mesh->draw				( );
 }
 
 } // namespace render
