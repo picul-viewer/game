@@ -7,6 +7,8 @@ namespace engine {
 
 void object::create( binary_config& in_config )
 {
+	ASSERT( in_config.is_valid( ) );
+
 	bool const create_render = in_config.read<bool>( );
 		
 	if ( create_render )

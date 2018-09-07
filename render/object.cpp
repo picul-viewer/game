@@ -8,6 +8,8 @@ namespace render {
 
 void object::create( binary_config& in_config )
 {
+	ASSERT( in_config.is_valid( ) );
+
 	u16 const objects_count			= in_config.read<u16>( );
 
 	for ( u16 i = 0; i < objects_count; ++i )

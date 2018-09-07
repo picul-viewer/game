@@ -40,6 +40,18 @@ void binary_config::operator+=( uptr size )
 #endif // #ifdef DEBUG
 }
 
+pvoid binary_config::read_data( uptr size )
+{
+	pvoid value		= (pvoid)m_data;
+	m_data			+= size;
+	
+#ifdef DEBUG
+	ASSERT			( m_data <= m_end );
+#endif // #ifdef DEBUG
+
+	return			value;
+}
+
 pstr binary_config::read_str( )
 {
 	pstr value		= (pstr)m_data;
@@ -64,6 +76,16 @@ config binary_config::read_config( )
 #endif // #ifdef DEBUG
 
 	return			cfg;
+}
+
+void binary_config::write_data( pvoid data, uptr size )
+{
+#ifdef DEBUG
+	ASSERT			( m_data + size <= m_end );
+#endif // #ifdef DEBUG
+
+	memory::copy	( m_data, data, size );
+	m_data			+= size;
 }
 
 void binary_config::write_str( pcstr value )
@@ -95,4 +117,13 @@ void binary_config::write_config( config const& cfg )
 pointer binary_config::get_pointer( ) const
 {
 	return m_data;
+}
+
+bool binary_config::is_valid( ) const
+{
+	return m_data != nullptr
+#ifdef DEBUG
+		&& ( m_end >= m_data )
+#endif // #ifdef DEBUG
+		;
 }

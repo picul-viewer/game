@@ -20,16 +20,20 @@ public:
 	template<typename T>
 	inline T const& read( );
 	
+	pvoid read_data( uptr size );
 	pstr read_str( );
 	config read_config( );
 	
 	template<typename T>
 	inline void write( T const& value );
 	
+	void write_data( pvoid data, uptr size );
 	void write_str( pcstr value );
 	void write_config( config const& cfg );
 	
 	pointer get_pointer( ) const;
+
+	bool is_valid( ) const;
 
 protected:
 	pointer	m_data;
