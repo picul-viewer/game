@@ -3,7 +3,7 @@
 
 #include <types.h>
 
-#include <lib/array.h>
+#include <lib/buffer_array.h>
 
 #include "stage_initialization.h"
 #include "stage_forward_default.h"

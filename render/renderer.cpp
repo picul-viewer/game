@@ -16,6 +16,11 @@
 #include "render_parameters_manager.h"
 
 namespace render {
+	
+renderer::renderer( ) :
+	m_scene			( nullptr ),
+	m_next_scene	( nullptr )
+{ }
 
 void renderer::create( )
 {

@@ -2,7 +2,7 @@
 #define __core_bvh_h_included_
 
 #include <types.h>
-#include <lib/array.h>
+#include <lib/buffer_array.h>
 #include "aabb.h"
 #include "frustum.h"
 

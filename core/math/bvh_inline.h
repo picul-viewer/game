@@ -2,6 +2,7 @@
 #define __core_bvh_inline_h_included_
 
 #include <lib/memory.h>
+#include <lib/algorithms.h>
 
 namespace math {
 

@@ -116,12 +116,6 @@
     <ClInclude Include="system\window.h">
       <Filter>system\window</Filter>
     </ClInclude>
-    <ClInclude Include="lib\array.h">
-      <Filter>lib\array</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\array_inline.h">
-      <Filter>lib\array</Filter>
-    </ClInclude>
     <ClInclude Include="lib\embedded_list.h">
       <Filter>lib\list</Filter>
     </ClInclude>
@@ -259,6 +253,21 @@
     </ClInclude>
     <ClInclude Include="lib\config.h">
       <Filter>lib\config</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\fixed_array.h">
+      <Filter>lib\array</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\buffer_array.h">
+      <Filter>lib\array</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\buffer_array_inline.h">
+      <Filter>lib\array</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\extensible_array.h">
+      <Filter>lib\array</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\extensible_array_inline.h">
+      <Filter>lib\array</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

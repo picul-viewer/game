@@ -5,7 +5,7 @@
 
 #include <math/math_3d.h>
 
-#include <lib/array.h>
+#include <lib/buffer_array.h>
 #include <lib/pool.h>
 
 #include <math/bvh.h>
