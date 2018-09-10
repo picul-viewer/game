@@ -49,9 +49,6 @@
     <Filter Include="renderer\utils\statistics">
       <UniqueIdentifier>{75e0e44d-68ab-468c-a27c-4dd1636fec3d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\shared_resources">
-      <UniqueIdentifier>{8a9c3af5-6811-4560-9474-0667fede5ade}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\utils">
       <UniqueIdentifier>{5ec71823-04a8-4e89-b6aa-64b0a9660b0f}</UniqueIdentifier>
     </Filter>
@@ -72,18 +69,6 @@
     </Filter>
     <Filter Include="resources\utils\resource_pool">
       <UniqueIdentifier>{536c8528-fad1-4329-9683-932d1c8b41ea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\shared_resources\mesh">
-      <UniqueIdentifier>{4e227022-127a-43c4-ac56-aa129687dece}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\shared_resources\models">
-      <UniqueIdentifier>{603cb7ff-9713-4322-857b-78e8f21e0031}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\shared_resources\models\mesh">
-      <UniqueIdentifier>{613d9a55-9122-48ac-8045-77d5b423bb92}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\shared_resources\texture">
-      <UniqueIdentifier>{cb4972b5-da99-462e-beb8-06f068e53dd3}</UniqueIdentifier>
     </Filter>
     <Filter Include="resources\utils\input_layout">
       <UniqueIdentifier>{ed10ca64-0681-428c-89ce-096aef007663}</UniqueIdentifier>
@@ -124,6 +109,21 @@
     <Filter Include="resources\utils\resource_path_registry">
       <UniqueIdentifier>{9208cba1-aecb-426c-8f61-1b86a3a67ba0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\cached_resources">
+      <UniqueIdentifier>{8a9c3af5-6811-4560-9474-0667fede5ade}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\cached_resources\mesh">
+      <UniqueIdentifier>{4e227022-127a-43c4-ac56-aa129687dece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\cached_resources\models">
+      <UniqueIdentifier>{603cb7ff-9713-4322-857b-78e8f21e0031}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\cached_resources\models\mesh">
+      <UniqueIdentifier>{613d9a55-9122-48ac-8045-77d5b423bb92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\cached_resources\texture">
+      <UniqueIdentifier>{cb4972b5-da99-462e-beb8-06f068e53dd3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
@@ -157,7 +157,7 @@
       <Filter>api</Filter>
     </ClCompile>
     <ClCompile Include="mesh.cpp">
-      <Filter>resources\shared_resources\mesh</Filter>
+      <Filter>resources\cached_resources\mesh</Filter>
     </ClCompile>
     <ClCompile Include="constant_buffer.cpp">
       <Filter>dx\buffers</Filter>
@@ -166,7 +166,7 @@
       <Filter>resources\utils\pipeline_state_pool</Filter>
     </ClCompile>
     <ClCompile Include="texture.cpp">
-      <Filter>resources\shared_resources\texture</Filter>
+      <Filter>resources\cached_resources\texture</Filter>
     </ClCompile>
     <ClCompile Include="texture1d.cpp">
       <Filter>dx\textures</Filter>
@@ -187,7 +187,7 @@
       <Filter>resources\utils\shaders</Filter>
     </ClCompile>
     <ClCompile Include="render_model_mesh.cpp">
-      <Filter>resources\shared_resources\models\mesh</Filter>
+      <Filter>resources\cached_resources\models\mesh</Filter>
     </ClCompile>
     <ClCompile Include="render_parameters_manager.cpp">
       <Filter>parameters</Filter>
@@ -264,7 +264,7 @@
       <Filter>api</Filter>
     </ClInclude>
     <ClInclude Include="mesh.h">
-      <Filter>resources\shared_resources\mesh</Filter>
+      <Filter>resources\cached_resources\mesh</Filter>
     </ClInclude>
     <ClInclude Include="constant_buffer.h">
       <Filter>dx\buffers</Filter>
@@ -285,7 +285,7 @@
       <Filter>resources\utils\render_object_allocator</Filter>
     </ClInclude>
     <ClInclude Include="texture.h">
-      <Filter>resources\shared_resources\texture</Filter>
+      <Filter>resources\cached_resources\texture</Filter>
     </ClInclude>
     <ClInclude Include="texture1d.h">
       <Filter>dx\textures</Filter>
@@ -324,7 +324,7 @@
       <Filter>resources\utils\shaders</Filter>
     </ClInclude>
     <ClInclude Include="render_model_mesh.h">
-      <Filter>resources\shared_resources\models\mesh</Filter>
+      <Filter>resources\cached_resources\models\mesh</Filter>
     </ClInclude>
     <ClInclude Include="constant_buffers_constants.h">
       <Filter>resources</Filter>
