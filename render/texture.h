@@ -17,8 +17,12 @@ public:
 	u32 add_ref( ) const;
 	u32 release( ) const;
 
+	void set_registry_pointer( pointer in_pointer );
+	pointer get_registry_pointer( ) const;
+
 protected:
-	friend struct texture_creator;
+	pointer m_registry_pointer;
+
 };
 
 } // namespace render

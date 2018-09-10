@@ -5,9 +5,6 @@
 
 namespace render {
 
-render_model_mesh::render_model_mesh( )
-{ }
-
 void render_model_mesh::create( binary_config& in_config )
 {
 	ASSERT( in_config.is_valid( ) );
@@ -25,13 +22,13 @@ void render_model_mesh::create( binary_config& in_config )
 		case 255:
 		{
 			pcstr path			= in_config.read_str( );
-			m_mesh				= g_resources.get_mesh_pool( ).get_resource( path );
+			m_mesh				= g_resources.get_mesh_pool( ).load_resource( path );
 			break;
 		}
 		case 254:
 		{
 			pcstr path			= in_config.read<pcstr>( );
-			m_mesh				= g_resources.get_mesh_pool( ).get_resource( path );
+			m_mesh				= g_resources.get_mesh_pool( ).load_resource( path );
 			break;
 		}
 		case 253:
@@ -54,13 +51,13 @@ void render_model_mesh::create( binary_config& in_config )
 		case 0:
 		{
 			pcstr path			= in_config.read_str( );
-			m_diffuse			= g_resources.get_texture_pool( ).get_resource( path );
+			m_diffuse			= g_resources.get_texture_pool( ).load_resource( path );
 			break;
 		}
 		case 1:
 		{
 			pcstr path			= in_config.read<pcstr>( );
-			m_diffuse			= g_resources.get_texture_pool( ).get_resource( path );
+			m_diffuse			= g_resources.get_texture_pool( ).load_resource( path );
 			break;
 		}
 		case 2:
@@ -80,13 +77,13 @@ void render_model_mesh::create( binary_config& in_config )
 		case 0:
 		{
 			pcstr path			= in_config.read_str( );
-			m_specular			= g_resources.get_texture_pool( ).get_resource( path );
+			m_specular			= g_resources.get_texture_pool( ).load_resource( path );
 			break;
 		}
 		case 1:
 		{
 			pcstr path			= in_config.read<pcstr>( );
-			m_specular			= g_resources.get_texture_pool( ).get_resource( path );
+			m_specular			= g_resources.get_texture_pool( ).load_resource( path );
 			break;
 		}
 		case 2:
@@ -98,14 +95,39 @@ void render_model_mesh::create( binary_config& in_config )
 		default:
 			UNREACHABLE_CODE
 	}
+
+	// Initialize reference counter.
+	m_ref_counter				= 1;
 }
 
-void render_model_mesh::destroy( )
+u32 render_model_mesh::add_ref( )
 {
-	//g_resources.get_mesh_pool( ).free_resource( m_mesh );
+	return ++m_ref_counter;
+}
 
-	//g_resources.get_texture_pool( ).free_resource( m_diffuse );
-	//g_resources.get_texture_pool( ).free_resource( m_specular );
+u32 render_model_mesh::release( )
+{
+	u32 const ref_count = --m_ref_counter;
+
+	if ( ref_count == 0 )
+	{
+		g_resources.get_mesh_pool( ).free_resource( m_mesh );
+
+		g_resources.get_texture_pool( ).free_resource( m_diffuse );
+		g_resources.get_texture_pool( ).free_resource( m_specular );
+	}
+
+	return ref_count;
+}
+
+void render_model_mesh::set_registry_pointer( pointer in_pointer )
+{
+	m_registry_pointer = in_pointer;
+}
+
+pointer render_model_mesh::get_registry_pointer( ) const
+{
+	return m_registry_pointer;
 }
 
 void render_model_mesh::render( ) const

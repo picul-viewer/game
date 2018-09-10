@@ -19,6 +19,15 @@ u32 texture::release( ) const
 	return m_srv->Release( );
 }
 
+void texture::set_registry_pointer( pointer in_pointer )
+{
+	m_registry_pointer = in_pointer;
+}
+
+pointer texture::get_registry_pointer( ) const
+{
+	return m_registry_pointer;
+}
 
 void create_resource(
 	u32							in_resource_dimension,

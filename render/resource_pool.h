@@ -12,19 +12,18 @@ template<typename Resource>
 class resource_pool
 {
 public:
-
-public:
 	resource_pool( );
 
 	void create( resource_path_registry& in_resource_path_registry );
 	void destroy( );
 	
 	Resource* create_resource( );
-	void destroy_resource( Resource* in_resource );
-	Resource* get_resource( weak_const_string const& in_path );
+	Resource* load_resource( weak_const_string const& in_path );
+
+	void free_resource( Resource* in_resource );
 
 protected:
-	static void load_resource( Resource* out_resource, weak_const_string const& in_path );
+	static void create_resource_from_file( Resource* out_resource, weak_const_string const& in_path );
 
 protected:
 	typedef dynamic_pool<sizeof(Resource), Memory_Page_Size, 256> resource_allocator;

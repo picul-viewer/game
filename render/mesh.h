@@ -20,6 +20,9 @@ public:
 	u32 add_ref( ) const;
 	u32 release( ) const;
 	
+	void set_registry_pointer( pointer in_pointer );
+	pointer get_registry_pointer( ) const;
+
 	void destroy( );
 
 	inline buffer const& get_vertex_buffer( u32 in_index ) const;
@@ -48,6 +51,8 @@ protected:
 	u32							m_index_count;
 	u32							m_instance_count;
 	D3D11_PRIMITIVE_TOPOLOGY	m_primitive_topology;
+
+	pointer						m_registry_pointer;
 };
 
 } // namespace render

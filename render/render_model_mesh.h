@@ -12,11 +12,14 @@ namespace render {
 class render_model_mesh
 {
 public:
-	render_model_mesh( );
-
 	void create( binary_config& in_config );
-	void destroy( );
-	
+
+	u32 add_ref( );
+	u32 release( );
+
+	void set_registry_pointer( pointer in_pointer );
+	pointer get_registry_pointer( ) const;
+
 	void render( ) const;
 	
 	inline math::aabb_aligned& get_aabb( ) { return m_aabb; }
@@ -28,12 +31,24 @@ public:
 	inline texture* get_specular_texture( ) const { return m_specular; }
 	
 protected:
-	math::aabb_aligned	m_aabb;
+	// Use unused w-coordinate of AABB min as reference counter.
+	union
+	{
+		math::aabb_aligned	m_aabb;
+		struct
+		{
+			u32 unused0[3];
+			u32 m_ref_counter;
+			u32 unused1[4];
+		};
+	};
 
 	mesh*				m_mesh;
 
 	texture*			m_diffuse;
 	texture*			m_specular;
+
+	pointer				m_registry_pointer;
 };
 
 } // namespace render

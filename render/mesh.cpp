@@ -55,16 +55,14 @@ void mesh::create( binary_config& in_config )
 u32 mesh::add_ref( ) const
 {
 	for ( u32 i = 0; i < max_vertex_buffers_count; ++i )
-		if ( m_vertex_buffers[i].get( ) )
-			m_vertex_buffers[i].add_ref( );
+		m_vertex_buffers[i].add_ref( );
 	return m_index_buffer.add_ref( );
 }
 
 u32 mesh::release( ) const
 {
 	for ( u32 i = 0; i < max_vertex_buffers_count; ++i )
-		if ( m_vertex_buffers[i].get( ) )
-			m_vertex_buffers[i].release( );
+		m_vertex_buffers[i].release( );
 	return m_index_buffer.release( );
 }
 
@@ -73,6 +71,16 @@ void mesh::destroy( )
 	for ( u32 i = 0; i < max_vertex_buffers_count; ++i )
 		m_vertex_buffers[i].destroy( );
 	m_index_buffer.destroy( );
+}
+
+void mesh::set_registry_pointer( pointer in_pointer )
+{
+	m_registry_pointer = in_pointer;
+}
+
+pointer mesh::get_registry_pointer( ) const
+{
+	return m_registry_pointer;
 }
 
 buffer const& mesh::get_vertex_buffer( u32 in_index ) const
