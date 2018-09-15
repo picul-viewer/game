@@ -2,15 +2,11 @@
 
 #include <system/path.h>
 #include <system/thread.h>
+#include <system/file_iterator.h>
 
 #include <Shlwapi.h>
 
 namespace resource_compiler {
-
-inline u64 filetime_to_u64( FILETIME data )
-{
-	return *(u64*)&data;
-}
 
 void resource_compiler::create( )
 {
@@ -156,47 +152,43 @@ void resource_compiler::scan( uptr input_path_size, str512& input_path, uptr out
 	// creating mask
 	input_path += "\\*";
 
-	WIN32_FIND_DATA file_data;
-	HANDLE file_handle = FindFirstFile( input_path.c_str( ), &file_data );
-	
+	sys::file_iterator fi;
+	fi.create( input_path );
+
 	input_path.resize( input_path_size );
 
-	if ( file_handle != INVALID_HANDLE_VALUE )
+	if ( fi.is_valid( ) )
 	{
 		do
 		{
-			if ( strings::equal( file_data.cFileName, "." ) ||
-				 strings::equal( file_data.cFileName, ".." ) )
-				continue;
+			uptr const length = strings::length( fi.get_file_name( ) );
 
-			uptr length = strings::length( file_data.cFileName );
-
-			if ( file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+			if ( fi.is_directory( ) )
 			{
 				input_path += "\\";
-				input_path += file_data.cFileName;
+				input_path += fi.get_file_name( );
 
 				output_path += "\\";
-				output_path += file_data.cFileName;
+				output_path += fi.get_file_name( );
 								
 				scan( input_path_size + length + 1, input_path, output_path_size + length + 1, output_path, filename_ending_size, filename_ending, functor );
 
 				input_path.resize( input_path_size );
 				output_path.resize( output_path_size );
 			}
-			else if ( strings::equal( file_data.cFileName + length - filename_ending_size, filename_ending)  )
+			else if ( strings::equal( fi.get_file_name( ) + length - filename_ending_size, filename_ending)  )
 			{
 				input_path += "\\";
-				input_path += file_data.cFileName;
+				input_path += fi.get_file_name( );
 
-				( this->*functor )( filetime_to_u64( file_data.ftLastWriteTime ), input_path, output_path );
+				( this->*functor )( fi.get_modification_time( ), input_path, output_path );
 				
 				input_path.resize( input_path_size );
 			}
 		}
-		while ( FindNextFile( file_handle, &file_data ) );
+		while ( fi.next( ) );
 
-		FindClose( file_handle );
+		fi.destroy( );
 	}
 }
 

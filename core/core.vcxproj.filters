@@ -88,6 +88,9 @@
     <Filter Include="lib\memory\allocators\pool">
       <UniqueIdentifier>{48ff0b0c-b6ea-4d11-a7e2-02a3c40bff4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="system\fs\file_iterator">
+      <UniqueIdentifier>{18708881-f685-4c24-a0ba-bb113101875a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -269,6 +272,9 @@
     <ClInclude Include="lib\extensible_array_inline.h">
       <Filter>lib\array</Filter>
     </ClInclude>
+    <ClInclude Include="system\file_iterator.h">
+      <Filter>system\fs\file_iterator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="system\timer.cpp">
@@ -331,6 +337,9 @@
     </ClCompile>
     <ClCompile Include="lib\config.cpp">
       <Filter>lib\config</Filter>
+    </ClCompile>
+    <ClCompile Include="system\file_iterator.cpp">
+      <Filter>system\fs\file_iterator</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

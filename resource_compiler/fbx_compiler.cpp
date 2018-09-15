@@ -16,6 +16,7 @@
 
 #include <system/path.h>
 #include <system/file.h>
+#include <system/file_iterator.h>
 
 namespace resource_compiler {
 
@@ -257,9 +258,10 @@ void fbx_compiler::compile( u64 relevant_date, weak_const_string input_file_name
 	sys::path output_path = str512( output_directory );
 	output_path += file_name;
 	
-	WIN32_FIND_DATA output_data;
-	if ( FindFirstFile( output_path.c_str( ), &output_data ) != INVALID_HANDLE_VALUE )
-		if ( *(u64*)&output_data.ftLastWriteTime > relevant_date )
+	sys::file_iterator fi;
+	fi.create( output_path.c_str( ) );
+	if ( fi.is_valid( ) )
+		if ( fi.get_modification_time( ) > relevant_date )
 			return;
 
 	bool status = m_importer->Initialize( input_file_name.c_str( ) );

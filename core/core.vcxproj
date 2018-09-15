@@ -135,6 +135,7 @@
     <ClInclude Include="math\quaternion.h" />
     <ClInclude Include="math\vector.h" />
     <ClInclude Include="system\file.h" />
+    <ClInclude Include="system\file_iterator.h" />
     <ClInclude Include="system\input.h" />
     <ClInclude Include="system\interlocked.h" />
     <ClInclude Include="system\path_inline.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="math\aabb.cpp" />
     <ClCompile Include="math\frustum.cpp" />
     <ClCompile Include="system\file.cpp" />
+    <ClCompile Include="system\file_iterator.cpp" />
     <ClCompile Include="system\input.cpp" />
     <ClCompile Include="system\interlocked.cpp" />
     <ClCompile Include="system\thread.cpp" />
