@@ -16,8 +16,8 @@ D3D11_INPUT_ELEMENT_DESC vertex_type_position_desc[] = {
 
 D3D11_INPUT_ELEMENT_DESC vertex_type_mesh_desc[] = {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD", 0, DXGI_FORMAT_R16G16_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "NORMAL", 0, DXGI_FORMAT_R8G8B8A8_SNORM, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
 D3D11_INPUT_ELEMENT_DESC* vertex_type_descs[] = {
@@ -41,7 +41,7 @@ u32 vertex_type_buffers_counts[] = {
 u32 vertex_type_sizes[][mesh::max_vertex_buffers_count] = {
 	{ 8 },
 	{ 12 },
-	{ 20 }
+	{ 32 }
 };
 
 D3D11_INPUT_ELEMENT_DESC* get_vertex_type_desc( vertex_type in_vertex_type )

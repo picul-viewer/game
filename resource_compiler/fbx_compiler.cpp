@@ -74,45 +74,49 @@ static inline u32 convert_normal( FbxVector4& normal )
 mem_align( 4 )
 struct vertex
 {
-	float pos_x, pos_y, pos_z;
-	u32 uv;
-	u32 normal;
+	math::float3 pos;
+	math::float2 uv;
+	math::float3 normal;
 
 	void init( FbxMesh* mesh, u32 polygon_index, u32 vertex_index )
 	{
-		FbxVector4 const& position	= mesh->GetControlPointAt( mesh->GetPolygonVertex( polygon_index, vertex_index ) );
+		FbxVector4 const& pos		= mesh->GetControlPointAt( mesh->GetPolygonVertex( polygon_index, vertex_index ) );
 
 		FbxVector2 const& uv		= get_element( mesh, mesh->GetElementUV( 0 ), polygon_index, vertex_index );
 		FbxVector4 normal			= get_element( mesh, mesh->GetElementNormal( 0 ), polygon_index, vertex_index );
 
-		this->pos_x					= (float)position.mData[0];
-		this->pos_y					= (float)position.mData[1];
-		this->pos_z					= (float)position.mData[2];
-		this->uv					= convert_uv( uv );
-		this->normal				= convert_normal( normal );
+		this->pos					= math::float3( (float)pos.mData[0], (float)pos.mData[1], (float)pos.mData[2] );
+		this->uv					= math::float2( (float)uv.mData[0], (float)uv.mData[1] );
+		this->normal				= math::float3( (float)normal.mData[0], (float)normal.mData[1], (float)normal.mData[2] );
 	}
 };
 
 bool operator<( vertex const& l, vertex const& r )
 {
-	if ( l.pos_x != r.pos_x )
-		return l.pos_x < r.pos_x;
-	if ( l.pos_y != r.pos_y )
-		return l.pos_y < r.pos_y;
-	if ( l.pos_z != r.pos_z )
-		return l.pos_z < r.pos_z;
+	if ( l.pos.x != r.pos.x )
+		return l.pos.x < r.pos.x;
+	if ( l.pos.y != r.pos.y )
+		return l.pos.y < r.pos.y;
+	if ( l.pos.z != r.pos.z )
+		return l.pos.z < r.pos.z;
 
-	if ( l.uv != r.uv )
-		return l.uv < r.uv;
+	if ( l.uv.x != r.uv.x )
+		return l.uv.x < r.uv.x;
+	if ( l.uv.y != r.uv.y )
+		return l.uv.y < r.uv.y;
 
-	return l.normal < r.normal;
+	if ( l.normal.x != r.normal.x )
+		return l.normal.x < r.normal.x;
+	if ( l.normal.y != r.normal.y )
+		return l.normal.y < r.normal.y;
+	return l.normal.z < r.normal.z;
 }
 
 mem_align( 4 )
 struct bumpmapped_vertex : public vertex
 {
-	u32 tangent;
-	u32 binormal;
+	math::float3 tangent;
+	math::float3 binormal;
 	
 	void init( FbxMesh* mesh, u32 polygon_index, u32 vertex_index )
 	{
@@ -121,19 +125,19 @@ struct bumpmapped_vertex : public vertex
 		FbxVector4 tangent	= get_element( mesh, mesh->GetElementTangent( 0 ), polygon_index, vertex_index );
 		FbxVector4 binormal	= get_element( mesh, mesh->GetElementBinormal( 0 ), polygon_index, vertex_index );
 
-		this->tangent		= convert_normal( tangent );
-		this->binormal		= convert_normal( binormal );
+		this->tangent		= math::float3( (float)tangent.mData[0], (float)tangent.mData[1], (float)tangent.mData[2] );
+		this->binormal		= math::float3( (float)binormal.mData[0], (float)binormal.mData[1], (float)binormal.mData[2] );
 	}
 };
 
 bool operator<( bumpmapped_vertex const& l, bumpmapped_vertex const& r )
 {
-	if ( l.normal != r.normal )
-		return (vertex)l < (vertex)r;
-
 	if ( l.tangent != r.tangent )
 		return l.tangent < r.tangent;
-	return l.binormal < r.binormal;
+	if ( l.binormal != r.binormal )
+		return l.binormal < r.binormal;
+
+	return (vertex)l < (vertex)r;
 }
 
 template<typename VertexType>
