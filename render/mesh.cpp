@@ -55,14 +55,16 @@ void mesh::create( binary_config& in_config )
 u32 mesh::add_ref( ) const
 {
 	for ( u32 i = 0; i < max_vertex_buffers_count; ++i )
-		m_vertex_buffers[i].add_ref( );
+		if ( m_vertex_buffers[i].get( ) )
+			m_vertex_buffers[i].add_ref( );
 	return m_index_buffer.add_ref( );
 }
 
 u32 mesh::release( ) const
 {
 	for ( u32 i = 0; i < max_vertex_buffers_count; ++i )
-		m_vertex_buffers[i].release( );
+		if ( m_vertex_buffers[i].get( ) )
+			m_vertex_buffers[i].release( );
 	return m_index_buffer.release( );
 }
 

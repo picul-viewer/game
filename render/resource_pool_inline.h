@@ -62,6 +62,11 @@ Resource* resource_pool<Resource>::load_resource( weak_const_string const& in_pa
 template<typename Resource>
 void resource_pool<Resource>::free_resource( Resource* in_resource )
 {
+	// If resource is not in pool, assume it's managed by render resources class.
+	if ( ( (pointer)in_resource < m_resource_allocator.get_data( ) ) ||
+		 ( (pointer)in_resource >= m_resource_allocator.get_data( ) + 1 * Mb ) )
+		return;
+
 	u32 const ref_count					= in_resource->release( );
 
 	if ( ref_count == 0 )

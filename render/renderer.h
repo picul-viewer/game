@@ -19,6 +19,8 @@ class scene;
 class renderer
 {
 public:
+	renderer( );
+
 	void create( );
 	void destroy( );
 	
