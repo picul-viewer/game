@@ -24,7 +24,7 @@ void mesh::create( binary_config& in_config )
 	// Index format is coded by 29st bit in index count
 	m_index_format						= ( index_data & 0x20000000 ) ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT;
 
-	u32 indices_size					= m_index_count * format_get_bits_per_pixel( m_index_format );
+	u32 indices_size					= m_index_count * format_get_bits_per_pixel( m_index_format ) / 8;
 	buffer::cook cook;
 	cook.set_index_buffer				( indices_size );
 	m_index_buffer.create				( cook, in_config.read_data( indices_size ) );
