@@ -32,6 +32,7 @@ struct vec2
 	vec2( vec4<T> const& v ) : x( v.x ), y( v.y ) { }
 	explicit vec2( T v ) : x( v ), y( v ) { }
 	explicit vec2( T x, T y ) : x( x ), y( y ) { }
+	explicit vec2( T* v ) : x( v[0] ), y( v[1] ) { }
 
 	template<typename U> operator vec2<U>( ) const { return vec2<U>( (U)x, (U)y ); }
 
@@ -65,6 +66,7 @@ struct vec3
 	explicit vec3( vec2<T> const& v, T z ) : vx( v ), vy( z ) { }
 	explicit vec3( T v ) : x( v ), y( v ), z( v ) { }
 	explicit vec3( T x, T y, T z ) : x( x ), y( y ), z( z ) { }
+	explicit vec3( T* v ) : x( v[0] ), y( v[1] ), z( v[2] ) { }
 
 	template<typename U> operator vec3<U>( ) const { return vec3<U>( (U)x, (U)y, (U)z ); }
 
@@ -99,6 +101,7 @@ struct vec4
 	explicit vec4( vec3<T> const& v, T w ) : vx( v ), vy( w ) { }
 	explicit vec4( T v ) : x( v ), y( v ), z( v ), w( v ) { }
 	explicit vec4( T x, T y, T z, T w ) : x( x ), y( y ), z( z ), w( w ) { }
+	explicit vec4( T* v ) : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { }
 
 	template<typename U> operator vec4<U>( ) const { return vec4<U>( (U)x, (U)y, (U)z, (U)w ); }
 
