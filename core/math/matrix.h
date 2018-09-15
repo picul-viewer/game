@@ -30,9 +30,9 @@ struct float2x2
 		l0( l0 ), l1( l1 )
 	{ }
 
-	inline explicit float2x2( float3x3 const& m );
-	inline explicit float2x2( float4x3 const& m );
-	inline explicit float2x2( float4x4 const& m );
+	inline float2x2( float3x3 const& m );
+	inline float2x2( float4x3 const& m );
+	inline float2x2( float4x4 const& m );
 	
 	static inline float2x2 zero( ) { return float2x2( float2( 0.0f, 0.0f ), float2( 0.0f, 0.0f ) ); }
 	static inline float2x2 identity( ) { return float2x2( float2( 1.0f, 0.0f ), float2( 0.0f, 1.0f ) ); }
@@ -105,9 +105,9 @@ struct float3x3
 		l0( l0 ), l1( l1 ), l2( l2 )
 	{ }
 
-	inline explicit float3x3( float2x2 const& m );
-	inline explicit float3x3( float4x3 const& m );
-	inline explicit float3x3( float4x4 const& m );
+	inline float3x3( float2x2 const& m );
+	inline float3x3( float4x3 const& m );
+	inline float3x3( float4x4 const& m );
 	
 	static inline float3x3 zero( ) { return float3x3( float3( 0.0f, 0.0f, 0.0f ), float3( 0.0f, 0.0f, 0.0f ), float3( 0.0f, 0.0f, 0.0f ) ); }
 	static inline float3x3 identity( ) { return float3x3( float3( 1.0f, 0.0f, 0.0f ), float3( 0.0f, 1.0f, 0.0f ), float3( 0.0f, 0.0f, 1.0f ) ); }
@@ -186,9 +186,9 @@ struct float4x4
 		l0( l0 ), l1( l1 ), l2( l2 ), l3( l3 )
 	{ }
 
-	inline explicit float4x4( float2x2 const& m );
-	inline explicit float4x4( float3x3 const& m );
-	inline explicit float4x4( float4x3 const& m );
+	inline float4x4( float2x2 const& m );
+	inline float4x4( float3x3 const& m );
+	inline float4x4( float4x3 const& m );
 
 	static inline float4x4 zero( ) { return float4x4( float4( 0.0f, 0.0f, 0.0f, 0.0f ), float4( 0.0f, 0.0f, 0.0f, 0.0f ), float4( 0.0f, 0.0f, 0.0f, 0.0f ), float4( 0.0f, 0.0f, 0.0f, 0.0f ) ); }
 	static inline float4x4 identity( ) { return float4x4( float4( 1.0f, 0.0f, 0.0f, 0.0f ), float4( 0.0f, 1.0f, 0.0f, 0.0f ), float4( 0.0f, 0.0f, 1.0f, 0.0f ), float4( 0.0f, 0.0f, 0.0f, 1.0f ) ); }
@@ -309,9 +309,9 @@ struct float4x3
 		l0( l0 ), l1( l1 ), l2( l2 )
 	{ }
 
-	inline explicit float4x3( float2x2 const& m );
-	inline explicit float4x3( float3x3 const& m );
-	inline explicit float4x3( float4x4 const& m );
+	inline float4x3( float2x2 const& m );
+	inline float4x3( float3x3 const& m );
+	inline float4x3( float4x4 const& m );
 
 	inline operator float4x4( )
 	{

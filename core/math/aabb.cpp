@@ -18,7 +18,7 @@ void aabb::set_min_max( float3 const& min, float3 const& max )
 
 void aabb::set_center_radius( float3 const& center, float3 const& radius )
 {
-	ASSERT( radius > 0 );
+	ASSERT( radius > 0.0f );
 	m_min = center - radius;
 	m_max = center + radius;
 }

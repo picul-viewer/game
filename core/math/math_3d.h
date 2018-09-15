@@ -57,34 +57,34 @@ inline float4x3 combine_transforms( float4x3 const& m1, float4x3 const& m2 )
 }
 
 
-inline float3x3 matrix_rotation_x( float angle )
+inline float4x3 matrix_rotation_x( float angle )
 {
 	float c = cosf( angle ), s = sinf( angle );
 
-	return float3x3( float3( 1.0f, 0.0f, 0.0f ),
+	return float4x3( float3( 1.0f, 0.0f, 0.0f ),
 					 float3( 0.0f, c, s ),
-					 float3( 0.0f, -s, c )  );
+					 float3( 0.0f, -s, c ) );
 }
 
-inline float3x3 matrix_rotation_y( float angle )
+inline float4x3 matrix_rotation_y( float angle )
 {
 	float c = cosf( angle ), s = sinf( angle );
 
-	return float3x3( float3( c, 0.0f, -s ),
+	return float4x3( float3( c, 0.0f, -s ),
 					 float3( 0.0f, 1.0f, 0.0f ),
 					 float3( s, 0.0f, c ) );
 }
 
-inline float3x3 matrix_rotation_z( float angle )
+inline float4x3 matrix_rotation_z( float angle )
 {
 	float c = cosf( angle ), s = sinf( angle );
 
-	return float3x3( float3( c, s, 0.0f ),
+	return float4x3( float3( c, s, 0.0f ),
 					 float3( -s, c, 0.0f ),
 					 float3( 0.0f, 0.0f, 1.0f ) );
 }
 
-inline float3x3 matrix_rotation_axis( float3 const& axis, float angle )
+inline float4x3 matrix_rotation_axis( float3 const& axis, float angle )
 {
 	float const c = cosf( angle );
 	float const s = sinf( angle );
@@ -110,39 +110,37 @@ inline float3x3 matrix_rotation_axis( float3 const& axis, float angle )
 	float const inv_c_xz = inv_c * xz;
 	float const inv_c_yz = inv_c * yz;
 
-	return float3x3( float3( c + inv_c_xx, inv_c_xy - sz, inv_c_xz + sy ),
+	return float4x3( float3( c + inv_c_xx, inv_c_xy - sz, inv_c_xz + sy ),
 					 float3( inv_c_xy + sz, c + inv_c_yy, inv_c_yz - sx ),
 					 float3( inv_c_xz - sy, inv_c_yz + sx, c + inv_c_zz ) );
 }
 
-inline float3x3 matrix_scale( const float2 &s )
+inline float4x3 matrix_scale( float2 const& s )
 {
-	return float3x3( float3( s.x, 0.0f, 0.0f ),
+	return float4x3( float3( s.x, 0.0f, 0.0f ),
 					 float3( 0.0f, s.y, 0.0f ),
 					 float3( 0.0f, 0.0f, 1.0f ) );
 }
 
-inline float4x4 matrix_scale( const float3 &s )
+inline float4x3 matrix_scale( float3 const& s )
 {
-	return float4x4( float4( s.x, 0.0f, 0.0f, 0.0f ),
+	return float4x3( float4( s.x, 0.0f, 0.0f, 0.0f ),
 					 float4( 0.0f, s.y, 0.0f, 0.0f ),
-					 float4( 0.0f, 0.0f, s.z, 0.0f ),
-					 float4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+					 float4( 0.0f, 0.0f, s.z, 0.0f ) );
 }
 
-inline float3x3 matrix_translation( const float2 &t )
+inline float3x3 matrix_translation( float2 const& t )
 {
 	return float3x3( float3( 1.0f, 0.0f, t.x ),
 					 float3( 0.0f, 1.0f, t.y ),
 					 float3( 0.0f, 0.0f, 1.0f ) );
 }
 
-inline float4x4 matrix_translation( const float3 &t )
+inline float4x3 matrix_translation( float3 const& t )
 {
-	return float4x4( float4( 1.0f, 0.0f, 0.0f, t.x ),
+	return float4x3( float4( 1.0f, 0.0f, 0.0f, t.x ),
 					 float4( 0.0f, 1.0f, 0.0f, t.y ),
-					 float4( 0.0f, 0.0f, 1.0f, t.z ),
-					 float4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+					 float4( 0.0f, 0.0f, 1.0f, t.z ) );
 }
 
 inline float4x4 matrix_transformation_inverse( float4x4 const& m )
@@ -221,23 +219,28 @@ inline float4x4 combine_transform_and_perspective_projection( float4x4 const& vi
 	);
 }
 
-inline float4x4 matrix_look_at( const float3 &position, const float3 &center, const float3 &up )
+inline float4x4 matrix_look_at_direction( float3 const& position, float3 const& direction, float3 const& up )
 {
-	const float3& f = normalize( center - position );
-	const float3& s = normalize( cross( up, f ) );
-	const float3& u = normalize( cross( f, s ) );
+	float3 const& f = direction;
+	float3 const& s = normalize( cross( up, f ) );
+	float3 const& u = normalize( cross( f, s ) );
 
 	/*
 	return combine_transforms(
-		matrix_translation( -position ),
-		float4x4( float3x3( s, u, f ) )
+	matrix_translation( -position ),
+	float4x4( float3x3( s, u, f ) )
 	);
 	*/
 
 	return float4x4( float4( s.x, s.y, s.z, dot( -position, s ) ),
-					 float4( u.x, u.y, u.z, dot( -position, u ) ),
-					 float4( f.x, f.y, f.z, dot( -position, f ) ),
-					 float4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+		float4( u.x, u.y, u.z, dot( -position, u ) ),
+		float4( f.x, f.y, f.z, dot( -position, f ) ),
+		float4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+}
+
+inline float4x4 matrix_look_at( float3 const& position, float3 const& center, float3 const& up )
+{
+	return matrix_look_at_direction( position, normalize( center - position ), up );
 }
 
 } // namespace math

@@ -28,12 +28,22 @@ struct vec2
 
 	vec2( ) = default;
 	vec2( vec2<T> const& v ) : x( v.x ), y( v.y ) { }
+	vec2( vec3<T> const& v ) : x( v.x ), y( v.y ) { }
+	vec2( vec4<T> const& v ) : x( v.x ), y( v.y ) { }
 	explicit vec2( T v ) : x( v ), y( v ) { }
 	explicit vec2( T x, T y ) : x( x ), y( y ) { }
 
 	template<typename U> operator vec2<U>( ) const { return vec2<U>( (U)x, (U)y ); }
-	template<typename U> operator vec3<U>( ) const { return vec3<U>( (U)x, (U)y, (U)0 ); }
-	template<typename U> operator vec4<U>( ) const { return vec4<U>( (U)x, (U)y, (U)0, (U)0 ); }
+
+	vec2<T>& operator+=( vec2<T> const& r );
+	vec2<T>& operator-=( vec2<T> const& r );
+	vec2<T>& operator*=( vec2<T> const& r );
+	vec2<T>& operator/=( vec2<T> const& r );
+
+	vec2<T>& operator+=( T r );
+	vec2<T>& operator-=( T r );
+	vec2<T>& operator*=( T r );
+	vec2<T>& operator/=( T r );
 };
 
 template<typename T>
@@ -49,14 +59,24 @@ struct vec3
 	};
 
 	vec3( ) = default;
-	vec3( vec2<T> const& v, T z ) : vx( v ), vy( z ) { }
+	vec3( vec2<T> const& v ) : x( v.x ), y( v.y ), z( 0 ) { }
 	vec3( vec3<T> const& v ) : x( v.x ), y( v.y ), z( v.z ) { }
+	vec3( vec4<T> const& v ) : x( v.x ), y( v.y ), z( v.z ) { }
+	explicit vec3( vec2<T> const& v, T z ) : vx( v ), vy( z ) { }
 	explicit vec3( T v ) : x( v ), y( v ), z( v ) { }
 	explicit vec3( T x, T y, T z ) : x( x ), y( y ), z( z ) { }
 
-	template<typename U> operator vec2<U>( ) const { return vec2<U>( (U)x, (U)y ); }
 	template<typename U> operator vec3<U>( ) const { return vec3<U>( (U)x, (U)y, (U)z ); }
-	template<typename U> operator vec4<U>( ) const { return vec4<U>( (U)x, (U)y, (U)z, (U)0 ); }
+
+	vec3<T>& operator+=( vec3<T> const& r );
+	vec3<T>& operator-=( vec3<T> const& r );
+	vec3<T>& operator*=( vec3<T> const& r );
+	vec3<T>& operator/=( vec3<T> const& r );
+
+	vec3<T>& operator+=( T r );
+	vec3<T>& operator-=( T r );
+	vec3<T>& operator*=( T r );
+	vec3<T>& operator/=( T r );
 };
 
 template<typename T>
@@ -72,87 +92,241 @@ struct vec4
 	};
 	
 	vec4( ) = default;
-	vec4( vec2<T> const& v, T z, T w ) : vx( v, z ), vy( w ) { }
-	vec4( vec3<T> const& v, T w ) : vx( v ), vy( w ) { }
+	vec4( vec2<T> const& v ) : x( v.x ), y( v.y ), z( 0 ), w( 0 ) { }
+	vec4( vec3<T> const& v ) : x( v.x ), y( v.y ), z( v.z ), w( 0 ) { }
 	vec4( vec4<T> const& v ) : x( v.x ), y( v.y ), z( v.z ), w( v.w ) { }
+	explicit vec4( vec2<T> const& v, T z, T w ) : vx( v, z ), vy( w ) { }
+	explicit vec4( vec3<T> const& v, T w ) : vx( v ), vy( w ) { }
 	explicit vec4( T v ) : x( v ), y( v ), z( v ), w( v ) { }
 	explicit vec4( T x, T y, T z, T w ) : x( x ), y( y ), z( z ), w( w ) { }
 
-	template<typename U> operator vec2<U>( ) const { return vec2<U>( (U)x, (U)y ); }
-	template<typename U> operator vec3<U>( ) const { return vec3<U>( (U)x, (U)y, (U)z ); }
 	template<typename U> operator vec4<U>( ) const { return vec4<U>( (U)x, (U)y, (U)z, (U)w ); }
+
+	vec4<T>& operator+=( vec4<T> const& r );
+	vec4<T>& operator-=( vec4<T> const& r );
+	vec4<T>& operator*=( vec4<T> const& r );
+	vec4<T>& operator/=( vec4<T> const& r );
+
+	vec4<T>& operator+=( T r );
+	vec4<T>& operator-=( T r );
+	vec4<T>& operator*=( T r );
+	vec4<T>& operator/=( T r );
 };
 
 template<typename T>
-bool operator==( T const& l, T const& r ) { return ( l.vx == r.vx ) && ( l.vy == r.vy ); }
+bool operator==( vec2<T> const& l, vec2<T> const& r ) { return ( l.vx == r.vx ) && ( l.vy == r.vy ); }
 template<typename T>
-bool operator!=( T const& l, T const& r ) { return ( l.vx != r.vx ) || ( l.vy != r.vy ); }
+bool operator!=( vec2<T> const& l, vec2<T> const& r ) { return ( l.vx != r.vx ) || ( l.vy != r.vy ); }
 
 template<typename T>
-bool operator>( T const& l, T const& r ) { return ( l.vx > r.vx ) && ( l.vy > r.vy ); }
+bool operator>( vec2<T> const& l, vec2<T> const& r ) { return ( l.vx > r.vx ) && ( l.vy > r.vy ); }
 template<typename T>
-bool operator<( T const& l, T const& r ) { return ( l.vx < r.vx ) && ( l.vy < r.vy ); }
+bool operator<( vec2<T> const& l, vec2<T> const& r ) { return ( l.vx < r.vx ) && ( l.vy < r.vy ); }
 template<typename T>
-bool operator>=( T const& l, T const& r ) { return ( l.vx >= r.vx ) && ( l.vy >= r.vy ); }
+bool operator>=( vec2<T> const& l, vec2<T> const& r ) { return ( l.vx >= r.vx ) && ( l.vy >= r.vy ); }
 template<typename T>
-bool operator<=( T const& l, T const& r ) { return ( l.vx <= r.vx ) && ( l.vy <= r.vy ); }
+bool operator<=( vec2<T> const& l, vec2<T> const& r ) { return ( l.vx <= r.vx ) && ( l.vy <= r.vy ); }
 
 template<typename T>
-bool operator>( T const& l, typename T::value_type r ) { return ( l.vx > r ) && ( l.vy > r ); }
+bool operator>( vec2<T> const& l, T r ) { return ( l.vx > r ) && ( l.vy > r ); }
 template<typename T>
-bool operator<( T const& l, typename T::value_type r ) { return ( l.vx < r ) && ( l.vy < r ); }
+bool operator<( vec2<T> const& l, T r ) { return ( l.vx < r ) && ( l.vy < r ); }
 template<typename T>
-bool operator>=( T const& l, typename T::value_type r ) { return ( l.vx >= r ) && ( l.vy >= r ); }
+bool operator>=( vec2<T> const& l, T r ) { return ( l.vx >= r ) && ( l.vy >= r ); }
 template<typename T>
-bool operator<=( T const& l, typename T::value_type r ) { return ( l.vx <= r ) && ( l.vy <= r ); }
+bool operator<=( vec2<T> const& l, T r ) { return ( l.vx <= r ) && ( l.vy <= r ); }
 
 template<typename T>
-T operator-( T const& v ) { return T( -v.vx, -v.vy ); }
+vec2<T> operator-( vec2<T> const& v ) { return vec2<T>( -v.vx, -v.vy ); }
 
 template<typename T>
-T operator+( T const& l, T const& r ) { return T( l.vx + r.vx, l.vy + r.vy ); }
+vec2<T> operator+( vec2<T> const& l, vec2<T> const& r ) { return vec2<T>( l.vx + r.vx, l.vy + r.vy ); }
 template<typename T>
-T operator-( T const& l, T const& r ) { return T( l.vx - r.vx, l.vy - r.vy ); }
+vec2<T> operator-( vec2<T> const& l, vec2<T> const& r ) { return vec2<T>( l.vx - r.vx, l.vy - r.vy ); }
 template<typename T>
-T operator*( T const& l, T const& r ) { return T( l.vx * r.vx, l.vy * r.vy ); }
+vec2<T> operator*( vec2<T> const& l, vec2<T> const& r ) { return vec2<T>( l.vx * r.vx, l.vy * r.vy ); }
 template<typename T>
-T operator/( T const& l, T const& r ) { return T( l.vx / r.vx, l.vy / r.vy ); }
+vec2<T> operator/( vec2<T> const& l, vec2<T> const& r ) { return vec2<T>( l.vx / r.vx, l.vy / r.vy ); }
 
 template<typename T>
-T operator+( T const& l, typename T::value_type r ) { return T( l.vx + r, l.vy + r ); }
+vec2<T> operator+( vec2<T> const& l, T r ) { return vec2<T>( l.vx + r, l.vy + r ); }
 template<typename T>
-T operator-( T const& l, typename T::value_type r ) { return T( l.vx - r, l.vy - r ); }
+vec2<T> operator-( vec2<T> const& l, T r ) { return vec2<T>( l.vx - r, l.vy - r ); }
 template<typename T>
-T operator*( T const& l, typename T::value_type r ) { return T( l.vx * r, l.vy * r ); }
+vec2<T> operator*( vec2<T> const& l, T r ) { return vec2<T>( l.vx * r, l.vy * r ); }
 template<typename T>
-T operator/( T const& l, typename T::value_type r ) { return l * ( (typename T::value_type)1 / r ); }
+vec2<T> operator/( vec2<T> const& l, T r ) { return l * ( (T)1 / r ); }
 
 template<typename T>
-T operator+( typename T::value_type l, T const& r ) { return T( l + r.vx, l + r.vy ); }
+vec2<T> operator+( T l, vec2<T> const& r ) { return vec2<T>( l + r.vx, l + r.vy ); }
 template<typename T>
-T operator-( typename T::value_type l, T const& r ) { return T( l - r.vx, l - r.vy ); }
+vec2<T> operator-( T l, vec2<T> const& r ) { return vec2<T>( l - r.vx, l - r.vy ); }
 template<typename T>
-T operator*( typename T::value_type l, T const& r ) { return T( l * r.vx, l * r.vy ); }
+vec2<T> operator*( T l, vec2<T> const& r ) { return vec2<T>( l * r.vx, l * r.vy ); }
 template<typename T>
-T operator/( typename T::value_type l, T const& r ) { return T( l / r.vx, l / r.vy ); }
+vec2<T> operator/( T l, vec2<T> const& r ) { return vec2<T>( l / r.vx, l / r.vy ); }
 
 template<typename T>
-T& operator+=( T& l, T const& r ) { l.vx += r.vx; l.vy += r.vy; return l; }
+vec2<T>& vec2<T>::operator+=( vec2<T> const& r ) { vx += r.vx; vy += r.vy; return *this; }
 template<typename T>
-T& operator-=( T& l, T const& r ) { l.vx -= r.vx; l.vy -= r.vy; return l; }
+vec2<T>& vec2<T>::operator-=( vec2<T> const& r ) { vx -= r.vx; vy -= r.vy; return *this; }
 template<typename T>
-T& operator*=( T& l, T const& r ) { l.vx *= r.vx; l.vy *= r.vy; return l; }
+vec2<T>& vec2<T>::operator*=( vec2<T> const& r ) { vx *= r.vx; vy *= r.vy; return *this; }
 template<typename T>
-T& operator/=( T& l, T const& r ) { l.vx /= r.vx; l.vy /= r.vy; return l; }
+vec2<T>& vec2<T>::operator/=( vec2<T> const& r ) { vx /= r.vx; vy /= r.vy; return *this; }
 
 template<typename T>
-T& operator+=( T& l, typename T::value_type r ) { l.vx += r; l.vy += r; return l; }
+vec2<T>& vec2<T>::operator+=( T r ) { vx += r; vy += r; return *this; }
 template<typename T>
-T& operator-=( T& l, typename T::value_type r ) { l.vx -= r; l.vy -= r; return l; }
+vec2<T>& vec2<T>::operator-=( T r ) { vx -= r; vy -= r; return *this; }
 template<typename T>
-T& operator*=( T& l, typename T::value_type r ) { l.vx *= r; l.vy *= r; return l; }
+vec2<T>& vec2<T>::operator*=( T r ) { vx *= r; vy *= r; return *this; }
 template<typename T>
-T& operator/=( T& l, typename T::value_type r ) { return l *= ( (typename T::value_type)1 / r ); }
+vec2<T>& vec2<T>::operator/=( T r ) { return l *= ( (T)1 / r ); }
+
+
+template<typename T>
+bool operator==( vec3<T> const& l, vec3<T> const& r ) { return ( l.vx == r.vx ) && ( l.vy == r.vy ); }
+template<typename T>
+bool operator!=( vec3<T> const& l, vec3<T> const& r ) { return ( l.vx != r.vx ) || ( l.vy != r.vy ); }
+
+template<typename T>
+bool operator>( vec3<T> const& l, vec3<T> const& r ) { return ( l.vx > r.vx ) && ( l.vy > r.vy ); }
+template<typename T>
+bool operator<( vec3<T> const& l, vec3<T> const& r ) { return ( l.vx < r.vx ) && ( l.vy < r.vy ); }
+template<typename T>
+bool operator>=( vec3<T> const& l, vec3<T> const& r ) { return ( l.vx >= r.vx ) && ( l.vy >= r.vy ); }
+template<typename T>
+bool operator<=( vec3<T> const& l, vec3<T> const& r ) { return ( l.vx <= r.vx ) && ( l.vy <= r.vy ); }
+
+template<typename T>
+bool operator>( vec3<T> const& l, T r ) { return ( l.vx > r ) && ( l.vy > r ); }
+template<typename T>
+bool operator<( vec3<T> const& l, T r ) { return ( l.vx < r ) && ( l.vy < r ); }
+template<typename T>
+bool operator>=( vec3<T> const& l, T r ) { return ( l.vx >= r ) && ( l.vy >= r ); }
+template<typename T>
+bool operator<=( vec3<T> const& l, T r ) { return ( l.vx <= r ) && ( l.vy <= r ); }
+
+template<typename T>
+vec3<T> operator-( vec3<T> const& v ) { return vec3<T>( -v.vx, -v.vy ); }
+
+template<typename T>
+vec3<T> operator+( vec3<T> const& l, vec3<T> const& r ) { return vec3<T>( l.vx + r.vx, l.vy + r.vy ); }
+template<typename T>
+vec3<T> operator-( vec3<T> const& l, vec3<T> const& r ) { return vec3<T>( l.vx - r.vx, l.vy - r.vy ); }
+template<typename T>
+vec3<T> operator*( vec3<T> const& l, vec3<T> const& r ) { return vec3<T>( l.vx * r.vx, l.vy * r.vy ); }
+template<typename T>
+vec3<T> operator/( vec3<T> const& l, vec3<T> const& r ) { return vec3<T>( l.vx / r.vx, l.vy / r.vy ); }
+
+template<typename T>
+vec3<T> operator+( vec3<T> const& l, T r ) { return vec3<T>( l.vx + r, l.vy + r ); }
+template<typename T>
+vec3<T> operator-( vec3<T> const& l, T r ) { return vec3<T>( l.vx - r, l.vy - r ); }
+template<typename T>
+vec3<T> operator*( vec3<T> const& l, T r ) { return vec3<T>( l.vx * r, l.vy * r ); }
+template<typename T>
+vec3<T> operator/( vec3<T> const& l, T r ) { return l * ( (T)1 / r ); }
+
+template<typename T>
+vec3<T> operator+( T l, vec3<T> const& r ) { return vec3<T>( l + r.vx, l + r.vy ); }
+template<typename T>
+vec3<T> operator-( T l, vec3<T> const& r ) { return vec3<T>( l - r.vx, l - r.vy ); }
+template<typename T>
+vec3<T> operator*( T l, vec3<T> const& r ) { return vec3<T>( l * r.vx, l * r.vy ); }
+template<typename T>
+vec3<T> operator/( T l, vec3<T> const& r ) { return vec3<T>( l / r.vx, l / r.vy ); }
+
+template<typename T>
+vec3<T>& vec3<T>::operator+=( vec3<T> const& r ) { vx += r.vx; vy += r.vy; return *this; }
+template<typename T>
+vec3<T>& vec3<T>::operator-=( vec3<T> const& r ) { vx -= r.vx; vy -= r.vy; return *this; }
+template<typename T>
+vec3<T>& vec3<T>::operator*=( vec3<T> const& r ) { vx *= r.vx; vy *= r.vy; return *this; }
+template<typename T>
+vec3<T>& vec3<T>::operator/=( vec3<T> const& r ) { vx /= r.vx; vy /= r.vy; return *this; }
+
+template<typename T>
+vec3<T>& vec3<T>::operator+=( T r ) { vx += r; vy += r; return *this; }
+template<typename T>
+vec3<T>& vec3<T>::operator-=( T r ) { vx -= r; vy -= r; return *this; }
+template<typename T>
+vec3<T>& vec3<T>::operator*=( T r ) { vx *= r; vy *= r; return *this; }
+template<typename T>
+vec3<T>& vec3<T>::operator/=( T r ) { return l *= ( (T)1 / r ); }
+
+
+template<typename T>
+bool operator==( vec4<T> const& l, vec4<T> const& r ) { return ( l.vx == r.vx ) && ( l.vy == r.vy ); }
+template<typename T>
+bool operator!=( vec4<T> const& l, vec4<T> const& r ) { return ( l.vx != r.vx ) || ( l.vy != r.vy ); }
+
+template<typename T>
+bool operator>( vec4<T> const& l, vec4<T> const& r ) { return ( l.vx > r.vx ) && ( l.vy > r.vy ); }
+template<typename T>
+bool operator<( vec4<T> const& l, vec4<T> const& r ) { return ( l.vx < r.vx ) && ( l.vy < r.vy ); }
+template<typename T>
+bool operator>=( vec4<T> const& l, vec4<T> const& r ) { return ( l.vx >= r.vx ) && ( l.vy >= r.vy ); }
+template<typename T>
+bool operator<=( vec4<T> const& l, vec4<T> const& r ) { return ( l.vx <= r.vx ) && ( l.vy <= r.vy ); }
+
+template<typename T>
+bool operator>( vec4<T> const& l, T r ) { return ( l.vx > r ) && ( l.vy > r ); }
+template<typename T>
+bool operator<( vec4<T> const& l, T r ) { return ( l.vx < r ) && ( l.vy < r ); }
+template<typename T>
+bool operator>=( vec4<T> const& l, T r ) { return ( l.vx >= r ) && ( l.vy >= r ); }
+template<typename T>
+bool operator<=( vec4<T> const& l, T r ) { return ( l.vx <= r ) && ( l.vy <= r ); }
+
+template<typename T>
+vec4<T> operator-( vec4<T> const& v ) { return vec4<T>( -v.vx, -v.vy ); }
+
+template<typename T>
+vec4<T> operator+( vec4<T> const& l, vec4<T> const& r ) { return vec4<T>( l.vx + r.vx, l.vy + r.vy ); }
+template<typename T>
+vec4<T> operator-( vec4<T> const& l, vec4<T> const& r ) { return vec4<T>( l.vx - r.vx, l.vy - r.vy ); }
+template<typename T>
+vec4<T> operator*( vec4<T> const& l, vec4<T> const& r ) { return vec4<T>( l.vx * r.vx, l.vy * r.vy ); }
+template<typename T>
+vec4<T> operator/( vec4<T> const& l, vec4<T> const& r ) { return vec4<T>( l.vx / r.vx, l.vy / r.vy ); }
+
+template<typename T>
+vec4<T> operator+( vec4<T> const& l, T r ) { return vec4<T>( l.vx + r, l.vy + r ); }
+template<typename T>
+vec4<T> operator-( vec4<T> const& l, T r ) { return vec4<T>( l.vx - r, l.vy - r ); }
+template<typename T>
+vec4<T> operator*( vec4<T> const& l, T r ) { return vec4<T>( l.vx * r, l.vy * r ); }
+template<typename T>
+vec4<T> operator/( vec4<T> const& l, T r ) { return l * ( (T)1 / r ); }
+
+template<typename T>
+vec4<T> operator+( T l, vec4<T> const& r ) { return vec4<T>( l + r.vx, l + r.vy ); }
+template<typename T>
+vec4<T> operator-( T l, vec4<T> const& r ) { return vec4<T>( l - r.vx, l - r.vy ); }
+template<typename T>
+vec4<T> operator*( T l, vec4<T> const& r ) { return vec4<T>( l * r.vx, l * r.vy ); }
+template<typename T>
+vec4<T> operator/( T l, vec4<T> const& r ) { return vec4<T>( l / r.vx, l / r.vy ); }
+
+template<typename T>
+vec4<T>& vec4<T>::operator+=( vec4<T> const& r ) { vx += r.vx; vy += r.vy; return *this; }
+template<typename T>
+vec4<T>& vec4<T>::operator-=( vec4<T> const& r ) { vx -= r.vx; vy -= r.vy; return *this; }
+template<typename T>
+vec4<T>& vec4<T>::operator*=( vec4<T> const& r ) { vx *= r.vx; vy *= r.vy; return *this; }
+template<typename T>
+vec4<T>& vec4<T>::operator/=( vec4<T> const& r ) { vx /= r.vx; vy /= r.vy; return *this; }
+
+template<typename T>
+vec4<T>& vec4<T>::operator+=( T r ) { vx += r; vy += r; return *this; }
+template<typename T>
+vec4<T>& vec4<T>::operator-=( T r ) { vx -= r; vy -= r; return *this; }
+template<typename T>
+vec4<T>& vec4<T>::operator*=( T r ) { vx *= r; vy *= r; return *this; }
+template<typename T>
+vec4<T>& vec4<T>::operator/=( T r ) { return l *= ( (T)1 / r ); }
 
 
 template<typename T>
