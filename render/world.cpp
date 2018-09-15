@@ -7,15 +7,8 @@
 
 namespace render {
 
-world::world( ) :
-	m_alive		( false ),
-	m_created	( false )
-{ }
-
-void world::run( pvoid in_hwnd, math::u16x2 in_resolution, bool in_is_windowed, bool in_allow_debug )
+void world::create( pvoid in_hwnd, math::u16x2 in_resolution, bool in_is_windowed, bool in_allow_debug )
 {
-	m_alive						= true;
-
 	parameters& params			= get_parameters( );
 	params.hwnd					= in_hwnd;
 	params.screen_resolution	= in_resolution;
@@ -24,23 +17,16 @@ void world::run( pvoid in_hwnd, math::u16x2 in_resolution, bool in_is_windowed, 
 	g_parameters_manager.update	( );
 
 	g_renderer.create			( );
-	m_created					= true;
+}
 
-	do
-		g_renderer.render		( );
-	while ( m_alive );
+void world::update( )
+{
+	g_renderer.render			( );
+}
 
+void world::destroy( )
+{
 	g_renderer.destroy			( );
-}
-
-void world::exit( )
-{
-	m_alive						= false;
-}
-
-bool world::is_created( ) const
-{
-	return m_created;
 }
 
 parameters& world::get_parameters( ) const

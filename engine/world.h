@@ -17,8 +17,6 @@ namespace engine {
 class world
 {
 public:
-	world( );
-
 	void run( math::u32x2 in_window_dimensions );
 	void exit( );
 
@@ -32,15 +30,31 @@ protected:
 	void window_resize( math::u32x2 const& new_dimensions );
 	void window_activate( bool is_active );
 	void window_input( pvoid handle );
-	
-	void render_thread( );
+
 	void window_thread( );
+	void render_thread( );
 	void game_thread( );
 
-	void initialize( );
-	void deinitialize( );
+	void create( );
+	void destroy( );
 
 protected:
+	enum system
+	{
+		system_window = 0,
+		system_render,
+		system_game,
+
+		system_count,
+
+		system_window_mask = 1 << system_window,
+		system_render_mask = 1 << system_render,
+		system_game_mask = 1 << system_game,
+
+		// All except game logic.
+		engine_systems_mask = system_window_mask | system_render_mask
+	};
+
 	enum threads
 	{
 		thread_window = 0,
@@ -50,6 +64,10 @@ protected:
 	};
 
 protected:
+	void change_system_alive( system s );
+	void change_system_running( system s );
+
+protected:
 	sys::window m_window;
 
 	thread m_threads[thread_count];
@@ -57,7 +75,9 @@ protected:
 	math::u32x2 m_window_dimensions;
 	bool m_is_active;
 
-	volatile bool m_window_created;
+	volatile u32 m_systems_alive;
+	volatile u32 m_systems_running;
+	volatile bool m_alive;
 
 };
 
@@ -73,8 +93,9 @@ namespace game {
 
 namespace world_interface {
 
-void run( );
-void exit( );
+void create( );
+void update( );
+void destroy( );
 
 void window_resize( math::u32x2 const& new_dimensions );
 void window_activate( bool is_active );

@@ -1,14 +1,19 @@
 #include <engine/world.h>
 #include "world.h"
 
-void game::world_interface::run( )
+void game::world_interface::create( )
 {
-	game::g_world.run( );
+	game::g_world.create( );
 }
 
-void game::world_interface::exit( )
+void game::world_interface::update( )
 {
-	game::g_world.exit( );
+	game::g_world.update( );
+}
+
+void game::world_interface::destroy( )
+{
+	game::g_world.destroy( );
 }
 
 void game::world_interface::window_resize( math::u32x2 const& new_dimensions )
