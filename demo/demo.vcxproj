@@ -94,11 +94,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="fly_camera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="world.cpp" />
     <ClCompile Include="world_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fly_camera.h" />
     <ClInclude Include="world.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
