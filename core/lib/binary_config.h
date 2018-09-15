@@ -27,7 +27,7 @@ public:
 	template<typename T>
 	inline void write( T const& value );
 	
-	void write_data( pvoid data, uptr size );
+	void write_data( pcvoid data, uptr size );
 	void write_str( pcstr value );
 	void write_config( config const& cfg );
 	

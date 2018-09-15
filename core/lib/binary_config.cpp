@@ -78,7 +78,7 @@ config binary_config::read_config( )
 	return			cfg;
 }
 
-void binary_config::write_data( pvoid data, uptr size )
+void binary_config::write_data( pcvoid data, uptr size )
 {
 #ifdef DEBUG
 	ASSERT			( m_data + size <= m_end );
