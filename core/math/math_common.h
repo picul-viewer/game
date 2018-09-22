@@ -31,6 +31,36 @@ inline V<T> max( V<T> const& a, V<T> const& b )
 	return V<T>( max( a.vx, b.vx ), ( a.vy > b.vy ) ? a.vy : b.vy );
 }
 
+inline float modf( float n, float* integral )
+{
+	return modff( n, integral );
+}
+
+inline double modf( double n, double* integral )
+{
+	return ::modf( n, integral );
+}
+
+inline float floor( float n )
+{
+	return floorf( n );
+}
+
+inline double floor( double n )
+{
+	return ::floor( n );
+}
+
+inline float ceil( float n )
+{
+	return ceilf( n );
+}
+
+inline double ceil( double n )
+{
+	return ::ceil( n );
+}
+
 inline float abs( float n )
 {
 	return ( n >= 0.0f ) ? n : -n;
@@ -144,6 +174,19 @@ public:
 	
 	u16 data;
 };
+
+template<typename T>
+inline T smooth_step( T t )
+{
+	T const t2 = t * t;
+	return t2 * ( t * ( (T)6.0 * t2 + (T)10.0 ) - (T)15.0f * t2 );
+}
+
+template<typename T, typename F>
+inline T lerp( T l, T r, F t )
+{
+	return l + t * ( r - l );
+}
 
 } // namespace math
 
