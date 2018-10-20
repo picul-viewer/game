@@ -48,6 +48,11 @@ void path::remove_file_extension( )
 	remove_file_extension( m_string.data( ) );
 }
 
+pcstr path::get_file_extension( )
+{
+	return get_file_extension( m_string.c_str( ) );
+}
+
 bool path::is_valid( pcstr in_path )
 {
 	return PathFileExists( in_path ) == TRUE;
@@ -67,6 +72,11 @@ void path::create_directory( pcstr in_path )
 void path::remove_file_extension( pstr in_path )
 {
 	PathRemoveExtension( in_path );
+}
+
+pcstr path::get_file_extension( pcstr in_path )
+{
+	return PathFindExtension( in_path );
 }
 
 }

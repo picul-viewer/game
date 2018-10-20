@@ -30,12 +30,14 @@ public:
 	pcstr get_file_name( ) const;
 	void create_directory( ) const;
 	void remove_file_extension( );
+	pcstr get_file_extension( );
 
 public:
 	static bool is_valid( pcstr in_path );
 	static pcstr get_file_name( pcstr in_path );
 	static void create_directory( pcstr in_path );
 	static void remove_file_extension( pstr in_path );
+	static pcstr get_file_extension( pcstr in_path );
 
 protected:
 	str256 m_string;
