@@ -1,5 +1,6 @@
 #include "file_iterator.h"
 #include <macros.h>
+#include <lib/strings.h>
 
 #include <Shlwapi.h>
 
@@ -10,6 +11,12 @@ void file_iterator::create( pcstr mask )
 	static_assert( find_data_size == sizeof(WIN32_FIND_DATA), "revisit find data size value in header" );
 
 	m_handle = FindFirstFile( mask, (WIN32_FIND_DATA*)m_find_data );
+
+	if ( is_valid( ) )
+	{
+		if ( !next( ) )
+			destroy( );
+	}
 }
 
 void file_iterator::destroy( )
@@ -29,7 +36,7 @@ bool file_iterator::next( )
 	{
 		result = FindNextFile( m_handle, (WIN32_FIND_DATA*)m_find_data );
 	}
-	while ( result && ( ( get_file_name( ) == "." ) || ( get_file_name( ) == ".." ) ) );
+	while ( result && ( strings::equal( get_file_name( ), "." ) || strings::equal( get_file_name( ), ".." ) ) );
 
 	return result;
 }
