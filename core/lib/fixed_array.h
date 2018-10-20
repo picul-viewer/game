@@ -1,6 +1,7 @@
 #ifndef __core_fixed_array_h_included_
 #define __core_fixed_array_h_included_
 
+#include <types.h>
 #include <array>
 
 template<typename T, uptr Size>
