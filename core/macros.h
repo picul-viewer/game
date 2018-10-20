@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#define NO_OP {}
+#define NO_OP (void*)0
 
 namespace macros {
 
@@ -19,11 +19,15 @@ inline void logger( char const* message, Args ... args )
 
 }
 
-#define LOG( message, ... ) macros::logger( message, ##__VA_ARGS__ );
+#define LOG( message, ... ) macros::logger( message, ##__VA_ARGS__ )
 
 #ifdef DEBUG
-#	define DEBUG_BREAK { __debugbreak( ); }
+#	define DEBUG_BREAK( ) __debugbreak( )
 #endif // #ifdef DEBUG
+
+#ifndef DEBUG
+#	define UNDEFINED_BEHAVIOUR *(int*)nullptr
+#endif // #ifndef DEBUG
 
 #ifdef DEBUG
 namespace macros {
@@ -43,7 +47,7 @@ inline void assertion_failed( char const* expr, char const* file, char const* fu
 
 }
 
-#	define ASSERT( expr, ... ) if ( !( expr ) ) { macros::assertion_failed( #expr, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); DEBUG_BREAK }
+#	define ASSERT( expr, ... ) if ( !( expr ) ) { macros::assertion_failed( #expr, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); DEBUG_BREAK( ); } ( expr )
 #else // #ifdef DEBUG
 #	define ASSERT( expr, ... ) NO_OP
 #endif // #ifdef DEBUG
@@ -64,12 +68,16 @@ inline void fatal_error( char const* file, char const* func, int line, char cons
 
 }
 
-#	define FATAL_ERROR( ... ) { macros::fatal_error( __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); DEBUG_BREAK }
+#	define FATAL_ERROR( ... ) macros::fatal_error( __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); DEBUG_BREAK( )
 #else // #ifdef DEBUG
 #	define FATAL_ERROR( ... ) NO_OP
 #endif // #ifdef DEBUG
 
-#define UNREACHABLE_CODE FATAL_ERROR( "unreachable code" )
+#ifdef DEBUG
+#define UNREACHABLE_CODE { FATAL_ERROR( "unreachable code" ); } 
+#else
+#define UNREACHABLE_CODE { UNDEFINED_BEHAVIOUR; }
+#endif // #ifdef DEBUG
 
 namespace macros {
 
@@ -77,8 +85,8 @@ void pause( );
 
 }
 
-#define PAUSE( ) { macros::pause( ); }
+#define PAUSE( ) macros::pause( )
 
-#define SPIN_LOCK( expression ) { while ( expression ) macros::pause( ); }
+#define SPIN_LOCK( expression ) while ( expression ) macros::pause( )
 
 #endif // #ifndef __core_macros_h_included_

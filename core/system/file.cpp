@@ -60,7 +60,7 @@ uptr file::size( ) const
 	BOOL result = GetFileSizeEx( m_handle, &size );
 
 	ASSERT( result == TRUE, "FS error: 0x%016d\n", GetLastError( ) );
-	ASSERT( size.QuadPart >= 0 )
+	ASSERT( size.QuadPart >= 0 );
 
 	return (uptr)size.QuadPart;
 }
