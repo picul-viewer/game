@@ -17,3 +17,8 @@ void text_config::read_str( pstr data )
 	sscanf( m_pointer, "%s%n", data, &pos );
 	m_pointer += pos;
 }
+
+bool text_config::eof( ) const
+{
+	return m_pointer.get<char>( ) == '\0';
+}

@@ -15,6 +15,8 @@ public:
 	
 	void read_str( pstr data );
 
+	bool eof( ) const;
+
 protected:
 	pointer	m_begin;
 	pointer	m_pointer;
