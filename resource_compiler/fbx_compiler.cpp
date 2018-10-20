@@ -33,22 +33,23 @@ void fbx_compiler::destroy( )
 }
 
 template<typename ElementType>
-static inline ElementType get_element( FbxMesh* mesh, FbxLayerElementTemplate<ElementType>* element, u32 polygon_index, u32 vertex_index )
+static inline ElementType get_element( FbxMesh* const mesh, FbxLayerElementTemplate<ElementType>* const element, u32 const polygon_index, u32 const vertex_index )
 {
 	u32 base_index = 0;
 
 	switch ( element->GetMappingMode( ) )
 	{
-	case FbxGeometryElement::eByControlPoint:
-		base_index = mesh->GetPolygonVertex( polygon_index, vertex_index );
-		break;
-	case FbxGeometryElement::eByPolygonVertex:
-		base_index = polygon_index * 3 + vertex_index;
-		break;
-	case FbxGeometryElement::eByPolygon:
-		base_index = polygon_index;
-		break;
-	default: FATAL_ERROR( )
+		case FbxGeometryElement::eByControlPoint:
+			base_index = mesh->GetPolygonVertex( polygon_index, vertex_index );
+			break;
+		case FbxGeometryElement::eByPolygonVertex:
+			base_index = polygon_index * 3 + vertex_index;
+			break;
+		case FbxGeometryElement::eByPolygon:
+			base_index = polygon_index;
+			break;
+		default:
+			FATAL_ERROR( );
 	}
 
 	if ( element->GetReferenceMode( ) == FbxGeometryElement::eIndexToDirect )
@@ -79,12 +80,12 @@ struct vertex
 	math::float2 uv;
 	math::float3 normal;
 
-	void init( FbxMesh* mesh, u32 polygon_index, u32 vertex_index )
+	void init( FbxMesh* const mesh, u32 const polygon_index, u32 const vertex_index )
 	{
 		FbxVector4 const& pos		= mesh->GetControlPointAt( mesh->GetPolygonVertex( polygon_index, vertex_index ) );
 
 		FbxVector2 const& uv		= get_element( mesh, mesh->GetElementUV( 0 ), polygon_index, vertex_index );
-		FbxVector4 normal			= get_element( mesh, mesh->GetElementNormal( 0 ), polygon_index, vertex_index );
+		FbxVector4 const normal		= get_element( mesh, mesh->GetElementNormal( 0 ), polygon_index, vertex_index );
 
 		this->pos					= math::float3( (float)pos.mData[0], (float)pos.mData[1], (float)pos.mData[2] );
 		this->uv					= math::float2( (float)uv.mData[0], (float)uv.mData[1] );
@@ -119,15 +120,15 @@ struct bumpmapped_vertex : public vertex
 	math::float3 tangent;
 	math::float3 binormal;
 	
-	void init( FbxMesh* mesh, u32 polygon_index, u32 vertex_index )
+	void init( FbxMesh* const mesh, u32 const polygon_index, u32 const vertex_index )
 	{
 		vertex::init( mesh, polygon_index, vertex_index );
 
-		FbxVector4 tangent	= get_element( mesh, mesh->GetElementTangent( 0 ), polygon_index, vertex_index );
-		FbxVector4 binormal	= get_element( mesh, mesh->GetElementBinormal( 0 ), polygon_index, vertex_index );
+		FbxVector4 const tangent	= get_element( mesh, mesh->GetElementTangent( 0 ), polygon_index, vertex_index );
+		FbxVector4 const binormal	= get_element( mesh, mesh->GetElementBinormal( 0 ), polygon_index, vertex_index );
 
-		this->tangent		= math::float3( (float)tangent.mData[0], (float)tangent.mData[1], (float)tangent.mData[2] );
-		this->binormal		= math::float3( (float)binormal.mData[0], (float)binormal.mData[1], (float)binormal.mData[2] );
+		this->tangent				= math::float3( (float)tangent.mData[0], (float)tangent.mData[1], (float)tangent.mData[2] );
+		this->binormal				= math::float3( (float)binormal.mData[0], (float)binormal.mData[1], (float)binormal.mData[2] );
 	}
 };
 
@@ -142,23 +143,23 @@ bool operator<( bumpmapped_vertex const& l, bumpmapped_vertex const& r )
 }
 
 template<typename VertexType>
-static inline bool process_mesh( FbxMesh* mesh, VertexType*& vertices, u32*& indices, u32& vertex_count, u32& index_count )
+static inline bool process_mesh( FbxMesh* const mesh, VertexType*& vertices, u32*& indices, u32& vertex_count, u32& index_count )
 {
 	map<VertexType, u32, Memory_Page_Size, 4096> vertices_map;
 	u32 current_index = 0;
 
-	u32 polygon_count = mesh->GetPolygonCount( );
+	u32 const polygon_count = mesh->GetPolygonCount( );
 
-	u32* indices_data = mem_allocator( ).allocate( polygon_count * 3 * sizeof(u32) );
+	u32* const indices_data = mem_allocator( ).allocate( polygon_count * 3 * sizeof(u32) );
 
 	for ( u32 i = 0; i < polygon_count; ++i )
 	{
 		for ( u32 j = 0; j < 3; ++j )
 		{
 			VertexType v;
-			v.init						( mesh, i, j );
+			v.init( mesh, i, j );
 
-			auto it						= vertices_map.find( v );
+			auto it = vertices_map.find( v );
 			if ( it != vertices_map.end( ) )
 				indices_data[i * 3 + j]	= it->second;
 			else
@@ -170,10 +171,10 @@ static inline bool process_mesh( FbxMesh* mesh, VertexType*& vertices, u32*& ind
 		}
 	}
 
-	VertexType* vertices_data			= mem_allocator( ).allocate( current_index * sizeof(VertexType) );
+	VertexType* const vertices_data = mem_allocator( ).allocate( current_index * sizeof(VertexType) );
 
 	for ( auto i = vertices_map.begin( ), l = vertices_map.end( ); i != l; ++i )
-		vertices_data[i->second]		= i->first;
+		vertices_data[i->second] = i->first;
 
 	vertices		= vertices_data;
 	indices			= indices_data;
@@ -196,26 +197,26 @@ static inline bool process_mesh( FbxMesh* mesh, VertexType*& vertices, u32*& ind
 }
 
 template<typename VertexType>
-static inline void write_to_file( FbxMesh* mesh, sys::path const& path, u32 configure_mask )
+static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u32 const configure_mask )
 {
 	VertexType* vertices;
 	u32* indices;
 	u32 vertex_count;
 	u32 index_count;
 
-	bool use_16bit_indices = process_mesh( mesh, vertices, indices, vertex_count, index_count );
+	bool const use_16bit_indices = process_mesh( mesh, vertices, indices, vertex_count, index_count );
 	if ( index_count >= ( 1u << 29 ) )
 	{
 		LOG( "fbx_compiler: the mesh is too big: \"%s\"\n", path.c_str( ) );
 		return;
 	}
 
-	u32 indices_size = index_count * ( use_16bit_indices ? sizeof(u16) : sizeof(u32) );
-	u32 vertices_size = vertex_count * sizeof(VertexType);
+	u32 const indices_size = index_count * ( use_16bit_indices ? sizeof(u16) : sizeof(u32) );
+	u32 const vertices_size = vertex_count * sizeof(VertexType);
 
-	u32 total_size = sizeof(u32) + indices_size + sizeof(u32) + vertices_size;
+	u32 const total_size = sizeof(u32) + indices_size + sizeof(u32) + vertices_size;
 
-	pointer file_data = mem_allocator( ).allocate( total_size );
+	pointer const file_data = mem_allocator( ).allocate( total_size );
 	
 	u32 index_data = index_count;
 	index_data |= configure_mask;
@@ -262,9 +263,12 @@ void fbx_compiler::compile( u64 relevant_date, weak_const_string input_file_name
 	fi.create( output_path.c_str( ) );
 	if ( fi.is_valid( ) )
 		if ( fi.get_modification_time( ) > relevant_date )
+		{
+			LOG( "fbx_compiler: fbx mesh update is not required: \"%s\"\n", output_path.c_str( ) );
 			return;
+		}
 
-	bool status = m_importer->Initialize( input_file_name.c_str( ) );
+	bool const status = m_importer->Initialize( input_file_name.c_str( ) );
 	if ( !status )
 	{
 		LOG( "fbx_compiler: importer initialization error: \"%s\"\n", output_path.c_str( ) );

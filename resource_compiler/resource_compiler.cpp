@@ -8,7 +8,7 @@
 
 namespace resource_compiler {
 
-void resource_compiler::create( )
+void resource_compiler::create( int argc, char** argv )
 {
 	m_shader_compiler_dbg_4_0.create( "4_0", true );
 	m_shader_compiler_rel_4_0.create( "4_0", false );
@@ -16,6 +16,9 @@ void resource_compiler::create( )
 	m_shader_compiler_rel_5_0.create( "5_0", false );
 
 	m_fbx_compiler.create( );
+
+	ASSERT( argc >= 2 );
+	m_texture_compiler.create( argv[1] );
 }
 
 void resource_compiler::destroy( )
@@ -30,7 +33,7 @@ struct shader_compiler_data
 	pcstr output_path;
 };
 
-void shader_compiler_thread_function( void* param )
+void shader_compiler_thread_function( void* const param )
 {
 	shader_compiler_data* data = (shader_compiler_data*)param;
 
@@ -49,7 +52,7 @@ struct scan_execute_data
 	resource_compiler::scan_functor functor;
 };
 
-void scan_thread_function( void* param )
+void scan_thread_function( void* const param )
 {
 	scan_execute_data* data = (scan_execute_data*)param;
 	scan_decl scan = data->this_scan_functor;
@@ -64,7 +67,7 @@ void scan_thread_function( void* param )
 								functor );
 };
 
-void resource_compiler::compile( weak_const_string input_path, weak_const_string output_path )
+void resource_compiler::compile( weak_const_string const input_path, weak_const_string const output_path )
 {
 	enum resource_compiler_threads
 	{
@@ -74,6 +77,8 @@ void resource_compiler::compile( weak_const_string input_path, weak_const_string
 		shader_compiler_release_5_0,
 
 		fbx_compiler,
+
+		texture_compiler,
 
 		threads_count
 	};
@@ -138,13 +143,37 @@ void resource_compiler::compile( weak_const_string input_path, weak_const_string
 		threads[thread_index].create( thread::func_helper<&scan_thread_function>, 1 * Mb, &fbx_thread_data );
 		++thread_index;
 	}
+	
+	scan_execute_data texture_thread_data;
+	
+	sys::path texture_input;
+	sys::path texture_output;
+
+	{
+		texture_input = input_path;
+		texture_input += "textures";
+
+		texture_output = output_path;
+		texture_output += "textures";
+
+		texture_output.create_directory( );
+
+		texture_thread_data = { this, &resource_compiler::scan, texture_input.c_str( ), texture_output.c_str( ), "", &resource_compiler::compile_texture };
+
+		threads[thread_index].create( thread::func_helper<&scan_thread_function>, 1 * Mb, &texture_thread_data );
+		++thread_index;
+	}
 
 	ASSERT( thread_index == threads_count );
 
 	threads->destroy( INFINITE, threads_count );
 }
 
-void resource_compiler::scan( uptr input_path_size, str512& input_path, uptr output_path_size, str512& output_path, uptr filename_ending_size, weak_const_string filename_ending, scan_functor functor )
+void resource_compiler::scan(
+	uptr const input_path_size, str512& input_path,
+	uptr const output_path_size, str512& output_path,
+	uptr const filename_ending_size, weak_const_string const filename_ending,
+	scan_functor const functor )
 {
 	if ( !sys::path::is_valid( output_path ) )
 		return;
@@ -192,9 +221,14 @@ void resource_compiler::scan( uptr input_path_size, str512& input_path, uptr out
 	}
 }
 
-void resource_compiler::compile_fbx( u64 relevant_date, pcstr input_file_name, pcstr output_directory )
+void resource_compiler::compile_fbx( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory )
 {
 	m_fbx_compiler.compile( relevant_date, input_file_name, output_directory );
+}
+
+void resource_compiler::compile_texture( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory )
+{
+	m_texture_compiler.compile( relevant_date, input_file_name, output_directory );
 }
 
 } // namespace resource_compiler

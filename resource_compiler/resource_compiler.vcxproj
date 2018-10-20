@@ -91,11 +91,13 @@
     <ClCompile Include="fbx_compiler.cpp" />
     <ClCompile Include="resource_compiler.cpp" />
     <ClCompile Include="shader_compiler.cpp" />
+    <ClCompile Include="texture_compiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fbx_compiler.h" />
     <ClInclude Include="resource_compiler.h" />
     <ClInclude Include="shader_compiler.h" />
+    <ClInclude Include="texture_compiler.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">

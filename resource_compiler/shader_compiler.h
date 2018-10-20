@@ -8,9 +8,9 @@ namespace resource_compiler {
 class shader_compiler
 {
 public:
-	void create( weak_const_string version, bool debug );
+	void create( weak_const_string const version, bool const debug );
 
-	void compile( weak_const_string input_directory, weak_const_string output_directory );
+	void compile( weak_const_string const input_directory, weak_const_string const output_directory );
 
 protected:
 	weak_const_string	m_version;

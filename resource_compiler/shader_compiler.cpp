@@ -10,13 +10,13 @@
 
 namespace resource_compiler {
 
-void shader_compiler::create( weak_const_string version, bool debug )
+void shader_compiler::create( weak_const_string const version, bool const debug )
 {
 	m_version	= version;
 	m_debug		= debug;
 }
 
-static inline bool verify_config_number( pcstr shader_name, uptr length, pcstr shader_type_string )
+static inline bool verify_config_number( pcstr const shader_name, uptr const length, pcstr const shader_type_string )
 {
 	pcstr iter = shader_name + length - 1;
 
@@ -40,16 +40,16 @@ static inline bool verify_config_number( pcstr shader_name, uptr length, pcstr s
 }
 
 template<typename PathProvider, typename ShaderType>
-static inline void compile_shaders( weak_const_string input_directory,
-									weak_const_string output_directory,
-									uptr shader_count,
-									pcstr shader_type,
-									pcstr file_extension,
-									pcstr shader_target,
-									pcstr version,
-									bool is_debug )
+static inline void compile_shaders( weak_const_string const input_directory,
+									weak_const_string const output_directory,
+									uptr const shader_count,
+									pcstr const shader_type,
+									pcstr const file_extension,
+									pcstr const shader_target,
+									pcstr const version,
+									bool const is_debug )
 {
-	little_string common_output_folder = little_string( is_debug ? "debug_" : "release_" ) + version;
+	little_string const common_output_folder = little_string( is_debug ? "debug_" : "release_" ) + version;
 
 	{
 		sys::path vertex_output_path( output_directory ); 
@@ -60,13 +60,13 @@ static inline void compile_shaders( weak_const_string input_directory,
 
 		for ( u32 i = 0; i < shader_count; ++i )
 		{
-			weak_const_string shader_name = PathProvider::get( (ShaderType)i );
+			weak_const_string const shader_name = PathProvider::get( (ShaderType)i );
 			uptr const shader_name_length = shader_name.length( );
 
 			if ( !verify_config_number( shader_name, shader_name_length, shader_type ) )
 				continue;
 
-			little_string shader_file_name = little_string( shader_name ).copy( 0, shader_name_length - 17 ) + file_extension;
+			little_string const shader_file_name = little_string( shader_name ).copy( 0, shader_name_length - 17 ) + file_extension;
 
 			sys::path input_path( input_directory );
 			input_path += shader_file_name;
@@ -80,26 +80,26 @@ static inline void compile_shaders( weak_const_string input_directory,
 
 			uptr const input_file_size = input.size( );
 
-			pvoid data = alloca( input_file_size );
+			pvoid const data = alloca( input_file_size );
 			input.read( data, input_file_size );
 			input.close( );
 
-			little_string config = little_string( "0x" ) + (pcstr)( shader_name - 16 );
+			little_string const config = little_string( "0x" ) + (pcstr)( shader_name - 16 );
 			D3D_SHADER_MACRO macros[2];
 			macros[0].Name = "CONFIGURATION";
 			macros[0].Definition = config;
 			macros[1].Name = nullptr;
 			macros[1].Definition = nullptr;
 
-			u32 flags = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR |
+			u32 const flags = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR |
 				( is_debug ? ( D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION ) : D3DCOMPILE_OPTIMIZATION_LEVEL3 );
 
 			ID3DBlob* result_code = nullptr;
 			ID3DBlob* result_errors = nullptr;
 
-			HRESULT result = D3DCompile( data, input_file_size, input_path.c_str( ), macros,
-										 D3D_COMPILE_STANDARD_FILE_INCLUDE, "main",
-										 shader_target, flags, 0, &result_code, &result_errors );
+			HRESULT const result = D3DCompile( data, input_file_size, input_path.c_str( ), macros,
+											   D3D_COMPILE_STANDARD_FILE_INCLUDE, "main",
+											   shader_target, flags, 0, &result_code, &result_errors );
 
 			if ( SUCCEEDED( result ) )
 			{
@@ -117,7 +117,7 @@ static inline void compile_shaders( weak_const_string input_directory,
 
 				ASSERT( result_code );
 
-				sys::path output_path = vertex_output_path + shader_name;
+				sys::path const output_path = vertex_output_path + shader_name;
 
 				sys::file output( output_path.c_str( ), sys::file::open_write );
 				
@@ -147,7 +147,7 @@ static inline void compile_shaders( weak_const_string input_directory,
 	}
 }
 
-void shader_compiler::compile( weak_const_string input_directory, weak_const_string output_directory )
+void shader_compiler::compile( weak_const_string const input_directory, weak_const_string const output_directory )
 {
 	using namespace render::__render_shader_containers_detail;
 

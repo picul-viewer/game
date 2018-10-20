@@ -8,7 +8,7 @@ int main( int argc, char** argv )
 {
 	resource_compiler::resource_compiler rc;
 
-	rc.create( );
+	rc.create( argc, argv );
 	rc.compile( RESOURCES_SOURCES_PATH, RESOURCES_PATH );
 	rc.destroy( );
 }

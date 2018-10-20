@@ -8,28 +8,30 @@
 
 #include "shader_compiler.h"
 #include "fbx_compiler.h"
+#include "texture_compiler.h"
 
 namespace resource_compiler {
 
 class resource_compiler
 {
 public:
-	void create( );
+	void create( int argc, char** argv );
 	void destroy( );
 
-	void compile( weak_const_string input_path, weak_const_string output_path );
+	void compile( weak_const_string const input_path, weak_const_string const output_path );
 
 public:
-	typedef void ( resource_compiler::*scan_functor )( u64, pcstr, pcstr );
+	typedef void ( resource_compiler::*scan_functor )( u64 const, pcstr const, pcstr const );
 
 	void scan(
-		uptr input_path_size, str512& input_path,
-		uptr output_path_size, str512& output_path,
-		uptr filename_ending_size, weak_const_string filename_ending,
-		scan_functor functor );
+		uptr const input_path_size, str512& input_path,
+		uptr const output_path_size, str512& output_path,
+		uptr const filename_ending_size, weak_const_string const filename_ending,
+		scan_functor const functor );
 
 protected:
-	void compile_fbx( u64 relevant_date, pcstr input_file_name, pcstr output_directory );
+	void compile_fbx( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory );
+	void compile_texture( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory );
 
 protected:
 	shader_compiler m_shader_compiler_dbg_4_0;
@@ -38,6 +40,8 @@ protected:
 	shader_compiler m_shader_compiler_rel_5_0;
 
 	fbx_compiler m_fbx_compiler;
+
+	texture_compiler m_texture_compiler;
 
 };
 

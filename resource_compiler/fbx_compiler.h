@@ -14,9 +14,9 @@ public:
 	void create( );
 	void destroy( );
 
-	void compile( u64 relevant_date,
-				  weak_const_string input_file_name,
-				  weak_const_string output_directory );
+	void compile( u64 const relevant_date,
+				  weak_const_string const input_file_name,
+				  weak_const_string const output_directory );
 protected:
 	FbxManager*		m_fbx_manager;
 	FbxImporter*	m_importer;
