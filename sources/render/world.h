@@ -6,8 +6,6 @@
 
 #include "render_parameters.h"
 
-class camera;
-
 namespace render {
 
 class scene;
