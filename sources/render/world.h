@@ -35,4 +35,4 @@ extern world g_world;
 
 } // namespace render
 
-#endif // #ifndef __render_render_core_h_included_
+#endif // #ifndef __render_world_h_included_
