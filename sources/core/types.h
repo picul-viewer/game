@@ -183,9 +183,9 @@ struct pointer
 	inline pointer operator--( int n ) { pointer p( *this ); data = (pbyte)data + 1; return p; }
 
 	template<typename T>
-	inline T& get( ) { return *(T*)data; }
+	inline T& get( uptr offset = 0 ) { return *( (T*)data + offset ); }
 	template<typename T>
-	inline T const& get( ) const { return *(T const*)data; }
+	inline T const& get( uptr offset = 0 ) const { return *( (T const*)data + offset ); }
 
 protected:
 	pvoid data;
