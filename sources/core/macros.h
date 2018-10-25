@@ -25,10 +25,6 @@ inline void logger( char const* message, Args ... args )
 #	define DEBUG_BREAK( ) __debugbreak( )
 #endif // #ifdef DEBUG
 
-#ifndef DEBUG
-#	define UNDEFINED_BEHAVIOUR *(int*)nullptr
-#endif // #ifndef DEBUG
-
 #ifdef DEBUG
 namespace macros {
 
@@ -74,9 +70,13 @@ inline void fatal_error( char const* file, char const* func, int line, char cons
 #endif // #ifdef DEBUG
 
 #ifdef DEBUG
-#define UNREACHABLE_CODE { FATAL_ERROR( "unreachable code" ); } 
+#	define UNREACHABLE_CODE { FATAL_ERROR( "unreachable code" ); } 
 #else
-#define UNREACHABLE_CODE { UNDEFINED_BEHAVIOUR; }
+namespace macros {
+inline __declspec(noreturn) void noreturn_func( ) { }
+}
+
+#	define UNREACHABLE_CODE { macros::noreturn_func( ); }
 #endif // #ifdef DEBUG
 
 namespace macros {
