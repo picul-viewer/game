@@ -1,19 +1,18 @@
 #include "renderer.h"
 
-#include "render_api.h"
+#include "api.h"
 
 #include "resources.h"
 
 #include "resource_views.h"
 #include "render_targets.h"
 
-#include "render_parameters.h"
+#include "parameters.h"
+#include "parameters_manager.h"
 
 #include "render_object_allocator.h"
 
 #include "scene.h"
-
-#include "render_parameters_manager.h"
 
 namespace render {
 	

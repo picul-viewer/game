@@ -2,8 +2,8 @@
 
 #include <utils/resources_path.h>
 
-#include "render_api.h"
-#include "render_parameters.h"
+#include "api.h"
+#include "parameters.h"
 
 #include "mesh_box.h"
 #include "mesh_quad.h"

@@ -1,7 +1,7 @@
 #ifdef RENDER_ENABLE_GPU_PROFILING
 
 #include "profiler.h"
-#include "render_api.h"
+#include "api.h"
 
 #include <macros.h>
 #include <lib/strings.h>

@@ -1,5 +1,5 @@
-#include "render_api.h"
-#include "render_parameters.h"
+#include "api.h"
+#include "parameters.h"
 
 #include <macros.h>
 

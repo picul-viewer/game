@@ -1,7 +1,7 @@
 #include "renderer.h"
 #include "scene.h"
 #include "resources.h"
-#include "render_parameters.h"
+#include "parameters.h"
 
 #include <math/frustum.h>
 

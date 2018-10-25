@@ -1,4 +1,4 @@
-#include "render_parameters_manager.h"
+#include "parameters_manager.h"
 
 namespace render {
 

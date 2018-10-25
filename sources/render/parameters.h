@@ -1,5 +1,5 @@
-#ifndef __render_render_parameters_h_included_
-#define __render_render_parameters_h_included_
+#ifndef __render_parameters_h_included_
+#define __render_parameters_h_included_
 
 #include <types.h>
 #include <math/vector.h>
@@ -25,4 +25,4 @@ extern parameters g_parameters;
 
 } // namespace render
 
-#endif // #ifndef __render_render_parameters_h_included_
+#endif // #ifndef __render_parameters_h_included_

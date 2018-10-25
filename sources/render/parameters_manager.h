@@ -1,8 +1,8 @@
-#ifndef __render_render_parameters_manager_h_included_
-#define __render_render_parameters_manager_h_included_
+#ifndef __render_parameters_manager_h_included_
+#define __render_parameters_manager_h_included_
 
 #include <types.h>
-#include "render_parameters.h"
+#include "parameters.h"
 
 namespace render {
 
@@ -22,4 +22,4 @@ extern parameters_manager g_parameters_manager;
 
 } // namespace render
 
-#endif // #ifndef __render_render_parameters_manager_h_included_
+#endif // #ifndef __render_parameters_manager_h_included_

@@ -1,8 +1,8 @@
 #include "stage_forward_default.h"
 #include "resources.h"
 #include "renderer.h"
-#include "render_parameters.h"
-#include "render_api.h"
+#include "parameters.h"
+#include "api.h"
 
 namespace render {
 

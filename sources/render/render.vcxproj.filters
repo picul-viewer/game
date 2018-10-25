@@ -34,9 +34,6 @@
     <Filter Include="parameters">
       <UniqueIdentifier>{4b88d307-b9a3-4448-bdde-d732f2d1be7a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="api">
-      <UniqueIdentifier>{46484c15-51a2-4ab6-9977-1442fc94a676}</UniqueIdentifier>
-    </Filter>
     <Filter Include="renderer\utils">
       <UniqueIdentifier>{262c3621-63c8-49b1-a9be-21aadac36d90}</UniqueIdentifier>
     </Filter>
@@ -124,6 +121,9 @@
     <Filter Include="resources\cached_resources\texture">
       <UniqueIdentifier>{cb4972b5-da99-462e-beb8-06f068e53dd3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dx\api">
+      <UniqueIdentifier>{46484c15-51a2-4ab6-9977-1442fc94a676}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
@@ -152,9 +152,6 @@
     </ClCompile>
     <ClCompile Include="render_object_mesh.cpp">
       <Filter>objects\mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="render_api.cpp">
-      <Filter>api</Filter>
     </ClCompile>
     <ClCompile Include="mesh.cpp">
       <Filter>resources\cached_resources\mesh</Filter>
@@ -189,12 +186,6 @@
     <ClCompile Include="render_model_mesh.cpp">
       <Filter>resources\cached_resources\models\mesh</Filter>
     </ClCompile>
-    <ClCompile Include="render_parameters_manager.cpp">
-      <Filter>parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="render_parameters.cpp">
-      <Filter>parameters</Filter>
-    </ClCompile>
     <ClCompile Include="world.cpp">
       <Filter>common\world</Filter>
     </ClCompile>
@@ -221,6 +212,15 @@
     </ClCompile>
     <ClCompile Include="resource_path_registry.cpp">
       <Filter>resources\utils\resource_path_registry</Filter>
+    </ClCompile>
+    <ClCompile Include="api.cpp">
+      <Filter>dx\api</Filter>
+    </ClCompile>
+    <ClCompile Include="parameters.cpp">
+      <Filter>parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="parameters_manager.cpp">
+      <Filter>parameters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -259,9 +259,6 @@
     </ClInclude>
     <ClInclude Include="render_object.h">
       <Filter>objects</Filter>
-    </ClInclude>
-    <ClInclude Include="render_api.h">
-      <Filter>api</Filter>
     </ClInclude>
     <ClInclude Include="mesh.h">
       <Filter>resources\cached_resources\mesh</Filter>
@@ -332,12 +329,6 @@
     <ClInclude Include="dx_include.h">
       <Filter>dx</Filter>
     </ClInclude>
-    <ClInclude Include="render_parameters_manager.h">
-      <Filter>parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="render_parameters.h">
-      <Filter>parameters</Filter>
-    </ClInclude>
     <ClInclude Include="world.h">
       <Filter>common\world</Filter>
     </ClInclude>
@@ -364,6 +355,15 @@
     </ClInclude>
     <ClInclude Include="resource_path_registry.h">
       <Filter>resources\utils\resource_path_registry</Filter>
+    </ClInclude>
+    <ClInclude Include="api.h">
+      <Filter>dx\api</Filter>
+    </ClInclude>
+    <ClInclude Include="parameters.h">
+      <Filter>parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="parameters_manager.h">
+      <Filter>parameters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
