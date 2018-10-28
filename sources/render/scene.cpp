@@ -1,6 +1,6 @@
 #include "scene.h"
 
-#include "render_parameters.h"
+#include "parameters.h"
 #include "resources.h"
 
 namespace render {
