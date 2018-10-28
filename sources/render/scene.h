@@ -7,6 +7,7 @@
 
 #include <lib/buffer_array.h>
 #include <lib/pool.h>
+#include <lib/linear_allocator.h>
 
 #include <math/bvh.h>
 
@@ -54,8 +55,7 @@ protected:
 	//typedef buffer_array<
 	//	render_object_light> static_render_objects_light_array;
 
-	typedef dynamic_allocation_pool<math::static_bvh_node_size::value, Memory_Page_Size, 256>
-		bvh_node_pool;
+	typedef dynamic_linear_allocator<Memory_Page_Size, 256> bvh_node_pool;
 
 	pointer									m_static_objects_memory;
 	static_render_objects_mesh_array		m_static_render_objects_mesh_array;

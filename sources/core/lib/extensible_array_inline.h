@@ -23,10 +23,7 @@ void extensible_array<T>::create( uptr capacity, uptr size )
 template<typename T>
 void extensible_array<T>::destroy( )
 {
-	uptr const capacity_in_bytes	= ( m_max_end - m_begin ) * sizeof(T) + Memory_Page_Size - 1;
-	uptr const capacity_to_free		= capacity_in_bytes - capacity_in_bytes % Memory_Page_Size;
-
-	virtual_mem_allocator( ).release( m_begin, capacity_to_free );
+	virtual_mem_allocator( ).release( m_begin );
 }
 
 template<typename T>

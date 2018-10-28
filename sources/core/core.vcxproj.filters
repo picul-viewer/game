@@ -91,6 +91,9 @@
     <Filter Include="system\fs\file_iterator">
       <UniqueIdentifier>{18708881-f685-4c24-a0ba-bb113101875a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\memory\allocators\linear">
+      <UniqueIdentifier>{f22a57f1-2324-46f9-b2f9-cc50c4879865}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -274,6 +277,15 @@
     </ClInclude>
     <ClInclude Include="system\file_iterator.h">
       <Filter>system\fs\file_iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\linear_allocator.h">
+      <Filter>lib\memory\allocators\linear</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\linear_allocator_inline.h">
+      <Filter>lib\memory\allocators\linear</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\memory_block.h">
+      <Filter>lib\memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

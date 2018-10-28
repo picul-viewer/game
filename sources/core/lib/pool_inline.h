@@ -3,17 +3,11 @@
 
 #include <macros.h>
 
-template<uptr MemorySize>
-struct pool_page_size_helper
-{
-	static const uptr value = ( MemorySize + ( Memory_Page_Size - 1 ) ) & ( ~( Memory_Page_Size - 1 ) );
-};
-
 template<uptr ElemSize, uptr PageSize>
 void pool<ElemSize, PageSize>::create( )
 {
 	ASSERT( ElemSize >= sizeof(pointer) );
-	m_data = virtual_mem_allocator( ).commit( nullptr, pool_page_size_helper<PageSize>::value );
+	m_data = virtual_mem_allocator( ).commit( nullptr, page_size );
 	clear( );
 }
 
@@ -28,8 +22,14 @@ void pool<ElemSize, PageSize>::create( pointer memory )
 template<uptr ElemSize, uptr PageSize>
 void pool<ElemSize, PageSize>::destroy( )
 {
-	virtual_mem_allocator( ).release( m_data, pool_page_size_helper<PageSize>::value );
+	virtual_mem_allocator( ).release( m_data );
 	m_data = nullptr;
+}
+
+template<uptr ElemSize, uptr PageSize>
+pointer pool<ElemSize, PageSize>::data( ) const
+{
+	return m_data;
 }
 
 template<uptr ElemSize, uptr PageSize>
@@ -40,13 +40,24 @@ void pool<ElemSize, PageSize>::clear( )
 }
 
 template<uptr ElemSize, uptr PageSize>
+memory_block<ElemSize>& pool<ElemSize, PageSize>::operator[]( uptr index ) const
+{
+	memory_block<ElemSize>* const result = (memory_block<ElemSize>*)m_data + index;
+
+	// Note: this check does not guaranties safety.
+	ASSERT( result < m_last_pointer );
+
+	return *result;
+}
+
+template<uptr ElemSize, uptr PageSize>
 pointer pool<ElemSize, PageSize>::allocate( uptr size )
 {
 	ASSERT				( size <= ElemSize );
 
 	if ( m_push_pointer == nullptr )
 	{
-		ASSERT			( m_last_pointer + ElemSize <= m_data + pool_page_size_helper<PageSize>::value ); // pool is full
+		ASSERT			( m_last_pointer + ElemSize <= m_data + page_size ); // pool is full
 		pointer result	= m_last_pointer;
 		m_last_pointer	+= ElemSize;
 		return result;
@@ -68,49 +79,11 @@ void pool<ElemSize, PageSize>::deallocate( pointer p )
 }
 
 
-template<uptr ElemSize, uptr PageSize>
-void allocation_pool<ElemSize, PageSize>::create( )
-{
-	m_data = virtual_mem_allocator( ).commit( nullptr, pool_page_size_helper<PageSize>::value );
-	clear( );
-}
-
-template<uptr ElemSize, uptr PageSize>
-void allocation_pool<ElemSize, PageSize>::create( pointer memory )
-{
-	m_data = memory;
-	clear( );
-}
-
-template<uptr ElemSize, uptr PageSize>
-void allocation_pool<ElemSize, PageSize>::destroy( )
-{
-	virtual_mem_allocator( ).release( m_data, pool_page_size_helper<PageSize>::value );
-	m_data = nullptr;
-}
-
-template<uptr ElemSize, uptr PageSize>
-void allocation_pool<ElemSize, PageSize>::clear( )
-{
-	m_last_pointer = m_data;
-}
-
-template<uptr ElemSize, uptr PageSize>
-pointer allocation_pool<ElemSize, PageSize>::allocate( uptr size )
-{
-	ASSERT			( size <= ElemSize );
-	ASSERT			( m_last_pointer + ElemSize <= m_data + pool_page_size_helper<PageSize>::value ); // pool is full
-	pointer result	= m_last_pointer;
-	m_last_pointer	+= ElemSize;
-	return			result;
-}
-
-
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 void dynamic_pool<ElemSize, PageSize, PageMaxCount>::create( )
 {
 	ASSERT( ElemSize >= sizeof(pointer) );
-	m_data = virtual_mem_allocator( ).reserve( nullptr, pool_page_size_helper<PageSize>::value * PageMaxCount );
+	m_data = virtual_mem_allocator( ).reserve( nullptr, page_size * PageMaxCount );
 	clear( );
 }
 
@@ -125,15 +98,32 @@ void dynamic_pool<ElemSize, PageSize, PageMaxCount>::create( pointer memory )
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 void dynamic_pool<ElemSize, PageSize, PageMaxCount>::destroy( )
 {
-	virtual_mem_allocator( ).release( m_data, pool_page_size_helper<PageSize>::value * PageMaxCount );
+	virtual_mem_allocator( ).release( m_data );
+}
+
+template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
+pointer dynamic_pool<ElemSize, PageSize, PageMaxCount>::data( ) const
+{
+	return m_data;
 }
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 void dynamic_pool<ElemSize, PageSize, PageMaxCount>::clear( )
 {
-	m_page_pointer = m_data - pool_page_size_helper<PageSize>::value;
+	m_page_pointer = m_data - page_size;
 	m_push_pointer = nullptr;
 	m_last_pointer = m_data;
+}
+
+template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
+memory_block<ElemSize>& dynamic_pool<ElemSize, PageSize, PageMaxCount>::operator[]( uptr index ) const
+{
+	memory_block<ElemSize>* const result = (memory_block<ElemSize>*)m_data + index;
+
+	// Note: this check does not guaranties safety.
+	ASSERT( result < m_last_pointer );
+
+	return *result;
 }
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
@@ -143,11 +133,11 @@ pointer dynamic_pool<ElemSize, PageSize, PageMaxCount>::allocate( uptr size )
 
 	if ( m_push_pointer == nullptr )
 	{
-		if ( m_last_pointer + size > m_page_pointer + pool_page_size_helper<PageSize>::value )
+		if ( m_last_pointer + size > m_page_pointer + page_size )
 		{
-			m_page_pointer					+= pool_page_size_helper<PageSize>::value;
-			ASSERT							( m_page_pointer < m_data + pool_page_size_helper<PageSize>::value * PageMaxCount );
-			virtual_mem_allocator( ).commit	( m_page_pointer, pool_page_size_helper<PageSize>::value );
+			m_page_pointer					+= page_size;
+			ASSERT							( m_page_pointer < m_data + page_size * PageMaxCount );
+			virtual_mem_allocator( ).commit	( m_page_pointer, page_size );
 		}
 
 		pointer result	= m_last_pointer;
@@ -168,132 +158,6 @@ void dynamic_pool<ElemSize, PageSize, PageMaxCount>::deallocate( pointer p )
 	ASSERT				( p );
 	*(pointer*)p		= m_push_pointer;
 	m_push_pointer		= p;
-}
-
-
-template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-void dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::create( )
-{
-	m_data = virtual_mem_allocator( ).reserve( nullptr, pool_page_size_helper<PageSize>::value * PageMaxCount );
-	clear( );
-}
-
-template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-void dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::create( pointer memory )
-{
-	m_data = memory;
-	clear( );
-}
-
-template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-void dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::destroy( )
-{
-	virtual_mem_allocator( ).release( m_data, pool_page_size_helper<PageSize>::value * PageMaxCount );
-}
-
-template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-void dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::clear( )
-{
-	m_page_pointer = m_data - pool_page_size_helper<PageSize>::value;
-	m_last_pointer = m_data;
-}
-
-template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-pointer dynamic_allocation_pool<ElemSize, PageSize, PageMaxCount>::allocate( uptr size )
-{
-	ASSERT( size <= ElemSize );
-
-	if ( m_last_pointer + size > m_page_pointer + pool_page_size_helper<PageSize>::value )
-	{
-		m_page_pointer					+= pool_page_size_helper<PageSize>::value;
-		ASSERT							( m_page_pointer < m_data + pool_page_size_helper<PageSize>::value * PageMaxCount );
-		virtual_mem_allocator( ).commit	( m_page_pointer, pool_page_size_helper<PageSize>::value );
-	}
-
-	pointer result	= m_last_pointer;
-	m_last_pointer	+= ElemSize;
-	return result;
-}
-
-
-template<uptr PageSize>
-void allocation_multipool<PageSize>::create( )
-{
-	m_data = virtual_mem_allocator( ).commit( nullptr, pool_page_size_helper<PageSize>::value );
-	clear( );
-}
-
-template<uptr PageSize>
-void allocation_multipool<PageSize>::create( pointer memory )
-{
-	m_data = memory;
-	clear( );
-}
-
-template<uptr PageSize>
-void allocation_multipool<PageSize>::destroy( )
-{
-	virtual_mem_allocator( ).release( m_data, pool_page_size_helper<PageSize>::value );
-	m_data = nullptr;
-}
-
-template<uptr PageSize>
-void allocation_multipool<PageSize>::clear( )
-{
-	m_last_pointer	= m_data;
-}
-
-template<uptr PageSize>
-pointer allocation_multipool<PageSize>::allocate( uptr size )
-{
-	ASSERT			( m_last_pointer + size <= m_data + pool_page_size_helper<PageSize>::value ); // pool is full
-	pointer result	= m_last_pointer;
-	m_last_pointer	+= size;
-	return			result;
-}
-
-
-template<uptr PageSize, uptr PageMaxCount>
-void dynamic_allocation_multipool<PageSize, PageMaxCount>::create( )
-{
-	m_data = virtual_mem_allocator( ).reserve( nullptr, pool_page_size_helper<PageSize>::value * PageMaxCount );
-	clear( );
-}
-
-template<uptr PageSize, uptr PageMaxCount>
-void dynamic_allocation_multipool<PageSize, PageMaxCount>::create( pointer memory )
-{
-	m_data = memory;
-	clear( );
-}
-
-template<uptr PageSize, uptr PageMaxCount>
-void dynamic_allocation_multipool<PageSize, PageMaxCount>::destroy( )
-{
-	virtual_mem_allocator( ).release( m_data, pool_page_size_helper<PageSize>::value * PageMaxCount );
-	m_data = nullptr;
-}
-
-template<uptr PageSize, uptr PageMaxCount>
-void dynamic_allocation_multipool<PageSize, PageMaxCount>::clear( )
-{
-	m_page_pointer	= m_data - pool_page_size_helper<PageSize>::value;
-	m_last_pointer	= m_data;
-}
-
-template<uptr PageSize, uptr PageMaxCount>
-pointer dynamic_allocation_multipool<PageSize, PageMaxCount>::allocate( uptr size )
-{
-	if ( m_last_pointer + size > m_page_pointer + pool_page_size_helper<PageSize>::value )
-	{
-		m_page_pointer					+= pool_page_size_helper<PageSize>::value;
-		ASSERT							( m_page_pointer < m_data + pool_page_size_helper<PageSize>::value * PageMaxCount );
-		virtual_mem_allocator( ).commit	( m_page_pointer, pool_page_size_helper<PageSize>::value );
-	}
-
-	pointer result		= m_last_pointer;
-	m_last_pointer		+= size;
-	return result;
 }
 
 #endif // #ifndef __core_pool_inline_h_included_

@@ -35,86 +35,11 @@ enum
 	Memory_Page_Size = 4096
 };
 
-class rand32
-{
-protected:
-	u64 n;
-public:
-	inline rand32( ) : n( 1 ) {}
-	inline rand32( u32 seed ) : n( seed ) {}
-	inline u32 rand( )
-	{
-		n = 6364136223846793005 * n + 1442695040888963407;
-		return n >> 32;
-	}
-	inline u32 rand( u32 max )
-	{
-		return rand( ) % max;
-	}
-	inline u32 rand( u32 a, u32 b )
-	{
-		return a + rand( ) % ( b - a + 1 );
-	}
-	inline f32 randf( )
-	{
-		return rand( ) / (f32)(-1);
-	}
-	inline f32 randf( f32 max )
-	{
-		return randf( ) * max;
-	}
-	inline f32 randf( f32 a, f32 b )
-	{
-		return a + randf( ) * ( b - a );
-	}
-};
-
-template<typename T, typename ... CreateArgs>
-struct link_counter
-{
-	T data;
-	size_t refCnt = 0;
-
-	inline void create( CreateArgs ... args )
-	{
-		if ( refCnt == 0 )
-			data.create( args ... );
-		++refCnt;
-	}
-
-	inline void destroy( )
-	{
-		--refCnt;
-		if ( refCnt == 0 )
-			data.destroy( );
-	}
-
-	inline T* operator->( ) { return &data; }
-
-	inline T& operator*( ) { return data; }
-	inline T const& operator*( ) const { return data; }
-};
-
 enum : uptr
 {
 	Kb	= 1024LL,
 	Mb	= 1024LL * Kb,
 	Gb	= 1024LL * Mb
-};
-
-template<uptr size>
-struct memory_helper
-{
-	u8 data[size];
-};
-
-template<uptr size, typename T>
-struct typed_memory_helper
-{
-	u8 data[size];
-
-	operator T&( ) { return *(T*)data; }
-	operator T const&( ) const { return *(T*)data; }
 };
 
 

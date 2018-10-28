@@ -109,7 +109,10 @@
     <ClInclude Include="lib\hash.h" />
     <ClInclude Include="lib\hash_map.h" />
     <ClInclude Include="lib\hash_map_inline.h" />
+    <ClInclude Include="lib\linear_allocator.h" />
+    <ClInclude Include="lib\linear_allocator_inline.h" />
     <ClInclude Include="lib\memory.h" />
+    <ClInclude Include="lib\memory_block.h" />
     <ClInclude Include="lib\pool.h" />
     <ClInclude Include="lib\poolset.h" />
     <ClInclude Include="lib\pool_inline.h" />

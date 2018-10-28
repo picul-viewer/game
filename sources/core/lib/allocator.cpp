@@ -17,7 +17,7 @@ void virtual_mem_allocator::decommit( pointer p, uptr size )
 	VirtualFree( p, size, MEM_DECOMMIT );
 }
 
-void virtual_mem_allocator::release( pointer p, uptr /* size */ )
+void virtual_mem_allocator::release( pointer p )
 {
 	VirtualFree( p, 0, MEM_RELEASE );
 }

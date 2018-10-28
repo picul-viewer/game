@@ -42,7 +42,7 @@ Resource* resource_pool<Resource>::load_resource( weak_const_string const& in_pa
 	{
 		Resource* const resource		= m_resource_allocator.allocate( sizeof(Resource) );
 
-		u32 const id					= (u32)( resource - (Resource*)m_resource_allocator.get_data( ) );
+		u32 const id					= (u32)( resource - m_resource_allocator.data( ) );
 		pointer const registry_pointer	= m_path_registry->insert( *in_path.c_str( ), path_hash, id );
 		
 		create_resource_from_file		( resource, in_path );
@@ -52,10 +52,10 @@ Resource* resource_pool<Resource>::load_resource( weak_const_string const& in_pa
 	}
 	else
 	{
-		Resource* const resource		= (Resource*)m_resource_allocator.get_data( ) + *id_ptr;
-		resource->add_ref				( );
+		Resource& resource				= m_resource_allocator[*id_ptr];
+		resource.add_ref				( );
 
-		return resource;
+		return &resource;
 	}
 }
 
@@ -63,8 +63,8 @@ template<typename Resource>
 void resource_pool<Resource>::free_resource( Resource* in_resource )
 {
 	// If resource is not in pool, assume it's managed by render resources class.
-	if ( ( (pointer)in_resource < m_resource_allocator.get_data( ) ) ||
-		 ( (pointer)in_resource >= m_resource_allocator.get_data( ) + 1 * Mb ) )
+	if ( ( (pointer)in_resource < m_resource_allocator.data( ) ) ||
+		 ( (pointer)in_resource >= m_resource_allocator.data( ) + 1 * Mb ) )
 		return;
 
 	u32 const ref_count					= in_resource->release( );

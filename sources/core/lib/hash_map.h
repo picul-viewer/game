@@ -155,12 +155,12 @@ struct hash_map_kv_store_index_16
 
 	static inline KVStore* get( KVStorePool& pool, value_type index )
 	{
-		return ( index == null_value ) ? nullptr : ( (KVStore*)pool.get_data( ) + index );
+		return ( index == null_value ) ? nullptr : pool[index];
 	}
 	
 	static inline value_type index_of( KVStorePool& pool, KVStore* kv )
 	{
-		return (value_type)( kv - (KVStore*)pool.get_data( ) );
+		return (value_type)( kv - pool.data( ) );
 	}
 };
 
@@ -173,12 +173,12 @@ struct hash_map_kv_store_index_32
 
 	static inline KVStore* get( KVStorePool& pool, value_type index )
 	{
-		return ( index == null_value ) ? nullptr : ( (KVStore*)pool.get_data( ) + index );
+		return ( index == null_value ) ? nullptr : pool[index];
 	}
 	
 	static inline value_type index_of( KVStorePool& pool, KVStore* kv )
 	{
-		return (value_type)( kv - (KVStore*)pool.get_data( ) );
+		return (value_type)( kv - pool.data( ) );
 	}
 };
 
