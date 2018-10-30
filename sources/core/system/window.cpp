@@ -26,7 +26,7 @@ void window::create( pcstr title, math::s32x2 const& dimensions, bool fullscreen
 	wcex.hCursor		= LoadCursor( nullptr, IDC_ARROW );
 	wcex.hIconSm		= LoadIcon	( wcex.hInstance, IDI_APPLICATION );
 
-	auto result			= RegisterClassEx( &wcex );
+	ATOM const result	= RegisterClassEx( &wcex );
 	ASSERT				( result != 0 );
 
 	RECT rect			= { 0, 0, dimensions.x, dimensions.y };

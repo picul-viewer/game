@@ -19,9 +19,9 @@ public:
 	void destroy( );
 	
 	template<typename Callback>
-	void for_each( Callback const& callback );
+	void for_each( Callback const& callback ) const;
 	template<typename FrustumType, typename Callback>
-	void query_visibility( FrustumType const& frustum, Callback const& callback );
+	void query_visibility( FrustumType const& frustum, Callback const& callback ) const;
 
 protected:
 	struct node
@@ -39,11 +39,11 @@ protected:
 	node* build( NodeAllocator& node_allocator, T** first, uptr count, aabb_aligned* aabbs, u32 sorting );
 	
 	template<typename Callback>
-	void for_each_impl( node* n, Callback const& callback );
+	void for_each_impl( node* n, Callback const& callback ) const;
 	template<typename Callback>
-	void query_visibility_impl_inside( node* n, Callback const& callback );
+	void query_visibility_impl_inside( node* n, Callback const& callback ) const;
 	template<typename FrustumType, typename Callback>
-	void query_visibility_impl( node* n, FrustumType const& frustum, Callback const& callback );
+	void query_visibility_impl( node* n, FrustumType const& frustum, Callback const& callback ) const;
 
 	void destroy_impl( node* n );
 

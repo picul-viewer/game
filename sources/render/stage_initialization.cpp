@@ -20,7 +20,7 @@ void stage_initialization::execute( )
 	g_resources.get_depth_buffer( ).get_dsv( ).clear( 1.0f, 0u );
 
 	// Process scene objects
-	auto static_render_object_mesh_container = g_renderer.m_scene->get_static_render_objects_mesh_container( );
+	auto const& static_render_object_mesh_container = g_renderer.m_scene->get_static_render_objects_mesh_container( );
 	
 	// Initialize render camera
 	g_renderer.m_render_camera.set_view( g_parameters.camera.view );

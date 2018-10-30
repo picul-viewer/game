@@ -215,7 +215,7 @@ void static_bvh<T>::destroy_impl( node* n )
 
 template<typename T>
 template<typename Callback>
-void static_bvh<T>::for_each( Callback const& callback )
+void static_bvh<T>::for_each( Callback const& callback ) const
 {
 	if ( m_root )
 		for_each_impl( m_root, callback );
@@ -223,7 +223,7 @@ void static_bvh<T>::for_each( Callback const& callback )
 
 template<typename T>
 template<typename Callback>
-void static_bvh<T>::for_each_impl( node* n, Callback const& callback )
+void static_bvh<T>::for_each_impl( node* n, Callback const& callback ) const
 {
 	if ( n->right )
 	{
@@ -236,7 +236,7 @@ void static_bvh<T>::for_each_impl( node* n, Callback const& callback )
 
 template<typename T>
 template<typename FrustumType, typename Callback>
-void static_bvh<T>::query_visibility( FrustumType const& frustum, Callback const& callback )
+void static_bvh<T>::query_visibility( FrustumType const& frustum, Callback const& callback ) const
 {
 	if ( m_root )
 		query_visibility_impl( m_root, frustum, callback );
@@ -244,7 +244,7 @@ void static_bvh<T>::query_visibility( FrustumType const& frustum, Callback const
 
 template<typename T>
 template<typename Callback>
-void static_bvh<T>::query_visibility_impl_inside( node* n, Callback const& callback )
+void static_bvh<T>::query_visibility_impl_inside( node* n, Callback const& callback ) const
 {
 	if ( n->right )
 	{
@@ -257,7 +257,7 @@ void static_bvh<T>::query_visibility_impl_inside( node* n, Callback const& callb
 
 template<typename T>
 template<typename FrustumType, typename Callback>
-void static_bvh<T>::query_visibility_impl( node* n, FrustumType const& frustum, Callback const& callback )
+void static_bvh<T>::query_visibility_impl( node* n, FrustumType const& frustum, Callback const& callback ) const
 {
 	if ( n->right )
 	{

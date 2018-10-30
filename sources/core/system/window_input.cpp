@@ -28,7 +28,7 @@ void window_input::create( )
 
 	ASSERT( device_index == device_count );
 
-	auto result = RegisterRawInputDevices( raw_input_device, 2, sizeof(RAWINPUTDEVICE) );
+	BOOL const result = RegisterRawInputDevices( raw_input_device, 2, sizeof(RAWINPUTDEVICE) );
 
 	ASSERT( result != FALSE );
 }

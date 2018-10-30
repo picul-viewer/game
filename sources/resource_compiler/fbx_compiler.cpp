@@ -159,7 +159,7 @@ static inline bool process_mesh( FbxMesh* const mesh, VertexType*& vertices, u32
 			VertexType v;
 			v.init( mesh, i, j );
 
-			auto it = vertices_map.find( v );
+			auto const it = vertices_map.find( v );
 			if ( it != vertices_map.end( ) )
 				indices_data[i * 3 + j]	= it->second;
 			else
