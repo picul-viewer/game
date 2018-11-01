@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2019
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "game", "sources\game\game.vcxproj", "{B69D439F-128A-499F-8BA5-D879764B1005}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -82,5 +82,8 @@ Global
 		{58B676B2-5B1B-49E9-A2E4-0B71C90AF057} = {CF44F75B-E9B4-4E1A-87F1-061C8D2067E3}
 		{33FA037A-4BD7-4033-BCFC-F030F5AB47A9} = {CF44F75B-E9B4-4E1A-87F1-061C8D2067E3}
 		{78C80B93-CB8E-43BC-84C3-9F8B1E23A842} = {CF44F75B-E9B4-4E1A-87F1-061C8D2067E3}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {93236AE2-963C-4767-B9F2-BDFC1E5D64D1}
 	EndGlobalSection
 EndGlobal
