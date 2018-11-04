@@ -7,10 +7,10 @@ namespace sys {
 
 u64 tick( );
 
-float tick_to_time( u64 tick );
+float tick_to_time( u64 const tick );
 float time( );
 
-double tick_to_time_precise( u64 tick );
+double tick_to_time_precise( u64 const tick );
 double time_precise( );
 
 class timer
@@ -23,8 +23,8 @@ public:
 	u64 get_elapsed_ms( ) const;
 	u64 get_elapsed_s( ) const;
 
-protected:
-	u64 start_time;
+private:
+	u64 m_start_time;
 };
 
 class float_timer
@@ -33,8 +33,8 @@ public:
 	void start( );
 	float get_elapsed_time( ) const;
 
-protected:
-	u64 start_time;
+private:
+	u64 m_start_time;
 };
 
 class double_timer
@@ -43,8 +43,38 @@ public:
 	void start( );
 	double get_elapsed_time( ) const;
 
-protected:
-	u64 start_time;
+private:
+	u64 m_start_time;
+};
+
+class ticker
+{
+public:
+	u64 tick_ns( );
+	u64 tick_us( );
+	u64 tick_ms( );
+	u64 tick_s( );
+
+private:
+	u64 m_start_time;
+};
+
+class float_ticker
+{
+public:
+	float tick( );
+
+private:
+	u64 m_start_time;
+};
+
+class double_ticker
+{
+public:
+	double tick( );
+
+private:
+	u64 m_start_time;
 };
 
 } // namespace sys
