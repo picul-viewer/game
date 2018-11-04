@@ -80,78 +80,101 @@ void world::window_thread( )
 {
 	sys::g_window_input.create( );
 	m_window.create( "game", m_window_dimensions, false, &helper::window_procedure );
-	change_system_alive( system_window );
+	m_alive_events[event_window].set( );
 
-	// Waiting for game logic to create.
-	SPIN_LOCK( ( m_systems_alive & system_game_mask ) == 0 );
+	// Waiting for all systems to create.
+	m_alive_events->wait_for( INFINITE, event_count );
 
 	m_window.run( );
-	change_system_running( system_window );
-
-	// This needed if window was closed.
 	exit( );
 
-	// Waiting for game logic to destroy.
-	SPIN_LOCK( ( m_systems_alive & system_game_mask ) == system_game_mask );
+	// Reset owned alive event.
+	m_alive_events[event_window].reset( );
+	
+	// Exit from window.
+	m_exit_events[event_window].set( );
+	
+	// Waiting for all engine systems to stop.
+	m_exit_events->wait_for( INFINITE, event_count );
+
+	// Waiting for render to destroy.
+	m_alive_events[event_render].wait_for( );
 
 	m_window.destroy( );
 	sys::g_window_input.destroy( );
-	change_system_alive( system_window );
+	m_alive_events[event_window].set( );
 }
 
 void world::render_thread( )
 {
 	// Waiting for window to create.
-	SPIN_LOCK( ( m_systems_alive & system_window_mask ) == 0 );
+	m_alive_events[event_window].wait_for( );
 
 	ASSERT( ( m_window_dimensions.x < 0x10000 ) && ( m_window_dimensions.y < 0x10000 ) );
 
 	render::g_world.create( (HWND)m_window.get_hwnd( ), m_window_dimensions, true, true );
-	change_system_alive( system_render );
+	m_alive_events[event_render].set( );
 
 	// Waiting for game logic to create.
-	SPIN_LOCK( ( m_systems_alive & system_game_mask ) == 0 );
+	m_alive_events[event_game].wait_for( );
 
 	while ( m_alive )
 		render::g_world.update( );
-	change_system_running( system_render );
+
+	// Reset owned alive event.
+	m_alive_events[event_render].reset( );
+	
+	// Exit from render.
+	m_exit_events[event_render].set( );
+	
+	// Waiting for all engine systems to stop.
+	m_exit_events->wait_for( INFINITE, event_count );
 
 	// Waiting for game logic to destroy.
-	SPIN_LOCK( ( m_systems_alive & system_game_mask ) == system_game_mask );
+	m_alive_events[event_game].wait_for( );
 
 	render::g_world.destroy( );
-	change_system_alive( system_render );
+	m_alive_events[event_render].set( );
 }
 
 void world::game_thread( )
 {
 	// Waiting for all engine systems to create.
-	SPIN_LOCK( ( m_systems_alive & engine_systems_mask ) != engine_systems_mask );
+	m_alive_events->wait_for( INFINITE, system_event_count );
 
 	game::world_interface::create( );
-	change_system_alive( system_game );
+	m_alive_events[event_game].set( );
 
 	while ( m_alive )
 		game::world_interface::update( );
-	change_system_running( system_game );
+	
+	// Reset owned alive event.
+	m_alive_events[event_game].reset( );
+	
+	// Exit from game logic.
+	m_exit_events[event_game].set( );
 
 	// Waiting for all engine systems to stop.
-	SPIN_LOCK( ( m_systems_running & engine_systems_mask ) != 0 );
+	m_exit_events->wait_for( INFINITE, event_count );
 
 	game::world_interface::destroy( );
-	change_system_alive( system_game );
+	m_alive_events[event_game].set( );
 }
 
 void world::create( )
 {
+	static_assert( event_game == event_count - 1, "revisit synchronization code" );
+
 	// Engine is running.
 	m_alive = true;
-	// All systems are not alive yet.
-	m_systems_alive = 0;
-	// All systems are in running state.
-	m_systems_running = ( 1 << system_count ) - 1;
 
 	g_resources.create( );
+
+	for ( u32 i = 0; i < event_count; ++i )
+	{
+		m_alive_events[i].create( false, true );
+		m_exit_events[i].create( false, true );
+	}
 
 	m_threads[thread_window].create( thread::method_helper<world, &world::window_thread>, 1 * Mb, this );
 	m_threads[thread_game].create( thread::method_helper<world, &world::game_thread>, 4 * Mb, this );
@@ -160,6 +183,8 @@ void world::create( )
 void world::destroy( )
 {
 	m_threads->destroy( INFINITE, thread_count );
+	m_alive_events->destroy( event_count );
+	m_exit_events->destroy( event_count );
 	
 	g_resources.destroy( );
 }

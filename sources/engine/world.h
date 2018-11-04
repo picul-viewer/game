@@ -63,6 +63,20 @@ protected:
 		thread_count
 	};
 
+	enum events
+	{
+		event_window = 0,
+		event_render,
+
+		event_game,
+		
+		event_count
+	};
+
+	enum {
+		system_event_count = event_count - 1
+	};
+
 protected:
 	void change_system_alive( system s );
 	void change_system_running( system s );
@@ -71,6 +85,9 @@ protected:
 	sys::window m_window;
 
 	thread m_threads[thread_count];
+	
+	threading_event m_alive_events[event_count];
+	threading_event m_exit_events[event_count];
 
 	math::u32x2 m_window_dimensions;
 	bool m_is_active;

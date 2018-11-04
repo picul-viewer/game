@@ -1,5 +1,5 @@
 #include "thread.h"
-
+#include <macros.h>
 #include <process.h>
 #include <Windows.h>
 
@@ -20,11 +20,13 @@ void thread::destroy( u32 wait_ms )
 
 void thread::destroy( u32 wait_ms, u32 count )
 {
+	ASSERT( count != 0 );
 	WaitForMultipleObjects( count, &m_id, TRUE, wait_ms );
 }
 
 void thread::destroy_any( u32 wait_ms, u32 count )
 {
+	ASSERT( count != 0 );
 	WaitForMultipleObjects( count, &m_id, FALSE, wait_ms );
 }
 
