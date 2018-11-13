@@ -118,6 +118,8 @@ protected:
 
 #define mem_align(n) __declspec(align(n))
 
+#define no_vtable __declspec(novtable)
+
 #define aligned(p, n) ((uptr)p % n == 0)
 
 #endif // #ifndef __core_types_h_included_
