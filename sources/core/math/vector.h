@@ -421,6 +421,9 @@ using s64x2 = vec2<s64>;
 using s64x3 = vec3<s64>;
 using s64x4 = vec4<s64>;
 
+using half2 = vec2<half>;
+using half3 = vec3<half>;
+using half4 = vec4<half>;
 using float2 = vec2<f32>;
 using float3 = vec3<f32>;
 using float4 = vec4<f32>;
