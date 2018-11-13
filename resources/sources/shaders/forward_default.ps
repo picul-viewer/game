@@ -2,6 +2,9 @@
 
 #include "samplers.h"
 
+Texture2D	t_diffuse	: register( t0 );
+Texture2D	t_specular	: register( t1 );
+
 float4 main( in vertex_output input ) : SV_Target0
 {
 	return	t_diffuse.Sample( s_texture_sampler, input.tex_coords );
