@@ -6,10 +6,10 @@
 template<typename T>
 buffer_array<T>::buffer_array( pointer buffer, uptr capacity, uptr size ) :
 	m_begin			( buffer ),
-	m_end			( m_begin + size ),
+	m_end			( m_begin + size )
 
 #ifdef DEBUG
-	m_max_end		( m_begin + capacity )
+	, m_max_end		( m_begin + capacity )
 #endif // #ifdef DEBUG
 { }
 
@@ -78,17 +78,29 @@ T* buffer_array<T>::end( ) const
 }
 
 template<typename T>
-T& buffer_array<T>::operator[]( uptr index )
+T& buffer_array<T>::at( uptr index )
 {
 	ASSERT( m_begin + index < m_end );
 	return m_begin[index];
 }
 
 template<typename T>
-T const& buffer_array<T>::operator[]( uptr index ) const
+T const& buffer_array<T>::at( uptr index ) const
 {
 	ASSERT( m_begin + index < m_end );
 	return m_begin[index];
+}
+
+template<typename T>
+T& buffer_array<T>::operator[]( uptr index )
+{
+	return at( index );
+}
+
+template<typename T>
+T const& buffer_array<T>::operator[]( uptr index ) const
+{
+	return at( index );
 }
 
 template<typename T>

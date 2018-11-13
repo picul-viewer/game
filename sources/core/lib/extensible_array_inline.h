@@ -117,17 +117,29 @@ T* extensible_array<T>::end( ) const
 }
 
 template<typename T>
-T& extensible_array<T>::operator[]( uptr index )
+T& extensible_array<T>::at( uptr index )
 {
 	ASSERT( m_begin + index < m_end );
 	return m_begin[index];
 }
 
 template<typename T>
-T const& extensible_array<T>::operator[]( uptr index ) const
+T const& extensible_array<T>::at( uptr index ) const
 {
 	ASSERT( m_begin + index < m_end );
 	return m_begin[index];
+}
+
+template<typename T>
+T& extensible_array<T>::operator[]( uptr index )
+{
+	return at( index );
+}
+
+template<typename T>
+T const& extensible_array<T>::operator[]( uptr index ) const
+{
+	return at( index );
 }
 
 template<typename T>

@@ -12,6 +12,7 @@ public:
 	void destroy( );
 	
 	pointer data( ) const;
+	pointer data_end( ) const;
 	void clear( );
 
 	pointer allocate( uptr size );
@@ -32,6 +33,7 @@ public:
 	void destroy( );
 	
 	pointer data( ) const;
+	pointer data_end( ) const;
 	void clear( );
 
 	pointer allocate( uptr size );

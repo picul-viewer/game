@@ -24,6 +24,12 @@ pointer linear_allocator<MemorySize>::data( ) const
 }
 
 template<uptr MemorySize>
+pointer linear_allocator<MemorySize>::data_end( ) const
+{
+	return m_last_pointer;
+}
+
+template<uptr MemorySize>
 void linear_allocator<MemorySize>::clear( )
 {
 	m_last_pointer = m_data;
@@ -56,6 +62,12 @@ template<uptr PageSize, uptr PageMaxCount>
 pointer dynamic_linear_allocator<PageSize, PageMaxCount>::data( ) const
 {
 	return m_data;
+}
+
+template<uptr PageSize, uptr PageMaxCount>
+pointer dynamic_linear_allocator<PageSize, PageMaxCount>::data_end( ) const
+{
+	return m_last_pointer;
 }
 
 template<uptr PageSize, uptr PageMaxCount>

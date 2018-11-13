@@ -22,7 +22,9 @@ public:
 
 	T* begin( ) const;
 	T* end( ) const;
-
+	
+	T& at( uptr index );
+	T const& at( uptr index ) const;
 	T& operator[]( uptr index );
 	T const& operator[]( uptr index ) const;
 	

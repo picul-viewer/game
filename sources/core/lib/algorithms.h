@@ -3,6 +3,7 @@
 
 #include <algorithm>
 
+using std::swap;
 using std::sort;
 
 #endif // #ifndef __core_algorithms_h_included_
