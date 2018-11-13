@@ -222,7 +222,8 @@ public:
 	
 	inline void set( ID3D11RenderTargetView* in_view ) { m_rtv = in_view; }
 	inline ID3D11RenderTargetView* const& get( ) const { return m_rtv; }
-
+	
+	void bind( u32 in_count = 1 ) const;
 	void bind( depth_stencil_view in_dsv, u32 in_count = 1 ) const;
 	void clear( math::float4 const& in_value ) const;
 	

@@ -365,6 +365,11 @@ void render_target_view::destroy( )
 	dx_release( m_rtv );
 }
 
+void render_target_view::bind( u32 in_count ) const
+{
+	g_api.get_context( )->OMSetRenderTargets( in_count, &m_rtv, nullptr );
+}
+
 void render_target_view::bind( depth_stencil_view in_dsv, u32 in_count ) const
 {
 	g_api.get_context( )->OMSetRenderTargets( in_count, &m_rtv, in_dsv.get( ) );
