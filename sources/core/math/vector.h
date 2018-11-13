@@ -158,7 +158,7 @@ vec2<T> operator-( vec2<T> const& l, T r ) { return vec2<T>( l.vx - r, l.vy - r 
 template<typename T>
 vec2<T> operator*( vec2<T> const& l, T r ) { return vec2<T>( l.vx * r, l.vy * r ); }
 template<typename T>
-vec2<T> operator/( vec2<T> const& l, T r ) { return l * ( (T)1 / r ); }
+vec2<T> operator/( vec2<T> const& l, T r ) { return vec2<T>( l.vx / r, l.vy / r ); }
 
 template<typename T>
 vec2<T> operator+( T l, vec2<T> const& r ) { return vec2<T>( l + r.vx, l + r.vy ); }
@@ -185,7 +185,7 @@ vec2<T>& vec2<T>::operator-=( T r ) { vx -= r; vy -= r; return *this; }
 template<typename T>
 vec2<T>& vec2<T>::operator*=( T r ) { vx *= r; vy *= r; return *this; }
 template<typename T>
-vec2<T>& vec2<T>::operator/=( T r ) { return l *= ( (T)1 / r ); }
+vec2<T>& vec2<T>::operator/=( T r ) { vx /= r; vy /= r; return *this; }
 
 
 template<typename T>
@@ -230,7 +230,7 @@ vec3<T> operator-( vec3<T> const& l, T r ) { return vec3<T>( l.vx - r, l.vy - r 
 template<typename T>
 vec3<T> operator*( vec3<T> const& l, T r ) { return vec3<T>( l.vx * r, l.vy * r ); }
 template<typename T>
-vec3<T> operator/( vec3<T> const& l, T r ) { return l * ( (T)1 / r ); }
+vec3<T> operator/( vec3<T> const& l, T r ) { return vec3<T>( l.vx / r, l.vy / r ); }
 
 template<typename T>
 vec3<T> operator+( T l, vec3<T> const& r ) { return vec3<T>( l + r.vx, l + r.vy ); }
@@ -257,7 +257,7 @@ vec3<T>& vec3<T>::operator-=( T r ) { vx -= r; vy -= r; return *this; }
 template<typename T>
 vec3<T>& vec3<T>::operator*=( T r ) { vx *= r; vy *= r; return *this; }
 template<typename T>
-vec3<T>& vec3<T>::operator/=( T r ) { return l *= ( (T)1 / r ); }
+vec3<T>& vec3<T>::operator/=( T r ) { vx /= r; vy /= r; return *this; }
 
 
 template<typename T>
@@ -302,7 +302,7 @@ vec4<T> operator-( vec4<T> const& l, T r ) { return vec4<T>( l.vx - r, l.vy - r 
 template<typename T>
 vec4<T> operator*( vec4<T> const& l, T r ) { return vec4<T>( l.vx * r, l.vy * r ); }
 template<typename T>
-vec4<T> operator/( vec4<T> const& l, T r ) { return l * ( (T)1 / r ); }
+vec4<T> operator/( vec4<T> const& l, T r ) { return vec4<T>( l.vx / r, l.vy / r ); }
 
 template<typename T>
 vec4<T> operator+( T l, vec4<T> const& r ) { return vec4<T>( l + r.vx, l + r.vy ); }
@@ -329,7 +329,7 @@ vec4<T>& vec4<T>::operator-=( T r ) { vx -= r; vy -= r; return *this; }
 template<typename T>
 vec4<T>& vec4<T>::operator*=( T r ) { vx *= r; vy *= r; return *this; }
 template<typename T>
-vec4<T>& vec4<T>::operator/=( T r ) { return l *= ( (T)1 / r ); }
+vec4<T>& vec4<T>::operator/=( T r ) { vx /= r; vy /= r; return *this; }
 
 
 template<typename T>

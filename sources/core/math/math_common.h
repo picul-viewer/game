@@ -163,7 +163,7 @@ public:
 	inline half( float n )
 	{
 		u32 x = *(u32*)&n;
-		u16 h = ( ( x >> 16 ) & 0x8000 ) | ( ( ( ( x & 0x7F800000 ) - 0x38000000) >> 13 ) & 0x7C00 ) | ( ( x >> 13 ) & 0x03FF );
+		data = ( ( x >> 16 ) & 0x8000 ) | ( ( ( ( x & 0x7F800000 ) - 0x38000000) >> 13 ) & 0x7C00 ) | ( ( x >> 13 ) & 0x03FF );
 	}
 	
 	inline operator float( )
