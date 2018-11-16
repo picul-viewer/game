@@ -26,91 +26,7 @@ void resources::create( )
 	create_default_meshes( );
 	create_default_constant_buffers( );
 
-
-	{
-#ifdef DEBUG
-		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			GET_RESOURCE_PATH( "shaders\\debug_5_0\\vertex" ) :
-			GET_RESOURCE_PATH( "shaders\\debug_4_0\\vertex" );
-#else
-		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			GET_RESOURCE_PATH( "shaders\\release_5_0\\vertex" ) :
-			GET_RESOURCE_PATH( "shaders\\release_4_0\\vertex" );
-#endif // #ifdef DEBUG
-
-		m_vertex_shader_container.create( root_path );
-	}
-	
-	{
-#ifdef DEBUG
-		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			GET_RESOURCE_PATH( "shaders\\debug_5_0\\pixel" ) :
-			GET_RESOURCE_PATH( "shaders\\debug_4_0\\pixel" );
-#else
-		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			GET_RESOURCE_PATH( "shaders\\release_5_0\\pixel" ) :
-			GET_RESOURCE_PATH( "shaders\\release_4_0\\pixel" );
-#endif // #ifdef DEBUG
-
-		m_pixel_shader_container.create( root_path );
-	}
-	
-	{
-#ifdef DEBUG
-		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			GET_RESOURCE_PATH( "shaders\\debug_5_0\\geometry" ) :
-			GET_RESOURCE_PATH( "shaders\\debug_4_0\\geometry" );
-#else
-		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			GET_RESOURCE_PATH( "shaders\\release_5_0\\geometry" ) :
-			GET_RESOURCE_PATH( "shaders\\release_4_0\\geometry" );
-#endif // #ifdef DEBUG
-
-		m_geometry_shader_container.create( root_path );
-	}
-	
-	{
-#ifdef DEBUG
-		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			GET_RESOURCE_PATH( "shaders\\debug_5_0\\hull" ) :
-			GET_RESOURCE_PATH( "shaders\\debug_4_0\\hull" );
-#else
-		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			GET_RESOURCE_PATH( "shaders\\release_5_0\\hull" ) :
-			GET_RESOURCE_PATH( "shaders\\release_4_0\\hull" );
-#endif // #ifdef DEBUG
-
-		m_hull_shader_container.create( root_path );
-	}
-	
-	{
-#ifdef DEBUG
-		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			GET_RESOURCE_PATH( "shaders\\debug_5_0\\domain" ) :
-			GET_RESOURCE_PATH( "shaders\\debug_4_0\\domain" );
-#else
-		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			GET_RESOURCE_PATH( "shaders\\release_5_0\\domain" ) :
-			GET_RESOURCE_PATH( "shaders\\release_4_0\\domain" );
-#endif // #ifdef DEBUG
-
-		m_domain_shader_container.create( root_path );
-	}
-	
-	{
-#ifdef DEBUG
-		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			GET_RESOURCE_PATH( "shaders\\debug_5_0\\vertex" ) :
-			GET_RESOURCE_PATH( "shaders\\debug_4_0\\vertex" );
-#else
-		char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
-			GET_RESOURCE_PATH( "shaders\\release_5_0\\vertex" ) :
-			GET_RESOURCE_PATH( "shaders\\release_4_0\\vertex" );
-#endif // #ifdef DEBUG
-
-		m_compute_shader_container.create( root_path );
-	}
-
+	create_shaders( );
 
 	m_render_object_allocator.create( );
 
@@ -136,13 +52,8 @@ void resources::destroy( )
 	destroy_default_meshes( );
 	destroy_default_constant_buffers( );
 	
-	m_vertex_shader_container.destroy( );
-	m_pixel_shader_container.destroy( );
-	m_geometry_shader_container.destroy( );
-	m_hull_shader_container.destroy( );
-	m_domain_shader_container.destroy( );
-	m_compute_shader_container.destroy( );
-	
+	destroy_shaders( );
+
 	m_render_object_allocator.destroy( );
 
 	m_resource_path_registry.destroy( virtual_allocator( ) );
@@ -238,6 +149,39 @@ void resources::create_default_constant_buffers( )
 	ASSERT( constant_buffer_index == default_constant_buffer_type_count );
 }
 
+void resources::create_shaders( )
+{
+#ifdef DEBUG
+	char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
+		GET_RESOURCE_PATH( "shaders\\debug_5_0" ) :
+		GET_RESOURCE_PATH( "shaders\\debug_4_0" );
+#else
+	char const* root_path = ( g_api.get_feature_level( ) == D3D_FEATURE_LEVEL_11_0 ) ?
+		GET_RESOURCE_PATH( "shaders\\release_5_0" ) :
+		GET_RESOURCE_PATH( "shaders\\release_4_0" );
+#endif // #ifdef DEBUG
+
+	sys::file f( root_path, sys::file::open_read );
+	ASSERT( f.is_valid( ) );
+
+	uptr const size = f.size( );
+	pvoid const data = virtual_allocator( ).allocate( size );
+
+	f.read( data, size );
+	f.close( );
+
+	binary_config cfg( data, size );
+
+	m_vertex_shader_container.create( cfg );
+	m_pixel_shader_container.create( cfg );
+	m_geometry_shader_container.create( cfg );
+	m_hull_shader_container.create( cfg );
+	m_domain_shader_container.create( cfg );
+	m_compute_shader_container.create( cfg );
+
+	virtual_allocator( ).deallocate( data );
+}
+
 void resources::destroy_default_samplers( )
 {
 	for ( u32 i = 0; i < default_sampler_type_count; ++i )
@@ -254,6 +198,16 @@ void resources::destroy_default_constant_buffers( )
 {
 	for ( u32 i = 0; i < default_constant_buffer_type_count; ++i )
 		m_default_constant_buffers[i].destroy( );
+}
+
+void resources::destroy_shaders( )
+{
+	m_vertex_shader_container.destroy( );
+	m_pixel_shader_container.destroy( );
+	m_geometry_shader_container.destroy( );
+	m_hull_shader_container.destroy( );
+	m_domain_shader_container.destroy( );
+	m_compute_shader_container.destroy( );
 }
 
 sampler& resources::get_default_sampler( u32 in_index )

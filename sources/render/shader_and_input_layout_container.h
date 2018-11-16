@@ -2,20 +2,21 @@
 #define __render_shader_and_input_layout_container_h_included_
 
 #include <types.h>
+#include <lib/binary_config.h>
 #include "input_layout.h"
 
 namespace render {
 
-template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax, typename ShaderPathProvider>
+template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax>
 class shader_and_input_layout_container
 {
 public:
 	shader_and_input_layout_container( );
 	
-	void create( pcstr in_root_path );
+	void create( binary_config& in_config );
 	void destroy( );
 
-	ShaderType operator[]( uptr in_index );
+	ShaderType operator[]( ShaderEnumerator const in_index );
 
 protected:
 	// To avoid zero-elemets-array error.

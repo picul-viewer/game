@@ -120,6 +120,9 @@ protected:
 	void create_default_constant_buffers( );
 	void destroy_default_constant_buffers( );
 
+	void create_shaders( );
+	void destroy_shaders( );
+
 protected:
 	render_target_view			m_backbuffer;
 	render_target_tex2d			m_depth_buffer;

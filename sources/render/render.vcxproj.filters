@@ -180,9 +180,6 @@
     <ClCompile Include="profiler.cpp">
       <Filter>renderer\utils\statistics</Filter>
     </ClCompile>
-    <ClCompile Include="shader_containers.cpp">
-      <Filter>resources\utils\shaders</Filter>
-    </ClCompile>
     <ClCompile Include="render_model_mesh.cpp">
       <Filter>resources\cached_resources\models\mesh</Filter>
     </ClCompile>

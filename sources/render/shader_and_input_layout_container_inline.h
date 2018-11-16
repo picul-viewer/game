@@ -10,8 +10,8 @@
 
 namespace render {
 
-template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax, typename ShaderPathProvider>
-shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathProvider>::shader_and_input_layout_container( )
+template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax>
+shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::shader_and_input_layout_container( )
 {
 #ifdef DEBUG
 	m_created = false;
@@ -20,61 +20,20 @@ shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumerator
 #endif // #ifdef DEBUG
 }
 
-template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax, typename ShaderPathProvider>
-void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathProvider>::create( pcstr in_root_path )
+template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax>
+void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::create( binary_config& in_config )
 {
 	ASSERT( m_created == false );
 
-	uptr const max_shader_size = 128 * Kb;
-	pvoid const memory = stack_allocate( max_shader_size );
-
 	for ( uptr i = 0; i < ShaderEnumeratorMax; ++i )
 	{
-		weak_const_string name = ShaderPathProvider::get( (ShaderEnumerator)i );
-		uptr const length = name.length( );
+		u32 const shader_size = in_config.read<u32>( );
+		vertex_type const vtype = (vertex_type)in_config.read<u8>( );
+		pvoid const data = in_config.read_data( shader_size );
 
-		// Assume that vertex type defined in LSByte of configuration.
-		u8 vtype = 0;
-
-		ASSERT( length > 2 );
-
-		{
-			char c = name[length - 2];
-			if ( ( c >= '0' ) && ( c <= '9' ) )
-				vtype += 16 * ( c - '0' );
-			else
-			{
-				ASSERT( ( c >= 'A' ) && ( c <= 'F' ) );
-				vtype += 16 * ( c - 'A' + 10 );
-			}
-		}
-
-		{
-			char c = name[length - 1];
-			if ( ( c >= '0' ) && ( c <= '9' ) )
-				vtype += c - '0';
-			else
-			{
-				ASSERT( ( c >= 'A' ) && ( c <= 'F' ) );
-				vtype += c - 'A' + 10;
-			}
-		}
-
-		sys::path p = in_root_path;
-		p += name;
-
-		sys::file f( p.c_str( ), sys::file::open_read );
-		ASSERT( f.is_valid( ) );
-
-		uptr const shader_size = f.size( );
-		ASSERT( shader_size < max_shader_size );
-		f.read( memory, shader_size );
-
-		f.close( );
-
-		m_shaders[i].create( memory, shader_size,
-							 get_vertex_type_desc( (vertex_type)vtype ),
-							 get_vertex_type_desc_size( (vertex_type)vtype ) );
+		m_shaders[i].create( data, shader_size,
+							 get_vertex_type_desc( vtype ),
+							 get_vertex_type_desc_size( vtype ) );
 	}
 
 #ifdef DEBUG
@@ -82,8 +41,8 @@ void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnume
 #endif // #ifdef DEBUG
 }
 
-template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax, typename ShaderPathProvider>
-void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathProvider>::destroy( )
+template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax>
+void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::destroy( )
 {
 	ASSERT( m_created == true );
 
@@ -91,8 +50,8 @@ void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnume
 		m_shaders[i].destroy( );
 }
 
-template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax, typename ShaderPathProvider>
-ShaderType shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathProvider>::operator[]( uptr in_index )
+template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax>
+ShaderType shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::operator[]( ShaderEnumerator const in_index )
 {
 	ASSERT( m_created == true );
 	ASSERT( in_index < ShaderEnumeratorMax );

@@ -12,8 +12,8 @@
 
 namespace render {
 
-template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax, typename ShaderPathProvider>
-shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathProvider>::shader_container( )
+template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax>
+shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::shader_container( )
 {
 #ifdef DEBUG
 	m_created = false;
@@ -22,29 +22,17 @@ shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathPr
 #endif // #ifdef DEBUG
 }
 
-template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax, typename ShaderPathProvider>
-void shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathProvider>::create( pcstr in_root_path )
+template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax>
+void shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::create( binary_config& in_config  )
 {
 	ASSERT( m_created == false );
 
-	uptr const max_shader_size = 128 * Kb;
-	pvoid const memory = stack_allocate( max_shader_size );
-
 	for ( uptr i = 0; i < ShaderEnumeratorMax; ++i )
 	{
-		sys::path p = in_root_path;
-		p += ShaderPathProvider::get( (ShaderEnumerator)i );
+		u32 const shader_size = in_config.read<u32>( );
+		pvoid const data = in_config.read_data( shader_size );
 
-		sys::file f( p.c_str( ), sys::file::open_read );
-		ASSERT( f.is_valid( ) );
-
-		uptr const shader_size = f.size( );
-		ASSERT( shader_size < max_shader_size );
-		f.read( memory, shader_size );
-
-		f.close( );
-
-		m_shaders[i].create( memory, shader_size );
+		m_shaders[i].create( data, shader_size );
 	}
 
 #ifdef DEBUG
@@ -52,8 +40,8 @@ void shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderP
 #endif // #ifdef DEBUG
 }
 
-template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax, typename ShaderPathProvider>
-void shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathProvider>::destroy( )
+template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax>
+void shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::destroy( )
 {
 	ASSERT( m_created == true );
 
@@ -61,8 +49,8 @@ void shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderP
 		m_shaders[i].destroy( );
 }
 
-template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax, typename ShaderPathProvider>
-ShaderType shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderPathProvider>::operator[]( uptr in_index )
+template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax>
+ShaderType shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::operator[]( ShaderEnumerator const in_index )
 {
 	ASSERT( m_created == true );
 	ASSERT( in_index < ShaderEnumeratorMax );

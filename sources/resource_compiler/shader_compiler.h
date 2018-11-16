@@ -1,6 +1,7 @@
 #ifndef __resource_compiler_shader_compiler_h_included_
 #define __resource_compiler_shader_compiler_h_included_
 
+#include <types.h>
 #include <lib/weak_string.h>
 
 namespace resource_compiler {

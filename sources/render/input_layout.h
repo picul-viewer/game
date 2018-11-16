@@ -7,7 +7,7 @@ struct D3D11_INPUT_ELEMENT_DESC;
 
 namespace render {
 
-enum vertex_type
+enum vertex_type : u8
 {
 	vertex_type_position_2d = 0,
 	vertex_type_position,

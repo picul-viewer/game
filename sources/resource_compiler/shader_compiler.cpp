@@ -1,12 +1,120 @@
 #include "shader_compiler.h"
 
 #include <lib/allocator.h>
-#include <lib/weak_string.h>
 #include <lib/fixed_string.h>
+#include <lib/linear_allocator.h>
+#include <lib/weak_string.h>
 
 #include <render/shader_containers.h>
 
 #include <d3dcompiler.h>
+
+using namespace render;
+
+#pragma warning( push )
+#pragma warning( disable : 4065 )
+
+struct vertex_shader_data_provider
+{
+	static pcstr get( vertex_shader_type type, u64& parameters )
+	{
+		switch ( type )
+		{
+		case vertex_shader_forward_default:
+		{
+			vertex_type const vtype = vertex_type_mesh;
+
+			parameters = vtype;
+
+			return "forward_default.vs";
+		}
+		default:
+			UNREACHABLE_CODE
+		}
+	
+		return nullptr;
+	}
+};
+
+struct pixel_shader_data_provider
+{
+	static pcstr get( pixel_shader_type type, u64& parameters )
+	{
+		switch ( type )
+		{
+		case pixel_shader_forward_default:
+		{
+			vertex_type const vtype = vertex_type_mesh;
+
+			parameters = vtype;
+
+			return "forward_default.ps";
+		}
+		default:
+			UNREACHABLE_CODE
+		}
+
+		return nullptr;
+	}
+};
+
+struct geometry_shader_data_provider
+{
+	static pcstr get( geometry_shader_type type, u64& parameters )
+	{
+		switch ( type )
+		{
+		default:
+			UNREACHABLE_CODE
+		}
+	
+		return nullptr;
+	}
+};
+
+struct hull_shader_data_provider
+{
+	static pcstr get( hull_shader_type type, u64& parameters )
+	{
+		switch ( type )
+		{
+		default:
+			UNREACHABLE_CODE
+		}
+	
+		return nullptr;
+	}
+};
+
+struct domain_shader_data_provider
+{
+	static pcstr get( domain_shader_type type, u64& parameters )
+	{
+		switch ( type )
+		{
+		default:
+			UNREACHABLE_CODE
+		}
+	
+		return nullptr;
+	}
+};
+
+struct compute_shader_data_provider
+{
+	static pcstr get( compute_shader_type type, u64& parameters )
+	{
+		switch ( type )
+		{
+		default:
+			UNREACHABLE_CODE
+		}
+	
+		return nullptr;
+	}
+};
+
+#pragma warning( pop )
 
 namespace resource_compiler {
 
@@ -16,164 +124,168 @@ void shader_compiler::create( weak_const_string const version, bool const debug 
 	m_debug		= debug;
 }
 
-static inline bool verify_config_number( pcstr const shader_name, uptr const length, pcstr const shader_type_string )
+little_string shader_parameters_to_string( u64 parameters )
 {
-	pcstr iter = shader_name + length - 1;
+	little_string s = "0x0000000000000000";
 
-	for ( u8 j = 16; j; --j, --iter )
+	for ( uptr i = s.length() - 1; parameters; --i, parameters >>= 4 )
 	{
-		if ( ( ( *iter < '0' ) || ( *iter > '9' ) ) && ( ( *iter < 'A' ) || ( *iter > 'F' ) ) )
-		{
-			LOG( "shader_compiler: bad shader configuration defined for %s shader \"%s\"\n", shader_type_string, shader_name );
-			return false;
-		}
+		u8 const char_value = parameters & 0xF;
+		s[i] = ( char_value < 10 ) ? ( '0' + char_value ) : ( 'A' + char_value - 10 );
 	}
 
-	// Verify underscore symbol before configuration number
-	if ( *iter != '_' )
-	{
-		LOG( "shader_compiler: bad shader configuration ( missing '_' ) defined for %s shader \"%s\"\n", shader_type_string, shader_name );
-		return false;
-	}
-
-	return true;
+	return s;
 }
 
-template<typename PathProvider, typename ShaderType>
+template<typename ShaderDataProvider, typename ShaderType, bool WriteVertexType>
 static inline void compile_shaders( weak_const_string const input_directory,
-									weak_const_string const output_directory,
+									weak_const_string const shaders_mode,
 									uptr const shader_count,
 									pcstr const shader_type,
-									pcstr const file_extension,
 									pcstr const shader_target,
 									pcstr const version,
-									bool const is_debug )
+									bool const is_debug,
+									dynamic_linear_allocator<Memory_Page_Size, 16384>& shader_data )
 {
-	little_string const common_output_folder = little_string( is_debug ? "debug_" : "release_" ) + version;
-
+	for ( u32 i = 0; i < shader_count; ++i )
 	{
-		sys::path vertex_output_path( output_directory ); 
-		vertex_output_path += common_output_folder;
-		vertex_output_path += shader_type;
-		
-		vertex_output_path.create_directory( );
+		u64 parameters = 0;
+		weak_const_string const shader_name = ShaderDataProvider::get( (ShaderType)i, parameters );
+		uptr const shader_name_length = shader_name.length( );
 
-		for ( u32 i = 0; i < shader_count; ++i )
+		sys::path input_path( input_directory );
+		input_path += shader_name;
+
+		sys::file input( input_path.c_str( ), sys::file::open_read );
+		if ( !input.is_valid( ) )
 		{
-			weak_const_string const shader_name = PathProvider::get( (ShaderType)i );
-			uptr const shader_name_length = shader_name.length( );
+			LOG( "shader_compiler: unable to open source file for %s shader: \"%s\"\n", shader_type, shader_name );
+			continue;
+		}
 
-			if ( !verify_config_number( shader_name, shader_name_length, shader_type ) )
-				continue;
+		uptr const input_file_size = input.size( );
 
-			little_string const shader_file_name = little_string( shader_name ).copy( 0, shader_name_length - 17 ) + file_extension;
+		pvoid const data = stack_allocate( input_file_size );
+		input.read( data, input_file_size );
+		input.close( );
 
-			sys::path input_path( input_directory );
-			input_path += shader_file_name;
+		little_string const& config = shader_parameters_to_string( parameters );
+		D3D_SHADER_MACRO macros[2];
+		macros[0].Name = "CONFIGURATION";
+		macros[0].Definition = config;
+		macros[1].Name = nullptr;
+		macros[1].Definition = nullptr;
 
-			sys::file input( input_path.c_str( ), sys::file::open_read );
-			if ( !input.is_valid( ) )
+		u32 const flags = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR |
+			( is_debug ? ( D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION ) : D3DCOMPILE_OPTIMIZATION_LEVEL3 );
+
+		ID3DBlob* result_code = nullptr;
+		ID3DBlob* result_errors = nullptr;
+
+		HRESULT const result = D3DCompile( data, input_file_size, input_path.c_str( ), macros,
+											D3D_COMPILE_STANDARD_FILE_INCLUDE, "main",
+											shader_target, flags, 0, &result_code, &result_errors );
+
+		if ( SUCCEEDED( result ) )
+		{
+			if ( result_errors )
 			{
-				LOG( "shader_compiler: unable to open source file for %s shader: \"%s\"\n", shader_type, shader_name );
-				continue;
-			}
+				LOG( "shader_compiler: warnings occured when compiling %s shader: \"%s\"\n"
+						"%s"
+						"-----------------------------------------------------------------------------------\n",
+						shader_type, shader_name, (pcstr)result_errors->GetBufferPointer( ) );
 
-			uptr const input_file_size = input.size( );
-
-			pvoid const data = stack_allocate( input_file_size );
-			input.read( data, input_file_size );
-			input.close( );
-
-			little_string const config = little_string( "0x" ) + (pcstr)( shader_name - 16 );
-			D3D_SHADER_MACRO macros[2];
-			macros[0].Name = "CONFIGURATION";
-			macros[0].Definition = config;
-			macros[1].Name = nullptr;
-			macros[1].Definition = nullptr;
-
-			u32 const flags = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR |
-				( is_debug ? ( D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION ) : D3DCOMPILE_OPTIMIZATION_LEVEL3 );
-
-			ID3DBlob* result_code = nullptr;
-			ID3DBlob* result_errors = nullptr;
-
-			HRESULT const result = D3DCompile( data, input_file_size, input_path.c_str( ), macros,
-											   D3D_COMPILE_STANDARD_FILE_INCLUDE, "main",
-											   shader_target, flags, 0, &result_code, &result_errors );
-
-			if ( SUCCEEDED( result ) )
-			{
-				if ( result_errors )
-				{
-					LOG( "shader_compiler: warnings occured when compiling %s shader: \"%s\"\n"
-						 "%s"
-						 "-----------------------------------------------------------------------------------\n",
-						 shader_type, shader_name, (pcstr)result_errors->GetBufferPointer( ) );
-
-					result_errors->Release( );
-				}
-				else
-					LOG( "shader_compiler: %s shader (%s) compiled successfully: \"%s\"\n", shader_type, common_output_folder.c_str( ), shader_name );
-
-				ASSERT( result_code );
-
-				sys::path const output_path = vertex_output_path + shader_name;
-
-				sys::file output( output_path.c_str( ), sys::file::open_write );
-				
-				output.write( result_code->GetBufferPointer( ), result_code->GetBufferSize( ) );
-				output.close( );
-				
-				result_code->Release( );
+				result_errors->Release( );
 			}
 			else
+				LOG( "shader_compiler: %s shader (%s) compiled successfully: \"%s\"\n", shader_type, shaders_mode.c_str( ), shader_name );
+
+			ASSERT( result_code );
+
+			pvoid const result_data = result_code->GetBufferPointer( );
+			uptr const result_size_uptr = result_code->GetBufferSize( );
+			ASSERT( result_size_uptr < 4 * Gb );
+			u32 const result_size = (u32)result_size_uptr;
+
+			uptr const output_size = sizeof(u32) + result_size_uptr + ( WriteVertexType ? sizeof(u8) : 0 );
+			pointer const output_ptr = shader_data.allocate( output_size );
+			
+			binary_config cfg( output_ptr, output_size );
+			cfg.write( result_size );
+
+			if ( WriteVertexType )
+				cfg.write( (u8)( parameters & 0xFF ) );
+
+			cfg.write_data( result_data, result_size_uptr );
+
+			result_code->Release( );
+		}
+		else
+		{
+			if ( result_errors )
 			{
-				if ( result_errors )
-				{
-					LOG( "shader_compiler: errors occured when compiling %s shader: \"%s\"\n"
-						 "%s"
-						 "-----------------------------------------------------------------------------------\n",
-						 shader_type, shader_name, (pcstr)result_errors->GetBufferPointer( ) );
+				LOG( "shader_compiler: errors occured when compiling %s shader: \"%s\"\n"
+						"%s"
+						"-----------------------------------------------------------------------------------\n",
+						shader_type, shader_name, (pcstr)result_errors->GetBufferPointer( ) );
 					
-					result_errors->Release( );
-				}
-				else
-					LOG( "shader_compiler: unknown error when compiling %s shader: \"%s\"\n", shader_type, shader_name );
-				
-				if ( result_code )
-					result_code->Release( );
+				result_errors->Release( );
 			}
+			else
+				LOG( "shader_compiler: unknown error when compiling %s shader: \"%s\"\n", shader_type, shader_name );
+				
+			if ( result_code )
+				result_code->Release( );
 		}
 	}
 }
 
 void shader_compiler::compile( weak_const_string const input_directory, weak_const_string const output_directory )
 {
-	using namespace render::__render_shader_containers_detail;
+	dynamic_linear_allocator<Memory_Page_Size, 16384> shader_data;
+	shader_data.create( );
+	
+	little_string const& shaders_mode = little_string( m_debug ? "debug_" : "release_" ) + m_version;
 
-	compile_shaders<vertex_shader_path_provider, render::vertex_shader_type>(
-		input_directory, output_directory, render::vertex_shader_type_count,
-		"vertex", ".vs", little_string( "vs_" ) + m_version, m_version, m_debug );
+	compile_shaders<vertex_shader_data_provider, vertex_shader_type, true>(
+		input_directory, shaders_mode, vertex_shader_type_count, "vertex",
+		little_string( "vs_" ) + m_version, m_version, m_debug, shader_data );
 
-	compile_shaders<pixel_shader_path_provider, render::pixel_shader_type>(
-		input_directory, output_directory, render::pixel_shader_type_count,
-		"pixel", ".ps", little_string( "ps_" ) + m_version, m_version, m_debug );
+	compile_shaders<pixel_shader_data_provider, pixel_shader_type, false>(
+		input_directory, shaders_mode, pixel_shader_type_count, "pixel",
+		little_string( "ps_" ) + m_version, m_version, m_debug, shader_data );
 	
-	compile_shaders<geometry_shader_path_provider, render::geometry_shader_type>(
-		input_directory, output_directory, render::geometry_shader_type_count,
-		"geometry", ".gs", little_string( "gs_" ) + m_version, m_version, m_debug );
+	compile_shaders<geometry_shader_data_provider, geometry_shader_type, false>(
+		input_directory, shaders_mode, geometry_shader_type_count, "geometry",
+		little_string( "gs_" ) + m_version, m_version, m_debug, shader_data );
 	
-	compile_shaders<hull_shader_path_provider, render::hull_shader_type>(
-		input_directory, output_directory, render::hull_shader_type_count,
-		"hull", ".hs", little_string( "hs_" ) + m_version, m_version, m_debug );
+	compile_shaders<hull_shader_data_provider, hull_shader_type, false>(
+		input_directory, shaders_mode, hull_shader_type_count, "hull",
+		little_string( "hs_" ) + m_version, m_version, m_debug, shader_data );
 	
-	compile_shaders<domain_shader_path_provider, render::domain_shader_type>(
-		input_directory, output_directory, render::domain_shader_type_count,
-		"domain", ".ds", little_string( "ds_" ) + m_version, m_version, m_debug );
+	compile_shaders<domain_shader_data_provider, domain_shader_type, false>(
+		input_directory, shaders_mode, domain_shader_type_count, "domain",
+		little_string( "ds_" ) + m_version, m_version, m_debug, shader_data );
 	
-	compile_shaders<compute_shader_path_provider, render::compute_shader_type>(
-		input_directory, output_directory, render::compute_shader_type_count,
-		"compute", ".cs", little_string( "cs_" ) + m_version, m_version, m_debug );
+	compile_shaders<compute_shader_data_provider, compute_shader_type, false>(
+		input_directory, shaders_mode, compute_shader_type_count, "compute",
+		little_string( "cs_" ) + m_version, m_version, m_debug, shader_data );
+	
+	sys::path output_path( output_directory );
+	output_path.create_directory( );
+	output_path += shaders_mode;
+	
+	sys::file f( output_path.c_str( ), sys::file::open_write );
+	if ( !f.is_valid( ) )
+	{
+		LOG( "shader_compiler: unable to write compiled shaders" );
+		return;
+	}
+
+	f.write( shader_data.data(), shader_data.data_end( ) - shader_data.data( ) );
+	f.close( );
+
+	shader_data.destroy( );
 }
 
 } // namespace resource_compiler

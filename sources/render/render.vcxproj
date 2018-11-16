@@ -144,7 +144,6 @@
     <ClCompile Include="render_object_allocator.cpp" />
     <ClCompile Include="parameters.cpp" />
     <ClCompile Include="resource_path_registry.cpp" />
-    <ClCompile Include="shader_containers.cpp" />
     <ClCompile Include="stage_forward_default.cpp" />
     <ClCompile Include="stage_initialization.cpp" />
     <ClCompile Include="renderer.cpp" />
