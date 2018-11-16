@@ -3,20 +3,20 @@
 
 #include <types.h>
 
-struct mem_allocator
+struct std_allocator
 {
-	inline pointer allocate( uptr size );
-	inline void deallocate( pointer p );
+	pointer allocate( uptr size );
+	void deallocate( pointer p );
 };
 
 template<uptr alignment>
-struct aligned_mem_allocator
+struct aligned_std_allocator
 {
 	inline pointer allocate( uptr size );
 	inline void deallocate( pointer p );
 };
 
-struct virtual_mem_allocator
+struct virtual_allocator
 {
 	template<uptr MemorySize>
 	struct memory_size_helper
@@ -32,6 +32,8 @@ struct virtual_mem_allocator
 	pointer allocate( uptr size );
 	void deallocate( pointer p );
 };
+
+#define stack_allocate( n ) (pointer)_alloca( n )
 
 #include "allocator_inline.h"
 

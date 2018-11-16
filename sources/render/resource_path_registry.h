@@ -50,8 +50,8 @@ struct resource_path_registry_key_value_store_index
 
 	static const pointer null_value;
 
-	static pointer get( mem_allocator&, value_type index );
-	static value_type index_of( mem_allocator&, pointer kv );
+	static pointer get( std_allocator&, value_type index );
+	static value_type index_of( std_allocator&, pointer kv );
 };
 
 } // namespace __render_resource_path_registry
@@ -62,7 +62,7 @@ typedef hash_map_template<
 	__render_resource_path_registry::resource_path_registry_key_equal_pred,
 	__render_resource_path_registry::resource_path_registry_key_value_store,
 	__render_resource_path_registry::resource_path_registry_key_value_store_index,
-	mem_allocator> resource_path_registry;
+	std_allocator> resource_path_registry;
 
 } // namespace render
 

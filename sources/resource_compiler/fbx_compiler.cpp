@@ -150,7 +150,7 @@ static inline bool process_mesh( FbxMesh* const mesh, VertexType*& vertices, u32
 
 	u32 const polygon_count = mesh->GetPolygonCount( );
 
-	u32* const indices_data = mem_allocator( ).allocate( polygon_count * 3 * sizeof(u32) );
+	u32* const indices_data = std_allocator( ).allocate( polygon_count * 3 * sizeof(u32) );
 
 	for ( u32 i = 0; i < polygon_count; ++i )
 	{
@@ -171,7 +171,7 @@ static inline bool process_mesh( FbxMesh* const mesh, VertexType*& vertices, u32
 		}
 	}
 
-	VertexType* const vertices_data = mem_allocator( ).allocate( current_index * sizeof(VertexType) );
+	VertexType* const vertices_data = std_allocator( ).allocate( current_index * sizeof(VertexType) );
 
 	for ( auto i = vertices_map.begin( ), l = vertices_map.end( ); i != l; ++i )
 		vertices_data[i->second] = i->first;
@@ -216,7 +216,7 @@ static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u3
 
 	u32 const total_size = sizeof(u32) + indices_size + sizeof(u32) + vertices_size;
 
-	pointer const file_data = mem_allocator( ).allocate( total_size );
+	pointer const file_data = std_allocator( ).allocate( total_size );
 	
 	u32 index_data = index_count;
 	index_data |= configure_mask;
@@ -239,9 +239,9 @@ static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u3
 	f.write( file_data, total_size );
 	f.close( );
 
-	mem_allocator( ).deallocate( vertices );
-	mem_allocator( ).deallocate( indices );
-	mem_allocator( ).deallocate( file_data );
+	std_allocator( ).deallocate( vertices );
+	std_allocator( ).deallocate( indices );
+	std_allocator( ).deallocate( file_data );
 }
 
 void fbx_compiler::compile( u64 relevant_date, weak_const_string input_file_name, weak_const_string output_directory )

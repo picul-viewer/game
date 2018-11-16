@@ -13,8 +13,8 @@ void extensible_array<T>::create( uptr capacity, uptr size )
 	uptr const size_in_bytes		= size * sizeof(T) + Memory_Page_Size - 1;
 	uptr const size_to_allocate		= size_in_bytes - size_in_bytes % Memory_Page_Size;
 
-	m_begin							= virtual_mem_allocator( ).reserve( nullptr, capacity_to_allocate );
-	virtual_mem_allocator( ).commit	( m_begin, size_to_allocate );
+	m_begin							= virtual_allocator( ).reserve( nullptr, capacity_to_allocate );
+	virtual_allocator( ).commit	( m_begin, size_to_allocate );
 
 	m_end							= m_begin + size;
 	m_max_end						= m_begin + capacity;
@@ -23,7 +23,7 @@ void extensible_array<T>::create( uptr capacity, uptr size )
 template<typename T>
 void extensible_array<T>::destroy( )
 {
-	virtual_mem_allocator( ).release( m_begin );
+	virtual_allocator( ).release( m_begin );
 }
 
 template<typename T>
@@ -41,7 +41,7 @@ T& extensible_array<T>::emplace_back( )
 	++m_end;
 
 	if ( ( (uptr)m_end % Memory_Page_Size - 1 ) < sizeof(T) )
-		virtual_mem_allocator( ).commit( (pvoid)( (uptr)m_end - (uptr)m_end % Memory_Page_Size ), Memory_Page_Size );
+		virtual_allocator( ).commit( (pvoid)( (uptr)m_end - (uptr)m_end % Memory_Page_Size ), Memory_Page_Size );
 
 	return *pointer_to_assign;
 }
@@ -59,9 +59,9 @@ void extensible_array<T>::resize( uptr size )
 	uptr const size_needed			= new_size_in_bytes - new_size_in_bytes % Memory_Page_Size;
 
 	if ( size_allocated > size_needed )
-		virtual_mem_allocator( ).decommit( (pointer)m_begin + size_needed, size_allocated - size_needed );
+		virtual_allocator( ).decommit( (pointer)m_begin + size_needed, size_allocated - size_needed );
 	else if ( size_allocated < size_needed )
-		virtual_mem_allocator( ).commit( (pointer)m_begin + size_allocated, size_needed - size_allocated );
+		virtual_allocator( ).commit( (pointer)m_begin + size_allocated, size_needed - size_allocated );
 
 	m_end							= new_end;
 }
@@ -81,7 +81,7 @@ void extensible_array<T>::reserve( uptr size )
 		uptr const size_needed			= new_size_in_bytes - new_size_in_bytes % Memory_Page_Size;
 
 		if ( size_allocated != size_needed )
-			virtual_mem_allocator( ).commit( (pointer)m_begin + size_allocated, size_needed - size_allocated );
+			virtual_allocator( ).commit( (pointer)m_begin + size_allocated, size_needed - size_allocated );
 
 		m_end							= new_end;
 	}
@@ -93,7 +93,7 @@ void extensible_array<T>::clear( )
 	uptr const size_in_bytes		= ( m_end - m_begin ) * sizeof(T) + Memory_Page_Size - 1;
 	uptr const size_allocated		= size_in_bytes - size_in_bytes % Memory_Page_Size;
 	
-	virtual_mem_allocator( ).decommit( m_begin, size_allocated );
+	virtual_allocator( ).decommit( m_begin, size_allocated );
 
 	m_end = m_begin;
 }

@@ -9,7 +9,7 @@ void scene::create( )
 {
 	m_bvh_node_allocator.create( );
 
-	m_static_objects_memory = virtual_mem_allocator( ).allocate( static_objects_memory_size );
+	m_static_objects_memory = virtual_allocator( ).allocate( static_objects_memory_size );
 
 	m_static_render_objects_mesh_array.set	( m_static_objects_memory + (uptr)static_render_objects_mesh_memory_ptr, static_render_objects_mesh_count );
 	//m_static_render_objects_light_array.set	( m_static_objects_memory + static_render_objects_light_memory_ptr, static_render_objects_light_count );
@@ -20,7 +20,7 @@ void scene::destroy( )
 	m_static_render_objects_mesh_container.destroy( );
 	//m_static_render_objects_light_container.destroy( );
 
-	virtual_mem_allocator( ).deallocate( m_static_objects_memory );
+	virtual_allocator( ).deallocate( m_static_objects_memory );
 	
 	m_static_render_objects_mesh_container.destroy( );
 

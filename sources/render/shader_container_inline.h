@@ -2,6 +2,7 @@
 #define __render_shader_container_inline_h_included_
 
 #include <macros.h>
+#include <lib/allocator.h>
 #include <lib/memory.h>
 
 #include <system/path.h>
@@ -27,7 +28,7 @@ void shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax, ShaderP
 	ASSERT( m_created == false );
 
 	uptr const max_shader_size = 128 * Kb;
-	pvoid const memory = alloca( max_shader_size );
+	pvoid const memory = stack_allocate( max_shader_size );
 
 	for ( uptr i = 0; i < ShaderEnumeratorMax; ++i )
 	{

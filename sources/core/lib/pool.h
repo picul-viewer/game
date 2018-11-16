@@ -21,7 +21,7 @@ public:
 	void deallocate( pointer p );
 
 protected:
-	enum : uptr { page_size = virtual_mem_allocator::memory_size_helper<PageSize>::value };
+	enum : uptr { page_size = virtual_allocator::memory_size_helper<PageSize>::value };
 
 	void create( pointer memory );
 
@@ -46,7 +46,7 @@ public:
 	void deallocate( pointer p );
 
 protected:
-	enum : uptr { page_size = virtual_mem_allocator::memory_size_helper<PageSize>::value };
+	enum : uptr { page_size = virtual_allocator::memory_size_helper<PageSize>::value };
 
 	void create( pointer memory );
 

@@ -13,7 +13,7 @@ void spsc_queue_no_wait<T, RecordSize>::create( uptr in_buffer_size )
 
 	ASSERT					( ( array_size & ( array_size - 1 ) ) == 0 );
 
-	m_data					= aligned_mem_allocator<Cache_Line>( ).allocate( in_buffer_size );
+	m_data					= aligned_std_allocator<Cache_Line>( ).allocate( in_buffer_size );
 	m_index_mask			= array_size - 1;
 
 	m_push_index			= 0;
@@ -23,7 +23,7 @@ void spsc_queue_no_wait<T, RecordSize>::create( uptr in_buffer_size )
 template<typename T, uptr RecordSize>
 void spsc_queue_no_wait<T, RecordSize>::destroy( )
 {
-	aligned_mem_allocator<Cache_Line>( ).deallocate( m_data );
+	aligned_std_allocator<Cache_Line>( ).deallocate( m_data );
 }
 
 template<typename T, uptr RecordSize>

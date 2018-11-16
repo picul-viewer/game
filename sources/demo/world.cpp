@@ -2,6 +2,8 @@
 #include <engine/world.h>
 #include <render/world.h>
 
+#include <lib/allocator.h>
+
 #include <math/math_3d.h>
 
 #include <system/input.h>
@@ -64,7 +66,7 @@ void world::create( )
 	{
 		float const dimensions = 9.0f;
 
-		config cfg( alloca( 1 * Mb ), 1 * Mb );
+		config cfg( stack_allocate( 1 * Mb ), 1 * Mb );
 
 		binary_config w( cfg );
 

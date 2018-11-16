@@ -69,7 +69,7 @@ void fs_resource_system_worker::read_impl( query query )
 	}
 #endif // #ifdef DEBUG
 
-	pointer data = mem_allocator( ).allocate( (uptr)file_size );
+	pointer data = std_allocator( ).allocate( (uptr)file_size );
 
 	DWORD bytes_read = 0;
 	ReadFile( file, data, file_size, &bytes_read, nullptr );

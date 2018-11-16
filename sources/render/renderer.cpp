@@ -26,7 +26,7 @@ void renderer::create( )
 	m_scene			= nullptr;
 	m_next_scene	= nullptr;
 	
-	m_render_objects_memory = virtual_mem_allocator( ).allocate( render_objects_memory_size );
+	m_render_objects_memory = virtual_allocator( ).allocate( render_objects_memory_size );
 
 	m_render_meshes.set(
 		(render_object_mesh const**)( m_render_objects_memory + render_meshes_memory_offset ),
@@ -50,7 +50,7 @@ void renderer::destroy( )
 
 	g_api.destroy( );
 	
-	virtual_mem_allocator( ).deallocate( m_render_objects_memory );
+	virtual_allocator( ).deallocate( m_render_objects_memory );
 }
 
 void renderer::render_scene( )

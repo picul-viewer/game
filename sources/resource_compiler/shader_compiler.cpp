@@ -80,7 +80,7 @@ static inline void compile_shaders( weak_const_string const input_directory,
 
 			uptr const input_file_size = input.size( );
 
-			pvoid const data = alloca( input_file_size );
+			pvoid const data = stack_allocate( input_file_size );
 			input.read( data, input_file_size );
 			input.close( );
 

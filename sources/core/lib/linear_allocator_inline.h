@@ -6,14 +6,14 @@
 template<uptr MemorySize>
 void linear_allocator<MemorySize>::create( )
 {
-	m_data = virtual_mem_allocator( ).commit( nullptr, memory_size );
+	m_data = virtual_allocator( ).commit( nullptr, memory_size );
 	clear( );
 }
 
 template<uptr MemorySize>
 void linear_allocator<MemorySize>::destroy( )
 {
-	virtual_mem_allocator( ).release( m_data );
+	virtual_allocator( ).release( m_data );
 	m_data = nullptr;
 }
 
@@ -48,14 +48,14 @@ pointer linear_allocator<MemorySize>::allocate( uptr size )
 template<uptr PageSize, uptr PageMaxCount>
 void dynamic_linear_allocator<PageSize, PageMaxCount>::create( )
 {
-	m_data = virtual_mem_allocator( ).reserve( nullptr, page_size * PageMaxCount );
+	m_data = virtual_allocator( ).reserve( nullptr, page_size * PageMaxCount );
 	clear( );
 }
 
 template<uptr PageSize, uptr PageMaxCount>
 void dynamic_linear_allocator<PageSize, PageMaxCount>::destroy( )
 {
-	virtual_mem_allocator( ).release( m_data );
+	virtual_allocator( ).release( m_data );
 }
 
 template<uptr PageSize, uptr PageMaxCount>
@@ -84,7 +84,7 @@ pointer dynamic_linear_allocator<PageSize, PageMaxCount>::allocate( uptr size )
 	{
 		m_page_pointer					+= page_size;
 		ASSERT							( m_page_pointer < m_data + page_size * PageMaxCount );
-		virtual_mem_allocator( ).commit	( m_page_pointer, page_size );
+		virtual_allocator( ).commit	( m_page_pointer, page_size );
 	}
 
 	pointer const result	= m_last_pointer;

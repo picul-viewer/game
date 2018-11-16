@@ -6,7 +6,7 @@
 template<typename T>
 void linear_queue<T>::create( uptr size )
 {
-	m_data			= aligned_mem_allocator<Cache_Line>( ).allocate( size );
+	m_data			= aligned_std_allocator<Cache_Line>( ).allocate( size );
 	m_size			= size;
 
 	m_push_index	= 0;
@@ -16,7 +16,7 @@ void linear_queue<T>::create( uptr size )
 template<typename T>
 void linear_queue<T>::destroy( )
 {
-	aligned_mem_allocator<Cache_Line>( ).deallocate( m_data );
+	aligned_std_allocator<Cache_Line>( ).deallocate( m_data );
 }
 
 template<typename T>

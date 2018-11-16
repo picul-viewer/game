@@ -1,6 +1,7 @@
 #include "texture_compiler.h"
 #include <Windows.h>
 #include <macros.h>
+#include <lib/allocator.h>
 #include <lib/fixed_string.h>
 #include <lib/text_config.h>
 #include <system/path.h>
@@ -59,7 +60,7 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 
 	uptr const size = config.size( );
 	ASSERT( size < 8 * Kb );
-	u8* const data = (u8*)alloca( size + 1 );
+	u8* const data = stack_allocate( size + 1 );
 	config.read( data, size );
 	data[size] = '\0';
 

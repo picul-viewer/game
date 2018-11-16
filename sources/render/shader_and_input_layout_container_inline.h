@@ -3,6 +3,7 @@
 
 #include "shader_and_input_layout_container.h"
 
+#include <lib/allocator.h>
 #include <lib/weak_string.h>
 #include <lib/memory.h>
 #include <system/file.h>
@@ -25,7 +26,7 @@ void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnume
 	ASSERT( m_created == false );
 
 	uptr const max_shader_size = 128 * Kb;
-	pvoid const memory = alloca( max_shader_size );
+	pvoid const memory = stack_allocate( max_shader_size );
 
 	for ( uptr i = 0; i < ShaderEnumeratorMax; ++i )
 	{

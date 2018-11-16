@@ -68,12 +68,12 @@ uptr resource_path_registry_key_value_store::size( char const& k, u32 )
 }
 
 
-pointer resource_path_registry_key_value_store_index::get( mem_allocator&, value_type index )
+pointer resource_path_registry_key_value_store_index::get( std_allocator&, value_type index )
 {
 	return index;
 }
 
-resource_path_registry_key_value_store_index::value_type resource_path_registry_key_value_store_index::index_of( mem_allocator&, pointer kv )
+resource_path_registry_key_value_store_index::value_type resource_path_registry_key_value_store_index::index_of( std_allocator&, pointer kv )
 {
 	return kv;
 }

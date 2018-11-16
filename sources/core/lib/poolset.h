@@ -47,7 +47,7 @@ public:
 		{
 			return
 				( object >= Base<sizeof(T), PageSize>::m_data ) &&
-				( object <  Base<sizeof(T), PageSize>::m_data + virtual_mem_allocator::memory_size_helper<PageSize>::value );
+				( object <  Base<sizeof(T), PageSize>::m_data + virtual_allocator::memory_size_helper<PageSize>::value );
 		};
 
 		ASSERT( f( ) );
@@ -64,8 +64,8 @@ struct base_poolset<Base, PageSize, T, TList ...> :
 public:
 	void create( )
 	{
-		Base<sizeof(T), PageSize>::create( virtual_mem_allocator( ).commit( nullptr, virtual_mem_allocator::memory_size_helper<PageSize>::value * type_count<T, TList ...>::value ) );
-		base_poolset<Base, PageSize, TList ...>::create( Base<sizeof(T), PageSize>::m_data + virtual_mem_allocator::memory_size_helper<PageSize>::value );
+		Base<sizeof(T), PageSize>::create( virtual_allocator( ).commit( nullptr, virtual_allocator::memory_size_helper<PageSize>::value * type_count<T, TList ...>::value ) );
+		base_poolset<Base, PageSize, TList ...>::create( Base<sizeof(T), PageSize>::m_data + virtual_allocator::memory_size_helper<PageSize>::value );
 	}
 
 	void destroy( )
@@ -111,19 +111,19 @@ public:
 		{
 			return
 				( object >= Base<sizeof(T), PageSize>::m_data ) &&
-				( object <  Base<sizeof(T), PageSize>::m_data + virtual_mem_allocator::memory_size_helper<PageSize>::value * type_count<T, TList ...>::value );
+				( object <  Base<sizeof(T), PageSize>::m_data + virtual_allocator::memory_size_helper<PageSize>::value * type_count<T, TList ...>::value );
 		};
 
 		ASSERT( f( ) );
 #endif // #ifdef DEBUG
-		return (u32)( ( object - Base<sizeof(T), PageSize>::m_data ) / virtual_mem_allocator::memory_size_helper<PageSize>::value );
+		return (u32)( ( object - Base<sizeof(T), PageSize>::m_data ) / virtual_allocator::memory_size_helper<PageSize>::value );
 	}
 
 protected:
 	void create( pointer memory )
 	{
 		Base<sizeof(T), PageSize>::create( memory );
-		base_poolset<Base, PageSize, TList ...>::create( memory + virtual_mem_allocator::memory_size_helper<PageSize>::value );
+		base_poolset<Base, PageSize, TList ...>::create( memory + virtual_allocator::memory_size_helper<PageSize>::value );
 	}
 };
 
@@ -170,7 +170,7 @@ public:
 		{
 			return
 				( object >= Base<sizeof(T), PageSize, PageMaxCount>::m_data ) &&
-				( object <  Base<sizeof(T), PageSize, PageMaxCount>::m_data + virtual_mem_allocator::memory_size_helper<PageSize>::value * PageMaxCount );
+				( object <  Base<sizeof(T), PageSize, PageMaxCount>::m_data + virtual_allocator::memory_size_helper<PageSize>::value * PageMaxCount );
 		};
 
 		ASSERT( f( ) );
@@ -187,8 +187,8 @@ struct base_dynamic_poolset<Base, PageSize, PageMaxCount, T, TList ...> :
 public:
 	void create( )
 	{
-		Base<sizeof(T), PageSize, PageMaxCount>::create( virtual_mem_allocator( ).reserve( nullptr, virtual_mem_allocator::memory_size_helper<PageSize>::value * PageMaxCount * type_count<T, TList ...>::value ) );
-		base_dynamic_poolset<Base, PageSize, PageMaxCount, TList ...>::create( Base<sizeof(T), PageSize, PageMaxCount>::m_data + virtual_mem_allocator::memory_size_helper<PageSize>::value * PageMaxCount );
+		Base<sizeof(T), PageSize, PageMaxCount>::create( virtual_allocator( ).reserve( nullptr, virtual_allocator::memory_size_helper<PageSize>::value * PageMaxCount * type_count<T, TList ...>::value ) );
+		base_dynamic_poolset<Base, PageSize, PageMaxCount, TList ...>::create( Base<sizeof(T), PageSize, PageMaxCount>::m_data + virtual_allocator::memory_size_helper<PageSize>::value * PageMaxCount );
 	}
 
 	void destroy( )
@@ -234,19 +234,19 @@ public:
 		{
 			return
 				( object >= Base<sizeof(T), PageSize, PageMaxCount>::m_data ) &&
-				( object <  Base<sizeof(T), PageSize, PageMaxCount>::m_data + virtual_mem_allocator::memory_size_helper<PageSize>::value * PageMaxCount * type_count<T, TList ...>::value );
+				( object <  Base<sizeof(T), PageSize, PageMaxCount>::m_data + virtual_allocator::memory_size_helper<PageSize>::value * PageMaxCount * type_count<T, TList ...>::value );
 		};
 
 		ASSERT( f( ) );
 #endif // #ifdef DEBUG
-		return (u32)( ( object - Base<sizeof(T), PageSize, PageMaxCount>::m_data ) / ( virtual_mem_allocator::memory_size_helper<PageSize>::value * PageMaxCount ) );
+		return (u32)( ( object - Base<sizeof(T), PageSize, PageMaxCount>::m_data ) / ( virtual_allocator::memory_size_helper<PageSize>::value * PageMaxCount ) );
 	}
 
 protected:
 	void create( pointer memory )
 	{
 		Base<sizeof(T), PageSize, PageMaxCount>::create( memory );
-		base_dynamic_poolset<Base, PageSize, PageMaxCount, TList ...>::create( memory + virtual_mem_allocator::memory_size_helper<PageSize>::value * PageMaxCount );
+		base_dynamic_poolset<Base, PageSize, PageMaxCount, TList ...>::create( memory + virtual_allocator::memory_size_helper<PageSize>::value * PageMaxCount );
 	}
 };
 

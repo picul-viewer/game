@@ -18,7 +18,7 @@ public:
 	pointer allocate( uptr size );
 
 protected:
-	enum : uptr { memory_size = virtual_mem_allocator::memory_size_helper<MemorySize>::value };
+	enum : uptr { memory_size = virtual_allocator::memory_size_helper<MemorySize>::value };
 
 	pointer	m_data;
 	pointer	m_last_pointer;
@@ -39,7 +39,7 @@ public:
 	pointer allocate( uptr size );
 
 protected:
-	enum : uptr { page_size = virtual_mem_allocator::memory_size_helper<PageSize>::value };
+	enum : uptr { page_size = virtual_allocator::memory_size_helper<PageSize>::value };
 
 	pointer	m_data;
 	pointer m_page_pointer;

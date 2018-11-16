@@ -115,7 +115,7 @@ void resources::create( )
 	m_render_object_allocator.create( );
 
 	enum { resource_path_registry_table_length = 512 };
-	m_resource_path_registry.create( resource_path_registry_table_length, virtual_mem_allocator( ), mem_allocator( ) );
+	m_resource_path_registry.create( resource_path_registry_table_length, virtual_allocator( ), std_allocator( ) );
 
 	m_mesh_pool.create( m_resource_path_registry );
 	m_texture_pool.create( m_resource_path_registry );
@@ -145,7 +145,7 @@ void resources::destroy( )
 	
 	m_render_object_allocator.destroy( );
 
-	m_resource_path_registry.destroy( virtual_mem_allocator( ) );
+	m_resource_path_registry.destroy( virtual_allocator( ) );
 
 	m_mesh_pool.destroy( );
 	m_texture_pool.destroy( );

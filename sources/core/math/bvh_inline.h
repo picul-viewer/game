@@ -93,8 +93,8 @@ typename static_bvh<T>::node* static_bvh<T>::build( NodeAllocator& node_allocato
 		// Don't sort more then we need
 		objects[sorting] = first;
 
-		objects[sorting1] = aligned_mem_allocator<16>( ).allocate( buffer_size );
-		objects[sorting2] = aligned_mem_allocator<16>( ).allocate( buffer_size );
+		objects[sorting1] = aligned_std_allocator<16>( ).allocate( buffer_size );
+		objects[sorting2] = aligned_std_allocator<16>( ).allocate( buffer_size );
 		
 		memory::copy( objects[sorting1], first, buffer_size );
 		memory::copy( objects[sorting2], first, buffer_size );
@@ -140,8 +140,8 @@ typename static_bvh<T>::node* static_bvh<T>::build( NodeAllocator& node_allocato
 		n->right = build( node_allocator, objects[2] + found_divisions[2], count - found_divisions[2], aabbs, 2 );
 	}
 
-	aligned_mem_allocator<16>( ).deallocate( objects[sorting1] );
-	aligned_mem_allocator<16>( ).deallocate( objects[sorting2] );
+	aligned_std_allocator<16>( ).deallocate( objects[sorting1] );
+	aligned_std_allocator<16>( ).deallocate( objects[sorting2] );
 
 	return n;
 }
@@ -183,7 +183,7 @@ void static_bvh<T>::create( NodeAllocator& node_allocator, buffer_array<T*>& obj
 		return;
 	}
 	
-	aabb_aligned* aabbs = aligned_mem_allocator<16>( ).allocate( objects.size( ) * sizeof(aabb_aligned) );
+	aabb_aligned* aabbs = aligned_std_allocator<16>( ).allocate( objects.size( ) * sizeof(aabb_aligned) );
 
 	// Pre-sort by max.x -> sorting == 0
 	std::sort( objects.begin( ), objects.end( ), []( T* l, T* r )
@@ -193,7 +193,7 @@ void static_bvh<T>::create( NodeAllocator& node_allocator, buffer_array<T*>& obj
 
 	m_root = build( node_allocator, objects.begin( ), objects.size( ), aabbs, 0 );
 
-	aligned_mem_allocator<16>( ).deallocate( aabbs );
+	aligned_std_allocator<16>( ).deallocate( aabbs );
 }
 
 template<typename T>

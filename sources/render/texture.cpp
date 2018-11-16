@@ -584,7 +584,7 @@ void texture::create( binary_config& in_config )
 		UNREACHABLE_CODE
 	}
 
-	D3D11_SUBRESOURCE_DATA* init_data = (D3D11_SUBRESOURCE_DATA*)_alloca( mip_count * array_size * sizeof(D3D11_SUBRESOURCE_DATA) );
+	D3D11_SUBRESOURCE_DATA* init_data = stack_allocate( mip_count * array_size * sizeof(D3D11_SUBRESOURCE_DATA) );
 
 	fill_init_data( width, height, depth, mip_count, array_size, format, in_config, init_data );
 

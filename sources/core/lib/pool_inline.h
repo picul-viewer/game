@@ -7,7 +7,7 @@ template<uptr ElemSize, uptr PageSize>
 void pool<ElemSize, PageSize>::create( )
 {
 	ASSERT( ElemSize >= sizeof(pointer) );
-	m_data = virtual_mem_allocator( ).commit( nullptr, page_size );
+	m_data = virtual_allocator( ).commit( nullptr, page_size );
 	clear( );
 }
 
@@ -22,7 +22,7 @@ void pool<ElemSize, PageSize>::create( pointer memory )
 template<uptr ElemSize, uptr PageSize>
 void pool<ElemSize, PageSize>::destroy( )
 {
-	virtual_mem_allocator( ).release( m_data );
+	virtual_allocator( ).release( m_data );
 	m_data = nullptr;
 }
 
@@ -83,7 +83,7 @@ template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 void dynamic_pool<ElemSize, PageSize, PageMaxCount>::create( )
 {
 	ASSERT( ElemSize >= sizeof(pointer) );
-	m_data = virtual_mem_allocator( ).reserve( nullptr, page_size * PageMaxCount );
+	m_data = virtual_allocator( ).reserve( nullptr, page_size * PageMaxCount );
 	clear( );
 }
 
@@ -98,7 +98,7 @@ void dynamic_pool<ElemSize, PageSize, PageMaxCount>::create( pointer memory )
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 void dynamic_pool<ElemSize, PageSize, PageMaxCount>::destroy( )
 {
-	virtual_mem_allocator( ).release( m_data );
+	virtual_allocator( ).release( m_data );
 }
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
@@ -137,7 +137,7 @@ pointer dynamic_pool<ElemSize, PageSize, PageMaxCount>::allocate( uptr size )
 		{
 			m_page_pointer					+= page_size;
 			ASSERT							( m_page_pointer < m_data + page_size * PageMaxCount );
-			virtual_mem_allocator( ).commit	( m_page_pointer, page_size );
+			virtual_allocator( ).commit	( m_page_pointer, page_size );
 		}
 
 		pointer result	= m_last_pointer;

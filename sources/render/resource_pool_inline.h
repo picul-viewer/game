@@ -86,7 +86,7 @@ void resource_pool<Resource>::create_resource_from_file( Resource* out_resource,
 	ASSERT								( f.is_valid( ) );
 	uptr const size						= f.size( );
 
-	pvoid const memory					= mem_allocator( ).allocate( size );
+	pvoid const memory					= std_allocator( ).allocate( size );
 
 	f.read								( memory, size );
 	f.close								( );
@@ -94,7 +94,7 @@ void resource_pool<Resource>::create_resource_from_file( Resource* out_resource,
 	binary_config cfg					( memory, size );
 	out_resource->create				( cfg );
 
-	mem_allocator( ).deallocate			( memory );
+	std_allocator( ).deallocate			( memory );
 }
 
 } // namespace render
