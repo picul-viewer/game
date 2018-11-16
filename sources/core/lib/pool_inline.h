@@ -6,7 +6,8 @@
 template<uptr ElemSize, uptr PageSize>
 void pool<ElemSize, PageSize>::create( )
 {
-	ASSERT( ElemSize >= sizeof(pointer) );
+	static_assert( ElemSize >= sizeof(pointer), "too small element size" );
+	static_assert( ElemSize <= page_size, "too big element size" );
 	m_data = virtual_allocator( ).commit( nullptr, page_size );
 	clear( );
 }

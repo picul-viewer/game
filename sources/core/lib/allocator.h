@@ -16,6 +16,11 @@ struct aligned_std_allocator
 	inline void deallocate( pointer p );
 };
 
+static inline uptr get_aligned_size( uptr const size, uptr const page_size )
+{
+	return ( size + ( page_size - 1 ) ) & ( ~( page_size - 1 ) );
+}
+
 struct virtual_allocator
 {
 	template<uptr MemorySize>

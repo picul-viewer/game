@@ -73,18 +73,19 @@ pointer dynamic_linear_allocator<PageSize, PageMaxCount>::data_end( ) const
 template<uptr PageSize, uptr PageMaxCount>
 void dynamic_linear_allocator<PageSize, PageMaxCount>::clear( )
 {
-	m_page_pointer = m_data - page_size;
+	m_page_pointer = m_data;
 	m_last_pointer = m_data;
 }
 
 template<uptr PageSize, uptr PageMaxCount>
 pointer dynamic_linear_allocator<PageSize, PageMaxCount>::allocate( uptr size )
 {
-	if ( m_last_pointer + size > m_page_pointer + page_size )
+	if ( m_last_pointer + size > m_page_pointer )
 	{
-		m_page_pointer					+= page_size;
-		ASSERT							( m_page_pointer < m_data + page_size * PageMaxCount );
-		virtual_allocator( ).commit	( m_page_pointer, page_size );
+		uptr const size_to_commit	= get_aligned_size( m_last_pointer + size - m_page_pointer, page_size );
+		ASSERT						( m_page_pointer + size_to_commit < m_data + page_size * PageMaxCount );
+		virtual_allocator( ).commit	( m_page_pointer, size_to_commit );
+		m_page_pointer				+= size_to_commit;
 	}
 
 	pointer const result	= m_last_pointer;
