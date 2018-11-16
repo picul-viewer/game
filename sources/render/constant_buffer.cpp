@@ -25,9 +25,9 @@ u32 constant_buffer::release( ) const
 	return m_buffer.release( );
 }
 	
-void constant_buffer::update( pcvoid in_data, u32 in_offset, u32 in_size ) const
+void constant_buffer::update( pcvoid in_data, u32 in_size, u32 in_offset ) const
 {
-	m_buffer.update_dynamic( in_data, in_offset, in_size );
+	m_buffer.update_dynamic( in_data, in_size, in_offset );
 }
 
 void constant_buffer::bind_vs( u32 in_slot, u32 in_count ) const

@@ -6,7 +6,7 @@ namespace render {
 template<typename Data>
 void constant_buffer::update( Data const& in_data ) const
 {
-	update( &in_data, 0, sizeof(Data) );
+	update( &in_data, sizeof(Data), 0 );
 }
 
 void constant_buffer::set( ID3D11Buffer* in_buffer )

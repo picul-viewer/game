@@ -21,7 +21,7 @@ public:
 
 	template<typename Data>
 	void update( Data const& in_data ) const;
-	void update( pcvoid in_data, u32 in_offset, u32 in_size ) const;
+	void update( pcvoid in_data, u32 in_size, u32 in_offset ) const;
 
 	void bind_vs( u32 in_slot, u32 in_count = 1 ) const;
 	void bind_ps( u32 in_slot, u32 in_count = 1 ) const;

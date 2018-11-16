@@ -42,8 +42,8 @@ public:
 	inline ID3D11Buffer* const& get( ) const { return m_buffer; }
 
 	void update_default( pcvoid in_data ) const;
-	void update_default( pcvoid in_data, u32 in_offset, u32 in_size ) const;
-	void update_dynamic( pcvoid in_data, u32 in_offset, u32 in_size ) const;
+	void update_default( pcvoid in_data, u32 in_size, u32 in_offset = 0 ) const;
+	void update_dynamic( pcvoid in_data, u32 in_size, u32 in_offset = 0 ) const;
 	
 protected:
 	ID3D11Buffer*	m_buffer;

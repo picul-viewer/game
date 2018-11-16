@@ -92,7 +92,7 @@ void buffer::update_default( pcvoid in_data ) const
 	g_api.get_context( )->UpdateSubresource( m_buffer, 0, nullptr, in_data, 0, 0 );
 }
 
-void buffer::update_default( pcvoid in_data, u32 in_offset, u32 in_size ) const
+void buffer::update_default( pcvoid in_data, u32 in_size, u32 in_offset ) const
 {
 	D3D11_BOX box;
 	box.left	= in_offset;
@@ -104,7 +104,7 @@ void buffer::update_default( pcvoid in_data, u32 in_offset, u32 in_size ) const
 	g_api.get_context( )->UpdateSubresource( m_buffer, 0, &box, in_data, 0, 0 );
 }
 
-void buffer::update_dynamic( pcvoid in_data, u32 in_offset, u32 in_size ) const
+void buffer::update_dynamic( pcvoid in_data, u32 in_size, u32 in_offset ) const
 {
 	D3D11_MAPPED_SUBRESOURCE mapped_resource{ };
 	g_api.get_context( )->Map( m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource );
