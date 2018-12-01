@@ -27,7 +27,7 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 	
 	little_string file_name = sys::path::get_file_name( input_file_name );
 	sys::path::remove_file_extension( file_name );
-	sys::path output_path = str512( output_directory );
+	sys::path output_path( output_directory );
 	output_path += file_name + ".dds";
 	
 	sys::file_iterator fi;
@@ -93,18 +93,18 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 	{
 		cfg.read_str( str.data( ) );
 		if ( str == "input" )
-			command_line.append( " -srgbi " );
+			command_line.append( " -srgbi" );
 		else if ( str == "output" )
-			command_line.append( " -srgbo " );
+			command_line.append( " -srgbo" );
 		else if ( str == "both" )
-			command_line.append( " -srgb " );
+			command_line.append( " -srgb" );
 		else
 			ASSERT( str == "none" );
 
 		cfg.read_str( str.data( ) );
 	}
 
-	command_line.append( "-nologo \"" );
+	command_line.append( " -nologo \"" );
 	command_line.append( input_file_name );
 	command_line.append( "\"" );
 	

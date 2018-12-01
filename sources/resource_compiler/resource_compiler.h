@@ -15,7 +15,7 @@ namespace resource_compiler {
 class resource_compiler
 {
 public:
-	void create( int argc, char** argv );
+	void create( );
 	void destroy( );
 
 	void compile( weak_const_string const input_path, weak_const_string const output_path );

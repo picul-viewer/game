@@ -8,7 +8,7 @@
 
 namespace resource_compiler {
 
-void resource_compiler::create( int argc, char** argv )
+void resource_compiler::create( )
 {
 	m_shader_compiler_dbg_4_0.create( "4_0", true );
 	m_shader_compiler_rel_4_0.create( "4_0", false );
@@ -17,8 +17,8 @@ void resource_compiler::create( int argc, char** argv )
 
 	m_fbx_compiler.create( );
 
-	ASSERT( argc >= 2 );
-	m_texture_compiler.create( argv[1] );
+	pcstr const tex_conv_path = "..\\..\\prebuilt\\texconv.exe";
+	m_texture_compiler.create( tex_conv_path );
 }
 
 void resource_compiler::destroy( )
