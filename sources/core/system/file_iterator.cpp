@@ -12,10 +12,17 @@ void file_iterator::create( pcstr mask )
 
 	m_handle = FindFirstFile( mask, (WIN32_FIND_DATA*)m_find_data );
 
-	if ( is_valid( ) )
+	bool result = m_handle != INVALID_HANDLE_VALUE;
+
+	while ( result && ( strings::equal( get_file_name( ), "." ) || strings::equal( get_file_name( ), ".." ) ) )
 	{
-		if ( !next( ) )
-			destroy( );
+		result = FindNextFile( m_handle, (WIN32_FIND_DATA*)m_find_data );
+	}
+
+	if ( !result )
+	{
+		FindClose( m_handle );
+		m_handle = INVALID_HANDLE_VALUE;
 	}
 }
 
