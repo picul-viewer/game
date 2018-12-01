@@ -23,19 +23,19 @@ uptr find( pcstr str, pcstr sub_str, uptr pos )
 {
 	ASSERT( str );
 	ASSERT( sub_str );
-	
 	ASSERT( pos < length( str ) );
-	pcstr find_result = strstr( str + pos, str );
+
+	pcstr const find_result = strstr( str + pos, str );
 	return ( find_result != nullptr ) ? ( find_result - str ) : (uptr)-1;
 }
 
 uptr find( pcstr str, char c, uptr pos )
 {
 	ASSERT( str );
-	
-	for ( pcstr curr = str; curr != '\0'; ++curr )
-		if ( *curr == c ) return curr - str;
-	return (uptr)-1;
+	ASSERT( pos < length( str ) );
+
+	pcstr const find_result = strchr( str + pos, c );
+	return ( find_result != nullptr ) ? ( find_result - str ) : (uptr)-1;
 }
 
 uptr rfind( pcstr str, char c )
