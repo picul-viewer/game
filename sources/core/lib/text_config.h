@@ -3,6 +3,7 @@
 
 #include <types.h>
 #include "weak_string.h"
+#include "fixed_string.h"
 
 class text_config
 {
@@ -14,6 +15,11 @@ public:
 	T read( );
 	
 	void read_str( pstr data );
+
+	template<typename Arg>
+	void read_mask( pcstr const mask, Arg* const arg );
+
+	void skip_line( );
 
 	bool eof( ) const;
 
@@ -33,7 +39,7 @@ template<> \
 inline type text_config::read( ) \
 { \
 	type data; \
-	int pos; \
+	u32 pos; \
 	sscanf( m_pointer, mask, &data, &pos ); \
 	m_pointer += pos; \
 	return data; \
@@ -53,5 +59,15 @@ READ_PROC( float,	"%f%n" )
 READ_PROC( double,	"%lf%n" )
 
 #undef READ_PROC
+
+#define TEXT_CONFIG_MASK( mask ) mask "%n"
+
+template<typename Arg>
+void text_config::read_mask( pcstr const mask, Arg* const arg )
+{
+	u32 pos;
+	sscanf( m_pointer, mask, arg, &pos );
+	m_pointer += pos;
+}
 
 #endif // #ifndef __core_text_config_h_included_

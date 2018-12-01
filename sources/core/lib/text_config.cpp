@@ -18,6 +18,13 @@ void text_config::read_str( pstr data )
 	m_pointer += pos;
 }
 
+void text_config::skip_line( )
+{
+	u32 pos;
+	sscanf( m_pointer, "%*[^\n]\n%n", &pos );
+	m_pointer += pos;
+}
+
 bool text_config::eof( ) const
 {
 	return m_pointer.get<char>( ) == '\0';
