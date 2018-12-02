@@ -13,12 +13,16 @@ enum vertex_shader_type
 {
 	vertex_shader_forward_default,
 
+	vertex_shader_ui_default,
+
 	vertex_shader_type_count
 };
 
 enum pixel_shader_type
 {
 	pixel_shader_forward_default,
+
+	pixel_shader_ui_default,
 
 	pixel_shader_type_count
 };

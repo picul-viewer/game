@@ -3,8 +3,6 @@
 
 namespace render {
 	
-class scene;
-
 class stage_initialization
 {
 public:

@@ -39,12 +39,14 @@ void renderer::create( )
 
 	m_stage_initialization.create( );
 	m_stage_forward_default.create( );
+	m_stage_ui.create( );
 }
 
 void renderer::destroy( )
 {
 	m_stage_initialization.destroy( );
 	m_stage_forward_default.destroy( );
+	m_stage_ui.destroy( );
 	
 	g_resources.destroy( );
 
@@ -57,8 +59,7 @@ void renderer::render_scene( )
 {
 	m_stage_initialization.execute	( );
 	m_stage_forward_default.execute	( );
-
-	g_api.get_swap_chain( )->Present( 0, 0 );
+	m_stage_ui.execute				( );
 }
 
 void renderer::render( )
@@ -68,6 +69,8 @@ void renderer::render( )
 
 	if ( is_rendering_scene )
 		render_scene( );
+	
+	g_api.get_swap_chain( )->Present( 0, 0 );
 
 	end_frame( );
 }

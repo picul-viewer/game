@@ -5,8 +5,6 @@
 
 namespace render {
 
-class scene;
-
 class stage_forward_default
 {
 public:

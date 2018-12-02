@@ -28,6 +28,14 @@ struct vertex_shader_data_provider
 
 			return "forward_default.vs";
 		}
+		case vertex_shader_ui_default:
+		{
+			vertex_type const vtype = vertex_type_ui;
+
+			parameters = vtype;
+
+			return "ui_default.vs";
+		}
 		default:
 			UNREACHABLE_CODE
 		}
@@ -49,6 +57,14 @@ struct pixel_shader_data_provider
 			parameters = vtype;
 
 			return "forward_default.ps";
+		}
+		case pixel_shader_ui_default:
+		{
+			vertex_type const vtype = vertex_type_ui;
+
+			parameters = vtype;
+
+			return "ui_default.ps";
 		}
 		default:
 			UNREACHABLE_CODE

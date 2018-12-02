@@ -124,6 +124,12 @@
     <Filter Include="dx\api">
       <UniqueIdentifier>{46484c15-51a2-4ab6-9977-1442fc94a676}</UniqueIdentifier>
     </Filter>
+    <Filter Include="common\ui_batch">
+      <UniqueIdentifier>{53a4a161-f8fc-4cad-8226-54141297fd41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\stages\stage_ui">
+      <UniqueIdentifier>{dc0a786e-e0ff-453e-86ec-3d177e1e4f5d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
@@ -218,6 +224,12 @@
     </ClCompile>
     <ClCompile Include="parameters_manager.cpp">
       <Filter>parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="ui_batch.cpp">
+      <Filter>common\ui_batch</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_ui.cpp">
+      <Filter>renderer\stages\stage_ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -361,6 +373,12 @@
     </ClInclude>
     <ClInclude Include="parameters_manager.h">
       <Filter>parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="ui_batch.h">
+      <Filter>common\ui_batch</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_ui.h">
+      <Filter>renderer\stages\stage_ui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

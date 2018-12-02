@@ -10,6 +10,8 @@
 
 #include "constant_buffers_constants.h"
 
+#include "ui_batch.h"
+
 namespace render {
 
 void resources::create( )
@@ -37,8 +39,12 @@ void resources::create( )
 	m_texture_pool.create( m_resource_path_registry );
 	m_render_model_mesh_pool.create( m_resource_path_registry );
 
+	create_ui_buffers( );
+
 	m_scene_pool.create( );
 	m_object_pool.create( );
+
+	m_ui_batch.create( );
 }
 
 void resources::destroy( )
@@ -62,8 +68,12 @@ void resources::destroy( )
 	m_texture_pool.destroy( );
 	m_render_model_mesh_pool.destroy( );
 	
+	destroy_ui_buffers( );
+
 	m_scene_pool.destroy( );
 	m_object_pool.destroy( );
+
+	m_ui_batch.destroy( );
 }
 
 void resources::create_default_samplers( )
@@ -84,6 +94,17 @@ void resources::create_default_samplers( )
 	{
 		sampler::cook cook;
 		cook.set_sampler(	D3D11_FILTER_MIN_MAG_MIP_POINT,
+							D3D11_TEXTURE_ADDRESS_CLAMP,
+							D3D11_TEXTURE_ADDRESS_CLAMP,
+							D3D11_TEXTURE_ADDRESS_CLAMP );
+		m_default_samplers[sampler_index].create( cook );
+
+		++sampler_index;
+	}
+	
+	{
+		sampler::cook cook;
+		cook.set_sampler(	D3D11_FILTER_MIN_MAG_MIP_LINEAR,
 							D3D11_TEXTURE_ADDRESS_CLAMP,
 							D3D11_TEXTURE_ADDRESS_CLAMP,
 							D3D11_TEXTURE_ADDRESS_CLAMP );
@@ -182,6 +203,37 @@ void resources::create_shaders( )
 	virtual_allocator( ).deallocate( data );
 }
 
+void resources::create_ui_buffers( )
+{
+	{
+		u32 const vertex_size = get_vertex_type_size( 0, vertex_type_ui );
+
+		buffer::cook cook;
+		cook.set_vertex_buffer( vertex_size * ui_batch::max_vertices, true );
+		m_ui_vertex_buffer.create( cook, nullptr, vertex_size );
+	}
+
+	{
+		enum { indices_size = sizeof(u16) * ( ui_batch::max_vertices / 4 * 6 ) };
+
+		u16* indices_data = (u16*)_alloca( indices_size );
+
+		for ( u32 i = 0; i < ui_batch::max_vertices / 4; ++i )
+		{
+			indices_data[i * 6 + 0] = i * 4 + 0;
+			indices_data[i * 6 + 1] = i * 4 + 1;
+			indices_data[i * 6 + 2] = i * 4 + 3;
+			indices_data[i * 6 + 3] = i * 4 + 0;
+			indices_data[i * 6 + 4] = i * 4 + 3;
+			indices_data[i * 6 + 5] = i * 4 + 2;
+		}
+
+		buffer::cook cook;
+		cook.set_index_buffer( indices_size );
+		m_ui_index_buffer.create( cook, indices_data, DXGI_FORMAT_R16_UINT );
+	}
+}
+
 void resources::destroy_default_samplers( )
 {
 	for ( u32 i = 0; i < default_sampler_type_count; ++i )
@@ -208,6 +260,12 @@ void resources::destroy_shaders( )
 	m_hull_shader_container.destroy( );
 	m_domain_shader_container.destroy( );
 	m_compute_shader_container.destroy( );
+}
+
+void resources::destroy_ui_buffers( )
+{
+	m_ui_vertex_buffer.destroy( );
+	m_ui_index_buffer.destroy( );
 }
 
 sampler& resources::get_default_sampler( u32 in_index )

@@ -10,6 +10,8 @@ namespace render {
 
 class scene;
 class object;
+class texture;
+class ui_batch;
 
 class world
 {
@@ -26,6 +28,11 @@ public:
 
 	object* create_object( ) const;
 	void destroy_object( object* in_object ) const;
+
+	texture* create_texture( pcstr in_path ) const;
+	void destroy_texture( texture* in_texture ) const;
+
+	ui_batch& get_ui_batch( ) const;
 
 };
 

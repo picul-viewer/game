@@ -12,6 +12,7 @@ enum vertex_type : u8
 	vertex_type_position_2d = 0,
 	vertex_type_position,
 	vertex_type_mesh,
+	vertex_type_ui,
 
 	vertex_type_count
 };

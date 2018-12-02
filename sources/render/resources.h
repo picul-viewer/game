@@ -25,6 +25,8 @@
 #include "scene.h"
 #include "object.h"
 
+#include "ui_batch.h"
+
 namespace render {
 
 class resources
@@ -46,6 +48,7 @@ public:
 	{
 		default_sampler_type_linear_wrap = 0,
 		default_sampler_type_point_clamp,
+		default_sampler_type_linear_clamp,
 
 		default_sampler_type_count
 	};
@@ -101,9 +104,14 @@ public:
 	inline texture_pool& get_texture_pool( ) { return m_texture_pool; }
 	inline render_model_mesh_pool& get_render_model_mesh_pool( ) { return m_render_model_mesh_pool; }
 
+	inline vertex_buffer& get_ui_vertex_buffer( ) { return m_ui_vertex_buffer; }
+	inline index_buffer& get_ui_index_buffer( ) { return m_ui_index_buffer; }
+
 	inline scene_pool& get_scene_pool( ) { return m_scene_pool; }
 
 	inline object_pool& get_object_pool( ) { return m_object_pool; }
+
+	inline ui_batch& get_ui_batch( ) { return m_ui_batch; }
 
 	void bind_default_samplers( ) const;
 	void bind_default_constant_buffers( ) const;
@@ -122,6 +130,9 @@ protected:
 
 	void create_shaders( );
 	void destroy_shaders( );
+
+	void create_ui_buffers( );
+	void destroy_ui_buffers( );
 
 protected:
 	render_target_view			m_backbuffer;
@@ -148,8 +159,13 @@ protected:
 	texture_pool				m_texture_pool;
 	render_model_mesh_pool		m_render_model_mesh_pool;
 
+	vertex_buffer				m_ui_vertex_buffer;
+	index_buffer				m_ui_index_buffer;
+
 	scene_pool					m_scene_pool;
 	object_pool					m_object_pool;
+
+	ui_batch					m_ui_batch;
 };
 
 

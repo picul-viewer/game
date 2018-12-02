@@ -7,6 +7,7 @@
 
 #include "stage_initialization.h"
 #include "stage_forward_default.h"
+#include "stage_ui.h"
 
 #include "render_object_mesh.h"
 
@@ -15,6 +16,7 @@
 namespace render {
 
 class scene;
+class ui_batch;
 
 class renderer
 {
@@ -32,9 +34,9 @@ protected:
 	// Stages
 	friend class stage_initialization;
 	friend class stage_forward_default;
+	friend class stage_ui;
 	
 	void render_scene( );
-
 	void end_frame( );
 
 protected:
@@ -65,6 +67,7 @@ protected:
 
 	stage_initialization	m_stage_initialization;
 	stage_forward_default	m_stage_forward_default;
+	stage_ui				m_stage_ui;
 };
 
 extern renderer g_renderer;

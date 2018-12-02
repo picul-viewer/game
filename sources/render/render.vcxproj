@@ -123,11 +123,13 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="stage_forward_default.h" />
     <ClInclude Include="stage_initialization.h" />
+    <ClInclude Include="stage_ui.h" />
     <ClInclude Include="texture1d.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="texture2d.h" />
     <ClInclude Include="texture3d.h" />
     <ClInclude Include="shader_containers.h" />
+    <ClInclude Include="ui_batch.h" />
     <ClInclude Include="world.h" />
   </ItemGroup>
   <ItemGroup>
@@ -157,10 +159,12 @@
     <ClCompile Include="resource_views.cpp" />
     <ClCompile Include="sampler.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="stage_ui.cpp" />
     <ClCompile Include="texture1d.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="texture2d.cpp" />
     <ClCompile Include="texture3d.cpp" />
+    <ClCompile Include="ui_batch.cpp" />
     <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
