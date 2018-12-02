@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="utils">
+      <UniqueIdentifier>{7e5d33f3-8012-4d93-9aed-ccc8bd8e5b30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils\font">
+      <UniqueIdentifier>{3c641960-a6e6-4d95-867e-2a9983ba7e3a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="font.h">
+      <Filter>utils\font</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="font.cpp">
+      <Filter>utils\font</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

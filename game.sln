@@ -34,6 +34,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo", "sources\demo\demo.v
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utils", "sources\utils\utils.vcxproj", "{78C80B93-CB8E-43BC-84C3-9F8B1E23A842}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ui", "sources\ui\ui.vcxproj", "{63198BD7-C43F-4037-AF08-6AC2F2C206BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -72,6 +74,10 @@ Global
 		{78C80B93-CB8E-43BC-84C3-9F8B1E23A842}.Debug|x64.Build.0 = Debug|x64
 		{78C80B93-CB8E-43BC-84C3-9F8B1E23A842}.Release|x64.ActiveCfg = Release|x64
 		{78C80B93-CB8E-43BC-84C3-9F8B1E23A842}.Release|x64.Build.0 = Release|x64
+		{63198BD7-C43F-4037-AF08-6AC2F2C206BC}.Debug|x64.ActiveCfg = Debug|x64
+		{63198BD7-C43F-4037-AF08-6AC2F2C206BC}.Debug|x64.Build.0 = Debug|x64
+		{63198BD7-C43F-4037-AF08-6AC2F2C206BC}.Release|x64.ActiveCfg = Release|x64
+		{63198BD7-C43F-4037-AF08-6AC2F2C206BC}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +88,7 @@ Global
 		{58B676B2-5B1B-49E9-A2E4-0B71C90AF057} = {CF44F75B-E9B4-4E1A-87F1-061C8D2067E3}
 		{33FA037A-4BD7-4033-BCFC-F030F5AB47A9} = {CF44F75B-E9B4-4E1A-87F1-061C8D2067E3}
 		{78C80B93-CB8E-43BC-84C3-9F8B1E23A842} = {CF44F75B-E9B4-4E1A-87F1-061C8D2067E3}
+		{63198BD7-C43F-4037-AF08-6AC2F2C206BC} = {CF44F75B-E9B4-4E1A-87F1-061C8D2067E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93236AE2-963C-4767-B9F2-BDFC1E5D64D1}
