@@ -12,6 +12,12 @@
     <ClCompile Include="texture_compiler.cpp">
       <Filter>texture_compiler</Filter>
     </ClCompile>
+    <ClCompile Include="config_compiler.cpp">
+      <Filter>config_compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="config_compiler_types.cpp">
+      <Filter>config_compiler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource_compiler.h" />
@@ -24,6 +30,12 @@
     <ClInclude Include="fbx_compiler.h">
       <Filter>fbx_compiler</Filter>
     </ClInclude>
+    <ClInclude Include="config_compiler.h">
+      <Filter>config_compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="config_compiler_macros.h">
+      <Filter>config_compiler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shader_compiler">
@@ -34,6 +46,9 @@
     </Filter>
     <Filter Include="texture_compiler">
       <UniqueIdentifier>{3ee34265-f827-473d-abc4-c7dab8826cbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config_compiler">
+      <UniqueIdentifier>{e281983f-e584-41b2-b9f5-af70dd01a994}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

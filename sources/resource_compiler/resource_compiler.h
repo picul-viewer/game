@@ -9,6 +9,7 @@
 #include "shader_compiler.h"
 #include "fbx_compiler.h"
 #include "texture_compiler.h"
+#include "config_compiler.h"
 
 namespace resource_compiler {
 
@@ -32,6 +33,7 @@ public:
 protected:
 	void compile_fbx( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory );
 	void compile_texture( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory );
+	void compile_config( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory );
 
 protected:
 	shader_compiler m_shader_compiler_dbg_4_0;
@@ -42,6 +44,8 @@ protected:
 	fbx_compiler m_fbx_compiler;
 
 	texture_compiler m_texture_compiler;
+
+	config_compiler m_config_compiler;
 
 };
 

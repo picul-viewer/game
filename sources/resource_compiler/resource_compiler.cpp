@@ -19,6 +19,8 @@ void resource_compiler::create( )
 
 	pcstr const tex_conv_path = "..\\..\\prebuilt\\texconv.exe";
 	m_texture_compiler.create( tex_conv_path );
+	
+	m_config_compiler.create( );
 }
 
 void resource_compiler::destroy( )
@@ -79,6 +81,8 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 		fbx_compiler,
 
 		texture_compiler,
+
+		config_compiler,
 
 		threads_count
 	};
@@ -163,6 +167,26 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 		threads[thread_index].create( thread::func_helper<&scan_thread_function>, 1 * Mb, &texture_thread_data );
 		++thread_index;
 	}
+	
+	scan_execute_data config_thread_data;
+	
+	sys::path config_input;
+	sys::path config_output;
+
+	{
+		config_input = input_path;
+		config_input += "configs";
+
+		config_output = output_path;
+		config_output += "configs";
+
+		config_output.create_directory( );
+
+		config_thread_data = { this, &resource_compiler::scan, config_input.c_str( ), config_output.c_str( ), ".cfg", &resource_compiler::compile_config };
+
+		threads[thread_index].create( thread::func_helper<&scan_thread_function>, 1 * Mb, &config_thread_data );
+		++thread_index;
+	}
 
 	ASSERT( thread_index == threads_count );
 
@@ -176,7 +200,7 @@ void resource_compiler::scan(
 	scan_functor const functor )
 {
 	if ( !sys::path::is_valid( output_path ) )
-		return;
+		sys::path::create_directory( output_path );
 	
 	// creating mask
 	input_path += "\\*";
@@ -229,6 +253,11 @@ void resource_compiler::compile_fbx( u64 const relevant_date, pcstr const input_
 void resource_compiler::compile_texture( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory )
 {
 	m_texture_compiler.compile( relevant_date, input_file_name, output_directory );
+}
+
+void resource_compiler::compile_config( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory )
+{
+	m_config_compiler.compile( relevant_date, input_file_name, output_directory );
 }
 
 } // namespace resource_compiler
