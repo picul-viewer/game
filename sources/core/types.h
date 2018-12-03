@@ -61,7 +61,7 @@ struct type_count<T, TList ...>
 
 struct pointer
 {
-	inline pointer( ) { }
+	inline pointer( ) = default;
 	inline pointer( pvoid data ) { this->data = data; }
 
 	template<typename T>
@@ -102,18 +102,19 @@ struct pointer
 	inline pointer& operator-=( s32 n ) { data = (pbyte)data - n; return *this; }
 	
 	inline pointer& operator++( ) { data = (pbyte)data + 1; return *this; }
-	inline pointer& operator--( ) { data = (pbyte)data + 1; return *this; }
+	inline pointer& operator--( ) { data = (pbyte)data - 1; return *this; }
 
 	inline pointer operator++( int n ) { pointer p( *this ); data = (pbyte)data + 1; return p; }
-	inline pointer operator--( int n ) { pointer p( *this ); data = (pbyte)data + 1; return p; }
+	inline pointer operator--( int n ) { pointer p( *this ); data = (pbyte)data - 1; return p; }
 
 	template<typename T>
 	inline T& get( uptr offset = 0 ) { return *( (T*)data + offset ); }
 	template<typename T>
 	inline T const& get( uptr offset = 0 ) const { return *( (T const*)data + offset ); }
 
-protected:
+private:
 	pvoid data;
+
 };
 
 #define mem_align(n) __declspec(align(n))

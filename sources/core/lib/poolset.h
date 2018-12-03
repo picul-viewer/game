@@ -19,13 +19,13 @@ public:
 	template<typename U>
 	U* allocate( )
 	{
-		ASSERT( false );
+		UNREACHABLE_CODE
 	}
 
 	template<typename U>
-	void deallocate( U* p )
+	void deallocate( U* )
 	{
-		ASSERT( false );
+		UNREACHABLE_CODE
 	}
 	
 	template<>

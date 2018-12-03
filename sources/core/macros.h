@@ -43,7 +43,7 @@ inline void assertion_failed( char const* expr, char const* file, char const* fu
 
 }
 
-#	define ASSERT( expr, ... ) if ( !( expr ) ) { macros::assertion_failed( #expr, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); DEBUG_BREAK( ); } ( expr )
+#	define ASSERT( expr, ... ) if ( !( expr ) ) { macros::assertion_failed( #expr, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); DEBUG_BREAK( ); }
 #else // #ifdef DEBUG
 #	define ASSERT( expr, ... ) NO_OP
 #endif // #ifdef DEBUG

@@ -40,7 +40,7 @@ T& extensible_array<T>::emplace_back( )
 	T* const pointer_to_assign		= m_end;
 	++m_end;
 
-	if ( ( (uptr)m_end % Memory_Page_Size - 1 ) < sizeof(T) )
+	if ( ( (uptr)m_end % Memory_Page_Size ) <= sizeof(T) )
 		virtual_allocator( ).commit( (pvoid)( (uptr)m_end - (uptr)m_end % Memory_Page_Size ), Memory_Page_Size );
 
 	return *pointer_to_assign;

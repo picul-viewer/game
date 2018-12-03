@@ -59,7 +59,6 @@ public:
 	void reverse_for_each( Pred const& functor ) const;
 
 protected:
-	T* m_first;
 	T* m_last;
 };
 

@@ -158,7 +158,7 @@ inline double const mul_by_pot( double n, u32 power )
 struct half
 {
 public:
-	inline half( ) { }
+	inline half( ) = default;
 
 	inline half( float n )
 	{

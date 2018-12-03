@@ -64,16 +64,16 @@ bool operator==( blend_state::cook const& l, blend_state::cook const& r )
 bool operator==( rasterizer_state::cook const& l, rasterizer_state::cook const& r )
 {
 	return
-		( l.desc.FillMode				== l.desc.FillMode				) &&
-		( l.desc.CullMode				== l.desc.CullMode				) &&
-		( l.desc.FrontCounterClockwise	== l.desc.FrontCounterClockwise	) &&
-		( l.desc.DepthBias				== l.desc.DepthBias				) &&
-		( l.desc.DepthBiasClamp			== l.desc.DepthBiasClamp		) &&
-		( l.desc.SlopeScaledDepthBias	== l.desc.SlopeScaledDepthBias	) &&
-		( l.desc.DepthClipEnable		== l.desc.DepthClipEnable		) &&	
-		( l.desc.ScissorEnable			== l.desc.ScissorEnable			) &&
-		( l.desc.MultisampleEnable		== l.desc.MultisampleEnable		) &&
-		( l.desc.AntialiasedLineEnable	== l.desc.AntialiasedLineEnable	);
+		( l.desc.FillMode				== r.desc.FillMode				) &&
+		( l.desc.CullMode				== r.desc.CullMode				) &&
+		( l.desc.FrontCounterClockwise	== r.desc.FrontCounterClockwise	) &&
+		( l.desc.DepthBias				== r.desc.DepthBias				) &&
+		( l.desc.DepthBiasClamp			== r.desc.DepthBiasClamp		) &&
+		( l.desc.SlopeScaledDepthBias	== r.desc.SlopeScaledDepthBias	) &&
+		( l.desc.DepthClipEnable		== r.desc.DepthClipEnable		) &&	
+		( l.desc.ScissorEnable			== r.desc.ScissorEnable			) &&
+		( l.desc.MultisampleEnable		== r.desc.MultisampleEnable		) &&
+		( l.desc.AntialiasedLineEnable	== r.desc.AntialiasedLineEnable	);
 }
 
 template<typename DataType>

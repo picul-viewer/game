@@ -52,49 +52,32 @@ template<typename StringClass>
 inline uptr i_const_string<StringClass>::find( pcstr str, uptr pos ) const
 {
 	StringClass const* this_casted = static_cast<StringClass const*>( this );
-	ASSERT( this_casted->c_str( ) );
 
-	uptr const l = this_casted->length( );
-	if ( pos >= l ) return (u32)-1;
-	pcstr find_result = strstr( this_casted->c_str( ) + pos, str );
-	return ( find_result != nullptr ) ? ( find_result - this_casted->c_str( ) ) : (uptr)-1;
+	return strings::find( this_casted->c_str( ), str, pos );
 }
 
 template<typename StringClass>
 inline uptr i_const_string<StringClass>::find( char c, uptr pos ) const
 {
 	StringClass const* this_casted = static_cast<StringClass const*>( this );
-	ASSERT( this_casted->c_str( ) );
-
-	for ( pcstr curr = this_casted->c_str( ); curr != '\0'; ++curr )
-		if ( *curr == c ) return curr - this_casted->c_str( );
-	return (uptr)-1;
+	
+	return strings::find( this_casted->c_str( ), c, pos );
 }
 
 template<typename StringClass>
 inline uptr i_const_string<StringClass>::rfind( char c ) const
 {
 	StringClass const* this_casted = static_cast<StringClass const*>( this );
-	ASSERT( this_casted->c_str( ) );
 
-	pcstr curr = this_casted->c_str( );
-	ptr i = this_casted->length( ) - 1;
-	for ( ; i >= 0; --i )
-		if ( curr[i] == c ) return i;
-	return (uptr)-1;
+	return strings::rfind( this_casted->c_str( ), c );
 }
 
 template<typename StringClass>
 inline uptr i_const_string<StringClass>::rfind( char c, uptr pos ) const
 {
 	StringClass const* this_casted = static_cast<StringClass const*>( this );
-	ASSERT( this_casted->c_str( ) );
-
-	pcstr curr = this_casted->c_str( );
-	ptr i = pos;
-	for ( ; i >= 0; --i )
-		if ( curr[i] == c ) return i;
-	return (uptr)-1;
+	
+	return strings::rfind( this_casted->c_str( ), c, pos );
 }
 
 

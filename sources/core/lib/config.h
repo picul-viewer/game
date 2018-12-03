@@ -6,7 +6,7 @@
 class config
 {
 public:
-	config( );
+	config( ) = default;
 
 	config( pointer data, uptr size );
 	void create( pointer data, uptr size );
