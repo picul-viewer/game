@@ -32,7 +32,7 @@ void window_input_state::on_message( pvoid raw_data )
 			m_keyboard.set_key_pressed( actual_key, pressed );
 		}
 		else
-			m_keyboard.set_key_pressed_interlocked( k, pressed );
+			m_keyboard.set_key_pressed( k, pressed );
     }
     else if (raw->header.dwType == RIM_TYPEMOUSE)
     {
