@@ -16,7 +16,7 @@ class ui_batch;
 class world
 {
 public:
-	void create( pvoid in_hwnd, math::u16x2 in_resolution, bool in_is_windowed, bool in_allow_debug );
+	void create( pvoid in_hwnd, math::u16x2 in_resolution, bool in_is_windowed );
 	void update( );
 	void destroy( );
 

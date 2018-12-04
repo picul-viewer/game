@@ -9,7 +9,13 @@ const DXGI_FORMAT api::backbuffer_pixel_format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 void api::create( )
 {
-	UINT create_device_flags = g_parameters.is_d3d_debug ? D3D11_CREATE_DEVICE_DEBUG : 0;
+	UINT create_device_flags = 
+#ifdef RENDER_ALLOW_DEBUG
+		D3D11_CREATE_DEVICE_DEBUG
+#else
+		0
+#endif // #ifdef RENDER_ALLOW_DEBUG
+		;
 
 	D3D_FEATURE_LEVEL feature_levels[] =
 	{

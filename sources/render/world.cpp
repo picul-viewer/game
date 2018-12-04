@@ -7,13 +7,12 @@
 
 namespace render {
 
-void world::create( pvoid in_hwnd, math::u16x2 in_resolution, bool in_is_windowed, bool in_allow_debug )
+void world::create( pvoid in_hwnd, math::u16x2 in_resolution, bool in_is_windowed )
 {
 	parameters& params			= get_parameters( );
 	params.hwnd					= in_hwnd;
 	params.screen_resolution	= in_resolution;
 	params.is_windowed			= in_is_windowed;
-	params.is_d3d_debug			= in_allow_debug;
 	g_parameters_manager.update	( );
 
 	g_renderer.create			( );

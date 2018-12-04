@@ -18,7 +18,6 @@ struct parameters
 	pvoid			hwnd;
 	math::u16x2		screen_resolution;
 	bool			is_windowed;
-	bool			is_d3d_debug;
 };
 
 extern parameters g_parameters;

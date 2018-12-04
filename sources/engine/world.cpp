@@ -112,7 +112,7 @@ void world::render_thread( )
 
 	ASSERT( ( m_window_dimensions.x < 0x10000 ) && ( m_window_dimensions.y < 0x10000 ) );
 
-	render::g_world.create( (HWND)m_window.get_hwnd( ), m_window_dimensions, true, true );
+	render::g_world.create( (HWND)m_window.get_hwnd( ), m_window_dimensions, true );
 	m_alive_events[event_render].set( );
 
 	// Waiting for game logic to create.
