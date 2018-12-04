@@ -79,6 +79,8 @@ void stage_ui::execute( )
 
 		g_api.get_context( )->DrawIndexed	( data.vertex_count / 4 * 6, 0, data.vertex_start_index );
 	}
+
+	batch.clear								( );
 }
 
 } // namespace render
