@@ -23,8 +23,8 @@ public:
 						  u32							in_max_anisotropy	= 1,
 						  D3D11_COMPARISON_FUNC			in_comparison_func	= D3D11_COMPARISON_NEVER,
 						  math::float4					in_border_color		= math::float4( 1.0f, 1.0f, 1.0f, 1.0f ),
-						  f32							in_min_lod			= -FLT_MAX,
-						  f32							in_max_lod			= FLT_MAX );
+						  f32							in_min_lod			= -D3D11_FLOAT32_MAX,
+						  f32							in_max_lod			= D3D11_FLOAT32_MAX );
 
 		D3D11_SAMPLER_DESC sampler_desc;
 	};

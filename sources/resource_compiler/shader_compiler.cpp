@@ -9,6 +9,8 @@
 
 #include <d3dcompiler.h>
 
+#pragma comment(lib, "d3dcompiler.lib")
+
 using namespace render;
 
 #pragma warning( push )
