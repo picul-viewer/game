@@ -80,9 +80,9 @@ void font::render_string(
 
 		math::u16x4 const corners_position( 
 			position.x + offset * font_size / m_char_height,
-			position.y,
+			position.y - font_size,
 			position.x + next_offset * font_size / m_char_height,
-			position.y + font_size
+			position.y
 		);
 		
 		math::u16x4 const corners_texcoord(
@@ -107,7 +107,7 @@ void font::render_multiline_string(
 
 	u16 position_y = position.y;
 
-	do
+	while ( str < str_end )
 	{
 		uptr const find_result = strings::find( str, '\n' );
 		uptr const line_end = ( find_result != (uptr)-1 ) ? find_result : str_end - str;
@@ -117,7 +117,6 @@ void font::render_multiline_string(
 		str += line_end + 1;
 		position_y -= font_size + line_interval;
 	}
-	while ( str < str_end );
 }
 
 } // namespace ui
