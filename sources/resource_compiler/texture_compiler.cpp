@@ -104,7 +104,7 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 		cfg.read_str( str.data( ) );
 	}
 
-	command_line.append( " -nologo \"" );
+	command_line.append( " -nologo -y \"" );
 	command_line.append( input_file_name );
 	command_line.append( "\"" );
 	
