@@ -19,6 +19,8 @@ public:
 	void create( binary_config& in_config );
 	void destroy( );
 
+	inline u8 get_font_size( ) const { return m_char_height; }
+
 	u8 get_char_width( char const in_char ) const;
 	u32 get_string_width( pcstr const in_str ) const;
 	u32 get_string_width( pcstr const in_str, uptr const in_length ) const;

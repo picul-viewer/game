@@ -75,24 +75,28 @@ void font::render_string(
 		u8 const width = m_chars_width[index];
 		u16 const next_offset = offset + width;
 
-		u8 const col_index = index % m_chars_in_row;
-		u8 const row_index = index / m_chars_in_row;
+		// Filter off invisible characters.
+		if ( c > ' ' )
+		{
+			u8 const col_index = index % m_chars_in_row;
+			u8 const row_index = index / m_chars_in_row;
 
-		math::u16x4 const corners_position( 
-			position.x + offset * font_size / m_char_height,
-			position.y - font_size,
-			position.x + next_offset * font_size / m_char_height,
-			position.y
-		);
+			math::u16x4 const corners_position( 
+				position.x + offset * font_size / m_char_height,
+				position.y - font_size,
+				position.x + next_offset * font_size / m_char_height,
+				position.y
+			);
 		
-		math::u16x4 const corners_texcoord(
-			65535ul * col_index / m_chars_in_column,
-			65535ul * row_index / m_chars_in_row + 65535ul * m_char_height / m_texture_dimensions.y,
-			65535ul * col_index / m_chars_in_column + 65535ul * width / m_texture_dimensions.x,
-			65535ul * row_index / m_chars_in_row
-		);
+			math::u16x4 const corners_texcoord(
+				65535ul * col_index / m_chars_in_column,
+				65535ul * row_index / m_chars_in_row + 65535ul * m_char_height / m_texture_dimensions.y,
+				65535ul * col_index / m_chars_in_column + 65535ul * width / m_texture_dimensions.x,
+				65535ul * row_index / m_chars_in_row
+			);
 
-		batch.add_quad( corners_position, m_texture, corners_texcoord, color );
+			batch.add_quad( corners_position, m_texture, corners_texcoord, color );
+		}
 
 		offset = next_offset;
 	}
