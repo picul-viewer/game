@@ -60,15 +60,14 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 
 	uptr const size = config.size( );
 	ASSERT( size < 8 * Kb );
-	u8* const data = stack_allocate( size + 1 );
+	u8* const data = stack_allocate( size );
 	config.read( data, size );
-	data[size] = '\0';
 
 	config.close( );
 
 	str256 str;
 
-	text_config cfg( data );
+	text_config cfg( data, size );
 	cfg.read_str( str.data( ) );
 
 	if ( str == "format" )

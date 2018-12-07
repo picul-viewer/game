@@ -21,7 +21,7 @@ static bool save( pvoid const data, uptr const size, pcstr const output_path )
 
 bool compile_config_font( pvoid const data, uptr const size, pcstr const file_name, pcstr const output_path )
 {
-	text_config cfg( data );
+	text_config cfg( data, size );
 
 	u32 image_width;
 	u32 image_height;
@@ -32,13 +32,13 @@ bool compile_config_font( pvoid const data, uptr const size, pcstr const file_na
 
 	u8 chars_width[256];
 
-	cfg.read_mask( TEXT_CONFIG_MASK( "Image Width,%d\n" ), &image_width );
-	cfg.read_mask( TEXT_CONFIG_MASK( "Image Height,%d\n" ), &image_height );
-	cfg.read_mask( TEXT_CONFIG_MASK( "Cell Width,%d\n" ), &cell_width );
-	cfg.read_mask( TEXT_CONFIG_MASK( "Cell Height,%d\n" ), &cell_height );
-	cfg.read_mask( TEXT_CONFIG_MASK( "Start Char,%d\n" ), &start_char );
+	cfg.read_mask( TEXT_CONFIG_READ_MASK( "Image Width,%d\n" ), &image_width );
+	cfg.read_mask( TEXT_CONFIG_READ_MASK( "Image Height,%d\n" ), &image_height );
+	cfg.read_mask( TEXT_CONFIG_READ_MASK( "Cell Width,%d\n" ), &cell_width );
+	cfg.read_mask( TEXT_CONFIG_READ_MASK( "Cell Height,%d\n" ), &cell_height );
+	cfg.read_mask( TEXT_CONFIG_READ_MASK( "Start Char,%d\n" ), &start_char );
 	cfg.skip_line( );
-	cfg.read_mask( TEXT_CONFIG_MASK( "Font Height,%d\n" ), &font_height );
+	cfg.read_mask( TEXT_CONFIG_READ_MASK( "Font Height,%d\n" ), &font_height );
 	cfg.skip_line( );
 
 	for ( u32 i = 0; i < start_char; ++i )
@@ -47,7 +47,7 @@ bool compile_config_font( pvoid const data, uptr const size, pcstr const file_na
 	for ( u32 i = start_char; i < 256; ++i )
 	{
 		u32 char_width;
-		cfg.read_mask( TEXT_CONFIG_MASK( "Char %*[0-9] Base Width,%d\n" ), &char_width );
+		cfg.read_mask( TEXT_CONFIG_READ_MASK( "Char %*[0-9] Base Width,%d\n" ), &char_width );
 		chars_width[i - start_char] = (u8)char_width;
 	}
 
