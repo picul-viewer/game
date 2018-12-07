@@ -3,6 +3,7 @@
 #include "renderer.h"
 #include "parameters.h"
 #include "api.h"
+#include "statistics.h"
 
 namespace render {
 
@@ -40,6 +41,10 @@ void stage_forward_default::destroy( )
 
 void stage_forward_default::execute( )
 {
+	RENDER_PROFILE_EVENT					( stage_forward_default );
+
+	RENDER_DEBUG_EVENT						( stage_forward_default );
+
 	render_target_view& backbuffer			= g_resources.get_backbuffer( );
 	render_target_tex2d& depth_buffer		= g_resources.get_depth_buffer( );
 
@@ -60,6 +65,8 @@ void stage_forward_default::execute( )
 
 	for ( uptr i = 0; i < g_renderer.m_render_meshes.size( ); ++i )
 	{
+		RENDER_DEBUG_EVENT					( render_object_mesh );
+
 		render_object_mesh const* object	= g_renderer.m_render_meshes[i];
 
 		math::sse::matrix world				= math::sse::matrix( object->get_transform( ) );

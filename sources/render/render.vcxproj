@@ -54,7 +54,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;DEBUG;RENDER_ALLOW_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_RENDER_PROFILING;_MBCS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;DEBUG;RENDER_ALLOW_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(SolutionDir)/sources/core;$(SolutionDir)/sources;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include</AdditionalIncludeDirectories>
@@ -71,7 +71,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_RENDER_PROFILING;_MBCS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(SolutionDir)/sources/core;$(SolutionDir)/sources;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include</AdditionalIncludeDirectories>
@@ -98,7 +98,8 @@
     <ClInclude Include="pipeline_state_pool_inline.h" />
     <ClInclude Include="parameters.h" />
     <ClInclude Include="pipeline_state_pool.h" />
-    <ClInclude Include="profiler.h" />
+    <ClInclude Include="stage_visibility.h" />
+    <ClInclude Include="statistics.h" />
     <ClInclude Include="render_object_allocator.h" />
     <ClInclude Include="render_object_allocator_inline.h" />
     <ClInclude Include="render_model_mesh.h" />
@@ -123,6 +124,7 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="stage_forward_default.h" />
     <ClInclude Include="stage_initialization.h" />
+    <ClInclude Include="stage_statistics.h" />
     <ClInclude Include="stage_ui.h" />
     <ClInclude Include="texture1d.h" />
     <ClInclude Include="texture.h" />
@@ -141,7 +143,8 @@
     <ClCompile Include="input_layout.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="pipeline_state_pool.cpp" />
-    <ClCompile Include="profiler.cpp" />
+    <ClCompile Include="stage_visibility.cpp" />
+    <ClCompile Include="statistics.cpp" />
     <ClCompile Include="render_model_mesh.cpp" />
     <ClCompile Include="render_object_allocator.cpp" />
     <ClCompile Include="parameters.cpp" />
@@ -159,6 +162,7 @@
     <ClCompile Include="resource_views.cpp" />
     <ClCompile Include="sampler.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="stage_statistics.cpp" />
     <ClCompile Include="stage_ui.cpp" />
     <ClCompile Include="texture1d.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -170,6 +174,9 @@
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">
       <Project>{b7376639-83bd-4434-a00a-7a2551608722}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ui\ui.vcxproj">
+      <Project>{63198bd7-c43f-4037-af08-6ac2f2c206bc}</Project>
     </ProjectReference>
     <ProjectReference Include="..\utils\utils.vcxproj">
       <Project>{78c80b93-cb8e-43bc-84c3-9f8b1e23a842}</Project>

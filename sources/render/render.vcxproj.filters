@@ -43,9 +43,6 @@
     <Filter Include="renderer\utils\render_target">
       <UniqueIdentifier>{979b6059-b267-4258-8dfd-7b395ab2bc7a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="renderer\utils\statistics">
-      <UniqueIdentifier>{75e0e44d-68ab-468c-a27c-4dd1636fec3d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\utils">
       <UniqueIdentifier>{5ec71823-04a8-4e89-b6aa-64b0a9660b0f}</UniqueIdentifier>
     </Filter>
@@ -130,6 +127,15 @@
     <Filter Include="renderer\stages\stage_ui">
       <UniqueIdentifier>{dc0a786e-e0ff-453e-86ec-3d177e1e4f5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="renderer\stages\stage_statistics">
+      <UniqueIdentifier>{9e1fc7a2-5a4a-49dd-b6a6-8cafe4f492ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\stages\stage_statistics\statistics">
+      <UniqueIdentifier>{75e0e44d-68ab-468c-a27c-4dd1636fec3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\stages\stage_visibility">
+      <UniqueIdentifier>{a855374d-631d-4694-9ce3-a56b9ff4b358}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
@@ -183,9 +189,6 @@
     <ClCompile Include="resource_views.cpp">
       <Filter>dx\resource_views</Filter>
     </ClCompile>
-    <ClCompile Include="profiler.cpp">
-      <Filter>renderer\utils\statistics</Filter>
-    </ClCompile>
     <ClCompile Include="render_model_mesh.cpp">
       <Filter>resources\cached_resources\models\mesh</Filter>
     </ClCompile>
@@ -230,6 +233,15 @@
     </ClCompile>
     <ClCompile Include="stage_ui.cpp">
       <Filter>renderer\stages\stage_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_statistics.cpp">
+      <Filter>renderer\stages\stage_statistics</Filter>
+    </ClCompile>
+    <ClCompile Include="statistics.cpp">
+      <Filter>renderer\stages\stage_statistics\statistics</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_visibility.cpp">
+      <Filter>renderer\stages\stage_visibility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -311,9 +323,6 @@
     <ClInclude Include="mesh_box.h">
       <Filter>resources\utils\mesh_data</Filter>
     </ClInclude>
-    <ClInclude Include="profiler.h">
-      <Filter>renderer\utils\statistics</Filter>
-    </ClInclude>
     <ClInclude Include="shader_container.h">
       <Filter>resources\utils\shaders\shader_container</Filter>
     </ClInclude>
@@ -379,6 +388,15 @@
     </ClInclude>
     <ClInclude Include="stage_ui.h">
       <Filter>renderer\stages\stage_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_statistics.h">
+      <Filter>renderer\stages\stage_statistics</Filter>
+    </ClInclude>
+    <ClInclude Include="statistics.h">
+      <Filter>renderer\stages\stage_statistics\statistics</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_visibility.h">
+      <Filter>renderer\stages\stage_visibility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

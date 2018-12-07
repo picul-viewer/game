@@ -4,6 +4,7 @@
 #include "parameters.h"
 #include "api.h"
 #include "ui_batch.h"
+#include "statistics.h"
 
 namespace render {
 
@@ -39,6 +40,10 @@ void stage_ui::destroy( )
 
 void stage_ui::execute( )
 {
+	RENDER_PROFILE_EVENT					( stage_ui );
+	
+	RENDER_DEBUG_EVENT						( stage_ui );
+
 	ui_batch& batch							= g_resources.get_ui_batch( );
 	auto const& batch_data					= batch.get_batch_data( );
 	if ( batch_data.size( ) == 0 )
@@ -69,6 +74,8 @@ void stage_ui::execute( )
 
 	vb.bind									( 0, 0 );
 	ib.bind									( 0 );
+
+	g_api.get_context( )->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
 	for ( uptr i = 0; i < batch_data.size( ); ++i )
 	{

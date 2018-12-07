@@ -14,6 +14,8 @@
 
 #include "scene.h"
 
+#include "statistics.h"
+
 namespace render {
 	
 renderer::renderer( ) :
@@ -38,14 +40,22 @@ void renderer::create( )
 	g_resources.create( );
 
 	m_stage_initialization.create( );
+	m_stage_visibility.create( );
 	m_stage_forward_default.create( );
+#ifdef USE_RENDER_PROFILING
+	m_stage_statistics.create( );
+#endif // #ifdef USE_RENDER_PROFILING
 	m_stage_ui.create( );
 }
 
 void renderer::destroy( )
 {
 	m_stage_initialization.destroy( );
+	m_stage_visibility.destroy( );
 	m_stage_forward_default.destroy( );
+#ifdef USE_RENDER_PROFILING
+	m_stage_statistics.destroy( );
+#endif // #ifdef USE_RENDER_PROFILING
 	m_stage_ui.destroy( );
 	
 	g_resources.destroy( );
@@ -57,9 +67,8 @@ void renderer::destroy( )
 
 void renderer::render_scene( )
 {
-	m_stage_initialization.execute	( );
+	m_stage_visibility.execute( );
 	m_stage_forward_default.execute	( );
-	m_stage_ui.execute				( );
 }
 
 void renderer::render( )
@@ -67,10 +76,21 @@ void renderer::render( )
 	bool const is_rendering_scene =
 		( m_scene != nullptr );
 
-	if ( is_rendering_scene )
-		render_scene( );
+	{
+		RENDER_FRAME;
+		
+		m_stage_initialization.execute	( );
+
+		if ( is_rendering_scene )
+			render_scene( );
 	
-	g_api.get_swap_chain( )->Present( 0, 0 );
+#ifdef USE_RENDER_PROFILING
+		m_stage_statistics.execute		( );
+#endif // #ifdef USE_RENDER_PROFILING
+		m_stage_ui.execute				( );
+
+		g_api.get_swap_chain( )->Present( 0, 0 );
+	}
 
 	end_frame( );
 }

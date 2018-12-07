@@ -6,7 +6,11 @@
 #include <lib/buffer_array.h>
 
 #include "stage_initialization.h"
+#include "stage_visibility.h"
 #include "stage_forward_default.h"
+#ifdef USE_RENDER_PROFILING
+#include "stage_statistics.h"
+#endif // #ifdef USE_RENDER_PROFILING
 #include "stage_ui.h"
 
 #include "render_object_mesh.h"
@@ -33,7 +37,11 @@ public:
 protected:
 	// Stages
 	friend class stage_initialization;
+	friend class stage_visibility;
 	friend class stage_forward_default;
+#ifdef USE_RENDER_PROFILING
+	friend class stage_statistics;
+#endif // #ifdef USE_RENDER_PROFILING
 	friend class stage_ui;
 	
 	void render_scene( );
@@ -66,7 +74,11 @@ protected:
 	render_meshes_type		m_render_meshes;
 
 	stage_initialization	m_stage_initialization;
+	stage_visibility		m_stage_visibility;
 	stage_forward_default	m_stage_forward_default;
+#ifdef USE_RENDER_PROFILING
+	stage_statistics		m_stage_statistics;
+#endif // #ifdef USE_RENDER_PROFILING
 	stage_ui				m_stage_ui;
 };
 
