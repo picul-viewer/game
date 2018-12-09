@@ -20,7 +20,8 @@ public:
 	enum { kv_pool_element_size = sizeof(KVStore) };
 
 	typedef typename HashPred::type hash_type;
-
+	
+	typedef KVStore kv_store_type;
 	typedef KVStorePool kv_store_pool_type;
 
 	hash_map_template( );
@@ -56,7 +57,7 @@ protected:
 
 	inline KVStore* find_key_in_kv_list( KVStore* list, K const& key ) const;
 
-	KVStorePool& m_pool;
+	KVStorePool* m_pool;
 	typename KVStoreIndex::value_type* m_table;
 	uptr m_table_length;
 };
@@ -155,7 +156,7 @@ struct hash_map_kv_store_index_16
 
 	static inline KVStore* get( KVStorePool& pool, value_type index )
 	{
-		return ( index == null_value ) ? nullptr : pool[index];
+		return ( index == null_value ) ? nullptr : &(KVStore&)pool[index];
 	}
 	
 	static inline value_type index_of( KVStorePool& pool, KVStore* kv )
@@ -173,7 +174,7 @@ struct hash_map_kv_store_index_32
 
 	static inline KVStore* get( KVStorePool& pool, value_type index )
 	{
-		return ( index == null_value ) ? nullptr : pool[index];
+		return ( index == null_value ) ? nullptr : &(KVStore&)pool[index];
 	}
 	
 	static inline value_type index_of( KVStorePool& pool, KVStore* kv )

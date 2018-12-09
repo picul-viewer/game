@@ -5,7 +5,7 @@
 
 template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
 hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::hash_map_template( ) :
-	m_pool( KVStorePool( ) )
+	m_pool( nullptr )
 { }
 
 template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
@@ -19,7 +19,7 @@ template<typename K, typename V, typename HashPred, typename KeyEqualPred, typen
 template<typename TableAllocator>
 void hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::create( uptr table_length, TableAllocator& table_allocator, KVStorePool& kv_pool )
 {
-	m_pool			= kv_pool;
+	m_pool			= &kv_pool;
 	m_table			= table_allocator.allocate( sizeof(typename KVStoreIndex::value_type) * table_length );
 	m_table_length	= table_length;
 
@@ -50,18 +50,18 @@ inline KVStore* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStore
 	ASSERT( HashPred( )( key ) == hash );
 
 	auto& index = m_table[hash % m_table_length];
-	KVStore* first_kv = KVStoreIndex::get( m_pool, index );
+	KVStore* first_kv = KVStoreIndex::get( *m_pool, index );
 
 	ASSERT( find_key_in_kv_list( first_kv, key ) == nullptr );
 
-	KVStore* new_kv = m_pool.allocate( KVStore::size( key, value ) );
+	KVStore* new_kv = m_pool->allocate( KVStore::size( key, value ) );
 	new ( new_kv ) KVStore( key, value );
 
 	if ( first_kv )
 	{
 		auto next = first_kv->next( );
-		KVStore* next_kv = KVStoreIndex::get( m_pool, next );
-		auto new_index = KVStoreIndex::index_of( m_pool, new_kv );
+		KVStore* next_kv = KVStoreIndex::get( *m_pool, next );
+		auto new_index = KVStoreIndex::index_of( *m_pool, new_kv );
 
 		first_kv->set_next( new_index );
 		next_kv->set_prev( new_index );
@@ -70,7 +70,7 @@ inline KVStore* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStore
 	}
 	else
 	{
-		index = KVStoreIndex::index_of( m_pool, new_kv );
+		index = KVStoreIndex::index_of( *m_pool, new_kv );
 		new_kv->set_next( index );
 		new_kv->set_prev( index );
 	}
@@ -127,7 +127,7 @@ inline bool hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreInde
 	ASSERT( HashPred( )( key ) == hash );
 
 	auto& index = m_table[hash % m_table_length];
-	KVStore* first = KVStoreIndex::get( m_pool, index );
+	KVStore* first = KVStoreIndex::get( *m_pool, index );
 
 	KVStore* dest = find_key_in_kv_list( first, key );
 
@@ -135,7 +135,7 @@ inline bool hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreInde
 		return false;
 
 	auto next = dest->next( );
-	KVStore* next_kv = KVStoreIndex::get( m_pool, next );
+	KVStore* next_kv = KVStoreIndex::get( *m_pool, next );
 	if ( next_kv == dest )
 		index = KVStoreIndex::null_value;
 	else
@@ -144,13 +144,13 @@ inline bool hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreInde
 			index = next;
 
 		auto prev = dest->prev( );
-		KVStore* prev_kv = KVStoreIndex::get( m_pool, prev );
+		KVStore* prev_kv = KVStoreIndex::get( *m_pool, prev );
 
 		prev_kv->set_next( next );
 		next_kv->set_prev( prev );
 	}
 
-	m_pool.deallocate( dest );
+	m_pool->deallocate( dest );
 
 	return true;
 }
@@ -175,10 +175,10 @@ inline void hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreInde
 	ASSERT( HashPred( )( kv->key( ) ) == hash );
 
 	auto& index = m_table[hash % m_table_length];
-	KVStore* first = KVStoreIndex::get( m_pool, index );
+	KVStore* first = KVStoreIndex::get( *m_pool, index );
 
 	auto next = kv->next( );
-	KVStore* next_kv = KVStoreIndex::get( m_pool, next );
+	KVStore* next_kv = KVStoreIndex::get( *m_pool, next );
 	if ( next_kv == kv )
 		index = KVStoreIndex::null_value;
 	else
@@ -187,20 +187,20 @@ inline void hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreInde
 			index = next;
 
 		auto prev = kv->prev( );
-		KVStore* prev_kv = KVStoreIndex::get( m_pool, prev );
+		KVStore* prev_kv = KVStoreIndex::get( *m_pool, prev );
 
 		prev_kv->set_next( next );
 		next_kv->set_prev( prev );
 	}
 
-	m_pool.deallocate( kv );
+	m_pool->deallocate( kv );
 }
 
 template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
 inline KVStore* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::find_first_kv( hash_type hash ) const
 {
 	auto const& index = m_table[hash % m_table_length];
-	return KVStoreIndex::get( m_pool, index );
+	return KVStoreIndex::get( *m_pool, index );
 }
 
 template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
@@ -215,7 +215,7 @@ inline KVStore* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStore
 		if ( KeyEqualPred( )( current->key( ), key ) )
 			return current;
 
-		current = KVStoreIndex::get( m_pool, current->next( ) );
+		current = KVStoreIndex::get( *m_pool, current->next( ) );
 	}
 	while ( current != list );
 
@@ -232,13 +232,13 @@ inline void hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreInde
 		if ( index == KVStoreIndex::null_value )
 			continue;
 
-		KVStore* first_kv = KVStoreIndex::get( m_pool, index );
+		KVStore* first_kv = KVStoreIndex::get( *m_pool, index );
 		KVStore* current = first_kv;
 
 		do
 		{
-			KVStore* new_current = KVStoreIndex::get( m_pool, current->next( ) );
-			m_pool.deallocate( current );
+			KVStore* new_current = KVStoreIndex::get( *m_pool, current->next( ) );
+			m_pool->deallocate( current );
 			current = new_current;
 		}
 		while ( current != first_kv );
@@ -259,14 +259,14 @@ inline void hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreInde
 		if ( index == KVStoreIndex::null_value )
 			continue;
 
-		KVStore* first_kv = KVStoreIndex::get( m_pool, index );
+		KVStore* first_kv = KVStoreIndex::get( *m_pool, index );
 		KVStore* current = first_kv;
 
 		do
 		{
 			functor( current->key( ), current->value( ) );
 
-			current = KVStoreIndex::get( m_pool, current->next( ) );
+			current = KVStoreIndex::get( *m_pool, current->next( ) );
 		}
 		while ( current != first_kv );
 	}
