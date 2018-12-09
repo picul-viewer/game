@@ -40,6 +40,18 @@ struct virtual_allocator
 
 #define stack_allocate( n ) (pointer)_alloca( n )
 
+struct fake_allocator
+{
+	fake_allocator( pointer data );
+
+	pointer allocate( uptr size );
+	void deallocate( pointer p );
+
+private:
+	pointer m_data;
+
+};
+
 #include "allocator_inline.h"
 
 #endif // #ifndef __core_allocator_h_included_

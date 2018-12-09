@@ -42,3 +42,16 @@ void virtual_allocator::deallocate( pointer p )
 {
 	VirtualFree( p, 0, MEM_RELEASE );
 }
+
+
+fake_allocator::fake_allocator( pointer data )
+	: m_data( data )
+{ }
+
+pointer fake_allocator::allocate( uptr )
+{
+	return m_data;
+}
+
+void fake_allocator::deallocate( pointer )
+{ }
