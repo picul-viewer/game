@@ -8,11 +8,12 @@
 #include <math/vector.h>
 
 #include <lib/allocator.h>
+#include <lib/extensible_array.h>
 
 #include <lib/weak_string.h>
 #include <lib/fixed_string.h>
 
-#include <lib/std_map.h>
+#include <lib/hash_map.h>
 
 #include <system/path.h>
 #include <system/file.h>
@@ -93,25 +94,12 @@ struct vertex
 	}
 };
 
-bool operator<( vertex const& l, vertex const& r )
+bool operator==( vertex const& l, vertex const& r )
 {
-	if ( l.pos.x != r.pos.x )
-		return l.pos.x < r.pos.x;
-	if ( l.pos.y != r.pos.y )
-		return l.pos.y < r.pos.y;
-	if ( l.pos.z != r.pos.z )
-		return l.pos.z < r.pos.z;
-
-	if ( l.uv.x != r.uv.x )
-		return l.uv.x < r.uv.x;
-	if ( l.uv.y != r.uv.y )
-		return l.uv.y < r.uv.y;
-
-	if ( l.normal.x != r.normal.x )
-		return l.normal.x < r.normal.x;
-	if ( l.normal.y != r.normal.y )
-		return l.normal.y < r.normal.y;
-	return l.normal.z < r.normal.z;
+	return
+		( l.pos		== r.pos	) &&
+		( l.uv		== r.uv		) &&
+		( l.normal	== r.normal	);
 }
 
 mem_align( 4 )
@@ -132,20 +120,29 @@ struct bumpmapped_vertex : public vertex
 	}
 };
 
-bool operator<( bumpmapped_vertex const& l, bumpmapped_vertex const& r )
+bool operator==( bumpmapped_vertex const& l, bumpmapped_vertex const& r )
 {
-	if ( l.tangent != r.tangent )
-		return l.tangent < r.tangent;
-	if ( l.binormal != r.binormal )
-		return l.binormal < r.binormal;
-
-	return (vertex)l < (vertex)r;
+	return
+		( (vertex)l		== (vertex)r	) &&
+		( l.tangent		== r.tangent	) &&
+		( l.binormal	== r.binormal	);
 }
 
 template<typename VertexType>
-static inline bool process_mesh( FbxMesh* const mesh, VertexType*& vertices, u32*& indices, u32& vertex_count, u32& index_count )
+static inline bool process_mesh( FbxMesh* const mesh, extensible_array<VertexType>& vertices, u32*& indices, u32& index_count )
 {
-	map<VertexType, u32, Memory_Page_Size, 4096> vertices_map;
+	typedef hash_map32<VertexType, u32, 16 * Memory_Page_Size, 256> vertices_map_type;
+
+	vertices_map_type::kv_store_pool_type vertices_map_pool;
+	vertices_map_pool.create( );
+
+	enum { vertices_map_table_size = 16384 };
+	pvoid const vertices_map_table = stack_allocate( vertices_map_table_size * sizeof(u32) );
+	fake_allocator vertices_map_table_allocator = fake_allocator( vertices_map_table );
+
+	vertices_map_type vertices_map;
+	vertices_map.create( vertices_map_table_size, vertices_map_table_allocator, vertices_map_pool );
+
 	u32 current_index = 0;
 
 	u32 const polygon_count = mesh->GetPolygonCount( );
@@ -159,26 +156,25 @@ static inline bool process_mesh( FbxMesh* const mesh, VertexType*& vertices, u32
 			VertexType v;
 			v.init( mesh, i, j );
 
-			auto const it = vertices_map.find( v );
-			if ( it != vertices_map.end( ) )
-				indices_data[i * 3 + j]	= it->second;
+			auto* const kv = vertices_map.find_kv( v );
+			if ( kv != nullptr )
+				indices_data[i * 3 + j]	= kv->value( );
 			else
 			{
-				vertices_map[v]			= current_index;
+				vertices.emplace_back( ) = v;
+
+				vertices_map.insert( v, current_index );
+
 				indices_data[i * 3 + j]	= current_index;
 				++current_index;
 			}
 		}
 	}
 
-	VertexType* const vertices_data = std_allocator( ).allocate( current_index * sizeof(VertexType) );
+	vertices_map.destroy( vertices_map_table_allocator );
+	vertices_map_pool.destroy( );
 
-	for ( auto i = vertices_map.begin( ), l = vertices_map.end( ); i != l; ++i )
-		vertices_data[i->second] = i->first;
-
-	vertices		= vertices_data;
 	indices			= indices_data;
-	vertex_count	= current_index;
 	index_count		= polygon_count * 3;
 	
 	if ( current_index < 65536 )
@@ -199,12 +195,13 @@ static inline bool process_mesh( FbxMesh* const mesh, VertexType*& vertices, u32
 template<typename VertexType>
 static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u32 const configure_mask )
 {
-	VertexType* vertices;
+	extensible_array<VertexType> vertices;
+	vertices.create( 32 * 1024 * 1024 );
+	
 	u32* indices;
-	u32 vertex_count;
 	u32 index_count;
 
-	bool const use_16bit_indices = process_mesh( mesh, vertices, indices, vertex_count, index_count );
+	bool const use_16bit_indices = process_mesh( mesh, vertices, indices, index_count );
 	if ( index_count >= ( 1u << 29 ) )
 	{
 		LOG( "fbx_compiler: the mesh is too big: \"%s\"\n", path.c_str( ) );
@@ -212,7 +209,7 @@ static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u3
 	}
 
 	u32 const indices_size = index_count * ( use_16bit_indices ? sizeof(u16) : sizeof(u32) );
-	u32 const vertices_size = vertex_count * sizeof(VertexType);
+	u32 const vertices_size = (u32)( vertices.size( ) * sizeof(VertexType) );
 
 	u32 const total_size = sizeof(u32) + indices_size + sizeof(u32) + vertices_size;
 
@@ -227,7 +224,7 @@ static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u3
 	memcpy( file_data, &index_data, sizeof(u32) );
 	memcpy( file_data + sizeof(u32), indices, indices_size );
 	memcpy( file_data + sizeof(u32) + indices_size, &vertices_size, sizeof(u32) );
-	memcpy( file_data + sizeof(u32) + indices_size + sizeof(u32), vertices, vertices_size );
+	memcpy( file_data + sizeof(u32) + indices_size + sizeof(u32), vertices.begin( ), vertices_size );
 
 	sys::file f( path.c_str( ), sys::file::open_write );
 	if ( !f.is_valid( ) )
@@ -239,7 +236,7 @@ static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u3
 	f.write( file_data, total_size );
 	f.close( );
 
-	std_allocator( ).deallocate( vertices );
+	vertices.destroy( );
 	std_allocator( ).deallocate( indices );
 	std_allocator( ).deallocate( file_data );
 }
