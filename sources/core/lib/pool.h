@@ -15,7 +15,8 @@ public:
 	pointer data( ) const;
 	void clear( );
 
-	memory_block<ElemSize>& operator[]( uptr index ) const;
+	memory_block<ElemSize>& operator[]( uptr const index ) const;
+	uptr index_of( pointer const p ) const;
 
 	pointer allocate( uptr size );
 	void deallocate( pointer p );
@@ -40,7 +41,8 @@ public:
 	pointer data( ) const;
 	void clear( );
 	
-	memory_block<ElemSize>& operator[]( uptr index ) const;
+	memory_block<ElemSize>& operator[]( uptr const index ) const;
+	uptr index_of( pointer const p ) const;
 
 	pointer allocate( uptr size );
 	void deallocate( pointer p );

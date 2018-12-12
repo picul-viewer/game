@@ -41,7 +41,7 @@ void pool<ElemSize, PageSize>::clear( )
 }
 
 template<uptr ElemSize, uptr PageSize>
-memory_block<ElemSize>& pool<ElemSize, PageSize>::operator[]( uptr index ) const
+memory_block<ElemSize>& pool<ElemSize, PageSize>::operator[]( uptr const index ) const
 {
 	memory_block<ElemSize>* const result = (memory_block<ElemSize>*)m_data + index;
 
@@ -49,6 +49,18 @@ memory_block<ElemSize>& pool<ElemSize, PageSize>::operator[]( uptr index ) const
 	ASSERT( result < m_last_pointer );
 
 	return *result;
+}
+
+template<uptr ElemSize, uptr PageSize>
+uptr pool<ElemSize, PageSize>::index_of( pointer const p ) const
+{
+	// Note: this check does not guaranties safety.
+	ASSERT( p >= m_data );
+	ASSERT( p <= m_last_pointer );
+
+	uptr const result = (memory_block<ElemSize>*)p - (memory_block<ElemSize>*)m_data;
+
+	return result;
 }
 
 template<uptr ElemSize, uptr PageSize>
@@ -125,6 +137,18 @@ memory_block<ElemSize>& dynamic_pool<ElemSize, PageSize, PageMaxCount>::operator
 	ASSERT( result < m_last_pointer );
 
 	return *result;
+}
+
+template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
+uptr dynamic_pool<ElemSize, PageSize, PageMaxCount>::index_of( pointer const p ) const
+{
+	// Note: this check does not guaranties safety.
+	ASSERT( p >= m_data );
+	ASSERT( p <= m_last_pointer );
+
+	uptr const result = (memory_block<ElemSize>*)p - (memory_block<ElemSize>*)m_data;
+
+	return result;
 }
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
