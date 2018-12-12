@@ -60,13 +60,8 @@ Resource* resource_pool<Resource>::load_resource( weak_const_string const& in_pa
 }
 
 template<typename Resource>
-void resource_pool<Resource>::free_resource( Resource* in_resource )
+void resource_pool<Resource>::free_resource( Resource* const in_resource )
 {
-	// If resource is not in pool, assume it's managed by render resources class.
-	if ( ( (pointer)in_resource < m_resource_allocator.data( ) ) ||
-		 ( (pointer)in_resource >= m_resource_allocator.data( ) + 1 * Mb ) )
-		return;
-
 	u32 const ref_count					= in_resource->release( );
 
 	if ( ref_count == 0 )
@@ -80,7 +75,7 @@ void resource_pool<Resource>::free_resource( Resource* in_resource )
 }
 
 template<typename Resource>
-void resource_pool<Resource>::create_resource_from_file( Resource* out_resource, weak_const_string const& in_path )
+void resource_pool<Resource>::create_resource_from_file( Resource* const in_resource, weak_const_string const& in_path )
 {
 	sys::file f							( in_path.c_str( ), sys::file::open_read );
 	ASSERT								( f.is_valid( ) );
@@ -92,9 +87,21 @@ void resource_pool<Resource>::create_resource_from_file( Resource* out_resource,
 	f.close								( );
 
 	binary_config cfg					( memory, size );
-	out_resource->create				( cfg );
+	in_resource->create					( cfg );
 
 	std_allocator( ).deallocate			( memory );
+}
+
+template<typename Resource>
+Resource* resource_pool<Resource>::operator[]( u32 const in_handle )
+{
+	return &(Resource&)m_resource_allocator[in_handle];
+}
+
+template<typename Resource>
+uptr resource_pool<Resource>::index_of( Resource* const in_resource )
+{
+	return m_resource_allocator.index_of( in_resource );
 }
 
 } // namespace render

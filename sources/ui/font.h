@@ -5,9 +5,9 @@
 #include <lib/binary_config.h>
 #include <lib/fixed_array.h>
 #include <math/vector.h>
+#include <render/resource_ids.h>
 
 namespace render {
-class texture;
 class ui_batch;
 } // namespace render
 
@@ -36,7 +36,7 @@ public:
 private:
 	enum { max_char_count = 256 - 32 };
 
-	render::texture* m_texture;
+	render::texture_id m_texture;
 	fixed_array<u8, max_char_count> m_chars_width;
 	math::u16x2 m_texture_dimensions;
 	u8 m_chars_in_row;

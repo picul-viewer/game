@@ -5,12 +5,12 @@
 #include <math/vector.h>
 
 #include "parameters.h"
+#include "resource_ids.h"
 
 namespace render {
 
 class scene;
 class object;
-class texture;
 class ui_batch;
 
 class world
@@ -29,8 +29,8 @@ public:
 	object* create_object( ) const;
 	void destroy_object( object* in_object ) const;
 
-	texture* create_texture( pcstr in_path ) const;
-	void destroy_texture( texture* in_texture ) const;
+	texture_id create_texture( pcstr in_path ) const;
+	void destroy_texture( texture_id const in_handle ) const;
 
 	ui_batch& get_ui_batch( ) const;
 

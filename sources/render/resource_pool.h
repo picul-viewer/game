@@ -20,10 +20,13 @@ public:
 	Resource* create_resource( );
 	Resource* load_resource( weak_const_string const& in_path );
 
-	void free_resource( Resource* in_resource );
+	void free_resource( Resource* const in_resource );
+	
+	Resource* operator[]( u32 const in_handle );
+	uptr index_of( Resource* const in_resource );
 
-protected:
-	static void create_resource_from_file( Resource* out_resource, weak_const_string const& in_path );
+private:
+	static void create_resource_from_file( Resource* const in_resource, weak_const_string const& in_path );
 
 protected:
 	typedef dynamic_pool<sizeof(Resource), Memory_Page_Size, 256> resource_allocator;

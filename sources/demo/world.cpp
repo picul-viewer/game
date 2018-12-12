@@ -91,7 +91,7 @@ void world::create( )
 			w.write<math::float3>( math::float3(  1.0f,  1.0f,  1.0f ) );
 
 			// Read mesh from this config.
-			w.write<u8>( 253 );
+			w.write<u8>( 2 );
 
 			// Index data, here just indices count.
 			w.write<u32>( box_index_count );

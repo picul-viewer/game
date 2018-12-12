@@ -398,5 +398,11 @@
     <ClInclude Include="stage_visibility.h">
       <Filter>renderer\stages\stage_visibility</Filter>
     </ClInclude>
+    <ClInclude Include="resource_handle.h">
+      <Filter>resources\cached_resources</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_ids.h">
+      <Filter>resources\cached_resources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

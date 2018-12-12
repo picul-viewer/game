@@ -58,14 +58,14 @@ void world::destroy_object( object* in_object ) const
 	g_resources.get_object_pool( ).deallocate( in_object );
 }
 
-texture* world::create_texture( pcstr in_path ) const
+texture_id world::create_texture( pcstr in_path ) const
 {
-	return g_resources.get_texture_pool( ).load_resource( in_path );
+	return texture_handle( g_resources.get_texture_pool( ).load_resource( in_path ) );
 }
 
-void world::destroy_texture( texture* in_texture ) const
+void world::destroy_texture( texture_id const in_id ) const
 {
-	g_resources.get_texture_pool( ).free_resource( in_texture );
+	g_resources.get_texture_pool( ).free_resource( texture_handle( in_id ) );
 }
 
 ui_batch& world::get_ui_batch( ) const

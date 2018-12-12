@@ -98,6 +98,8 @@
     <ClInclude Include="pipeline_state_pool_inline.h" />
     <ClInclude Include="parameters.h" />
     <ClInclude Include="pipeline_state_pool.h" />
+    <ClInclude Include="resource_handle.h" />
+    <ClInclude Include="resource_ids.h" />
     <ClInclude Include="stage_visibility.h" />
     <ClInclude Include="statistics.h" />
     <ClInclude Include="render_object_allocator.h" />

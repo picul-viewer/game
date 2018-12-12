@@ -2,6 +2,7 @@
 
 #include "api.h"
 #include "input_layout.h"
+#include "resources.h"
 
 #include <macros.h>
 #include <lib/weak_string.h>
@@ -20,7 +21,6 @@ void mesh::create( binary_config& in_config )
 	
 	// 29 LSBs - indices count
 	m_index_count						= index_data & 0x1FFFFFFF;
-	m_instance_count					= 1;
 	// Index format is coded by 29st bit in index count
 	m_index_format						= ( index_data & 0x20000000 ) ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT;
 
@@ -75,16 +75,6 @@ void mesh::destroy( )
 	m_index_buffer.destroy( );
 }
 
-void mesh::set_registry_pointer( pointer in_pointer )
-{
-	m_registry_pointer = in_pointer;
-}
-
-pointer mesh::get_registry_pointer( ) const
-{
-	return m_registry_pointer;
-}
-
 buffer const& mesh::get_vertex_buffer( u32 in_index ) const
 {
 	ASSERT( in_index < max_vertex_buffers_count );
@@ -94,6 +84,21 @@ buffer const& mesh::get_vertex_buffer( u32 in_index ) const
 buffer const& mesh::get_index_buffer( ) const
 {
 	return m_index_buffer;
+}
+
+DXGI_FORMAT mesh::get_index_format( ) const
+{
+	return m_index_format;
+}
+
+D3D11_PRIMITIVE_TOPOLOGY mesh::get_primitive_topology( ) const
+{
+	return m_primitive_topology;
+}
+
+u32 mesh::get_index_count( ) const
+{
+	return m_index_count;
 }
 
 void mesh::bind( ) const
@@ -115,12 +120,6 @@ void mesh::draw( u32 in_index_count ) const
 {
 	bind( );
 	g_api.get_context( )->DrawIndexed( in_index_count, 0, 0 );
-}
-
-void mesh::draw_instanced( ) const
-{
-	bind( );
-	g_api.get_context( )->DrawIndexedInstanced( m_index_count, m_instance_count, 0, 0, 0 );
 }
 
 void mesh::draw_instanced( u32 in_instance_count ) const
@@ -157,10 +156,29 @@ void mesh::set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY in_primitive_topolog
 	m_primitive_topology = in_primitive_topology;
 }
 
-void mesh::set_dimensions( u32 in_index_count, u32 in_instance_count )
+void mesh::set_dimensions( u32 in_index_count )
 {
 	m_index_count		= in_index_count;
-	m_instance_count	= in_instance_count;
+}
+
+mesh* mesh::from_handle( mesh_id const in_id )
+{
+	return g_resources.get_mesh_pool( )[in_id];
+}
+
+mesh_id mesh::to_handle( mesh* const in_mesh )
+{
+	return (mesh_id)g_resources.get_mesh_pool( ).index_of( in_mesh );
+}
+
+void mesh::set_registry_pointer( pointer in_pointer )
+{
+	m_registry_pointer = in_pointer;
+}
+
+pointer mesh::get_registry_pointer( ) const
+{
+	return m_registry_pointer;
 }
 
 } // namespace render

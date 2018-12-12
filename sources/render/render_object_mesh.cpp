@@ -1,6 +1,7 @@
 #include "render_object_mesh.h"
 
 #include "resources.h"
+#include "render_model_mesh.h"
 
 namespace render {
 
@@ -12,8 +13,9 @@ void render_object_mesh::create( binary_config& in_config )
 
 	if ( provide_render_model_config )
 	{
-		m_render_model					= g_resources.get_render_model_mesh_pool( ).create_resource( );
-		m_render_model->create			( in_config );
+		render_model_mesh* const model	= g_resources.get_render_model_mesh_pool( ).create_resource( );
+		model->create					( in_config );
+		m_render_model					= model;
 	}
 	else
 	{

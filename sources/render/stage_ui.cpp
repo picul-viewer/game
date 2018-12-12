@@ -81,8 +81,9 @@ void stage_ui::execute( )
 	{
 		ui_batch::batch_data const& data	= batch_data[i];
 
-		ASSERT( data.texture != nullptr );
-		data.texture->bind_ps				( 0 );
+		texture_handle const texture		= data.texture;
+		ASSERT( texture != texture_handle::invalid );
+		texture->bind_ps					( 0 );
 
 		g_api.get_context( )->DrawIndexed	( data.vertex_count / 4 * 6, 0, data.vertex_start_index );
 	}

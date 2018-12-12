@@ -6,7 +6,7 @@
 
 #include <lib/extensible_array.h>
 
-#include "texture.h"
+#include "resource_ids.h"
 
 namespace render {
 
@@ -16,9 +16,9 @@ private:
 	struct ui_quad_data
 	{
 		math::u16x4 corners_position;
-		texture* texture;
 		math::u16x4 corners_texcoord;
 		math::half4 color;
+		texture_id texture;
 	};
 
 	struct gpu_vertex_data
@@ -31,9 +31,9 @@ private:
 public:
 	struct batch_data
 	{
-		texture* texture;
 		u32 vertex_start_index;
 		u32 vertex_count;
+		texture_id texture;
 	};
 
 	enum { max_vertices = 64 * Kb };
@@ -43,7 +43,7 @@ public:
 	void destroy( );
 
 	void add_quad(
-		math::u16x4 const in_corners_position, texture* const in_texture,
+		math::u16x4 const in_corners_position, texture_id const in_texture,
 		math::u16x4 const in_corners_texcoord, math::half4 const& in_color );
 
 	void next_level( );
@@ -53,8 +53,6 @@ public:
 	inline extensible_array<batch_data> const& get_batch_data( ) const { return m_batch_data; }
 
 	void clear( );
-
-	void add_debug_quads( texture* in_texture );
 
 private:
 	extensible_array<ui_quad_data> m_temporal_memory;

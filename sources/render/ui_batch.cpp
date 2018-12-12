@@ -19,15 +19,15 @@ void ui_batch::destroy( )
 }
 
 void ui_batch::add_quad(
-	math::u16x4 const in_corners_position, texture* const in_texture,
+	math::u16x4 const in_corners_position, texture_id const in_texture,
 	math::u16x4 const in_corners_texcoord, math::half4 const& in_color )
 {
 	ui_quad_data& data = m_temporal_memory.emplace_back( );
 
 	data.corners_position	= in_corners_position;
-	data.texture			= in_texture;
 	data.corners_texcoord	= in_corners_texcoord;
 	data.color				= in_color;
+	data.texture			= in_texture;
 }
 
 void ui_batch::next_level( )
@@ -105,28 +105,6 @@ void ui_batch::clear( )
 	m_temporal_memory.clear( );
 	m_buffer.clear( );
 	m_batch_data.clear( );
-}
-
-void ui_batch::add_debug_quads( texture* in_texture )
-{
-	enum { dim = 64 };
-
-	math::u16x4 tex( 0, 0, 65535, 65535 );
-
-	math::half4 color( 1.0f, 1.0f, 1.0f, 1.0f );
-
-	for ( u32 j = 0; j < dim; ++j )
-	for ( u32 i = 0; i < dim; ++i )
-	{
-		math::u16x4 pos(
-			g_parameters.screen_resolution.x * i / dim,
-			g_parameters.screen_resolution.y * j / dim,
-			g_parameters.screen_resolution.x * ( i + 1 ) / dim,
-			g_parameters.screen_resolution.y * ( j + 1 ) / dim
-		);
-		
-		add_quad( pos, in_texture, tex, color );
-	}
 }
 
 } // namespace render

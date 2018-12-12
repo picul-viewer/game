@@ -133,7 +133,7 @@ void resources::create_default_meshes( )
 		m_default_meshes[mesh_index].create_index_buffer( index_cook, box::indices, DXGI_FORMAT_R16_UINT );
 
 		m_default_meshes[mesh_index].set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-		m_default_meshes[mesh_index].set_dimensions( box::index_count, 0 );
+		m_default_meshes[mesh_index].set_dimensions( box::index_count );
 
 		++mesh_index;
 	}
@@ -149,7 +149,7 @@ void resources::create_default_meshes( )
 		m_default_meshes[mesh_index].create_index_buffer( index_cook, quad::indices, DXGI_FORMAT_R16_UINT );
 
 		m_default_meshes[mesh_index].set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-		m_default_meshes[mesh_index].set_dimensions( quad::index_count, 0 );
+		m_default_meshes[mesh_index].set_dimensions( quad::index_count );
 
 		++mesh_index;
 	}

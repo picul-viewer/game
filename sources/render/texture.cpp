@@ -5,6 +5,7 @@
 
 #include "dx_include.h"
 #include "api.h"
+#include "resources.h"
 
 namespace render {
 
@@ -18,7 +19,17 @@ u32 texture::release( ) const
 	return m_srv->Release( );
 }
 
-void texture::set_registry_pointer( pointer in_pointer )
+texture* texture::from_handle( texture_id const in_id )
+{
+	return g_resources.get_texture_pool( )[in_id];
+}
+
+texture_id texture::to_handle( texture* const in_texture )
+{
+	return (texture_id)g_resources.get_texture_pool( ).index_of( in_texture );
+}
+
+void texture::set_registry_pointer( pointer const in_pointer )
 {
 	m_registry_pointer = in_pointer;
 }

@@ -1,7 +1,9 @@
 #include "render_model_mesh.h"
+#include <math/math_sse.h>
 
 #include "resources.h"
-#include <math/math_sse.h>
+#include "mesh.h"
+#include "texture.h"
 
 namespace render {
 
@@ -19,29 +21,27 @@ void render_model_mesh::create( binary_config& in_config )
 	u8 mesh_source_type			= in_config.read<u8>( );
 	switch ( mesh_source_type )
 	{
-		case 255:
+		case 0:
 		{
 			pcstr path			= in_config.read_str( );
 			m_mesh				= g_resources.get_mesh_pool( ).load_resource( path );
 			break;
 		}
-		case 254:
+		case 1:
 		{
 			pcstr path			= in_config.read<pcstr>( );
 			m_mesh				= g_resources.get_mesh_pool( ).load_resource( path );
 			break;
 		}
-		case 253:
+		case 2:
 		{
-			m_mesh				= g_resources.get_mesh_pool( ).create_resource( );
-			m_mesh->create		( in_config );
+			mesh* const mesh	= g_resources.get_mesh_pool( ).create_resource( );
+			mesh->create		( in_config );
+			m_mesh				=  mesh;
 			break;
 		}
 		default:
-		{
-			m_mesh				= &g_resources.get_default_mesh( mesh_source_type );
-			break;
-		}
+			UNREACHABLE_CODE
 	}
 	
 	// Read diffuse texture.
@@ -62,8 +62,9 @@ void render_model_mesh::create( binary_config& in_config )
 		}
 		case 2:
 		{
-			m_diffuse			= g_resources.get_texture_pool( ).create_resource( );
-			m_diffuse->create	( in_config );
+			texture* const tex	= g_resources.get_texture_pool( ).create_resource( );
+			tex->create			( in_config );
+			m_diffuse			= tex;
 			break;
 		}
 		default:
@@ -88,8 +89,9 @@ void render_model_mesh::create( binary_config& in_config )
 		}
 		case 2:
 		{
-			m_specular			= g_resources.get_texture_pool( ).create_resource( );
-			m_specular->create	( in_config );
+			texture* const tex	= g_resources.get_texture_pool( ).create_resource( );
+			tex->create			( in_config );
+			m_specular			= tex;
 			break;
 		}
 		default:
@@ -120,6 +122,24 @@ u32 render_model_mesh::release( )
 	return ref_count;
 }
 
+void render_model_mesh::render( ) const
+{
+	m_diffuse->bind_ps	( 0 );
+	m_specular->bind_ps	( 1 );
+
+	m_mesh->draw		( );
+}
+
+render_model_mesh* render_model_mesh::from_handle( render_model_mesh_id const in_id )
+{
+	return g_resources.get_render_model_mesh_pool( )[in_id];
+}
+
+render_model_mesh_id render_model_mesh::to_handle( render_model_mesh* const in_render_model_mesh )
+{
+	return (render_model_mesh_id)g_resources.get_render_model_mesh_pool( ).index_of( in_render_model_mesh );
+}
+
 void render_model_mesh::set_registry_pointer( pointer in_pointer )
 {
 	m_registry_pointer = in_pointer;
@@ -128,14 +148,6 @@ void render_model_mesh::set_registry_pointer( pointer in_pointer )
 pointer render_model_mesh::get_registry_pointer( ) const
 {
 	return m_registry_pointer;
-}
-
-void render_model_mesh::render( ) const
-{
-	m_diffuse->bind_ps			( 0 );
-	m_specular->bind_ps			( 1 );
-
-	m_mesh->draw				( );
 }
 
 } // namespace render
