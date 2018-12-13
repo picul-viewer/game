@@ -218,7 +218,7 @@ static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u3
 	u32 index_data = index_count;
 	index_data |= configure_mask;
 
-	if ( use_16bit_indices )
+	if ( !use_16bit_indices )
 		index_data |= ( 1u << 29 );
 
 	memcpy( file_data, &index_data, sizeof(u32) );
