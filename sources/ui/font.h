@@ -30,7 +30,7 @@ public:
 		u16 const in_font_size, math::half4 const in_color, render::ui_batch& in_batch ) const;
 	
 	void render_multiline_string(
-		pcstr const in_caption, uptr const in_length, math::u16x2 const in_position, u16 const line_interval,
+		pcstr const in_caption, uptr const in_length, math::u16x2 const in_position, u16 const in_line_interval,
 		u16 const in_font_size, math::half4 const in_color, render::ui_batch& in_batch ) const;
 
 private:

@@ -103,7 +103,7 @@ void font::render_string(
 }
 
 void font::render_multiline_string(
-	pcstr const caption, uptr const length, math::u16x2 const position, u16 const line_interval,
+	pcstr const caption, uptr const length, math::u16x2 const position, u16 const in_line_interval,
 	u16 const font_size, math::half4 const color, render::ui_batch& batch ) const
 {
 	pcstr str = caption;
@@ -119,7 +119,7 @@ void font::render_multiline_string(
 		render_string( str, line_end, math::u16x2( position.x, position_y ), font_size, color, batch );
 
 		str += line_end + 1;
-		position_y -= font_size + line_interval;
+		position_y -= font_size + in_line_interval;
 	}
 }
 
