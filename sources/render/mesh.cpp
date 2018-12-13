@@ -17,14 +17,14 @@ void mesh::create( binary_config& in_config )
 {
 	ASSERT( in_config.is_valid( ) );
 
-	const u32 index_data				= in_config.read<u32>( );
+	u32 const index_data				= in_config.read<u32>( );
 	
 	// 29 LSBs - indices count
 	m_index_count						= index_data & 0x1FFFFFFF;
 	// Index format is coded by 29st bit in index count
 	m_index_format						= ( index_data & 0x20000000 ) ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT;
 
-	u32 indices_size					= m_index_count * format_get_bits_per_pixel( m_index_format ) / 8;
+	u32 const indices_size				= m_index_count * format_get_bits_per_pixel( m_index_format ) / 8;
 	buffer::cook cook;
 	cook.set_index_buffer				( indices_size );
 	m_index_buffer.create				( cook, in_config.read_data( indices_size ) );
@@ -36,16 +36,16 @@ void mesh::create( binary_config& in_config )
 	};
 
 	// Vertex type can be uncoded by 2 MSBs
-	u32 vertex_format_id				= index_data >> 30;
+	u32 const vertex_format_id			= index_data >> 30;
 	ASSERT								( vertex_format_id < ARRAYSIZE( vertex_formats ) );
-	vertex_type vertex					= vertex_formats[vertex_format_id];
-	u32 buffers_count					= get_vertex_type_buffers_count( vertex );
+	vertex_type const vertex			= vertex_formats[vertex_format_id];
+	u32 const buffers_count				= get_vertex_type_buffers_count( vertex );
 
 	for ( u32 i = 0; i < buffers_count; ++i )
 	{
 		m_vertex_strides[i]				= get_vertex_type_size( i, vertex );
 
-		u32 vertices_size				= in_config.read<u32>( );
+		u32 const vertices_size			= in_config.read<u32>( );
 		buffer::cook cook;
 		cook.set_vertex_buffer			( vertices_size );
 		m_vertex_buffers[i].create		( cook, in_config.read_data( vertices_size ) );

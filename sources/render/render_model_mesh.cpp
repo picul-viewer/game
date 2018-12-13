@@ -37,7 +37,7 @@ void render_model_mesh::create( binary_config& in_config )
 		{
 			mesh* const mesh	= g_resources.get_mesh_pool( ).create_resource( );
 			mesh->create		( in_config );
-			m_mesh				=  mesh;
+			m_mesh				= mesh;
 			break;
 		}
 		default:
