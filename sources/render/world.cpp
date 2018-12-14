@@ -13,6 +13,8 @@ void world::create( pvoid in_hwnd, math::u16x2 in_resolution, bool in_is_windowe
 	params.hwnd					= in_hwnd;
 	params.screen_resolution	= in_resolution;
 	params.is_windowed			= in_is_windowed;
+	params.draw_statistics		= false;
+
 	g_parameters_manager.update	( );
 
 	g_renderer.create			( );

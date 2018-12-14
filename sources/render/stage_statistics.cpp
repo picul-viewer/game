@@ -37,18 +37,21 @@ void stage_statistics::execute( )
 
 	g_statistics.process_frame( frame_delay );
 
-	str256 statistics_string;
-	g_statistics.output_render_statistics( frame_delay, statistics_string.data( ), str256::max_string_size - 1 );
+	if ( g_parameters.draw_statistics )
+	{
+		str256 statistics_string;
+		g_statistics.output_render_statistics( frame_delay, statistics_string.data( ), str256::max_string_size - 1 );
 
-	u16 const font_size = m_font.get_font_size( );
+		u16 const font_size = m_font.get_font_size( );
 
-	ui_batch& batch = g_resources.get_ui_batch( );
+		ui_batch& batch = g_resources.get_ui_batch( );
 
-	m_font.render_multiline_string(
-		statistics_string.c_str( ), statistics_string.length( ),
-		math::u16x2( 0, g_parameters.screen_resolution.y ), 0, font_size, math::half4( 1.0f, 1.0f, 0.0f, 1.0f ),
-		batch );
-	batch.next_level( );
+		m_font.render_multiline_string(
+			statistics_string.c_str( ), statistics_string.length( ),
+			math::u16x2( 0, g_parameters.screen_resolution.y ), 0, font_size, math::half4( 1.0f, 1.0f, 0.0f, 1.0f ),
+			batch );
+		batch.next_level( );
+	}
 }
 
 } // namespace render

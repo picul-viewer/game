@@ -4,7 +4,7 @@
 #include <types.h>
 #include <math/vector.h>
 
-#include "parameters.h"
+#include "parameters_type.h"
 #include "resource_ids.h"
 
 namespace render {

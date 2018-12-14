@@ -13,7 +13,7 @@ public:
 
 	void update( );
 
-protected:
+private:
 	parameters m_parameters;
 
 };

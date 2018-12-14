@@ -95,6 +95,7 @@
     <ClInclude Include="mesh_box.h" />
     <ClInclude Include="mesh_quad.h" />
     <ClInclude Include="constant_buffers_constants.h" />
+    <ClInclude Include="parameters_type.h" />
     <ClInclude Include="pipeline_state_pool_inline.h" />
     <ClInclude Include="parameters.h" />
     <ClInclude Include="pipeline_state_pool.h" />

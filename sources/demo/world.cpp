@@ -178,6 +178,11 @@ void world::window_input( pvoid handle )
 		{
 			engine::g_world.exit( );
 		}
+
+		if ( ( k == key::f9 ) && pressed )
+		{
+			render::g_world.get_parameters( ).draw_statistics = !render::g_world.get_parameters( ).draw_statistics;
+		}
     }
 
 	m_input_state.on_message( &data );

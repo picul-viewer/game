@@ -404,5 +404,8 @@
     <ClInclude Include="resource_ids.h">
       <Filter>resources\cached_resources</Filter>
     </ClInclude>
+    <ClInclude Include="parameters_type.h">
+      <Filter>parameters</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
