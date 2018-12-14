@@ -21,12 +21,17 @@ void game::world_interface::window_resize( math::u32x2 const& new_dimensions )
 	game::g_world.window_resize( new_dimensions );
 }
 
-void game::world_interface::window_activate( bool is_active )
+void game::world_interface::window_activate( bool const is_active )
 {
 	game::g_world.window_activate( is_active );
 }
 
-void game::world_interface::window_input( pvoid handle )
+void game::world_interface::window_char( u32 const key )
 {
-	game::g_world.window_input( handle );
+	game::g_world.window_char( key );
+}
+
+void game::world_interface::window_input( )
+{
+	game::g_world.window_input( );
 }

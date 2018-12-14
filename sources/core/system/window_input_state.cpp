@@ -1,13 +1,13 @@
 #include "window_input_state.h"
 #include <Windows.h>
+#include <macros.h>
 
 namespace sys {
 
 void window_input_state::on_message( pvoid raw_data )
 {
-    RAWINPUT* raw = (RAWINPUT*)raw_data;
+    RAWINPUT* const raw = (RAWINPUT*)raw_data;
 
-	// Update is non-atomic for now
     if (raw->header.dwType == RIM_TYPEKEYBOARD)
     {
 		key const k			= (key)raw->data.keyboard.VKey;
@@ -31,8 +31,6 @@ void window_input_state::on_message( pvoid raw_data )
 
 			m_keyboard.set_key_pressed( actual_key, pressed );
 		}
-		else
-			m_keyboard.set_key_pressed( k, pressed );
     }
     else if (raw->header.dwType == RIM_TYPEMOUSE)
     {
@@ -59,6 +57,10 @@ void window_input_state::on_message( pvoid raw_data )
 		if ( raw->data.mouse.usButtonFlags & RI_MOUSE_WHEEL )
 			m_mouse.wheel_delta += raw->data.mouse.usButtonData;
     }
+	else
+		UNREACHABLE_CODE
 }
+
+window_input_state g_input_state;
 
 } // namespace sys

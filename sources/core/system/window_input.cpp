@@ -1,11 +1,14 @@
 #include "window_input.h"
 #include <macros.h>
 #include <Windows.h>
+#include "window_input_state.h"
 
 namespace sys {
 
 void window_input::create( )
 {
+	static_assert( raw_input_size == sizeof(RAWINPUT), "internal input store has incorrect size" );
+
 	enum { device_count = 2 };
 
 	RAWINPUTDEVICE raw_input_device[device_count];
@@ -38,12 +41,14 @@ void window_input::destroy( )
 	//
 }
 
-void window_input::get_input_data( pvoid handle, pvoid output_data )
+void window_input::on_message( pvoid handle )
 {
 	// NOTE: don't support joistics for now, so sizeof(RAWINPUT) is known.
 	u32 size = sizeof(RAWINPUT);
-    u32 read_size = GetRawInputData( (HRAWINPUT)handle, RID_INPUT, output_data, &size, sizeof(RAWINPUTHEADER) );
+    u32 read_size = GetRawInputData( (HRAWINPUT)handle, RID_INPUT, m_last_input, &size, sizeof(RAWINPUTHEADER) );
 	ASSERT( read_size <= sizeof(RAWINPUT) );
+
+	g_input_state.on_message( m_last_input );
 }
 
 window_input g_window_input;

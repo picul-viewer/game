@@ -39,9 +39,17 @@ static LRESULT CALLBACK window_procedure( HWND hwnd, UINT message, WPARAM w_para
 
 			break;
 		}
+		case WM_CHAR:
+		{
+			u32 const key = (u32)w_param;
+			g_world.window_char( key );
+
+			break;
+		}
 		case WM_INPUT:
 		{
-			g_world.window_input( (pvoid)l_param );
+			sys::g_window_input.on_message( (pvoid)l_param );
+			g_world.window_input( );
 			break;
 		}
 	}
@@ -61,7 +69,7 @@ void world::window_resize( math::u32x2 const& new_dimensions )
 	game::world_interface::window_resize( new_dimensions );
 }
 
-void world::window_activate( bool is_active )
+void world::window_activate( bool const is_active )
 {
 	if ( is_active == m_is_active )
 		return;
@@ -71,9 +79,14 @@ void world::window_activate( bool is_active )
 	game::world_interface::window_activate( is_active );
 }
 
-void world::window_input( pvoid handle )
+void world::window_char( u32 const key )
 {
-	game::world_interface::window_input( handle );
+	game::world_interface::window_char( key );
+}
+
+void world::window_input( )
+{
+	game::world_interface::window_input( );
 }
 
 void world::window_thread( )

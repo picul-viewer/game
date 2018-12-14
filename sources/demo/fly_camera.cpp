@@ -1,12 +1,12 @@
 #include "fly_camera.h"
 #include <system/timer.h>
 #include <math/math_3d.h>
+#include <system/window_input_state.h>
 
 namespace game {
 
-void fly_camera::create( math::float3 position, math::float2 rotation, math::float3 speed_values, float mouse_sensitivity, sys::window_input_state* input_state )
+void fly_camera::create( math::float3 position, math::float2 rotation, math::float3 speed_values, float mouse_sensitivity )
 {
-	m_input_state = input_state;
 	m_position = position;
 	m_rotation = rotation;
 	m_speed_values = speed_values;
@@ -15,23 +15,25 @@ void fly_camera::create( math::float3 position, math::float2 rotation, math::flo
 
 void fly_camera::update( float delta_time )
 {
-	m_rotation = - (math::float2)m_input_state->get_mouse( ).mouse_position * m_mouse_sensitivity;
+	using namespace sys;
 
-	float const speed_value = m_input_state->get_keyboard( ).is_key_pressed( sys::key::shift ) ? m_speed_values.z :
-							( m_input_state->get_keyboard( ).is_key_pressed( sys::key::control ) ? m_speed_values.x : m_speed_values.y );
+	m_rotation = - (math::float2)g_input_state.get_mouse( ).mouse_position * m_mouse_sensitivity;
+
+	float const speed_value = g_input_state.get_keyboard( ).is_key_pressed( sys::key::shift ) ? m_speed_values.z :
+							( g_input_state.get_keyboard( ).is_key_pressed( sys::key::control ) ? m_speed_values.x : m_speed_values.y );
 
 	math::float2 xz_step( 0.0f, 0.0f );
 
-	if ( m_input_state->get_keyboard( ).is_key_pressed( sys::key::letter_w ) )
+	if ( g_input_state.get_keyboard( ).is_key_pressed( sys::key::letter_w ) )
 		xz_step.y += delta_time * speed_value;
 
-	if ( m_input_state->get_keyboard( ).is_key_pressed( sys::key::letter_s ) )
+	if ( g_input_state.get_keyboard( ).is_key_pressed( sys::key::letter_s ) )
 		xz_step.y -= delta_time * speed_value;
 
-	if ( m_input_state->get_keyboard( ).is_key_pressed( sys::key::letter_a ) )
+	if ( g_input_state.get_keyboard( ).is_key_pressed( sys::key::letter_a ) )
 		xz_step.x -= delta_time * speed_value;
 
-	if ( m_input_state->get_keyboard( ).is_key_pressed( sys::key::letter_d ) )
+	if ( g_input_state.get_keyboard( ).is_key_pressed( sys::key::letter_d ) )
 		xz_step.x += delta_time * speed_value;
 
 	math::float3 z_direction;

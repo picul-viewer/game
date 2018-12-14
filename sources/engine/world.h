@@ -28,8 +28,9 @@ protected:
 	struct helper;
 
 	void window_resize( math::u32x2 const& new_dimensions );
-	void window_activate( bool is_active );
-	void window_input( pvoid handle );
+	void window_activate( bool const is_active );
+	void window_char( u32 const key );
+	void window_input( );
 
 	void window_thread( );
 	void render_thread( );
@@ -115,8 +116,9 @@ void update( );
 void destroy( );
 
 void window_resize( math::u32x2 const& new_dimensions );
-void window_activate( bool is_active );
-void window_input( pvoid handle );
+void window_activate( bool const is_active );
+void window_char( u32 const key );
+void window_input( );
 
 } // namespace world_interface
 

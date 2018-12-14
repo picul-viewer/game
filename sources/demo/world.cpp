@@ -138,7 +138,7 @@ void world::create( )
 
 	engine::g_world.set_current_scene( m_scene );
 
-	m_camera.create( math::float3( 0.0f ), math::float2( 0.0f ), math::float3( 2.0f, 5.0f, 15.0f ), 0.002f, &m_input_state );
+	m_camera.create( math::float3( 0.0f ), math::float2( 0.0f ), math::float3( 2.0f, 5.0f, 15.0f ), 0.002f );
 }
 
 void world::update( )
@@ -158,16 +158,19 @@ void world::window_resize( math::u32x2 const& new_dimensions )
 {
 }
 
-void world::window_activate( bool is_active )
+void world::window_activate( bool const is_active )
 {
 }
 
-void world::window_input( pvoid handle )
+void world::window_char( u32 const key )
+{
+}
+
+void world::window_input( )
 {
 	using namespace sys;
 
-	RAWINPUT data;
-	g_window_input.get_input_data( handle, &data );
+	RAWINPUT& data			= *(RAWINPUT*)g_window_input.get_raw_input( );
 
 	if (data.header.dwType == RIM_TYPEKEYBOARD)
     {
@@ -184,8 +187,6 @@ void world::window_input( pvoid handle )
 			render::g_world.get_parameters( ).draw_statistics = !render::g_world.get_parameters( ).draw_statistics;
 		}
     }
-
-	m_input_state.on_message( &data );
 }
 
 world g_world;

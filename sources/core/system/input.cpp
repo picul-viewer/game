@@ -21,31 +21,21 @@ bool mouse::is_button_pressed( mouse_button button ) const
 
 void keyboard::set_key_pressed( key k, bool pressed )
 {
-	ASSERT( (u32)k <= 0xFF );
-	u32 index = key_to_keyboard_index[(u32)k];
+	u32 const index = (u32)k;
+	ASSERT( index <= 0xFF );
 
 	if ( pressed )
-		data.data[index / 32] |= ( 1 << ( index % 32 ) );
+		data[index / 32] |= ( 1 << ( index % 32 ) );
 	else
-		data.data[index / 32] &= ~( 1 << ( index % 32 ) );
-}
-
-void keyboard::set_key_pressed_interlocked( key k, bool pressed )
-{
-	ASSERT( (u32)k <= 0xFF );
-	u32 index = key_to_keyboard_index[(u32)k];
-
-	if ( pressed )
-		interlocked_or( static_cast<mt_u32&>( data.data[index / 32] ), ( 1 << ( index % 32 ) ) );
-	else
-		interlocked_and( static_cast<mt_u32&>( data.data[index / 32] ), ~( 1 << ( index % 32 ) ) );
+		data[index / 32] &= ~( 1 << ( index % 32 ) );
 }
 
 bool keyboard::is_key_pressed( key k ) const
 {
-	ASSERT( (u32)k <= 0xFF );
-	u32 index = key_to_keyboard_index[(u32)k];
-	return ( data.data[index / 32] & ( 1 << ( index % 32 ) ) ) != 0;
+	u32 const index = (u32)k;
+	ASSERT( index <= 0xFF );
+
+	return ( data[index / 32] & ( 1 << ( index % 32 ) ) ) != 0;
 }
 
 } // namespace sys
