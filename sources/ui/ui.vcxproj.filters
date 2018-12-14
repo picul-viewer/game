@@ -7,15 +7,24 @@
     <Filter Include="utils\font">
       <UniqueIdentifier>{3c641960-a6e6-4d95-867e-2a9983ba7e3a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="utils\text_edit_controller">
+      <UniqueIdentifier>{c9ee5674-67d8-4b7b-b42b-9a0097a78364}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="font.h">
       <Filter>utils\font</Filter>
     </ClInclude>
+    <ClInclude Include="text_edit_controller.h">
+      <Filter>utils\text_edit_controller</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="font.cpp">
       <Filter>utils\font</Filter>
+    </ClCompile>
+    <ClCompile Include="text_edit_controller.cpp">
+      <Filter>utils\text_edit_controller</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

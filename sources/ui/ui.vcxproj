@@ -83,9 +83,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="font.h" />
+    <ClInclude Include="text_edit_controller.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="font.cpp" />
+    <ClCompile Include="text_edit_controller.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">
