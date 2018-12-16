@@ -17,7 +17,8 @@ private:
 	{
 		math::u16x4 corners_position;
 		math::u16x4 corners_texcoord;
-		math::half4 color;
+		math::half4 mult_color;
+		math::half4 add_color;
 		texture_id texture;
 	};
 
@@ -25,7 +26,8 @@ private:
 	{
 		math::s16x2 position;
 		math::u16x2 texcoord;
-		math::half4 color;
+		math::half4 mult_color;
+		math::half4 add_color;
 	};
 
 public:
@@ -36,15 +38,18 @@ public:
 		texture_id texture;
 	};
 
-	enum { max_vertices = 64 * Kb };
+	enum {
+		max_vertices = 64 * Kb,
+		max_batches = 4096
+	};
 
 public:
 	void create( );
 	void destroy( );
 
 	void add_quad(
-		math::u16x4 const in_corners_position, texture_id const in_texture,
-		math::u16x4 const in_corners_texcoord, math::half4 const& in_color );
+		math::u16x4 const in_corners_position, math::u16x4 const in_corners_texcoord,
+		math::half4 const& in_mult_color, math::half4 const& in_add_color, texture_id const in_texture );
 
 	void next_level( );
 	

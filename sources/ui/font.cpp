@@ -95,7 +95,11 @@ void font::render_string(
 				65535ul * row_index / m_chars_in_row
 			);
 
-			batch.add_quad( corners_position, m_texture, corners_texcoord, color );
+			batch.add_quad(
+				corners_position, corners_texcoord,
+				math::half4( 0.0f, 0.0f, 0.0f, color.w ),
+				math::half4( color.vx, 0.0f ),
+				m_texture );
 		}
 
 		offset = next_offset;

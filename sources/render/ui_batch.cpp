@@ -6,9 +6,9 @@ namespace render {
 
 void ui_batch::create( )
 {
-	m_temporal_memory.create( max_vertices / 4 );
+	m_temporal_memory.create( max_vertices );
 	m_buffer.create( max_vertices );
-	m_batch_data.create( 4096 );
+	m_batch_data.create( max_batches );
 }
 
 void ui_batch::destroy( )
@@ -19,14 +19,15 @@ void ui_batch::destroy( )
 }
 
 void ui_batch::add_quad(
-	math::u16x4 const in_corners_position, texture_id const in_texture,
-	math::u16x4 const in_corners_texcoord, math::half4 const& in_color )
+	math::u16x4 const in_corners_position, math::u16x4 const in_corners_texcoord,
+	math::half4 const& in_mult_color, math::half4 const& in_add_color, texture_id const in_texture )
 {
 	ui_quad_data& data = m_temporal_memory.emplace_back( );
 
 	data.corners_position	= in_corners_position;
 	data.corners_texcoord	= in_corners_texcoord;
-	data.color				= in_color;
+	data.mult_color			= in_mult_color;
+	data.add_color			= in_add_color;
 	data.texture			= in_texture;
 }
 
@@ -73,25 +74,29 @@ void ui_batch::next_level( )
 		}
 
 		math::s16x4 normalized_position = math::u16x4( math::u32x4( i->corners_position ) * math::u32x4( 65535 ) / half_dimensions ) - math::u16x4( 32768 );
-
+		
 		o->position = math::s16x2( normalized_position.x, normalized_position.y );
 		o->texcoord = math::u16x2( i->corners_texcoord.x, i->corners_texcoord.y );
-		o->color = i->color;
+		o->mult_color = i->mult_color;
+		o->add_color = i->add_color;
 		++o;
 		
 		o->position = math::s16x2( normalized_position.z, normalized_position.y );
 		o->texcoord = math::u16x2( i->corners_texcoord.z, i->corners_texcoord.y );
-		o->color = i->color;
+		o->mult_color = i->mult_color;
+		o->add_color = i->add_color;
 		++o;
 		
 		o->position = math::s16x2( normalized_position.x, normalized_position.w );
 		o->texcoord = math::u16x2( i->corners_texcoord.x, i->corners_texcoord.w );
-		o->color = i->color;
+		o->mult_color = i->mult_color;
+		o->add_color = i->add_color;
 		++o;
 		
 		o->position = math::s16x2( normalized_position.z, normalized_position.w );
 		o->texcoord = math::u16x2( i->corners_texcoord.z, i->corners_texcoord.w );
-		o->color = i->color;
+		o->mult_color = i->mult_color;
+		o->add_color = i->add_color;
 		++o;
 	}
 
