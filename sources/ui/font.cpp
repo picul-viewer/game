@@ -32,8 +32,9 @@ void font::destroy( )
 
 u8 font::get_char_width( char const in_char ) const
 {
-	ASSERT( ( in_char >= m_start_char ) && ( in_char < m_start_char + m_char_count ) );
-	return m_chars_width[in_char - m_start_char];
+	u8 const c = (u8)in_char;
+	ASSERT( ( c >= m_start_char ) && ( c < m_start_char + m_char_count ) );
+	return m_chars_width[c - m_start_char];
 }
 
 u32 font::get_string_width( pcstr const in_str ) const
