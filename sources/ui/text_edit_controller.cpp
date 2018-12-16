@@ -105,6 +105,7 @@ void text_edit_controller::on_input( )
 
 			break;
 		}
+
 		case key::right:
 		{
 			bool const is_shift = g_input_state.get_keyboard( ).is_key_pressed( key::shift );
@@ -119,6 +120,40 @@ void text_edit_controller::on_input( )
 			}
 			else
 				m_selection_length = 0;
+
+			break;
+		}
+		
+		case key::home:
+		{
+			bool const is_shift = g_input_state.get_keyboard( ).is_key_pressed( key::shift );
+
+			if ( is_shift )
+			{
+				m_selection_length = -m_selection_start;
+			}
+			else
+			{
+				m_selection_start = 0;
+				m_selection_length = 0;
+			}
+
+			break;
+		}
+
+		case key::end:
+		{
+			bool const is_shift = g_input_state.get_keyboard( ).is_key_pressed( key::shift );
+
+			if ( is_shift )
+			{
+				m_selection_length = m_length - m_selection_start;
+			}
+			else
+			{
+				m_selection_start = m_length;
+				m_selection_length = 0;
+			}
 
 			break;
 		}
