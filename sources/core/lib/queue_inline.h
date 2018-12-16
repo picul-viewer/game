@@ -4,9 +4,9 @@
 #include "memory.h"
 
 template<typename T>
-void linear_queue<T>::create( uptr size )
+void linear_queue<T>::create( pvoid const memory, uptr const size )
 {
-	m_data			= aligned_std_allocator<Cache_Line>( ).allocate( size );
+	m_data			= (T*)memory;
 	m_size			= size;
 
 	m_push_index	= 0;
@@ -15,9 +15,7 @@ void linear_queue<T>::create( uptr size )
 
 template<typename T>
 void linear_queue<T>::destroy( )
-{
-	aligned_std_allocator<Cache_Line>( ).deallocate( m_data );
-}
+{ }
 
 template<typename T>
 void linear_queue<T>::push( T const& value )

@@ -9,7 +9,7 @@ struct linear_queue
 public:
 	linear_queue( ) = default;
 
-	void create( uptr size );
+	void create( pvoid const memory, uptr const size );
 	void destroy( );
 
 	void push( T const& value );
