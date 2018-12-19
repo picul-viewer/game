@@ -51,6 +51,8 @@ public:
 		math::u16x4 const in_corners_position, math::u16x4 const in_corners_texcoord,
 		math::half4 const& in_mult_color, math::half4 const& in_add_color, texture_id const in_texture );
 
+	void add_color_quad( math::u16x4 const in_corners_position, math::half4 const& in_color );
+
 	void next_level( );
 	
 	inline pcvoid get_buffer( ) const { return m_buffer.begin( ); }

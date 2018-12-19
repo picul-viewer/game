@@ -1,6 +1,7 @@
 #include "ui_batch.h"
 #include <lib/algorithms.h>
 #include "parameters.h"
+#include "texture.h"
 
 namespace render {
 
@@ -29,6 +30,15 @@ void ui_batch::add_quad(
 	data.mult_color			= in_mult_color;
 	data.add_color			= in_add_color;
 	data.texture			= in_texture;
+}
+
+void ui_batch::add_color_quad( math::u16x4 const in_corners_position, math::half4 const& in_color )
+{
+	ui_quad_data& data = m_temporal_memory.emplace_back( );
+
+	data.corners_position	= in_corners_position;
+	data.add_color			= in_color;
+	data.texture			= texture_handle::invalid;
 }
 
 void ui_batch::next_level( )
