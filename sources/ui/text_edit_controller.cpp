@@ -31,6 +31,9 @@ void text_edit_controller::on_char( u32 const in_key )
 
 	if ( m_selection_length == 0 )
 	{
+		if ( m_length == m_capacity )
+			return;
+
 		u16 const tail_length = m_length - m_selection_start;
 
 		if ( tail_length != 0 )
@@ -101,7 +104,10 @@ void text_edit_controller::on_input( )
 				m_selection_start -= ( m_selection_start != 0 ) ? 1 : 0;
 			}
 			else
+			{
+				m_selection_start += ( m_selection_length < 0 ) ? m_selection_length : 0;
 				m_selection_length = 0;
+			}
 
 			break;
 		}
@@ -119,7 +125,10 @@ void text_edit_controller::on_input( )
 				m_selection_start += ( m_selection_start != m_length ) ? 1 : 0;
 			}
 			else
+			{
+				m_selection_start += ( m_selection_length > 0 ) ? m_selection_length : 0;
 				m_selection_length = 0;
+			}
 
 			break;
 		}
