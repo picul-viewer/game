@@ -43,7 +43,8 @@ enum class key {
 	escape				= 0x1B,
 
 	space				= 0x20,
-
+	page_up				= 0x21,
+	page_down			= 0x22,
 	end					= 0x23,
 	home				= 0x24,
 
