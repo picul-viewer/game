@@ -44,6 +44,13 @@ pointer linear_allocator<MemorySize>::allocate( uptr size )
 	return result;
 }
 
+template<uptr MemorySize>
+void linear_allocator<MemorySize>::shrink( uptr const shrink_size )
+{
+	ASSERT					( (uptr)( m_last_pointer - m_data ) >= shrink_size );
+	m_last_pointer			-= shrink_size;
+}
+
 
 template<uptr PageSize, uptr PageMaxCount>
 void dynamic_linear_allocator<PageSize, PageMaxCount>::create( )
@@ -91,6 +98,13 @@ pointer dynamic_linear_allocator<PageSize, PageMaxCount>::allocate( uptr size )
 	pointer const result	= m_last_pointer;
 	m_last_pointer			+= size;
 	return result;
+}
+
+template<uptr PageSize, uptr PageMaxCount>
+void dynamic_linear_allocator<PageSize, PageMaxCount>::shrink( uptr const shrink_size )
+{
+	ASSERT					( (uptr)( m_last_pointer - m_data ) >= shrink_size );
+	m_last_pointer			-= shrink_size;
 }
 
 #endif // #ifndef __core_linear_allocator_inline_h_included_
