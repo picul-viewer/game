@@ -59,6 +59,8 @@ void font::render_string(
 	pcstr const caption, uptr const length, math::u16x2 const position,
 	u16 const font_size, math::half4 const color, render::ui_batch& batch ) const
 {
+	u16 const fsize = ( font_size != 0 ) ? font_size : m_char_height;
+
 	pcstr s = caption;
 	uptr l = length;
 
@@ -83,10 +85,10 @@ void font::render_string(
 			u8 const row_index = index / m_chars_in_row;
 
 			math::u16x4 const corners_position( 
-				position.x + offset * font_size / m_char_height,
+				position.x + offset * fsize / m_char_height,
 				position.y,
-				position.x + next_offset * font_size / m_char_height,
-				position.y + font_size
+				position.x + next_offset * fsize / m_char_height,
+				position.y + fsize
 			);
 		
 			math::u16x4 const corners_texcoord(
