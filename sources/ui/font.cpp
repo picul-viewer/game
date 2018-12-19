@@ -84,16 +84,16 @@ void font::render_string(
 
 			math::u16x4 const corners_position( 
 				position.x + offset * font_size / m_char_height,
-				position.y - font_size,
+				position.y,
 				position.x + next_offset * font_size / m_char_height,
-				position.y
+				position.y + font_size
 			);
 		
 			math::u16x4 const corners_texcoord(
 				65535ul * col_index / m_chars_in_column,
-				65535ul * row_index / m_chars_in_row + 65535ul * m_char_height / m_texture_dimensions.y,
+				65535ul * row_index / m_chars_in_row,
 				65535ul * col_index / m_chars_in_column + 65535ul * width / m_texture_dimensions.x,
-				65535ul * row_index / m_chars_in_row
+				65535ul * row_index / m_chars_in_row + 65535ul * m_char_height / m_texture_dimensions.y
 			);
 
 			batch.add_quad(
@@ -124,7 +124,7 @@ void font::render_multiline_string(
 		render_string( str, line_end, math::u16x2( position.x, position_y ), font_size, color, batch );
 
 		str += line_end + 1;
-		position_y -= font_size + in_line_interval;
+		position_y += font_size + in_line_interval;
 	}
 }
 

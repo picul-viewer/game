@@ -48,7 +48,7 @@ void stage_statistics::execute( )
 
 		m_font.render_multiline_string(
 			statistics_string.c_str( ), statistics_string.length( ),
-			math::u16x2( 0, g_parameters.screen_resolution.y ), 0, font_size, math::half4( 1.0f, 1.0f, 0.0f, 1.0f ),
+			math::u16x2( 0, 0 ), 0, font_size, math::half4( 1.0f, 1.0f, 0.0f, 1.0f ),
 			batch );
 		batch.next_level( );
 	}

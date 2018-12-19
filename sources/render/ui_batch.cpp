@@ -74,7 +74,9 @@ void ui_batch::next_level( )
 		}
 
 		math::s16x4 normalized_position = math::u16x4( math::u32x4( i->corners_position ) * math::u32x4( 65535 ) / half_dimensions ) - math::u16x4( 32768 );
-		
+		normalized_position.y = 65535 - normalized_position.y;
+		normalized_position.w = 65535 - normalized_position.w;
+
 		o->position = math::s16x2( normalized_position.x, normalized_position.y );
 		o->texcoord = math::u16x2( i->corners_texcoord.x, i->corners_texcoord.y );
 		o->mult_color = i->mult_color;
