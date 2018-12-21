@@ -42,13 +42,11 @@ void stage_statistics::execute( )
 		str256 statistics_string;
 		g_statistics.output_render_statistics( frame_delay, statistics_string.data( ), str256::max_string_size - 1 );
 
-		u16 const font_size = m_font.get_font_size( );
-
 		ui_batch& batch = g_resources.get_ui_batch( );
 
 		m_font.render_multiline_string(
 			statistics_string.c_str( ), statistics_string.length( ),
-			math::u16x2( 0, 0 ), 0, font_size, math::half4( 1.0f, 1.0f, 0.0f, 1.0f ),
+			math::u16x2( 0, 0 ), 0, 0, math::half4( 1.0f, 1.0f, 0.0f, 1.0f ),
 			batch );
 		batch.next_level( );
 	}

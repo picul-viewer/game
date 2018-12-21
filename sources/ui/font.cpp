@@ -113,6 +113,8 @@ void font::render_multiline_string(
 	pcstr const caption, uptr const length, math::u16x2 const position, u16 const in_line_interval,
 	u16 const font_size, math::half4 const color, render::ui_batch& batch ) const
 {
+	u16 const fsize = ( font_size != 0 ) ? font_size : m_char_height;
+
 	pcstr str = caption;
 	pcstr const str_end = caption + length;
 
@@ -123,10 +125,10 @@ void font::render_multiline_string(
 		uptr const find_result = strings::find( str, '\n' );
 		uptr const line_end = ( find_result != (uptr)-1 ) ? find_result : str_end - str;
 
-		render_string( str, line_end, math::u16x2( position.x, position_y ), font_size, color, batch );
+		render_string( str, line_end, math::u16x2( position.x, position_y ), fsize, color, batch );
 
 		str += line_end + 1;
-		position_y += font_size + in_line_interval;
+		position_y += fsize + in_line_interval;
 	}
 }
 
