@@ -66,6 +66,12 @@ uptr buffer_array<T>::size( ) const
 }
 
 template<typename T>
+T* buffer_array<T>::data( ) const
+{
+	return begin( );
+}
+
+template<typename T>
 T* buffer_array<T>::begin( ) const
 {
 	return m_begin;

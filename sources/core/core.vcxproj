@@ -104,6 +104,7 @@
     <ClInclude Include="lib\extensible_array.h" />
     <ClInclude Include="lib\extensible_array_inline.h" />
     <ClInclude Include="lib\fixed_array.h" />
+    <ClInclude Include="lib\fixed_array_inline.h" />
     <ClInclude Include="lib\fixed_string.h" />
     <ClInclude Include="lib\fixed_string_inline.h" />
     <ClInclude Include="lib\function.h" />

@@ -61,7 +61,7 @@ void ui_batch::next_level( )
 	
 	math::u32x4 const half_dimensions = math::u16x4( g_parameters.screen_resolution.x, g_parameters.screen_resolution.y, g_parameters.screen_resolution.x, g_parameters.screen_resolution.y );
 
-	ui_quad_data* i = begin;
+	ui_quad_data* i = m_temporal_memory.data( );
 
 	ASSERT( m_buffer.size( ) < 4 * Gb );
 	u32 const size = (u32)m_buffer.size( );

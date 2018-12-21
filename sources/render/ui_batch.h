@@ -55,7 +55,7 @@ public:
 
 	void next_level( );
 	
-	inline pcvoid get_buffer( ) const { return m_buffer.begin( ); }
+	inline pcvoid get_buffer( ) const { return m_buffer.data( ); }
 	inline u32 get_buffer_size( ) const { return sizeof(gpu_vertex_data) * (u32)m_buffer.size( ); }
 	inline extensible_array<batch_data> const& get_batch_data( ) const { return m_batch_data; }
 

@@ -105,6 +105,12 @@ uptr extensible_array<T>::size( ) const
 }
 
 template<typename T>
+T* extensible_array<T>::data( ) const
+{
+	return begin( );
+}
+
+template<typename T>
 T* extensible_array<T>::begin( ) const
 {
 	return m_begin;

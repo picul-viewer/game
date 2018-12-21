@@ -224,7 +224,7 @@ static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u3
 	memcpy( file_data, &index_data, sizeof(u32) );
 	memcpy( file_data + sizeof(u32), indices, indices_size );
 	memcpy( file_data + sizeof(u32) + indices_size, &vertices_size, sizeof(u32) );
-	memcpy( file_data + sizeof(u32) + indices_size + sizeof(u32), vertices.begin( ), vertices_size );
+	memcpy( file_data + sizeof(u32) + indices_size + sizeof(u32), vertices.data( ), vertices_size );
 
 	sys::file f( path.c_str( ), sys::file::open_write );
 	if ( !f.is_valid( ) )

@@ -19,7 +19,8 @@ public:
 	void clear( );
 
 	uptr size( ) const;
-
+	
+	T* data( ) const;
 	T* begin( ) const;
 	T* end( ) const;
 	

@@ -94,6 +94,15 @@
     <Filter Include="lib\memory\allocators\linear">
       <UniqueIdentifier>{f22a57f1-2324-46f9-b2f9-cc50c4879865}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\array\buffer_array">
+      <UniqueIdentifier>{530c7a45-8665-490d-8de0-b43a8ccee1fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\array\extensible_array">
+      <UniqueIdentifier>{a63c3c2d-817e-4009-8be2-447dfeee8cd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\array\fixed_array">
+      <UniqueIdentifier>{3ada7f77-c0cf-4c88-a1cd-dfeac19bffa6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -260,21 +269,6 @@
     <ClInclude Include="lib\config.h">
       <Filter>lib\config</Filter>
     </ClInclude>
-    <ClInclude Include="lib\fixed_array.h">
-      <Filter>lib\array</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\buffer_array.h">
-      <Filter>lib\array</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\buffer_array_inline.h">
-      <Filter>lib\array</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\extensible_array.h">
-      <Filter>lib\array</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\extensible_array_inline.h">
-      <Filter>lib\array</Filter>
-    </ClInclude>
     <ClInclude Include="system\file_iterator.h">
       <Filter>system\fs\file_iterator</Filter>
     </ClInclude>
@@ -286,6 +280,24 @@
     </ClInclude>
     <ClInclude Include="lib\memory_block.h">
       <Filter>lib\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\buffer_array.h">
+      <Filter>lib\array\buffer_array</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\buffer_array_inline.h">
+      <Filter>lib\array\buffer_array</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\extensible_array.h">
+      <Filter>lib\array\extensible_array</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\extensible_array_inline.h">
+      <Filter>lib\array\extensible_array</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\fixed_array.h">
+      <Filter>lib\array\fixed_array</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\fixed_array_inline.h">
+      <Filter>lib\array\fixed_array</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
