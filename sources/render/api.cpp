@@ -5,7 +5,7 @@
 
 namespace render {
 
-const DXGI_FORMAT api::backbuffer_pixel_format = DXGI_FORMAT_R8G8B8A8_UNORM;
+const DXGI_FORMAT api::backbuffer_pixel_format = DXGI_FORMAT_B8G8R8A8_UNORM;
 
 void api::create( )
 {
@@ -29,12 +29,13 @@ void api::create( )
 	u32 feature_levels_count = ARRAYSIZE( feature_levels );
 
 	DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
+	swap_chain_desc.SwapEffect							= DXGI_SWAP_EFFECT_DISCARD;
 	swap_chain_desc.BufferCount							= 1;
 	swap_chain_desc.BufferDesc.Width					= g_parameters.screen_resolution.x;
 	swap_chain_desc.BufferDesc.Height					= g_parameters.screen_resolution.y;
 	swap_chain_desc.BufferDesc.Format					= backbuffer_pixel_format;
-	swap_chain_desc.BufferDesc.RefreshRate.Numerator	= 60;
-	swap_chain_desc.BufferDesc.RefreshRate.Denominator	= 1;
+	swap_chain_desc.BufferDesc.RefreshRate.Numerator	= 0;
+	swap_chain_desc.BufferDesc.RefreshRate.Denominator	= 0;
 	swap_chain_desc.BufferUsage							= DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swap_chain_desc.OutputWindow						= (HWND)g_parameters.hwnd;
 	swap_chain_desc.SampleDesc.Count					= 1;
