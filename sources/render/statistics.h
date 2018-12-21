@@ -3,6 +3,7 @@
 
 #include <types.h>
 #include "dx_include.h"
+#include <system/timer.h>
 
 namespace render {
 
@@ -24,6 +25,8 @@ public:
 	public:
 		frame( );
 		~frame( );
+	private:
+		sys::float_timer m_timer;
 	};
 
 	struct debug_event
@@ -44,7 +47,7 @@ public:
 
 protected:
 	void begin_frame( );
-	void end_frame( );
+	void end_frame( float const in_elapsed_cpu_time );
 	
 	void begin_debug_event( LPCWSTR const in_name_wstr );
 	void end_debug_event( );
@@ -65,6 +68,8 @@ protected:
 		u32 m_events_begin;
 		u32 m_events_end;
 		float m_precision;
+		float m_render_gpu_frame_time;
+		float m_render_cpu_frame_time;
 		float m_frame_time;
 
 		frame_struct( );
@@ -86,6 +91,8 @@ protected:
 	
 	uptr m_frame_index;
 	u32 m_event_index;
+
+	sys::float_ticker m_ticker;
 
 };
 

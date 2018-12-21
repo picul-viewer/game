@@ -32,6 +32,8 @@ statistics::statistics( )
 
 void statistics::create( )
 {
+	m_ticker.tick( );
+
 	D3D11_QUERY_DESC desc;
 	desc.Query = D3D11_QUERY_TIMESTAMP_DISJOINT;
 	desc.MiscFlags = 0;
@@ -77,6 +79,12 @@ void statistics::destroy( )
 
 void statistics::begin_frame( )
 {
+	// Update previous frame time.
+	float const frame_time = m_ticker.tick( );
+	uptr const previous_frame_index = ( m_frame_index - 1 + max_frames ) % max_frames;
+	m_frames[previous_frame_index].m_frame_time = frame_time * 1000.0f;
+
+	// GPU queries.
 	ASSERT( m_frames[m_frame_index].m_query );
 	ASSERT( m_frames[m_frame_index].m_t0 );
 
@@ -87,8 +95,12 @@ void statistics::begin_frame( )
 	m_frames[m_frame_index].m_events_end = (u32)-1;
 }
 
-void statistics::end_frame( )
+void statistics::end_frame( float const in_elapsed_cpu_time )
 {
+	// CPU render frame time.
+	m_frames[m_frame_index].m_render_cpu_frame_time = in_elapsed_cpu_time * 1000.0f;
+
+	// GPU queries.
 	ASSERT( m_frames[m_frame_index].m_query );
 	ASSERT( m_frames[m_frame_index].m_t1 );
 
@@ -118,7 +130,7 @@ void statistics::process_frame( uptr const in_delay )
 	g_api.get_context( )->GetData( frame.m_t0, &frame_t0, sizeof(UINT64), 0 );
 	g_api.get_context( )->GetData( frame.m_t1, &frame_t1, sizeof(UINT64), 0 );
 
-	frame.m_frame_time = (float)( frame_t1 - frame_t0 ) * precision;
+	frame.m_render_gpu_frame_time = (float)( frame_t1 - frame_t0 ) * precision;
 
 	for ( uptr i = frame.m_events_begin; i != frame.m_events_end; i = ( i + 1 ) % max_events )
 	{
@@ -173,8 +185,10 @@ void statistics::output_render_statistics( uptr const in_delay, pstr const out_s
 		return;
 
 	text_config cfg( out_string, in_max_chars );
-
+	
 	cfg.write_mask( TEXT_CONFIG_WRITE_MASK( "Frametime: %4.3f ms\n" ), frame.m_frame_time );
+	cfg.write_mask( TEXT_CONFIG_WRITE_MASK( "CPU render: %4.3f ms\n" ), frame.m_render_cpu_frame_time );
+	cfg.write_mask( TEXT_CONFIG_WRITE_MASK( "GPU render: %4.3f ms\n" ), frame.m_render_gpu_frame_time );
 
 	for ( uptr i = frame.m_events_begin; i != frame.m_events_end; i = ( i + 1 ) % max_events )
 	{
@@ -234,11 +248,13 @@ void statistics::save_render_statistics( uptr const in_delay, pcstr in_file_name
 statistics::frame::frame( )
 {
 	g_statistics.begin_frame( );
+	m_timer.start( );
 }
 
 statistics::frame::~frame( )
 {
-	g_statistics.end_frame( );
+	float const time = m_timer.get_elapsed_time( );
+	g_statistics.end_frame( time );
 }
 
 statistics::debug_event::debug_event( LPCWSTR const in_name_wstr )
