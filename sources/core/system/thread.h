@@ -27,6 +27,13 @@ public:
 		Functor( arg );
 		return 0;
 	}
+	
+	template<void( *Functor )( )>
+	static unsigned long __stdcall func_helper( void* )
+	{
+		Functor( );
+		return 0;
+	}
 
 	template<typename ThisType, void( ThisType::*Functor )( )>
 	static unsigned long __stdcall method_helper( void* arg )
