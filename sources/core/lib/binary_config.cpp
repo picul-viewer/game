@@ -1,4 +1,5 @@
 #include "binary_config.h"
+#include "macros.h"
 #include "memory.h"
 #include "strings.h"
 

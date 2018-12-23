@@ -2,7 +2,6 @@
 #define __core_binary_config_h_included_
 
 #include <types.h>
-#include "macros.h"
 #include "config.h"
 
 class binary_config
@@ -44,18 +43,14 @@ protected:
 template<typename T>
 T const& binary_config::read( )
 {
-	T& value		= *(T*)m_pointer;
-	m_pointer		+= sizeof(T);
-	ASSERT			( m_pointer <= m_end );
-	return			value;
+	T* const data	= (T*)read_data( sizeof(T) );
+	return			*data;
 }
 
 template<typename T>
 void binary_config::write( T const& value )
 {
-	ASSERT			( m_pointer + sizeof(T) <= m_end );
-	*(T*)m_pointer	= value;
-	m_pointer		+= sizeof(T);
+	write_data		( &value, sizeof(T) );
 }
 
-#endif // #ifndef __core_config_h_included_
+#endif // #ifndef __core_binary_config_h_included_

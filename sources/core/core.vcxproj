@@ -150,6 +150,7 @@
     <ClInclude Include="system\path_inline.h" />
     <ClInclude Include="system\spsc_queue.h" />
     <ClInclude Include="system\spsc_queue_inline.h" />
+    <ClInclude Include="system\spsc_stream.h" />
     <ClInclude Include="system\thread.h" />
     <ClInclude Include="system\threading_event.h" />
     <ClInclude Include="system\window_input.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="system\file_iterator.cpp" />
     <ClCompile Include="system\input.cpp" />
     <ClCompile Include="system\interlocked.cpp" />
+    <ClCompile Include="system\spsc_stream.cpp" />
     <ClCompile Include="system\thread.cpp" />
     <ClCompile Include="system\threading_event.cpp" />
     <ClCompile Include="system\window_input.cpp" />

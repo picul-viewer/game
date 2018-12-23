@@ -103,6 +103,18 @@
     <Filter Include="lib\array\fixed_array">
       <UniqueIdentifier>{3ada7f77-c0cf-4c88-a1cd-dfeac19bffa6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\config\config">
+      <UniqueIdentifier>{7cf03f04-2d7a-4d38-9fca-435da4cfc68b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\config\binary_config">
+      <UniqueIdentifier>{b5774f6e-c71b-4414-b890-2f3b79455fbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\config\text_config">
+      <UniqueIdentifier>{5f85c3c5-a205-4630-8c7d-f0d78f51a8ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\spsc_stream">
+      <UniqueIdentifier>{71d38a7c-20e9-4d63-acb9-83cf745545b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -218,9 +230,6 @@
     <ClInclude Include="system\threading_event.h">
       <Filter>system\threads\threading_event</Filter>
     </ClInclude>
-    <ClInclude Include="lib\text_config.h">
-      <Filter>lib\config</Filter>
-    </ClInclude>
     <ClInclude Include="math\aabb.h">
       <Filter>math\collision\aabb</Filter>
     </ClInclude>
@@ -263,12 +272,6 @@
     <ClInclude Include="lib\poolset.h">
       <Filter>lib\memory\allocators\pool</Filter>
     </ClInclude>
-    <ClInclude Include="lib\binary_config.h">
-      <Filter>lib\config</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\config.h">
-      <Filter>lib\config</Filter>
-    </ClInclude>
     <ClInclude Include="system\file_iterator.h">
       <Filter>system\fs\file_iterator</Filter>
     </ClInclude>
@@ -298,6 +301,18 @@
     </ClInclude>
     <ClInclude Include="lib\fixed_array_inline.h">
       <Filter>lib\array\fixed_array</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\config.h">
+      <Filter>lib\config\config</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\text_config.h">
+      <Filter>lib\config\text_config</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\binary_config.h">
+      <Filter>lib\config\binary_config</Filter>
+    </ClInclude>
+    <ClInclude Include="system\spsc_stream.h">
+      <Filter>system\threads\spsc_stream</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -335,9 +350,6 @@
     <ClCompile Include="system\threading_event.cpp">
       <Filter>system\threads\threading_event</Filter>
     </ClCompile>
-    <ClCompile Include="lib\text_config.cpp">
-      <Filter>lib\config</Filter>
-    </ClCompile>
     <ClCompile Include="math\aabb.cpp">
       <Filter>math\collision\aabb</Filter>
     </ClCompile>
@@ -356,14 +368,20 @@
     <ClCompile Include="lib\allocator.cpp">
       <Filter>lib\memory\allocators\allocator</Filter>
     </ClCompile>
-    <ClCompile Include="lib\binary_config.cpp">
-      <Filter>lib\config</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\config.cpp">
-      <Filter>lib\config</Filter>
-    </ClCompile>
     <ClCompile Include="system\file_iterator.cpp">
       <Filter>system\fs\file_iterator</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\config.cpp">
+      <Filter>lib\config\config</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\text_config.cpp">
+      <Filter>lib\config\text_config</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\binary_config.cpp">
+      <Filter>lib\config\binary_config</Filter>
+    </ClCompile>
+    <ClCompile Include="system\spsc_stream.cpp">
+      <Filter>system\threads\spsc_stream</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
