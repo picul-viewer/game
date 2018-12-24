@@ -24,7 +24,7 @@ public:
 	void set_current_scene( scene* in_scene ) const;
 	void destroy_scene( scene* in_scene ) const;
 	
-protected:
+private:
 	struct helper;
 
 	void window_resize( math::u32x2 const& new_dimensions );
@@ -33,33 +33,15 @@ protected:
 	void window_input( );
 
 	void window_thread( );
-	void render_thread( );
-	void game_thread( );
+	void main_thread( );
 
 	void create( );
 	void destroy( );
 
-protected:
-	enum system
-	{
-		system_window = 0,
-		system_render,
-		system_game,
-
-		system_count,
-
-		system_window_mask = 1 << system_window,
-		system_render_mask = 1 << system_render,
-		system_game_mask = 1 << system_game,
-
-		// All except game logic.
-		engine_systems_mask = system_window_mask | system_render_mask
-	};
-
+private:
 	enum threads
 	{
 		thread_window = 0,
-		thread_game,
 
 		thread_count
 	};
@@ -67,9 +49,8 @@ protected:
 	enum events
 	{
 		event_window = 0,
-		event_render,
 
-		event_game,
+		event_main,
 		
 		event_count
 	};
@@ -78,11 +59,7 @@ protected:
 		system_event_count = event_count - 1
 	};
 
-protected:
-	void change_system_alive( system s );
-	void change_system_running( system s );
-
-protected:
+private:
 	sys::window m_window;
 
 	thread m_threads[thread_count];

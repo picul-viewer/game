@@ -66,7 +66,9 @@ void world::create( )
 	{
 		float const dimensions = 9.0f;
 
-		config cfg( stack_allocate( 1 * Mb ), 1 * Mb );
+		uptr const memory_size = 4 * Mb;
+		pvoid const memory = virtual_allocator( ).allocate( memory_size );
+		config cfg( memory, memory_size );
 
 		binary_config w( cfg );
 
@@ -128,6 +130,8 @@ void world::create( )
 															 math::float4( 0.0f, 1.0f, 0.0f, 0.0f ),
 															 math::float4( 0.0f, 0.0f, 1.0f, 0.0f ) );
 		m_cubes.update( world );
+
+		virtual_allocator( ).deallocate( memory );
 	}
 
 	m_scene->create( true );
@@ -143,9 +147,10 @@ void world::create( )
 
 void world::update( )
 {
-	m_camera.update( 0.005f );
+	float const elapsed_time = m_ticker.tick( );
+
+	m_camera.update( elapsed_time );
 	render::g_world.get_parameters( ).camera.view = m_camera.get_view_matrix( );
-	Sleep( 5 );
 }
 
 void world::destroy( )

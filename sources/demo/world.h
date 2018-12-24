@@ -7,7 +7,9 @@
 #include <engine/scene.h>
 #include <engine/object.h>
 
+#include <system/timer.h>
 #include <system/window_input_state.h>
+
 #include <demo/fly_camera.h>
 
 namespace game {
@@ -29,6 +31,7 @@ protected:
 	engine::scene* m_scene;
 	engine::object m_cubes;
 	fly_camera m_camera;
+	sys::float_ticker m_ticker;
 
 };
 
