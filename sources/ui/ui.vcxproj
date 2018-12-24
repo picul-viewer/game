@@ -86,10 +86,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="console.h" />
+    <ClInclude Include="console_inline.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="text_edit_controller.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="console.cpp" />
     <ClCompile Include="font.cpp" />
     <ClCompile Include="text_edit_controller.cpp" />
   </ItemGroup>

@@ -11,6 +11,8 @@
 
 #include <utils/resources_path.h>
 
+#include <render/ui_batch.h>
+
 #include <macros.h>
 #include <Windows.h>
 
@@ -143,18 +145,51 @@ void world::create( )
 	engine::g_world.set_current_scene( m_scene );
 
 	m_camera.create( math::float3( 0.0f ), math::float2( 0.0f ), math::float3( 2.0f, 5.0f, 15.0f ), 0.002f );
+
+	initialize_console( );
+}
+
+void world::initialize_console( )
+{
+	m_console_visible = false;
+
+	pcstr const font_path = GET_RESOURCE_PATH( "configs\\fonts\\console.cfg" );
+	m_console.create( font_path, 16 );
+
+	m_console.set_default_colors( );
+	
+	m_console.set_border_size( 5 );
+	m_console.set_corners_position( math::u16x4( 0, 0, engine::g_world.get_window_dimensions( ).x, engine::g_world.get_window_dimensions( ).y / 4 ) );
+
+	m_console.set_callback( &on_console_command );
+}
+
+void world::on_console_command( pcstr const str )
+{
+	if ( strings::equal( str, "quit" ) )
+		engine::g_world.exit( );
 }
 
 void world::update( )
 {
-	float const elapsed_time = m_ticker.tick( );
+	if ( !m_console_visible )
+	{
+		float const elapsed_time = m_ticker.tick( );
 
-	m_camera.update( elapsed_time );
-	render::g_world.get_parameters( ).camera.view = m_camera.get_view_matrix( );
+		m_camera.update( elapsed_time );
+		render::g_world.get_parameters( ).camera.view = m_camera.get_view_matrix( );
+	}
+	else
+	{
+		render::ui_batch& batch = render::g_world.get_ui_batch( );
+		batch.clear( );
+		m_console.render( batch );
+	}
 }
 
 void world::destroy( )
 {
+	m_console.destroy( );
 	m_cubes.destroy( );
 	m_scene->destroy( );
 }
@@ -169,6 +204,14 @@ void world::window_activate( bool const is_active )
 
 void world::window_char( u32 const key )
 {
+	if ( key == 0x60 ) // tilde
+	{
+		m_console_visible = !m_console_visible;
+		return;
+	}
+
+	if ( m_console_visible )
+		m_console.on_char( key );
 }
 
 void world::window_input( )
@@ -191,6 +234,9 @@ void world::window_input( )
 		{
 			render::g_world.get_parameters( ).draw_statistics = !render::g_world.get_parameters( ).draw_statistics;
 		}
+
+		if ( m_console_visible )
+			m_console.on_input( );
     }
 }
 

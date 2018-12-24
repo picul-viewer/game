@@ -24,6 +24,9 @@ public:
 	void set_current_scene( scene* in_scene ) const;
 	void destroy_scene( scene* in_scene ) const;
 	
+	inline math::u32x2 get_window_dimensions( ) const { return m_window_dimensions; }
+	inline bool is_active( ) const { return m_is_active; }
+
 private:
 	struct helper;
 
