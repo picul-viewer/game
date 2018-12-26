@@ -4,6 +4,7 @@
 #include <lib/fixed_string.h>
 #include <lib/linear_allocator.h>
 #include <lib/weak_string.h>
+#include <lib/writer.h>
 
 #include <render/shader_containers.h>
 
@@ -226,13 +227,13 @@ static inline void compile_shader(	weak_const_string const input_directory,
 		uptr const output_size = sizeof(u32) + result_size_uptr + ( WriteVertexType ? sizeof(u8) : 0 );
 		pointer const output_ptr = shader_data.allocate( output_size );
 			
-		binary_config cfg( output_ptr, output_size );
-		cfg.write( result_size );
+		writer w( output_ptr, output_size );
+		w.write( result_size );
 
 		if ( WriteVertexType )
-			cfg.write( (u8)( parameters & 0xFF ) );
+			w.write( (u8)( parameters & 0xFF ) );
 
-		cfg.write_data( result_data, result_size_uptr );
+		w.write_data( result_data, result_size_uptr );
 
 		result_code->Release( );
 	}

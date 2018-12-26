@@ -3,7 +3,7 @@
 #include <macros.h>
 #include <lib/allocator.h>
 #include <lib/fixed_string.h>
-#include <lib/text_config.h>
+#include <lib/text_reader.h>
 #include <system/path.h>
 #include <system/file.h>
 #include <system/file_iterator.h>
@@ -67,30 +67,30 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 
 	str256 str;
 
-	text_config cfg( data, size );
-	cfg.read_str( str.data( ) );
+	text_reader r( data, size );
+	r.read_str( str.data( ) );
 
 	if ( str == "format" )
 	{
-		cfg.read_str( str.data( ) );
+		r.read_str( str.data( ) );
 		command_line.append( " -f " );
 		command_line.append( str );
 		
-		cfg.read_str( str.data( ) );
+		r.read_str( str.data( ) );
 	}
 	
 	if ( str == "mipmaps" )
 	{
-		cfg.read_str( str.data( ) );
+		r.read_str( str.data( ) );
 		command_line.append( " -m " );
 		command_line.append( str );
 		
-		cfg.read_str( str.data( ) );
+		r.read_str( str.data( ) );
 	}
 
 	if ( str == "srgb" )
 	{
-		cfg.read_str( str.data( ) );
+		r.read_str( str.data( ) );
 		if ( str == "input" )
 			command_line.append( " -srgbi" );
 		else if ( str == "output" )
@@ -100,7 +100,7 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 		else
 			ASSERT( str == "none" );
 
-		cfg.read_str( str.data( ) );
+		r.read_str( str.data( ) );
 	}
 
 	command_line.append( " -nologo -y \"" );

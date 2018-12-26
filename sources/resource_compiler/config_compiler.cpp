@@ -2,7 +2,6 @@
 #include <macros.h>
 #include <lib/allocator.h>
 #include <lib/fixed_string.h>
-#include <lib/text_config.h>
 #include <system/path.h>
 #include <system/file.h>
 #include <system/file_iterator.h>
