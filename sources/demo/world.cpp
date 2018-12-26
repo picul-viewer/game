@@ -3,6 +3,7 @@
 #include <render/world.h>
 
 #include <lib/allocator.h>
+#include <lib/dynamic_writer.h>
 
 #include <math/math_3d.h>
 
@@ -68,11 +69,8 @@ void world::create( )
 	{
 		float const dimensions = 9.0f;
 
-		uptr const memory_size = 4 * Mb;
-		pvoid const memory = virtual_allocator( ).allocate( memory_size );
-		config cfg( memory, memory_size );
-
-		binary_config w( cfg );
+		dynamic_writer w;
+		w.create( );
 
 		// Create render object.
 		w.write( true );
@@ -126,14 +124,14 @@ void world::create( )
 			);
 		}
 
-		m_cubes.create( binary_config( cfg ) );
+		m_cubes.create( reader( w.data( ), w.size( ) ) );
 		
 		mem_align(16) math::float4x3 world = math::float4x3( math::float4( 1.0f, 0.0f, 0.0f, 0.0f ),
 															 math::float4( 0.0f, 1.0f, 0.0f, 0.0f ),
 															 math::float4( 0.0f, 0.0f, 1.0f, 0.0f ) );
 		m_cubes.update( world );
-
-		virtual_allocator( ).deallocate( memory );
+		
+		w.destroy( );
 	}
 
 	m_scene->create( true );

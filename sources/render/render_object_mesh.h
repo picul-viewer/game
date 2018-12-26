@@ -6,7 +6,7 @@
 #include <math/math_sse.h>
 #include <math/aabb.h>
 
-#include <lib/binary_config.h>
+#include <lib/reader.h>
 
 #include "render_object.h"
 #include "render_model_mesh.h"
@@ -16,7 +16,7 @@ namespace render {
 class render_object_mesh : public render_object
 {
 public:
-	void create( binary_config& in_config );
+	void create( reader& in_reader );
 	void destroy( );
 
 	void update( math::float4x3 const& in_transform );

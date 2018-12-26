@@ -4,8 +4,8 @@
 #include <types.h>
 #include "dx_include.h"
 
+#include <lib/reader.h>
 #include <lib/weak_string.h>
-#include <lib/binary_config.h>
 #include "buffer.h"
 #include "resource_handle.h"
 
@@ -19,7 +19,7 @@ class mesh
 public:
 	enum { max_vertex_buffers_count = 4 };
 	
-	void create( binary_config& in_config );
+	void create( reader& in_reader );
 
 	u32 add_ref( ) const;
 	u32 release( ) const;

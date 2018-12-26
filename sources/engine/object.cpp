@@ -5,16 +5,16 @@
 
 namespace engine {
 
-void object::create( binary_config& in_config )
+void object::create( reader& in_reader )
 {
-	ASSERT( in_config.is_valid( ) );
+	ASSERT( in_reader.is_valid( ) );
 
-	bool const create_render = in_config.read<bool>( );
+	bool const create_render = in_reader.read<bool>( );
 		
 	if ( create_render )
 	{
 		m_render = render::g_world.create_object( );
-		m_render->create( in_config );
+		m_render->create( in_reader );
 	}
 }
 

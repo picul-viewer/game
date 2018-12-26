@@ -7,21 +7,21 @@
 
 namespace ui {
 
-void font::create( binary_config& in_config )
+void font::create( reader& in_reader )
 {
-	pcstr const texture_path = in_config.read_str( );
+	pcstr const texture_path = in_reader.read_str( );
 	m_texture = render::g_world.create_texture( utils::get_resource_path( texture_path ).c_str( ) );
 
-	m_texture_dimensions.x = in_config.read<u16>( );
-	m_texture_dimensions.y = in_config.read<u16>( );
+	m_texture_dimensions.x = in_reader.read<u16>( );
+	m_texture_dimensions.y = in_reader.read<u16>( );
 
-	m_chars_in_row = in_config.read<u8>( );
-	m_chars_in_column = in_config.read<u8>( );
-	m_char_height = in_config.read<u8>( );
-	m_start_char = in_config.read<u8>( );
-	m_char_count = in_config.read<u8>( );
+	m_chars_in_row = in_reader.read<u8>( );
+	m_chars_in_column = in_reader.read<u8>( );
+	m_char_height = in_reader.read<u8>( );
+	m_start_char = in_reader.read<u8>( );
+	m_char_count = in_reader.read<u8>( );
 
-	pvoid chars_width = in_config.read_data( m_char_count );
+	pvoid chars_width = in_reader.read_data( m_char_count );
 	memory::copy( m_chars_width.data( ), chars_width, sizeof(u8) * m_char_count );
 }
 

@@ -3,8 +3,8 @@
 
 #include <types.h>
 
+#include <lib/reader.h>
 #include <lib/weak_string.h>
-#include <lib/binary_config.h>
 #include "resource_views.h"
 #include "resource_handle.h"
 
@@ -16,7 +16,7 @@ class resource_pool;
 class texture : public shader_resource_view
 {
 public:
-	void create( binary_config& in_config );
+	void create( reader& in_reader );
 
 	u32 add_ref( ) const;
 	u32 release( ) const;

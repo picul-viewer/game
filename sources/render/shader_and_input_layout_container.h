@@ -2,7 +2,7 @@
 #define __render_shader_and_input_layout_container_h_included_
 
 #include <types.h>
-#include <lib/binary_config.h>
+#include <lib/reader.h>
 #include "input_layout.h"
 
 namespace render {
@@ -13,7 +13,7 @@ class shader_and_input_layout_container
 public:
 	shader_and_input_layout_container( );
 	
-	void create( binary_config& in_config );
+	void create( reader& in_reader );
 	void destroy( );
 
 	ShaderType operator[]( ShaderEnumerator const in_index );

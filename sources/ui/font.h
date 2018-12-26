@@ -2,7 +2,7 @@
 #define __ui_font_h_included_
 
 #include <types.h>
-#include <lib/binary_config.h>
+#include <lib/reader.h>
 #include <lib/fixed_array.h>
 #include <math/vector.h>
 #include <render/resource_ids.h>
@@ -16,7 +16,7 @@ namespace ui {
 class font
 {
 public:
-	void create( binary_config& in_config );
+	void create( reader& in_reader );
 	void destroy( );
 
 	inline u8 get_font_size( ) const { return m_char_height; }

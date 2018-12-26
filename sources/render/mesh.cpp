@@ -13,11 +13,11 @@
 namespace render
 {
 
-void mesh::create( binary_config& in_config )
+void mesh::create( reader& in_reader )
 {
-	ASSERT( in_config.is_valid( ) );
+	ASSERT( in_reader.is_valid( ) );
 
-	u32 const index_data				= in_config.read<u32>( );
+	u32 const index_data				= in_reader.read<u32>( );
 	
 	// 29 LSBs - indices count
 	m_index_count						= index_data & 0x1FFFFFFF;
@@ -27,7 +27,7 @@ void mesh::create( binary_config& in_config )
 	u32 const indices_size				= m_index_count * format_get_bits_per_pixel( m_index_format ) / 8;
 	buffer::cook cook;
 	cook.set_index_buffer				( indices_size );
-	m_index_buffer.create				( cook, in_config.read_data( indices_size ) );
+	m_index_buffer.create				( cook, in_reader.read_data( indices_size ) );
 
 	m_primitive_topology				= D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
@@ -45,10 +45,10 @@ void mesh::create( binary_config& in_config )
 	{
 		m_vertex_strides[i]				= get_vertex_type_size( i, vertex );
 
-		u32 const vertices_size			= in_config.read<u32>( );
+		u32 const vertices_size			= in_reader.read<u32>( );
 		buffer::cook cook;
 		cook.set_vertex_buffer			( vertices_size );
-		m_vertex_buffers[i].create		( cook, in_config.read_data( vertices_size ) );
+		m_vertex_buffers[i].create		( cook, in_reader.read_data( vertices_size ) );
 	}
 }
 

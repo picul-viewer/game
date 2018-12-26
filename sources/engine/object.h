@@ -3,7 +3,7 @@
 
 #include <types.h>
 #include <math/matrix.h>
-#include <lib/binary_config.h>
+#include <lib/reader.h>
 
 namespace render { class object; }
 
@@ -12,7 +12,7 @@ namespace engine {
 class object
 {
 public:
-	void create( binary_config& in_config );
+	void create( reader& in_reader );
 	void destroy( );
 
 	void update( math::float4x3 const& in_transform );

@@ -3,7 +3,7 @@
 
 #include <types.h>
 #include <math/aabb.h>
-#include <lib/binary_config.h>
+#include <lib/reader.h>
 #include "mesh.h"
 #include "texture.h"
 
@@ -15,7 +15,7 @@ class resource_pool;
 class render_model_mesh
 {
 public:
-	void create( binary_config& in_config );
+	void create( reader& in_reader );
 
 	u32 add_ref( );
 	u32 release( );

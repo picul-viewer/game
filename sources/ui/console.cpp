@@ -16,7 +16,7 @@ void console::create( pcstr const in_font_path, u8 const in_visible_lines )
 	f.read( data, size );
 	f.close( );
 
-	m_font.create( binary_config( data, size ) );
+	m_font.create( reader( data, size ) );
 
 	m_text_edit.create( m_text_edit_memory, text_edit_memory_size );
 

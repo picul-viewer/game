@@ -5,25 +5,25 @@
 
 namespace render {
 
-void render_object_mesh::create( binary_config& in_config )
+void render_object_mesh::create( reader& in_reader )
 {
-	ASSERT( in_config.is_valid( ) );
+	ASSERT( in_reader.is_valid( ) );
 
-	bool provide_render_model_config	= in_config.read<bool>( );
+	bool provide_render_model_config	= in_reader.read<bool>( );
 
 	if ( provide_render_model_config )
 	{
 		render_model_mesh* const model	= g_resources.get_render_model_mesh_pool( ).create_resource( );
-		model->create					( in_config );
+		model->create					( in_reader );
 		m_render_model					= model;
 	}
 	else
 	{
-		pcstr render_model_path			= in_config.read_str( );
+		pcstr render_model_path			= in_reader.read_str( );
 		m_render_model					= g_resources.get_render_model_mesh_pool( ).load_resource( render_model_path );
 	}
 	
-	m_local_transform.loadu				( (float const*)in_config.read_data( sizeof(math::sse::matrix3) ) );
+	m_local_transform.loadu				( (float const*)in_reader.read_data( sizeof(math::sse::matrix3) ) );
 }
 
 void render_object_mesh::destroy( )

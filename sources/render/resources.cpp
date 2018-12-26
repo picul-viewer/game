@@ -191,14 +191,14 @@ void resources::create_shaders( )
 	f.read( data, size );
 	f.close( );
 
-	binary_config cfg( data, size );
+	reader r( data, size );
 
-	m_vertex_shader_container.create( cfg );
-	m_pixel_shader_container.create( cfg );
-	m_geometry_shader_container.create( cfg );
-	m_hull_shader_container.create( cfg );
-	m_domain_shader_container.create( cfg );
-	m_compute_shader_container.create( cfg );
+	m_vertex_shader_container.create( r );
+	m_pixel_shader_container.create( r );
+	m_geometry_shader_container.create( r );
+	m_hull_shader_container.create( r );
+	m_domain_shader_container.create( r );
+	m_compute_shader_container.create( r );
 
 	virtual_allocator( ).deallocate( data );
 }

@@ -6,22 +6,22 @@
 
 namespace render {
 
-void object::create( binary_config& in_config )
+void object::create( reader& in_reader )
 {
-	ASSERT( in_config.is_valid( ) );
+	ASSERT( in_reader.is_valid( ) );
 
-	u16 const objects_count			= in_config.read<u16>( );
+	u16 const objects_count			= in_reader.read<u16>( );
 
 	for ( u16 i = 0; i < objects_count; ++i )
 	{
-		u8 const object_type		= in_config.read<u8>( );
+		u8 const object_type		= in_reader.read<u8>( );
 
 		switch ( object_type )
 		{
 		case render_object_type_mesh:
 		{
 			render_object_mesh* obj	= g_resources.get_render_object_allocator( ).allocate<render_object_mesh>( );
-			obj->create				( in_config );
+			obj->create				( in_reader );
 			m_objects.insert		( obj );
 
 			break;

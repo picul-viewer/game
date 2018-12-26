@@ -4,7 +4,7 @@
 #include <types.h>
 #include <math/matrix.h>
 #include <lib/embedded_list.h>
-#include <lib/binary_config.h>
+#include <lib/reader.h>
 
 #include "render_object.h"
 
@@ -13,7 +13,7 @@ namespace render {
 class object
 {
 public:
-	void create( binary_config& in_config );
+	void create( reader& in_reader );
 	void destroy( );
 	
 	void update( math::float4x3 const& in_transform );

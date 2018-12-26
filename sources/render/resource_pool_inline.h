@@ -86,8 +86,8 @@ void resource_pool<Resource>::create_resource_from_file( Resource* const in_reso
 	f.read								( memory, size );
 	f.close								( );
 
-	binary_config cfg					( memory, size );
-	in_resource->create					( cfg );
+	reader r							( memory, size );
+	in_resource->create					( r );
 
 	std_allocator( ).deallocate			( memory );
 }

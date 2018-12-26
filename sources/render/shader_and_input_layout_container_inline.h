@@ -21,15 +21,15 @@ shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumerator
 }
 
 template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax>
-void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::create( binary_config& in_config )
+void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::create( reader& in_reader )
 {
 	ASSERT( m_created == false );
 
 	for ( uptr i = 0; i < ShaderEnumeratorMax; ++i )
 	{
-		u32 const shader_size = in_config.read<u32>( );
-		vertex_type const vtype = (vertex_type)in_config.read<u8>( );
-		pvoid const data = in_config.read_data( shader_size );
+		u32 const shader_size = in_reader.read<u32>( );
+		vertex_type const vtype = (vertex_type)in_reader.read<u8>( );
+		pvoid const data = in_reader.read_data( shader_size );
 
 		m_shaders[i].create( data, shader_size,
 							 get_vertex_type_desc( vtype ),

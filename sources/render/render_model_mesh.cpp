@@ -7,36 +7,36 @@
 
 namespace render {
 
-void render_model_mesh::create( binary_config& in_config )
+void render_model_mesh::create( reader& in_reader )
 {
-	ASSERT( in_config.is_valid( ) );
+	ASSERT( in_reader.is_valid( ) );
 
 	// Read AABB.
 	math::sse::vector aabb_min, aabb_max;
-	aabb_min.loadu				( (float const*)in_config.read_data( sizeof(math::float3) ) );
-	aabb_max.loadu				( (float const*)in_config.read_data( sizeof(math::float3) ) );
+	aabb_min.loadu				( (float const*)in_reader.read_data( sizeof(math::float3) ) );
+	aabb_max.loadu				( (float const*)in_reader.read_data( sizeof(math::float3) ) );
 	m_aabb.set_min_max			( aabb_min, aabb_max );
 
 	// Read mesh.
-	u8 mesh_source_type			= in_config.read<u8>( );
+	u8 mesh_source_type			= in_reader.read<u8>( );
 	switch ( mesh_source_type )
 	{
 		case 0:
 		{
-			pcstr path			= in_config.read_str( );
+			pcstr path			= in_reader.read_str( );
 			m_mesh				= g_resources.get_mesh_pool( ).load_resource( path );
 			break;
 		}
 		case 1:
 		{
-			pcstr path			= in_config.read<pcstr>( );
+			pcstr path			= in_reader.read<pcstr>( );
 			m_mesh				= g_resources.get_mesh_pool( ).load_resource( path );
 			break;
 		}
 		case 2:
 		{
 			mesh* const mesh	= g_resources.get_mesh_pool( ).create_resource( );
-			mesh->create		( in_config );
+			mesh->create		( in_reader );
 			m_mesh				= mesh;
 			break;
 		}
@@ -45,25 +45,25 @@ void render_model_mesh::create( binary_config& in_config )
 	}
 	
 	// Read diffuse texture.
-	u8 diffuse_source_type		= in_config.read<u8>( );
+	u8 diffuse_source_type		= in_reader.read<u8>( );
 	switch ( diffuse_source_type )
 	{
 		case 0:
 		{
-			pcstr path			= in_config.read_str( );
+			pcstr path			= in_reader.read_str( );
 			m_diffuse			= g_resources.get_texture_pool( ).load_resource( path );
 			break;
 		}
 		case 1:
 		{
-			pcstr path			= in_config.read<pcstr>( );
+			pcstr path			= in_reader.read<pcstr>( );
 			m_diffuse			= g_resources.get_texture_pool( ).load_resource( path );
 			break;
 		}
 		case 2:
 		{
 			texture* const tex	= g_resources.get_texture_pool( ).create_resource( );
-			tex->create			( in_config );
+			tex->create			( in_reader );
 			m_diffuse			= tex;
 			break;
 		}
@@ -72,25 +72,25 @@ void render_model_mesh::create( binary_config& in_config )
 	}
 
 	// Read specular texture.
-	u8 specular_source_type		= in_config.read<u8>( );
+	u8 specular_source_type		= in_reader.read<u8>( );
 	switch ( specular_source_type )
 	{
 		case 0:
 		{
-			pcstr path			= in_config.read_str( );
+			pcstr path			= in_reader.read_str( );
 			m_specular			= g_resources.get_texture_pool( ).load_resource( path );
 			break;
 		}
 		case 1:
 		{
-			pcstr path			= in_config.read<pcstr>( );
+			pcstr path			= in_reader.read<pcstr>( );
 			m_specular			= g_resources.get_texture_pool( ).load_resource( path );
 			break;
 		}
 		case 2:
 		{
 			texture* const tex	= g_resources.get_texture_pool( ).create_resource( );
-			tex->create			( in_config );
+			tex->create			( in_reader );
 			m_specular			= tex;
 			break;
 		}

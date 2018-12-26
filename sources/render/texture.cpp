@@ -439,7 +439,7 @@ void fill_init_data( uptr						width,
 					 uptr						mip_count,
 					 uptr						array_size,
 					 DXGI_FORMAT				format,
-					 binary_config&				config,
+					 reader&					reader,
 					 D3D11_SUBRESOURCE_DATA*	init_data )
 {
 	ASSERT( init_data );
@@ -460,7 +460,7 @@ void fill_init_data( uptr						width,
 
 			ASSERT( index < mip_count * array_size );
 
-			init_data[index].pSysMem			= config.read_data( num_bytes * d );
+			init_data[index].pSysMem			= reader.read_data( num_bytes * d );
 			init_data[index].SysMemPitch		= (UINT)row_bytes;
 			init_data[index].SysMemSlicePitch	= (UINT)num_bytes;
 			++index;
@@ -472,15 +472,14 @@ void fill_init_data( uptr						width,
 	}
 }
 
-void texture::create( binary_config& in_config )
+void texture::create( reader& in_reader )
 {
-	ASSERT( in_config.is_valid( ) );
+	ASSERT( in_reader.is_valid( ) );
 
-	pvoid const memory	= in_config.get_pointer( );
-	u32 magic_number	= in_config.read<u32>( );
+	u32 magic_number	= in_reader.read<u32>( );
 	ASSERT				( magic_number == c_dds_magic );
 
-	dds_header const& header = in_config.read<dds_header>( );
+	dds_header const& header = in_reader.read<dds_header>( );
 	ASSERT( header.size == sizeof(dds_header) );
 	ASSERT( header.ddspf.size == sizeof(dds_pixel_format) );
 	
@@ -500,7 +499,7 @@ void texture::create( binary_config& in_config )
 	if ( ( header.ddspf.flags & c_dds_fourcc ) &&
 		( MAKEFOURCC('D', 'X', '1', '0') == header.ddspf.fourcc ) )
 	{
-		dds_header_dxt10 const& dxt_header = in_config.read<dds_header_dxt10>( );
+		dds_header_dxt10 const& dxt_header = in_reader.read<dds_header_dxt10>( );
 
 		array_size = dxt_header.array_size;
 		ASSERT( array_size );
@@ -597,7 +596,7 @@ void texture::create( binary_config& in_config )
 
 	D3D11_SUBRESOURCE_DATA* init_data = stack_allocate( mip_count * array_size * sizeof(D3D11_SUBRESOURCE_DATA) );
 
-	fill_init_data( width, height, depth, mip_count, array_size, format, in_config, init_data );
+	fill_init_data( width, height, depth, mip_count, array_size, format, in_reader, init_data );
 
 	create_resource( res_dim, width, height, depth, (u32)mip_count, array_size,
 					 format, D3D11_USAGE_IMMUTABLE, D3D11_BIND_SHADER_RESOURCE,
