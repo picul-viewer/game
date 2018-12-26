@@ -58,9 +58,6 @@
     <Filter Include="system\threads\spsc_queue">
       <UniqueIdentifier>{1c0e13e9-8a35-4ac8-810b-2380f460e23b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\config">
-      <UniqueIdentifier>{14f4ca49-603a-4383-a8a0-1f33cef5217b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="math\collision">
       <UniqueIdentifier>{5fdc8b69-a335-4f53-8881-b0ab891cf780}</UniqueIdentifier>
     </Filter>
@@ -103,17 +100,32 @@
     <Filter Include="lib\array\fixed_array">
       <UniqueIdentifier>{3ada7f77-c0cf-4c88-a1cd-dfeac19bffa6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\config\config">
-      <UniqueIdentifier>{7cf03f04-2d7a-4d38-9fca-435da4cfc68b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="lib\config\binary_config">
-      <UniqueIdentifier>{b5774f6e-c71b-4414-b890-2f3b79455fbd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="lib\config\text_config">
-      <UniqueIdentifier>{5f85c3c5-a205-4630-8c7d-f0d78f51a8ec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="system\threads\spsc_stream">
       <UniqueIdentifier>{71d38a7c-20e9-4d63-acb9-83cf745545b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\rw">
+      <UniqueIdentifier>{14f4ca49-603a-4383-a8a0-1f33cef5217b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\rw\binary">
+      <UniqueIdentifier>{08f4dbf4-196b-424f-a9ba-fc904b430fdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\rw\binary\writer">
+      <UniqueIdentifier>{b4877f13-fd7b-4a6b-b831-3d5e01effd1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\rw\binary\reader">
+      <UniqueIdentifier>{be6af3e9-98e8-43be-87b3-1375849f23ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\rw\binary\dynamic_writer">
+      <UniqueIdentifier>{6f7b6add-5a7f-4a90-8a9c-ab0213a1e703}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\rw\text">
+      <UniqueIdentifier>{5d5f0a45-8373-4a8d-8ba4-e1dc6efbfd56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\rw\text\reader">
+      <UniqueIdentifier>{c4e72e09-c4fa-4410-8eda-c7dfe84c2e69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\rw\text\writer">
+      <UniqueIdentifier>{601af03d-6d46-4a77-9f75-93a43f26dc7b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -302,17 +314,23 @@
     <ClInclude Include="lib\fixed_array_inline.h">
       <Filter>lib\array\fixed_array</Filter>
     </ClInclude>
-    <ClInclude Include="lib\config.h">
-      <Filter>lib\config\config</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\text_config.h">
-      <Filter>lib\config\text_config</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\binary_config.h">
-      <Filter>lib\config\binary_config</Filter>
-    </ClInclude>
     <ClInclude Include="system\spsc_stream.h">
       <Filter>system\threads\spsc_stream</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\text_writer.h">
+      <Filter>lib\rw\text\writer</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\text_reader.h">
+      <Filter>lib\rw\text\reader</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\writer.h">
+      <Filter>lib\rw\binary\writer</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dynamic_writer.h">
+      <Filter>lib\rw\binary\dynamic_writer</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\reader.h">
+      <Filter>lib\rw\binary\reader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -371,17 +389,23 @@
     <ClCompile Include="system\file_iterator.cpp">
       <Filter>system\fs\file_iterator</Filter>
     </ClCompile>
-    <ClCompile Include="lib\config.cpp">
-      <Filter>lib\config\config</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\text_config.cpp">
-      <Filter>lib\config\text_config</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\binary_config.cpp">
-      <Filter>lib\config\binary_config</Filter>
-    </ClCompile>
     <ClCompile Include="system\spsc_stream.cpp">
       <Filter>system\threads\spsc_stream</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\text_writer.cpp">
+      <Filter>lib\rw\text\writer</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\text_reader.cpp">
+      <Filter>lib\rw\text\reader</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\writer.cpp">
+      <Filter>lib\rw\binary\writer</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dynamic_writer.cpp">
+      <Filter>lib\rw\binary\dynamic_writer</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\reader.cpp">
+      <Filter>lib\rw\binary\reader</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
