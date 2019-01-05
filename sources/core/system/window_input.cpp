@@ -29,7 +29,7 @@ void window_input::create( )
 	raw_input_device[device_index].hwndTarget	= 0;
 	++device_index;
 
-	ASSERT( device_index == device_count );
+	ASSERT_CMP( device_index, ==, device_count );
 
 	BOOL const result = RegisterRawInputDevices( raw_input_device, 2, sizeof(RAWINPUTDEVICE) );
 
@@ -46,7 +46,7 @@ void window_input::on_message( pvoid handle )
 	// NOTE: don't support joistics for now, so sizeof(RAWINPUT) is known.
 	u32 size = sizeof(RAWINPUT);
     u32 read_size = GetRawInputData( (HRAWINPUT)handle, RID_INPUT, m_last_input, &size, sizeof(RAWINPUTHEADER) );
-	ASSERT( read_size <= sizeof(RAWINPUT) );
+	ASSERT_CMP( read_size, <=, sizeof(RAWINPUT) );
 
 	g_input_state.on_message( m_last_input );
 }

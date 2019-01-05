@@ -612,7 +612,7 @@ protected:
 
 		static inline void create( pbyte arena, fixed_function_type func )
 		{
-			ASSERT( sizeof(fixed_function_type) <= ArenaSize, "not enough memory to store all arguments" );
+			static_assert( sizeof(fixed_function_type) <= ArenaSize, "not enough memory to store all arguments" );
 
 			*(fixed_function_type*)( arena ) = func;
 		}

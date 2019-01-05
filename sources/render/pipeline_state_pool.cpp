@@ -83,7 +83,7 @@ typename DataType::data_type create( typename DataType::cook_type const& in_cook
 
 	for ( ; in_data[i].state.get( ) != nullptr; ++i )
 	{
-		ASSERT( i < in_count );
+		ASSERT_CMP( i, <, in_count );
 		if ( in_data[i].cook == in_cook )
 			return in_data[i].state;
 	}

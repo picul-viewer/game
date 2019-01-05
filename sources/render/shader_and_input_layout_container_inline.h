@@ -54,7 +54,7 @@ template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax
 ShaderType shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::operator[]( ShaderEnumerator const in_index )
 {
 	ASSERT( m_created == true );
-	ASSERT( in_index < ShaderEnumeratorMax );
+	ASSERT_CMP( in_index, <, ShaderEnumeratorMax );
 
 	return m_shaders[in_index];
 }

@@ -33,7 +33,7 @@ void buffer_array<T>::push_back( T const& value )
 template<typename T>
 T& buffer_array<T>::emplace_back( )
 {
-	ASSERT			( m_end < m_max_end );
+	ASSERT_CMP		( m_end, <, m_max_end );
 	return			*(m_end++);
 }
 
@@ -41,7 +41,7 @@ template<typename T>
 void buffer_array<T>::resize( uptr size )
 {
 	T* new_end		= m_begin + size;
-	ASSERT			( new_end < m_max_end );
+	ASSERT_CMP		( new_end, <, m_max_end );
 	m_end			= new_end;
 }
 
@@ -49,7 +49,7 @@ template<typename T>
 void buffer_array<T>::reserve( uptr size )
 {
 	T* new_end		= m_begin + size;
-	ASSERT			( new_end < m_max_end );
+	ASSERT_CMP		( new_end, <, m_max_end );
 	m_end			= math::max( m_end, new_end );
 }
 
@@ -86,14 +86,14 @@ T* buffer_array<T>::end( ) const
 template<typename T>
 T& buffer_array<T>::at( uptr index )
 {
-	ASSERT( m_begin + index < m_end );
+	ASSERT_CMP( m_begin + index, <, m_end );
 	return m_begin[index];
 }
 
 template<typename T>
 T const& buffer_array<T>::at( uptr index ) const
 {
-	ASSERT( m_begin + index < m_end );
+	ASSERT_CMP( m_begin + index, <, m_end );
 	return m_begin[index];
 }
 

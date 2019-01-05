@@ -23,7 +23,7 @@ uptr find( pcstr str, pcstr sub_str, uptr pos )
 {
 	ASSERT( str );
 	ASSERT( sub_str );
-	ASSERT( pos < length( str ) );
+	ASSERT_CMP( pos, <, length( str ) );
 
 	pcstr const find_result = strstr( str + pos, str );
 	return ( find_result != nullptr ) ? ( find_result - str ) : (uptr)-1;
@@ -32,7 +32,7 @@ uptr find( pcstr str, pcstr sub_str, uptr pos )
 uptr find( pcstr str, char c, uptr pos )
 {
 	ASSERT( str );
-	ASSERT( pos < length( str ) );
+	ASSERT_CMP( pos, <, length( str ) );
 
 	pcstr const find_result = strchr( str + pos, c );
 	return ( find_result != nullptr ) ? ( find_result - str ) : (uptr)-1;

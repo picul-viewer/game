@@ -221,7 +221,7 @@ static inline void compile_shader(	weak_const_string const input_directory,
 
 		pvoid const result_data = result_code->GetBufferPointer( );
 		uptr const result_size_uptr = result_code->GetBufferSize( );
-		ASSERT( result_size_uptr < 4 * Gb );
+		ASSERT_CMP( result_size_uptr, <, 4 * Gb );
 		u32 const result_size = (u32)result_size_uptr;
 
 		uptr const output_size = sizeof(u32) + result_size_uptr + ( WriteVertexType ? sizeof(u8) : 0 );

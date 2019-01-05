@@ -38,7 +38,7 @@ void linear_allocator<MemorySize>::clear( )
 template<uptr MemorySize>
 pointer linear_allocator<MemorySize>::allocate( uptr size )
 {
-	ASSERT					( m_last_pointer + size <= m_data + MemorySize ); // pool is full
+	ASSERT_CMP				( m_last_pointer + size, <=, m_data + MemorySize ); // pool is full
 	pointer const result	= m_last_pointer;
 	m_last_pointer			+= size;
 	return result;
@@ -47,7 +47,7 @@ pointer linear_allocator<MemorySize>::allocate( uptr size )
 template<uptr MemorySize>
 void linear_allocator<MemorySize>::shrink( uptr const shrink_size )
 {
-	ASSERT					( (uptr)( m_last_pointer - m_data ) >= shrink_size );
+	ASSERT_CMP				( (uptr)( m_last_pointer - m_data ), >=, shrink_size );
 	m_last_pointer			-= shrink_size;
 }
 
@@ -90,7 +90,7 @@ pointer dynamic_linear_allocator<PageSize, PageMaxCount>::allocate( uptr size )
 	if ( m_last_pointer + size > m_page_pointer )
 	{
 		uptr const size_to_commit	= get_aligned_size( m_last_pointer + size - m_page_pointer, page_size );
-		ASSERT						( m_page_pointer + size_to_commit < m_data + page_size * PageMaxCount );
+		ASSERT_CMP					( m_page_pointer + size_to_commit, <, m_data + page_size * PageMaxCount );
 		virtual_allocator( ).commit	( m_page_pointer, size_to_commit );
 		m_page_pointer				+= size_to_commit;
 	}
@@ -103,7 +103,7 @@ pointer dynamic_linear_allocator<PageSize, PageMaxCount>::allocate( uptr size )
 template<uptr PageSize, uptr PageMaxCount>
 void dynamic_linear_allocator<PageSize, PageMaxCount>::shrink( uptr const shrink_size )
 {
-	ASSERT					( (uptr)( m_last_pointer - m_data ) >= shrink_size );
+	ASSERT_CMP				( (uptr)( m_last_pointer - m_data ), >=, shrink_size );
 	m_last_pointer			-= shrink_size;
 }
 

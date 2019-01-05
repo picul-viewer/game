@@ -113,7 +113,7 @@ void resources::create_default_samplers( )
 		++sampler_index;
 	}
 
-	ASSERT( sampler_index == default_sampler_type_count );
+	ASSERT_CMP( sampler_index, ==, default_sampler_type_count );
 }
 
 void resources::create_default_meshes( )
@@ -154,7 +154,7 @@ void resources::create_default_meshes( )
 		++mesh_index;
 	}
 
-	ASSERT( mesh_index == default_mesh_type_count );
+	ASSERT_CMP( mesh_index, ==, default_mesh_type_count );
 }
 
 void resources::create_default_constant_buffers( )
@@ -167,7 +167,7 @@ void resources::create_default_constant_buffers( )
 	m_default_constant_buffers[constant_buffer_index].create( nullptr, sizeof(per_instance_constants), true );
 	++constant_buffer_index;
 
-	ASSERT( constant_buffer_index == default_constant_buffer_type_count );
+	ASSERT_CMP( constant_buffer_index, ==, default_constant_buffer_type_count );
 }
 
 void resources::create_shaders( )
@@ -270,19 +270,19 @@ void resources::destroy_ui_buffers( )
 
 sampler& resources::get_default_sampler( u32 in_index )
 {
-	ASSERT( in_index < default_sampler_type_count );
+	ASSERT_CMP( in_index, <, default_sampler_type_count );
 	return m_default_samplers[in_index];
 }
 
 mesh& resources::get_default_mesh( u32 in_index )
 {
-	ASSERT( in_index < default_mesh_type_count );
+	ASSERT_CMP( in_index, <, default_mesh_type_count );
 	return m_default_meshes[in_index];
 }
 
 constant_buffer& resources::get_default_constant_buffer( u32 in_index )
 {
-	ASSERT( in_index < default_constant_buffer_type_count );
+	ASSERT_CMP( in_index, <, default_constant_buffer_type_count );
 	return m_default_constant_buffers[in_index];
 }
 

@@ -38,7 +38,7 @@ char i_const_string<StringClass>::at( uptr index ) const
 	StringClass const* this_casted = static_cast<StringClass const*>( this );
 	ASSERT( this_casted->c_str( ) );
 
-	ASSERT( index < this_casted->length( ) );
+	ASSERT_CMP( index, <, this_casted->length( ) );
 	return this_casted->c_str( )[index];
 }
 
@@ -220,7 +220,7 @@ char& i_string<StringClass>::at( uptr index )
 	StringClass* this_casted = static_cast<StringClass*>( this );
 	ASSERT( this_casted->data( ) );
 
-	ASSERT( index < this_casted->length( ) );
+	ASSERT_CMP( index, <, this_casted->length( ) );
 	return this_casted->data( )[index];
 }
 

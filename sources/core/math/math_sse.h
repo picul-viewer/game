@@ -94,8 +94,8 @@ struct matrix3
 		return res;
 	}
 
-	inline __m128& operator[]( u32 i ) { ASSERT( i < 3 ); return data[i]; }
-	inline __m128 operator[]( u32 i ) const { ASSERT( i < 3 ); return data[i]; }
+	inline __m128& operator[]( u32 const i ) { ASSERT_CMP( i, <, 3 ); return data[i]; }
+	inline __m128 operator[]( u32 const i ) const { ASSERT_CMP( i, <, 3 ); return data[i]; }
 };
 
 mem_align(16)
@@ -151,8 +151,8 @@ struct matrix
 		return res;
 	}
 
-	inline __m128& operator[]( u32 i ) { ASSERT( i < 4 ); return data[i]; }
-	inline __m128 operator[]( u32 i ) const { ASSERT( i < 4 ); return data[i]; }
+	inline __m128& operator[]( u32 const i ) { ASSERT_CMP( i, <, 4 ); return data[i]; }
+	inline __m128 operator[]( u32 const i ) const { ASSERT_CMP( i, <, 4 ); return data[i]; }
 };
 
 matrix3::matrix3( matrix const& m ) : data{ m.data[0], m.data[1], m.data[2] } { }

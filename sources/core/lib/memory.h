@@ -211,7 +211,7 @@ inline void copy_aligned_to_aligned_mul16( pvoid dest, pcvoid src, uptr size )
 	ASSERT( aligned( dest, 16 ) );
 	ASSERT( src );
 	ASSERT( aligned( src, 16 ) );
-	ASSERT( size % 16 == 0 );
+	ASSERT_CMP( size % 16, ==, 0 );
 
 	for ( u32 i = 0; i < size; i += 16 )
 		_mm_store_ps( (float*)dest + i / 4, _mm_load_ps( (float*)src + i / 4 ) );
@@ -223,7 +223,7 @@ inline void copy_to_aligned_mul16( pvoid dest, pcvoid src, uptr size )
 	ASSERT( dest );
 	ASSERT( aligned( dest, 16 ) );
 	ASSERT( src );
-	ASSERT( size % 16 == 0 );
+	ASSERT_CMP( size % 16, ==, 0 );
 
 	for ( u32 i = 0; i < size; i += 16 )
 		_mm_store_ps( (float*)dest + i / 4, _mm_loadu_ps( (float*)src + i / 4 ) );
@@ -235,7 +235,7 @@ inline void copy_aligned_mul16( pvoid dest, pcvoid src, uptr size )
 	ASSERT( dest );
 	ASSERT( src );
 	ASSERT( aligned( src, 16 ) );
-	ASSERT( size % 16 == 0 );
+	ASSERT_CMP( size % 16, ==, 0 );
 
 	for ( u32 i = 0; i < size; i += 16 )
 		_mm_storeu_ps( (float*)dest + i / 4, _mm_load_ps( (float*)src + i / 4 ) );
@@ -247,7 +247,7 @@ inline void copy_mul16( pvoid dest, pcvoid src, uptr size )
 	ASSERT( dest );
 	ASSERT( src );
 	ASSERT( aligned( dest, 16 ) );
-	ASSERT( size % 16 == 0 );
+	ASSERT_CMP( size % 16, ==, 0 );
 
 	for ( u32 i = 0; i < size; i += 16 )
 		_mm_storeu_ps( (float*)dest + i / 4, _mm_loadu_ps( (float*)src + i / 4 ) );

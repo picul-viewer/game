@@ -458,7 +458,7 @@ void fill_init_data( uptr						width,
 		{
 			get_surface_info( w, h, format, num_bytes, row_bytes );
 
-			ASSERT( index < mip_count * array_size );
+			ASSERT_CMP( index, <, mip_count * array_size );
 
 			init_data[index].pSysMem			= reader.read_data( num_bytes * d );
 			init_data[index].SysMemPitch		= (UINT)row_bytes;
@@ -477,11 +477,11 @@ void texture::create( reader& in_reader )
 	ASSERT( in_reader.is_valid( ) );
 
 	u32 magic_number	= in_reader.read<u32>( );
-	ASSERT				( magic_number == c_dds_magic );
+	ASSERT_CMP			( magic_number, ==, c_dds_magic );
 
 	dds_header const& header = in_reader.read<dds_header>( );
-	ASSERT( header.size == sizeof(dds_header) );
-	ASSERT( header.ddspf.size == sizeof(dds_pixel_format) );
+	ASSERT_CMP			( header.size, ==, sizeof(dds_header) );
+	ASSERT_CMP			( header.ddspf.size, ==, sizeof(dds_pixel_format) );
 	
 	u32 width			= header.width;
 	u32 height			= header.height;
@@ -512,7 +512,7 @@ void texture::create( reader& in_reader )
 		{
 		case D3D11_RESOURCE_DIMENSION_TEXTURE1D:
 			if ( header.flags & c_dds_height )
-				ASSERT( height == 1 );
+				ASSERT_CMP( height, ==, 1 );
 
 			height = depth = 1;
 			break;
@@ -528,7 +528,7 @@ void texture::create( reader& in_reader )
 
 		case D3D11_RESOURCE_DIMENSION_TEXTURE3D:
 			ASSERT( header.flags & c_dds_header_flags_volume );
-			ASSERT( array_size == 1 );
+			ASSERT_CMP( array_size, ==, 1 );
 			break;
 
 		default:
@@ -559,35 +559,35 @@ void texture::create( reader& in_reader )
 		ASSERT( format_get_bits_per_pixel( format ) != 0 );
 	}
 
-	ASSERT( mip_count <= D3D11_REQ_MIP_LEVELS );
+	ASSERT_CMP( mip_count, <=, D3D11_REQ_MIP_LEVELS );
 
 	switch ( res_dim )
 	{
 	case D3D11_RESOURCE_DIMENSION_TEXTURE1D:
-		ASSERT( array_size <= D3D11_REQ_TEXTURE1D_ARRAY_AXIS_DIMENSION );
-		ASSERT( width <= D3D11_REQ_TEXTURE1D_U_DIMENSION );
+		ASSERT_CMP( array_size, <=, D3D11_REQ_TEXTURE1D_ARRAY_AXIS_DIMENSION );
+		ASSERT_CMP( width, <=, D3D11_REQ_TEXTURE1D_U_DIMENSION );
 		break;
 
 	case D3D11_RESOURCE_DIMENSION_TEXTURE2D:
-		ASSERT( array_size <= D3D11_REQ_TEXTURE2D_ARRAY_AXIS_DIMENSION );
+		ASSERT_CMP( array_size, <=, D3D11_REQ_TEXTURE2D_ARRAY_AXIS_DIMENSION );
 
 		if ( is_cube_map )
 		{
-			ASSERT( width <= D3D11_REQ_TEXTURECUBE_DIMENSION );
-			ASSERT( height <= D3D11_REQ_TEXTURECUBE_DIMENSION );
+			ASSERT_CMP( width, <=, D3D11_REQ_TEXTURECUBE_DIMENSION );
+			ASSERT_CMP( height, <=, D3D11_REQ_TEXTURECUBE_DIMENSION );
 		}
 		else
 		{
-			ASSERT( width <= D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION );
-			ASSERT( height <= D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION );
+			ASSERT_CMP( width, <=, D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION );
+			ASSERT_CMP( height, <=, D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION );
 		}
 		break;
 
 	case D3D11_RESOURCE_DIMENSION_TEXTURE3D:
-		ASSERT( array_size <= 1 );
-		ASSERT( width <= D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION );
-		ASSERT( height <= D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION );
-		ASSERT( depth <= D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION );
+		ASSERT_CMP( array_size, <=, 1 );
+		ASSERT_CMP( width, <=, D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION );
+		ASSERT_CMP( height, <=, D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION );
+		ASSERT_CMP( depth, <=, D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION );
 		break;
 
 	default:

@@ -48,14 +48,14 @@ T const* fixed_array<T, Size>::end( ) const
 template<typename T, uptr Size>
 T& fixed_array<T, Size>::at( uptr const index )
 {
-	ASSERT( index < Size );
+	ASSERT_CMP( index, <, Size );
 	return m_data[index];
 }
 
 template<typename T, uptr Size>
 T const& fixed_array<T, Size>::at( uptr const index ) const
 {
-	ASSERT( index < Size );
+	ASSERT_CMP( index, <, Size );
 	return m_data[index];
 }
 

@@ -60,7 +60,7 @@ uptr file::size( ) const
 	BOOL result = GetFileSizeEx( m_handle, &size );
 
 	ASSERT( result == TRUE, "FS error: 0x%016d\n", GetLastError( ) );
-	ASSERT( size.QuadPart >= 0 );
+	ASSERT_CMP( size.QuadPart, >=, 0 );
 
 	return (uptr)size.QuadPart;
 }
@@ -93,25 +93,25 @@ void file::seek( ptr position, seek_mode mode )
 void file::read( pvoid buffer, uptr size )
 {
 	ASSERT( buffer );
-	ASSERT( size <= 0x7FFFFFFF );
+	ASSERT_CMP( size, <=, 0x7FFFFFFF );
 
 	DWORD bytes_read;
 	BOOL result = ReadFile( m_handle, buffer, (DWORD)size, &bytes_read, nullptr );
 	
 	ASSERT( result == TRUE, "FS error: 0x%016d\n", GetLastError( ) );
-	ASSERT( bytes_read == size );
+	ASSERT_CMP( bytes_read, ==, (DWORD)size );
 }
 
 void file::write( pvoid buffer, uptr size )
 {
 	ASSERT( buffer );
-	ASSERT( size <= 0x7FFFFFFF );
+	ASSERT_CMP( size, <=, 0x7FFFFFFF );
 
 	DWORD bytes_written;
 	BOOL result = WriteFile( m_handle, buffer, (DWORD)size, &bytes_written, nullptr );
 
 	ASSERT( result == TRUE, "FS error: 0x%016d\n", GetLastError( ) );
-	ASSERT( bytes_written == size );
+	ASSERT_CMP( bytes_written, ==, (DWORD)size );
 }
 
 bool file::is_valid( ) const

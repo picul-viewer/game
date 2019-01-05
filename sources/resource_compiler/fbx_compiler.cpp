@@ -246,7 +246,7 @@ void fbx_compiler::compile( u64 relevant_date, weak_const_string input_file_name
 	little_string file_name = sys::path::get_file_name( input_file_name );
 
 #ifdef DEBUG
-	ASSERT( file_name.copy( file_name.length( ) - 4, 4 ) == ".fbx" );
+	ASSERT( file_name.copy( file_name.length( ) - 4, 4 ) == ".fbx", "wrong file extension: %s", file_name.copy( file_name.length( ) - 4, 4 ) );
 #endif // #ifdef DEBUG
 	
 	sys::path::remove_file_extension( file_name.data( ) );

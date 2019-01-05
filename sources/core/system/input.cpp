@@ -22,7 +22,7 @@ bool mouse::is_button_pressed( mouse_button button ) const
 void keyboard::set_key_pressed( key k, bool pressed )
 {
 	u32 const index = (u32)k;
-	ASSERT( index <= 0xFF );
+	ASSERT_CMP( index, <=, 0xFFu );
 
 	if ( pressed )
 		data[index / 32] |= ( 1 << ( index % 32 ) );
@@ -33,7 +33,7 @@ void keyboard::set_key_pressed( key k, bool pressed )
 bool keyboard::is_key_pressed( key k ) const
 {
 	u32 const index = (u32)k;
-	ASSERT( index <= 0xFF );
+	ASSERT_CMP( index, <=, 0xFFu );
 
 	return ( data[index / 32] & ( 1 << ( index % 32 ) ) ) != 0;
 }

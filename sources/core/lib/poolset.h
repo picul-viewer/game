@@ -142,13 +142,13 @@ public:
 	template<typename U>
 	U* allocate( )
 	{
-		ASSERT( false );
+		static_assert( false, "unsupported type" );
 	}
 
 	template<typename U>
 	void deallocate( U* p )
 	{
-		ASSERT( false );
+		static_assert( false, "unsupported type" );
 	}
 	
 	template<>

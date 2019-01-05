@@ -46,7 +46,7 @@ void ui_batch::next_level( )
 	ui_quad_data* const begin = m_temporal_memory.begin( );
 	ui_quad_data* const end = m_temporal_memory.end( );
 
-	ASSERT( m_temporal_memory.size( ) < 4 * Gb );
+	ASSERT_CMP( m_temporal_memory.size( ), <, 4 * Gb );
 	u32 const count = (u32)m_temporal_memory.size( );
 
 	if ( count == 0 )
@@ -63,7 +63,7 @@ void ui_batch::next_level( )
 
 	ui_quad_data* i = m_temporal_memory.data( );
 
-	ASSERT( m_buffer.size( ) < 4 * Gb );
+	ASSERT_CMP( m_buffer.size( ), <, 4 * Gb );
 	u32 const size = (u32)m_buffer.size( );
 	gpu_vertex_data* o = m_buffer.end( );
 	m_buffer.reserve( size + count * 4 );

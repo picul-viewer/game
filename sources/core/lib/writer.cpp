@@ -17,12 +17,12 @@ void writer::create( pointer const data, uptr const size )
 void writer::operator+=( uptr const size )
 {
 	m_pointer		+= size;
-	ASSERT			( m_pointer <= m_end );
+	ASSERT_CMP		( m_pointer, <=, m_end );
 }
 
 void writer::write_data( pcvoid const data, uptr const size )
 {
-	ASSERT			( m_pointer + size <= m_end );
+	ASSERT_CMP		( m_pointer + size, <=, m_end );
 	memory::copy	( m_pointer, data, size );
 	m_pointer		+= size;
 }

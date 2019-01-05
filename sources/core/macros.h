@@ -1,6 +1,7 @@
 #ifndef __core_macros_h_included_
 #define __core_macros_h_included_
 
+#include <types.h>
 #include <stdio.h>
 
 #define NO_OP (void*)0
@@ -41,11 +42,73 @@ inline void assertion_failed( char const* expr, char const* file, char const* fu
 	LOG( "ASSERTION FAILED:\nfile: %s\nfunction: %s\nline: %d\nexpression: %s\ninformation: %s\n", file, func, line, expr, text );
 }
 
+template<typename T>
+inline void log_value( T value )
+{
+	LOG( "%u", (u32)value );
+}
+
+template<>
+inline void log_value( s32 const value )
+{
+	LOG( "%d", value );
+}
+
+template<>
+inline void log_value( u32 const value )
+{
+	LOG( "%u", value );
+}
+
+template<>
+inline void log_value( s64 const value )
+{
+	LOG( "%lld", value );
+}
+
+template<>
+inline void log_value( u64 const value )
+{
+	LOG( "%llu", value );
+}
+
+template<>
+inline void log_value( float const value )
+{
+	LOG( "%f", value );
+}
+
+template<>
+inline void log_value( double const value )
+{
+	LOG( "%lf", value );
+}
+
+template<typename T>
+inline void log_value( T* const value )
+{
+	LOG( "0x%016llx", (uptr)value );
+}
+
+template<>
+inline void log_value( pointer const value )
+{
+	LOG( "0x%016llx", (uptr)value );
+}
+
+template<>
+inline void log_value( pcstr const value )
+{
+	LOG( value );
+}
+
 }
 
 #	define ASSERT( expr, ... ) if ( !( expr ) ) { macros::assertion_failed( #expr, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); DEBUG_BREAK( ); }
+#	define ASSERT_CMP( l, s, r ) if ( !( l s r ) ) { macros::assertion_failed( #l " " #s " " #r, __FILE__, __FUNCTION__, __LINE__ ); LOG( "l = " ); macros::log_value( l ); LOG( ", r = " ); macros::log_value( r ); LOG( "\n" ); DEBUG_BREAK( ); }
 #else // #ifdef DEBUG
 #	define ASSERT( expr, ... ) NO_OP
+#	define ASSERT_CMP( l, s, r ) NO_OP
 #endif // #ifdef DEBUG
 
 #ifdef DEBUG

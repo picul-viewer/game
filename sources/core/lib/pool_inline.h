@@ -6,16 +6,14 @@
 template<uptr ElemSize, uptr PageSize>
 void pool<ElemSize, PageSize>::create( )
 {
-	static_assert( ElemSize >= sizeof(pointer), "too small element size" );
-	static_assert( ElemSize <= page_size, "too big element size" );
-	m_data = virtual_allocator( ).commit( nullptr, page_size );
-	clear( );
+	create( virtual_allocator( ).commit( nullptr, page_size ) );
 }
 
 template<uptr ElemSize, uptr PageSize>
 void pool<ElemSize, PageSize>::create( pointer memory )
 {
-	ASSERT( ElemSize >= sizeof(pointer) );
+	static_assert( ElemSize >= sizeof(pointer), "too small element size" );
+	static_assert( ElemSize <= page_size, "too big element size" );
 	m_data = memory;
 	clear( );
 }
@@ -46,7 +44,7 @@ memory_block<ElemSize>& pool<ElemSize, PageSize>::operator[]( uptr const index )
 	memory_block<ElemSize>* const result = (memory_block<ElemSize>*)m_data + index;
 
 	// Note: this check does not guaranties safety.
-	ASSERT( result < m_last_pointer );
+	ASSERT_CMP( result, <, m_last_pointer );
 
 	return *result;
 }
@@ -55,8 +53,8 @@ template<uptr ElemSize, uptr PageSize>
 uptr pool<ElemSize, PageSize>::index_of( pointer const p ) const
 {
 	// Note: this check does not guaranties safety.
-	ASSERT( p >= m_data );
-	ASSERT( p <= m_last_pointer );
+	ASSERT_CMP( p, >=, m_data );
+	ASSERT_CMP( p, <=, m_last_pointer );
 
 	uptr const result = (memory_block<ElemSize>*)p - (memory_block<ElemSize>*)m_data;
 
@@ -66,11 +64,11 @@ uptr pool<ElemSize, PageSize>::index_of( pointer const p ) const
 template<uptr ElemSize, uptr PageSize>
 pointer pool<ElemSize, PageSize>::allocate( uptr size )
 {
-	ASSERT				( size <= ElemSize );
+	ASSERT_CMP			( size, <=, ElemSize );
 
 	if ( m_push_pointer == nullptr )
 	{
-		ASSERT			( m_last_pointer + ElemSize <= m_data + page_size ); // pool is full
+		ASSERT_CMP		( m_last_pointer + ElemSize, <=, m_data + page_size ); // pool is full
 		pointer result	= m_last_pointer;
 		m_last_pointer	+= ElemSize;
 		return result;
@@ -95,15 +93,14 @@ void pool<ElemSize, PageSize>::deallocate( pointer p )
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 void dynamic_pool<ElemSize, PageSize, PageMaxCount>::create( )
 {
-	ASSERT( ElemSize >= sizeof(pointer) );
-	m_data = virtual_allocator( ).reserve( nullptr, page_size * PageMaxCount );
-	clear( );
+	create( virtual_allocator( ).reserve( nullptr, page_size * PageMaxCount ) );
 }
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 void dynamic_pool<ElemSize, PageSize, PageMaxCount>::create( pointer memory )
 {
-	ASSERT( ElemSize >= sizeof(pointer) );
+	static_assert( ElemSize >= sizeof(pointer), "too small element size" );
+	static_assert( ElemSize <= page_size * PageMaxCount, "too big element size" );
 	m_data = memory;
 	clear( );
 }
@@ -134,7 +131,7 @@ memory_block<ElemSize>& dynamic_pool<ElemSize, PageSize, PageMaxCount>::operator
 	memory_block<ElemSize>* const result = (memory_block<ElemSize>*)m_data + index;
 
 	// Note: this check does not guaranties safety.
-	ASSERT( result < m_last_pointer );
+	ASSERT_CMP( result, <, m_last_pointer );
 
 	return *result;
 }
@@ -143,8 +140,8 @@ template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 uptr dynamic_pool<ElemSize, PageSize, PageMaxCount>::index_of( pointer const p ) const
 {
 	// Note: this check does not guaranties safety.
-	ASSERT( p >= m_data );
-	ASSERT( p <= m_last_pointer );
+	ASSERT_CMP( p, >=, m_data );
+	ASSERT_CMP( p, <=, m_last_pointer );
 
 	uptr const result = (memory_block<ElemSize>*)p - (memory_block<ElemSize>*)m_data;
 
@@ -154,14 +151,14 @@ uptr dynamic_pool<ElemSize, PageSize, PageMaxCount>::index_of( pointer const p )
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 pointer dynamic_pool<ElemSize, PageSize, PageMaxCount>::allocate( uptr size )
 {
-	ASSERT( size <= ElemSize );
+	ASSERT_CMP( size, <=, ElemSize );
 
 	if ( m_push_pointer == nullptr )
 	{
 		if ( m_last_pointer + size > m_page_pointer + page_size )
 		{
-			m_page_pointer					+= page_size;
-			ASSERT							( m_page_pointer < m_data + page_size * PageMaxCount );
+			m_page_pointer				+= page_size;
+			ASSERT_CMP					( m_page_pointer, <, m_data + page_size * PageMaxCount );
 			virtual_allocator( ).commit	( m_page_pointer, page_size );
 		}
 

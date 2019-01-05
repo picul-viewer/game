@@ -24,7 +24,7 @@ fixed_string<MaxSize>::fixed_string( i_const_string<StringClass> const& str )
 	StringClass const& str_casted = static_cast<StringClass const&>( str );
 	ASSERT( str_casted.c_str( ) );
 
-	ASSERT( str_casted.length( ) < MaxSize - 1 );
+	ASSERT_CMP( str_casted.length( ), <, MaxSize - 1 );
 	strings::copy_n( m_data, str_casted.c_str( ), str_casted.length( ) + 1 );
 }
 
@@ -32,7 +32,7 @@ template<uptr MaxSize>
 fixed_string<MaxSize>::fixed_string( pcstr str, uptr size )
 {
 	ASSERT( str );
-	ASSERT( size < MaxSize - 1 );
+	ASSERT_CMP( size, <, MaxSize - 1 );
 	strings::copy_n( m_data, str, size );
 	m_data[size] = '\0';
 }
@@ -50,7 +50,7 @@ fixed_string<MaxSize>& fixed_string<MaxSize>::operator=( i_const_string<StringCl
 	StringClass const& str_casted = static_cast<StringClass const&>( str );
 	ASSERT( str_casted.c_str( ) );
 
-	ASSERT( str_casted.length( ) < MaxSize - 1 );
+	ASSERT_CMP( str_casted.length( ), <, MaxSize - 1 );
 	strings::copy_n( m_data, str_casted.c_str( ), str_casted.length( ) + 1 );
 
 	return *this;
@@ -83,7 +83,7 @@ fixed_string<MaxSize>& fixed_string<MaxSize>::operator+=( i_const_string<StringC
 	ASSERT( str_casted.c_str( ) );
 
 	uptr l = length( );
-	ASSERT( l + str_casted.length( ) < MaxSize - 1 );
+	ASSERT_CMP( l + str_casted.length( ), <, MaxSize - 1 );
 	strings::copy_n( m_data + l, str_casted.c_str( ), str_casted.length( ) + 1 );
 	return *this;
 }
@@ -132,7 +132,7 @@ fixed_string<MaxSize> operator+( fixed_string<MaxSize> const& l, i_const_string<
 	ASSERT( r_casted.c_str( ) );
 
 	uptr ll = l.length( ), rl = r_casted.length( );
-	ASSERT( ll + rl < MaxSize - 1 );
+	ASSERT_CMP( ll + rl, <, MaxSize - 1 );
 	fixed_string<MaxSize> result;
 	strings::copy_n( result.data( ), l.c_str( ), ll );
 	strings::copy_n( result.data( ) + ll, r_casted.c_str( ), rl );

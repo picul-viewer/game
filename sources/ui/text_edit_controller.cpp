@@ -15,7 +15,7 @@ void text_edit_controller::create( pstr const in_text_memory, uptr const in_text
 	m_data				= in_text_memory;
 	
 	ASSERT				( in_text_memory_size );
-	ASSERT				( in_text_memory_size < 32 * Kb );
+	ASSERT_CMP			( in_text_memory_size, <, 32 * Kb );
 	m_capacity			= (u16)in_text_memory_size;
 
 	clear				( );

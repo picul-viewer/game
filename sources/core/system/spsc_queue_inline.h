@@ -6,8 +6,8 @@
 template<typename T, uptr RecordSize>
 void spsc_queue_no_wait<T, RecordSize>::create( uptr in_buffer_size )
 {
-	ASSERT					( sizeof(T) <= RecordSize );
-	ASSERT					( in_buffer_size % RecordSize == 0 );
+	static_assert			( sizeof(T) <= RecordSize, "invalid record size" );
+	ASSERT_CMP				( in_buffer_size % RecordSize, ==, 0 );
 
 	u32 const array_size	= (u32)( in_buffer_size / RecordSize );
 

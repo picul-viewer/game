@@ -59,7 +59,7 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 	}
 
 	uptr const size = config.size( );
-	ASSERT( size < 8 * Kb );
+	ASSERT_CMP( size, <, 8 * Kb );
 	u8* const data = stack_allocate( size );
 	config.read( data, size );
 
@@ -98,7 +98,7 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 		else if ( str == "both" )
 			command_line.append( " -srgb" );
 		else
-			ASSERT( str == "none" );
+			ASSERT( str == "none", "unexpected value: %s", str );
 
 		r.read_str( str.data( ) );
 	}

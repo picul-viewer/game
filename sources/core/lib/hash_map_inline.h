@@ -47,7 +47,7 @@ inline KVStore* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStore
 template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
 inline KVStore* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::insert( K const& key, hash_type hash, V const& value )
 {
-	ASSERT( HashPred( )( key ) == hash );
+	ASSERT_CMP( HashPred( )( key ), ==, hash );
 
 	auto& index = m_table[hash % m_table_length];
 	KVStore* first_kv = KVStoreIndex::get( *m_pool, index );
@@ -89,7 +89,7 @@ inline V* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex,
 template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
 inline V* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::find( K const& key, hash_type hash ) const
 {
-	ASSERT( HashPred( )( key ) == hash );
+	ASSERT_CMP( HashPred( )( key ), ==, hash );
 
 	KVStore* dest = find_kv( key, hash );
 
@@ -107,7 +107,7 @@ inline KVStore* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStore
 template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
 inline KVStore* hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::find_kv( K const& key, hash_type hash ) const
 {
-	ASSERT( HashPred( )( key ) == hash );
+	ASSERT_CMP( HashPred( )( key ), ==, hash );
 
 	KVStore* first = find_first_kv( hash );
 	return find_key_in_kv_list( first, key );
@@ -124,7 +124,7 @@ inline bool hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreInde
 template<typename K, typename V, typename HashPred, typename KeyEqualPred, typename KVStore, typename KVStoreIndex, typename KVStorePool>
 inline bool hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreIndex, KVStorePool>::remove( K const& key, hash_type hash )
 {
-	ASSERT( HashPred( )( key ) == hash );
+	ASSERT_CMP( HashPred( )( key ), ==, hash );
 
 	auto& index = m_table[hash % m_table_length];
 	KVStore* first = KVStoreIndex::get( *m_pool, index );
@@ -172,7 +172,7 @@ inline void hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStoreInde
 	if ( kv == nullptr )
 		return;
 	
-	ASSERT( HashPred( )( kv->key( ) ) == hash );
+	ASSERT_CMP( HashPred( )( kv->key( ) ), ==, hash );
 
 	auto& index = m_table[hash % m_table_length];
 	KVStore* first = KVStoreIndex::get( *m_pool, index );

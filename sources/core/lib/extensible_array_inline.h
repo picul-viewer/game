@@ -35,7 +35,7 @@ void extensible_array<T>::push_back( T const& value )
 template<typename T>
 T& extensible_array<T>::emplace_back( )
 {
-	ASSERT							( m_end < m_max_end );
+	ASSERT_CMP						( m_end, <, m_max_end );
 
 	T* const pointer_to_assign		= m_end;
 	++m_end;
@@ -50,7 +50,7 @@ template<typename T>
 void extensible_array<T>::resize( uptr size )
 {
 	T* new_end						= m_begin + size;
-	ASSERT							( new_end <= m_max_end );
+	ASSERT_CMP						( new_end, <=, m_max_end );
 
 	uptr const size_in_bytes		= this->size( ) * sizeof(T) + Memory_Page_Size - 1;
 	uptr const size_allocated		= size_in_bytes - size_in_bytes % Memory_Page_Size;
@@ -70,7 +70,7 @@ template<typename T>
 void extensible_array<T>::reserve( uptr size )
 {
 	T* new_end						= m_begin + size;
-	ASSERT							( new_end <= m_max_end );
+	ASSERT_CMP						( new_end, <=, m_max_end );
 
 	if ( new_end > m_end )
 	{
@@ -125,14 +125,14 @@ T* extensible_array<T>::end( ) const
 template<typename T>
 T& extensible_array<T>::at( uptr index )
 {
-	ASSERT( m_begin + index < m_end );
+	ASSERT_CMP( m_begin + index, <, m_end );
 	return m_begin[index];
 }
 
 template<typename T>
 T const& extensible_array<T>::at( uptr index ) const
 {
-	ASSERT( m_begin + index < m_end );
+	ASSERT_CMP( m_begin + index, <, m_end );
 	return m_begin[index];
 }
 

@@ -33,8 +33,8 @@ protected:
 		struct
 		{
 			mt_u32 m_push_pointer;
+			u32 m_size;
 			pointer	m_data;
-			uptr m_size;
 		};
 		u8 padding_0[Cache_Line];
 	};

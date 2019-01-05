@@ -37,7 +37,7 @@ void mesh::create( reader& in_reader )
 
 	// Vertex type can be uncoded by 2 MSBs
 	u32 const vertex_format_id			= index_data >> 30;
-	ASSERT								( vertex_format_id < ARRAYSIZE( vertex_formats ) );
+	ASSERT_CMP							( vertex_format_id, <, ARRAYSIZE( vertex_formats ) );
 	vertex_type const vertex			= vertex_formats[vertex_format_id];
 	u32 const buffers_count				= get_vertex_type_buffers_count( vertex );
 
@@ -77,7 +77,7 @@ void mesh::destroy( )
 
 buffer const& mesh::get_vertex_buffer( u32 in_index ) const
 {
-	ASSERT( in_index < max_vertex_buffers_count );
+	ASSERT_CMP( in_index, <, max_vertex_buffers_count );
 	return m_vertex_buffers[in_index];
 }
 
@@ -130,9 +130,9 @@ void mesh::draw_instanced( u32 in_instance_count ) const
 
 void mesh::create_vertex_buffer( u32 in_index, buffer::cook const& in_cook, pcvoid in_data, u32 in_stride )
 {
-	ASSERT( in_index < max_vertex_buffers_count );
+	ASSERT_CMP( in_index, <, max_vertex_buffers_count );
 	
-	ASSERT( in_cook.buffer_desc.ByteWidth % in_stride == 0 );
+	ASSERT_CMP( in_cook.buffer_desc.ByteWidth % in_stride, ==, 0 );
 	
 	m_vertex_buffers[in_index].create( in_cook, in_data );
 	m_vertex_strides[in_index] = in_stride;
@@ -144,7 +144,7 @@ void mesh::create_index_buffer( buffer::cook const& in_cook, pcvoid in_data, DXG
 	
 	u32 index_size = ( in_format == DXGI_FORMAT_R16_UINT ) ? 2 : 4;
 	
-	ASSERT( in_cook.buffer_desc.ByteWidth % index_size == 0 );
+	ASSERT_CMP( in_cook.buffer_desc.ByteWidth % index_size, ==, 0 );
 	m_index_count = in_cook.buffer_desc.ByteWidth / index_size;
 	
 	m_index_buffer.create( in_cook, in_data );

@@ -8,7 +8,8 @@ namespace sys {
 
 void window::create( pcstr title, math::s32x2 const& dimensions, bool fullscreen, pointer window_procedure )
 {
-	ASSERT				( dimensions > 0 );
+	ASSERT_CMP			( dimensions.x, >, 0 );
+	ASSERT_CMP			( dimensions.y, >, 0 );
 
 	HINSTANCE inst		= GetModuleHandle( nullptr );
 

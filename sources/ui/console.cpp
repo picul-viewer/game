@@ -182,7 +182,7 @@ void console::set_corners_position( math::u16x4 const in_value )
 {
 	u16 const height = in_value.w - in_value.y;
 
-	ASSERT( height > 4 * m_border_size + 2 * m_font_size );
+	ASSERT_CMP( height, >, 4 * m_border_size + 2 * m_font_size );
 
 	u16 const unused_height = ( height - 4 * m_border_size ) % m_font_size;
 	// Top alignment.

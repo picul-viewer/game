@@ -188,7 +188,7 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 		++thread_index;
 	}
 
-	ASSERT( thread_index == threads_count );
+	ASSERT_CMP( thread_index, ==, threads_count );
 
 	threads->destroy( INFINITE, threads_count );
 }
