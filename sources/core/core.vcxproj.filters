@@ -133,6 +133,9 @@
     <Filter Include="system\threads\structs\mpsc_queue">
       <UniqueIdentifier>{19ececab-17af-403b-b347-1abe4f18e0a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\memory\allocators\temporal">
+      <UniqueIdentifier>{a0aa6121-2cf6-4e53-8150-78a436127fd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -343,6 +346,18 @@
     </ClInclude>
     <ClInclude Include="system\mpsc_queue_inline.h">
       <Filter>system\threads\structs\mpsc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\temporal_allocator.h">
+      <Filter>lib\memory\allocators\temporal</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\temporal_allocator_inline.h">
+      <Filter>lib\memory\allocators\temporal</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\separate_arena_temporal_allocator.h">
+      <Filter>lib\memory\allocators\temporal</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\separate_arena_temporal_allocator_inline.h">
+      <Filter>lib\memory\allocators\temporal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

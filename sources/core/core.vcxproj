@@ -124,9 +124,13 @@
     <ClInclude Include="lib\queue.h" />
     <ClInclude Include="lib\queue_inline.h" />
     <ClInclude Include="lib\reader.h" />
+    <ClInclude Include="lib\separate_arena_temporal_allocator.h" />
+    <ClInclude Include="lib\separate_arena_temporal_allocator_inline.h" />
     <ClInclude Include="lib\std_map.h" />
     <ClInclude Include="lib\std_map_inline.h" />
     <ClInclude Include="lib\strings.h" />
+    <ClInclude Include="lib\temporal_allocator.h" />
+    <ClInclude Include="lib\temporal_allocator_inline.h" />
     <ClInclude Include="lib\text_reader.h" />
     <ClInclude Include="lib\text_writer.h" />
     <ClInclude Include="lib\weak_string.h" />
