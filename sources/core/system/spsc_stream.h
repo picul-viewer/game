@@ -2,7 +2,7 @@
 #define __core_spsc_stream_h_included_
 
 #include <types.h>
-#include <system/interlocked.h>
+#include "interlocked.h"
 
 mem_align(16)
 class spsc_stream

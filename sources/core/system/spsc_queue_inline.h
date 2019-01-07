@@ -4,113 +4,90 @@
 #include <lib/allocator.h>
 
 template<typename T, uptr RecordSize>
-void spsc_queue_no_wait<T, RecordSize>::create( uptr in_buffer_size )
+void spsc_queue<T, RecordSize>::create( pointer const data, uptr const size )
 {
-	static_assert			( sizeof(T) <= RecordSize, "invalid record size" );
-	ASSERT_CMP				( in_buffer_size % RecordSize, ==, 0 );
+	static_assert				( sizeof(T) <= RecordSize, "incorrect template parameters" );
 
-	u32 const array_size	= (u32)( in_buffer_size / RecordSize );
+	ASSERT_CMP					( size % RecordSize, ==, 0 );
+	ASSERT_CMP					( size / RecordSize, <=, 0xFFFFFFFF );
 
-	ASSERT					( ( array_size & ( array_size - 1 ) ) == 0 );
+	u32 const array_size		= (u32)( size / RecordSize );
+	ASSERT						( ( array_size & ( array_size - 1 ) ) == 0 );
 
-	m_data					= aligned_std_allocator<Cache_Line>( ).allocate( in_buffer_size );
-	m_index_mask			= array_size - 1;
+	m_data						= data;
+	m_index_mask				= array_size - 1;
 
-	m_push_index			= 0;
-	m_pop_index				= 0;
-}
+	m_push_index				= 0;
+	m_pop_index					= 0;
 
-template<typename T, uptr RecordSize>
-void spsc_queue_no_wait<T, RecordSize>::destroy( )
-{
-	aligned_std_allocator<Cache_Line>( ).deallocate( m_data );
-}
+	m_current_size				= 0;
 
-template<typename T, uptr RecordSize>
-void spsc_queue_no_wait<T, RecordSize>::push( value_type const& in_value )
-{
-	value_type* v		= m_data + ( m_push_index & m_index_mask );
-	*v					= in_value;
-	
-	s32 new_push_index	= interlocked_inc( m_push_index );
-}
-
-template<typename T, uptr RecordSize>
-void spsc_queue_no_wait<T, RecordSize>::pop( value_type& out_value )
-{
-	out_value			= *( m_data + ( m_pop_index & m_index_mask ) );
-	
-	s32 new_pop_index	= interlocked_inc( m_pop_index );
-}
-
-template<typename T, uptr RecordSize>
-bool spsc_queue_no_wait<T, RecordSize>::empty( ) const
-{
-	return m_push_index - m_pop_index <= 0;
-}
-
-template<typename T, uptr RecordSize>
-bool spsc_queue_no_wait<T, RecordSize>::full( ) const
-{
-	return m_push_index - m_pop_index >= m_index_mask + 1;
-}
-
-
-template<typename T, uptr RecordSize>
-void spsc_queue<T, RecordSize>::create( uptr in_buffer_size )
-{
-	parent::create		( in_buffer_size );
-
-	m_empty_event.create( false, false );
-	m_full_event.create	( false, false );
+	m_empty_event.create		( false, false );
 }
 
 template<typename T, uptr RecordSize>
 void spsc_queue<T, RecordSize>::destroy( )
 {
-	parent::destroy			( );
-
-	m_empty_event.destroy	( );
-	m_full_event.destroy	( );
+	m_empty_event.destroy		( );
 }
 
 template<typename T, uptr RecordSize>
-void spsc_queue<T, RecordSize>::push( value_type const& in_value )
+void spsc_queue<T, RecordSize>::push( value_type const& value )
 {
-	// If there is no place to push
-	while ( m_push_index - m_pop_index > m_index_mask )
-	{
-		m_full_event.wait_for		( );
-	}
-
-	value_type* v		= m_data + ( m_push_index & m_index_mask );
-	*v					= in_value;
+	u32 const push_index		= m_push_index;
+	u32 const new_push_index	= push_index + 1;
 	
-	s32 new_push_index	= interlocked_inc( m_push_index );
+	m_data[push_index & m_index_mask] = value;
+	
+	m_push_index				= new_push_index;
+	
+	store_fence					( );
 
-	if ( new_push_index - m_pop_index <= 1 )
+	if ( interlocked_inc( m_current_size ) == 0 )
 	{
-		m_empty_event.set			( );
+		m_empty_event.set		( );
 	}
 }
 
 template<typename T, uptr RecordSize>
-void spsc_queue<T, RecordSize>::pop( value_type& out_value )
+void spsc_queue<T, RecordSize>::push( value_type const* const values, u32 const count )
 {
-	// If there is nothing to pop
-	while ( m_push_index - m_pop_index <= 0 )
+	u32 const push_index		= m_push_index;
+	u32 const new_push_index	= push_index + count;
+
+	for ( u32 i = push_index, j = 0; i < new_push_index; ++i, ++j )
+		m_data[i & m_index_mask] = values[j];
+
+	m_push_index				= new_push_index;
+
+	store_fence					( );
+
+	if ( interlocked_inc( m_current_size ) == count - 1 )
+	{
+		m_empty_event.set		( );
+	}
+}
+
+template<typename T, uptr RecordSize>
+void spsc_queue<T, RecordSize>::pop( value_type& value )
+{
+	u32 const pop_index			= m_pop_index;
+	u32 const new_pop_index		= pop_index + 1;
+	
+	if ( interlocked_dec( m_current_size ) == -1 )
 	{
 		m_empty_event.wait_for	( );
 	}
 	
-	out_value			= *( m_data + ( m_pop_index & m_index_mask ) );
+	value						= m_data[pop_index & m_index_mask];
 	
-	s32 new_pop_index	= interlocked_inc( m_pop_index );
+	m_pop_index					= new_pop_index;
+}
 
-	if ( m_push_index - new_pop_index >= m_index_mask )
-	{
-		m_full_event.set		( );
-	}
+template<typename T, uptr RecordSize>
+pointer spsc_queue<T, RecordSize>::data( ) const
+{
+	return m_data;
 }
 
 #endif // #ifndef __core_spsc_queue_inline_h_inlcuded_

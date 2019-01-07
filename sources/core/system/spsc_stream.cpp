@@ -34,8 +34,7 @@ pvoid spsc_stream::read_data( u32 const size )
 	u32 const pop_pointer = m_pop_pointer;
 	u32 const new_pop_pointer = pop_pointer + size;
 
-	while ( new_pop_pointer > m_push_pointer )
-		_mm_pause( );
+	SPIN_LOCK( new_pop_pointer > m_push_pointer );
 	
 	pvoid const result = m_data + pop_pointer;
 	m_pop_pointer = new_pop_pointer;
@@ -53,7 +52,7 @@ void spsc_stream::write_data( pcvoid const data, u32 const size )
 	memory::copy( destination, data, size );
 
 	// First copy all data, and then update pointer.
-	_mm_sfence( );
+	store_fence( );
 
 	m_push_pointer = new_push_pointer;
 }
