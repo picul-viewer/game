@@ -96,7 +96,7 @@ void world::window_thread( )
 	m_alive_events[event_window].set( );
 
 	// Waiting for all systems to create.
-	m_alive_events->wait_for( INFINITE, event_count );
+	m_alive_events->wait_for( time::infinite, event_count );
 
 	m_window.run( );
 	exit( );
@@ -108,7 +108,7 @@ void world::window_thread( )
 	m_exit_events[event_window].set( );
 	
 	// Waiting for all engine systems to stop.
-	m_exit_events->wait_for( INFINITE, event_count );
+	m_exit_events->wait_for( time::infinite, event_count );
 
 	// Waiting for render to destroy.
 	m_alive_events[event_main].wait_for( );
@@ -121,7 +121,7 @@ void world::window_thread( )
 void world::main_thread( )
 {
 	// Waiting for window to create.
-	m_alive_events->wait_for( INFINITE, system_event_count );
+	m_alive_events->wait_for( time::infinite, system_event_count );
 
 	ASSERT( ( m_window_dimensions.x < 0x10000 ) && ( m_window_dimensions.y < 0x10000 ) );
 	render::g_world.create( (HWND)m_window.get_hwnd( ), m_window_dimensions, true );
@@ -143,7 +143,7 @@ void world::main_thread( )
 	m_exit_events[event_main].set( );
 
 	// Waiting for window to stop.
-	m_exit_events->wait_for( INFINITE, event_count );
+	m_exit_events->wait_for( time::infinite, event_count );
 
 	game::world_interface::destroy( );
 	render::g_world.destroy( );
@@ -171,7 +171,7 @@ void world::create( )
 
 void world::destroy( )
 {
-	m_threads->destroy( INFINITE, thread_count );
+	m_threads->destroy( time::infinite, thread_count );
 	m_alive_events->destroy( event_count );
 	m_exit_events->destroy( event_count );
 	

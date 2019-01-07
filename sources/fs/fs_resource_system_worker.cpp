@@ -37,7 +37,7 @@ void fs_resource_system_worker::destroy( )
 
 void fs_resource_system_worker::wait_for_destruction( )
 {
-	m_thread.destroy( INFINITE );
+	m_thread.destroy( );
 }
 
 void fs_resource_system_worker::read( pcstr filename, callback_type const& callback )
