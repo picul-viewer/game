@@ -55,9 +55,6 @@
     <Filter Include="system\threads\interlocked">
       <UniqueIdentifier>{228245d0-c358-42c5-8627-bee6d6b8d673}</UniqueIdentifier>
     </Filter>
-    <Filter Include="system\threads\spsc_queue">
-      <UniqueIdentifier>{1c0e13e9-8a35-4ac8-810b-2380f460e23b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="math\collision">
       <UniqueIdentifier>{5fdc8b69-a335-4f53-8881-b0ab891cf780}</UniqueIdentifier>
     </Filter>
@@ -100,9 +97,6 @@
     <Filter Include="lib\array\fixed_array">
       <UniqueIdentifier>{3ada7f77-c0cf-4c88-a1cd-dfeac19bffa6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="system\threads\spsc_stream">
-      <UniqueIdentifier>{71d38a7c-20e9-4d63-acb9-83cf745545b1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lib\rw">
       <UniqueIdentifier>{14f4ca49-603a-4383-a8a0-1f33cef5217b}</UniqueIdentifier>
     </Filter>
@@ -126,6 +120,18 @@
     </Filter>
     <Filter Include="lib\rw\text\writer">
       <UniqueIdentifier>{601af03d-6d46-4a77-9f75-93a43f26dc7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\structs">
+      <UniqueIdentifier>{6f435b7a-5b6a-4d94-9636-531e1c7a5fb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\structs\spsc_queue">
+      <UniqueIdentifier>{1c0e13e9-8a35-4ac8-810b-2380f460e23b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\structs\spsc_stream">
+      <UniqueIdentifier>{71d38a7c-20e9-4d63-acb9-83cf745545b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\structs\mpsc_queue">
+      <UniqueIdentifier>{19ececab-17af-403b-b347-1abe4f18e0a3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -231,10 +237,10 @@
       <Filter>system\threads\interlocked</Filter>
     </ClInclude>
     <ClInclude Include="system\spsc_queue.h">
-      <Filter>system\threads\spsc_queue</Filter>
+      <Filter>system\threads\structs\spsc_queue</Filter>
     </ClInclude>
     <ClInclude Include="system\spsc_queue_inline.h">
-      <Filter>system\threads\spsc_queue</Filter>
+      <Filter>system\threads\structs\spsc_queue</Filter>
     </ClInclude>
     <ClInclude Include="system\thread.h">
       <Filter>system\threads\thread</Filter>
@@ -315,7 +321,7 @@
       <Filter>lib\array\fixed_array</Filter>
     </ClInclude>
     <ClInclude Include="system\spsc_stream.h">
-      <Filter>system\threads\spsc_stream</Filter>
+      <Filter>system\threads\structs\spsc_stream</Filter>
     </ClInclude>
     <ClInclude Include="lib\text_writer.h">
       <Filter>lib\rw\text\writer</Filter>
@@ -331,6 +337,12 @@
     </ClInclude>
     <ClInclude Include="lib\reader.h">
       <Filter>lib\rw\binary\reader</Filter>
+    </ClInclude>
+    <ClInclude Include="system\mpsc_queue.h">
+      <Filter>system\threads\structs\mpsc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\mpsc_queue_inline.h">
+      <Filter>system\threads\structs\mpsc_queue</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -390,7 +402,7 @@
       <Filter>system\fs\file_iterator</Filter>
     </ClCompile>
     <ClCompile Include="system\spsc_stream.cpp">
-      <Filter>system\threads\spsc_stream</Filter>
+      <Filter>system\threads\structs\spsc_stream</Filter>
     </ClCompile>
     <ClCompile Include="lib\text_writer.cpp">
       <Filter>lib\rw\text\writer</Filter>
