@@ -105,7 +105,7 @@ inline void log_value( pcstr const value )
 }
 
 #	define ASSERT( expr, ... ) if ( !( expr ) ) { macros::assertion_failed( #expr, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); DEBUG_BREAK( ); }
-#	define ASSERT_CMP( l, s, r ) if ( !( l s r ) ) { macros::assertion_failed( #l " " #s " " #r, __FILE__, __FUNCTION__, __LINE__ ); LOG( "l = " ); macros::log_value( l ); LOG( ", r = " ); macros::log_value( r ); LOG( "\n" ); DEBUG_BREAK( ); }
+#	define ASSERT_CMP( l, s, r, ... ) if ( !( ( l ) s ( r ) ) ) { macros::assertion_failed( #l " " #s " " #r, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); LOG( "l = " ); macros::log_value( l ); LOG( ", r = " ); macros::log_value( r ); LOG( "\n" ); DEBUG_BREAK( ); }
 #else // #ifdef DEBUG
 #	define ASSERT( expr, ... ) NO_OP
 #	define ASSERT_CMP( l, s, r ) NO_OP
