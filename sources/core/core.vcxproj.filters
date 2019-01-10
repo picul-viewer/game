@@ -136,6 +136,9 @@
     <Filter Include="lib\memory\allocators\temporal">
       <UniqueIdentifier>{a0aa6121-2cf6-4e53-8150-78a436127fd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\memory\allocators\heap">
+      <UniqueIdentifier>{6b493b4b-48ee-42e3-93b3-1147f99d98e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -359,6 +362,9 @@
     <ClInclude Include="lib\separate_arena_temporal_allocator_inline.h">
       <Filter>lib\memory\allocators\temporal</Filter>
     </ClInclude>
+    <ClInclude Include="lib\heap.h">
+      <Filter>lib\memory\allocators\heap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="system\timer.cpp">
@@ -433,6 +439,9 @@
     </ClCompile>
     <ClCompile Include="lib\reader.cpp">
       <Filter>lib\rw\binary\reader</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\heap.cpp">
+      <Filter>lib\memory\allocators\heap</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -114,6 +114,7 @@
     <ClInclude Include="lib\hash.h" />
     <ClInclude Include="lib\hash_map.h" />
     <ClInclude Include="lib\hash_map_inline.h" />
+    <ClInclude Include="lib\heap.h" />
     <ClInclude Include="lib\linear_allocator.h" />
     <ClInclude Include="lib\linear_allocator_inline.h" />
     <ClInclude Include="lib\memory.h" />
@@ -172,6 +173,7 @@
     <ClCompile Include="lib\allocator.cpp" />
     <ClCompile Include="lib\alloc_string.cpp" />
     <ClCompile Include="lib\dynamic_writer.cpp" />
+    <ClCompile Include="lib\heap.cpp" />
     <ClCompile Include="lib\reader.cpp" />
     <ClCompile Include="lib\strings.cpp" />
     <ClCompile Include="lib\hash.cpp" />
