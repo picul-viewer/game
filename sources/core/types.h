@@ -72,10 +72,12 @@ struct pointer
 	template<typename T>
 	inline operator T*( ) const { return (T*)data; }
 	
-	inline operator bool( ) const { return data != nullptr; }
+	inline operator uptr( ) const { return (uptr)data; }
 	
 	template<typename T>
 	inline pointer& operator=( T* data ) { this->data = (pvoid)data; return *this; }
+	
+	inline pointer& operator=( uptr data ) { this->data = (pvoid)data; return *this; }
 
 	inline pointer& operator=( nullptr_t data ) { this->data = (pvoid)data; return *this; }
 
@@ -116,6 +118,9 @@ struct pointer
 	inline T& get( uptr offset = 0 ) { return *( (T*)data + offset ); }
 	template<typename T>
 	inline T const& get( uptr offset = 0 ) const { return *( (T const*)data + offset ); }
+
+	inline pointer align_down( uptr const alignment ) const { return (pvoid)( (uptr)data - (uptr)data % alignment ); }
+	inline pointer align_up( uptr const alignment ) const { return ( *this + alignment - 1 ).align_down( alignment ); }
 
 private:
 	pvoid data;

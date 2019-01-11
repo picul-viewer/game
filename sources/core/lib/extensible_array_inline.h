@@ -2,19 +2,20 @@
 #define __core_extensible_array_inline_h_included_
 
 #include <macros.h>
+#include <math/math_common.h>
 #include "allocator.h"
 
 template<typename T>
 void extensible_array<T>::create( uptr capacity, uptr size )
 {
-	uptr const capacity_in_bytes	= capacity * sizeof(T) + Memory_Page_Size - 1;
-	uptr const capacity_to_allocate	= capacity_in_bytes - capacity_in_bytes % Memory_Page_Size;
+	static_assert					( sizeof(T) <= Memory_Page_Size, "too big object size" );
 
-	uptr const size_in_bytes		= size * sizeof(T) + Memory_Page_Size - 1;
-	uptr const size_to_allocate		= size_in_bytes - size_in_bytes % Memory_Page_Size;
+	uptr const capacity_to_allocate	= math::align_up( capacity * sizeof(T), Memory_Page_Size );
+	uptr const size_to_allocate		= math::align_up( size * sizeof(T), Memory_Page_Size );
 
 	m_begin							= virtual_allocator( ).reserve( nullptr, capacity_to_allocate );
-	virtual_allocator( ).commit	( m_begin, size_to_allocate );
+	if ( size_to_allocate != 0 )
+		virtual_allocator( ).commit	( m_begin, size_to_allocate );
 
 	m_end							= m_begin + size;
 	m_max_end						= m_begin + capacity;
@@ -41,7 +42,7 @@ T& extensible_array<T>::emplace_back( )
 	++m_end;
 
 	if ( ( (uptr)m_end % Memory_Page_Size ) <= sizeof(T) )
-		virtual_allocator( ).commit( (pvoid)( (uptr)m_end - (uptr)m_end % Memory_Page_Size ), Memory_Page_Size );
+		virtual_allocator( ).commit( pointer( m_end ).align_down( Memory_Page_Size ), Memory_Page_Size );
 
 	return *pointer_to_assign;
 }
@@ -52,11 +53,8 @@ void extensible_array<T>::resize( uptr size )
 	T* new_end						= m_begin + size;
 	ASSERT_CMP						( new_end, <=, m_max_end );
 
-	uptr const size_in_bytes		= this->size( ) * sizeof(T) + Memory_Page_Size - 1;
-	uptr const size_allocated		= size_in_bytes - size_in_bytes % Memory_Page_Size;
-
-	uptr const new_size_in_bytes	= size * sizeof(T) + Memory_Page_Size - 1;
-	uptr const size_needed			= new_size_in_bytes - new_size_in_bytes % Memory_Page_Size;
+	uptr const size_allocated		= math::align_up( this->size( ) * sizeof(T), Memory_Page_Size );
+	uptr const size_needed			= math::align_up( size * sizeof(T), Memory_Page_Size );
 
 	if ( size_allocated > size_needed )
 		virtual_allocator( ).decommit( (pointer)m_begin + size_needed, size_allocated - size_needed );
@@ -69,19 +67,16 @@ void extensible_array<T>::resize( uptr size )
 template<typename T>
 void extensible_array<T>::reserve( uptr size )
 {
-	T* new_end						= m_begin + size;
-	ASSERT_CMP						( new_end, <=, m_max_end );
+	T* new_end							= m_begin + size;
+	ASSERT_CMP							( new_end, <=, m_max_end );
 
 	if ( new_end > m_end )
 	{
-		uptr const size_in_bytes		= this->size( ) * sizeof(T) + Memory_Page_Size - 1;
-		uptr const size_allocated		= size_in_bytes - size_in_bytes % Memory_Page_Size;
-
-		uptr const new_size_in_bytes	= size * sizeof(T) + Memory_Page_Size - 1;
-		uptr const size_needed			= new_size_in_bytes - new_size_in_bytes % Memory_Page_Size;
+		uptr const size_allocated		= math::align_up( this->size( ) * sizeof(T), Memory_Page_Size );
+		uptr const size_needed			= math::align_up( size * sizeof(T), Memory_Page_Size );
 
 		if ( size_allocated != size_needed )
-			virtual_allocator( ).commit( (pointer)m_begin + size_allocated, size_needed - size_allocated );
+			virtual_allocator( ).commit	( (pointer)m_begin + size_allocated, size_needed - size_allocated );
 
 		m_end							= new_end;
 	}
@@ -90,10 +85,9 @@ void extensible_array<T>::reserve( uptr size )
 template<typename T>
 void extensible_array<T>::clear( )
 {
-	uptr const size_in_bytes		= ( m_end - m_begin ) * sizeof(T) + Memory_Page_Size - 1;
-	uptr const size_allocated		= size_in_bytes - size_in_bytes % Memory_Page_Size;
+	uptr const size_allocated		= math::align_up( ( m_end - m_begin ) * sizeof(T), Memory_Page_Size );
 	
-	virtual_allocator( ).decommit( m_begin, size_allocated );
+	virtual_allocator( ).decommit	( m_begin, size_allocated );
 
 	m_end = m_begin;
 }

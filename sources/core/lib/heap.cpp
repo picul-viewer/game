@@ -1,5 +1,4 @@
 #include "heap.h"
-#include "allocator.h"
 #include <macros.h>
 #include <math/math_common.h>
 #include <intrin.h>
@@ -81,7 +80,7 @@ u32 heap::get_size_index_for_block( u32 const size )
 pointer heap::allocate( uptr size )
 {
 	// Keep in mind additional 4 bytes for block size and 16-byte granularity.
-	uptr const extended_size = ( size + 19 ) - ( size + 19 ) % 16;
+	uptr const extended_size = math::align_up( size + 4, 16 );
 	ASSERT_CMP( extended_size, <, 0x80000000 );
 	u32 const request_size = math::max( (u32)extended_size, (u32)min_allocation_size );
 
