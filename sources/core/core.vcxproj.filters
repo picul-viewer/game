@@ -365,6 +365,9 @@
     <ClInclude Include="lib\heap.h">
       <Filter>lib\memory\allocators\heap</Filter>
     </ClInclude>
+    <ClInclude Include="lib\dynamic_heap.h">
+      <Filter>lib\memory\allocators\heap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="system\timer.cpp">
@@ -441,6 +444,9 @@
       <Filter>lib\rw\binary\reader</Filter>
     </ClCompile>
     <ClCompile Include="lib\heap.cpp">
+      <Filter>lib\memory\allocators\heap</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dynamic_heap.cpp">
       <Filter>lib\memory\allocators\heap</Filter>
     </ClCompile>
   </ItemGroup>

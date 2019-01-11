@@ -101,6 +101,7 @@
     <ClInclude Include="lib\buffer_array_inline.h" />
     <ClInclude Include="lib\basic_string.h" />
     <ClInclude Include="lib\basic_string_inline.h" />
+    <ClInclude Include="lib\dynamic_heap.h" />
     <ClInclude Include="lib\dynamic_writer.h" />
     <ClInclude Include="lib\embedded_list.h" />
     <ClInclude Include="lib\embedded_list_inline.h" />
@@ -172,6 +173,7 @@
   <ItemGroup>
     <ClCompile Include="lib\allocator.cpp" />
     <ClCompile Include="lib\alloc_string.cpp" />
+    <ClCompile Include="lib\dynamic_heap.cpp" />
     <ClCompile Include="lib\dynamic_writer.cpp" />
     <ClCompile Include="lib\heap.cpp" />
     <ClCompile Include="lib\reader.cpp" />
