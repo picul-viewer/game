@@ -3,55 +3,6 @@
 
 #include <macros.h>
 
-template<uptr MemorySize>
-void linear_allocator<MemorySize>::create( )
-{
-	m_data = virtual_allocator( ).commit( nullptr, memory_size );
-	clear( );
-}
-
-template<uptr MemorySize>
-void linear_allocator<MemorySize>::destroy( )
-{
-	virtual_allocator( ).release( m_data );
-	m_data = nullptr;
-}
-
-template<uptr MemorySize>
-pointer linear_allocator<MemorySize>::data( ) const
-{
-	return m_data;
-}
-
-template<uptr MemorySize>
-pointer linear_allocator<MemorySize>::data_end( ) const
-{
-	return m_last_pointer;
-}
-
-template<uptr MemorySize>
-void linear_allocator<MemorySize>::clear( )
-{
-	m_last_pointer = m_data;
-}
-
-template<uptr MemorySize>
-pointer linear_allocator<MemorySize>::allocate( uptr size )
-{
-	ASSERT_CMP				( m_last_pointer + size, <=, m_data + MemorySize ); // pool is full
-	pointer const result	= m_last_pointer;
-	m_last_pointer			+= size;
-	return result;
-}
-
-template<uptr MemorySize>
-void linear_allocator<MemorySize>::shrink( uptr const shrink_size )
-{
-	ASSERT_CMP				( (uptr)( m_last_pointer - m_data ), >=, shrink_size );
-	m_last_pointer			-= shrink_size;
-}
-
-
 template<uptr PageSize, uptr PageMaxCount>
 void dynamic_linear_allocator<PageSize, PageMaxCount>::create( )
 {

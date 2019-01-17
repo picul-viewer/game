@@ -176,6 +176,7 @@
     <ClCompile Include="lib\dynamic_heap.cpp" />
     <ClCompile Include="lib\dynamic_writer.cpp" />
     <ClCompile Include="lib\heap.cpp" />
+    <ClCompile Include="lib\linear_allocator.cpp" />
     <ClCompile Include="lib\reader.cpp" />
     <ClCompile Include="lib\strings.cpp" />
     <ClCompile Include="lib\hash.cpp" />

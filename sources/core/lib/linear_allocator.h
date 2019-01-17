@@ -4,11 +4,10 @@
 #include <types.h>
 #include "allocator.h"
 
-template<uptr MemorySize>
 struct linear_allocator
 {
 public:
-	void create( );
+	void create( pointer const memory, uptr const size );
 	void destroy( );
 	
 	pointer data( ) const;
@@ -20,9 +19,8 @@ public:
 	void shrink( uptr const shrink_size );
 
 protected:
-	enum : uptr { memory_size = virtual_allocator::memory_size_helper<MemorySize>::value };
-
 	pointer	m_data;
+	pointer	m_data_end;
 	pointer	m_last_pointer;
 
 };

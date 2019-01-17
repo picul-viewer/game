@@ -449,5 +449,8 @@
     <ClCompile Include="lib\dynamic_heap.cpp">
       <Filter>lib\memory\allocators\heap</Filter>
     </ClCompile>
+    <ClCompile Include="lib\linear_allocator.cpp">
+      <Filter>lib\memory\allocators\linear</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
