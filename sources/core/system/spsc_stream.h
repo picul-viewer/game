@@ -30,23 +30,16 @@ public:
 protected:
 	union
 	{
-		struct
-		{
-			mt_u32 m_push_pointer;
-			u32 m_size;
-			pointer	m_data;
-		};
+		mt_u32 m_push_pointer;
 		u8 padding_0[Cache_Line];
 	};
 	union
 	{
-		struct
-		{
-			mt_u32 m_pop_pointer;
-		};
+		u32 m_pop_pointer;
 		u8 padding_1[Cache_Line];
 	};
-
+	pointer	m_data;
+	u32 m_size;
 };
 
 
