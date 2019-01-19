@@ -62,7 +62,7 @@ void spsc_queue<T, RecordSize>::push( value_type const* const values, u32 const 
 
 	store_fence					( );
 
-	if ( interlocked_inc( m_current_size ) == count - 1 )
+	if ( interlocked_add( m_current_size, count ) == count - 1 )
 	{
 		m_empty_event.set		( );
 	}
@@ -71,13 +71,13 @@ void spsc_queue<T, RecordSize>::push( value_type const* const values, u32 const 
 template<typename T, uptr RecordSize>
 void spsc_queue<T, RecordSize>::pop( value_type& value )
 {
-	u32 const pop_index			= m_pop_index;
-	u32 const new_pop_index		= pop_index + 1;
-	
-	if ( interlocked_dec( m_current_size ) == -1 )
+	if ( interlocked_exchange_add( m_current_size, (u32)-1 ) == 0 )
 	{
 		m_empty_event.wait_for	( );
 	}
+	
+	u32 const pop_index			= m_pop_index;
+	u32 const new_pop_index		= pop_index + 1;
 	
 	value						= m_data[pop_index & m_index_mask];
 	

@@ -1,10 +1,10 @@
-#ifndef __core_mpsc_queue_inline_h_inlcuded_
-#define __core_mpsc_queue_inline_h_inlcuded_
+#ifndef __core_mpmc_queue_inline_h_inlcuded_
+#define __core_mpmc_queue_inline_h_inlcuded_
 
 #include <macros.h>
 
 template<typename T, uptr RecordSize>
-void mpsc_queue<T, RecordSize>::create( pointer const data, uptr const size )
+void mpmc_queue<T, RecordSize>::create( pointer const data, uptr const size )
 {
 	static_assert				( sizeof(T) <= RecordSize, "incorrect template parameters" );
 
@@ -19,6 +19,7 @@ void mpsc_queue<T, RecordSize>::create( pointer const data, uptr const size )
 
 	m_pre_push_index			= 0;
 	m_push_index				= 0;
+	m_pre_pop_index				= 0;
 	m_pop_index					= 0;
 
 	m_current_size				= 0;
@@ -27,13 +28,13 @@ void mpsc_queue<T, RecordSize>::create( pointer const data, uptr const size )
 }
 
 template<typename T, uptr RecordSize>
-void mpsc_queue<T, RecordSize>::destroy( )
+void mpmc_queue<T, RecordSize>::destroy( )
 {
 	m_empty_event.destroy		( );
 }
 
 template<typename T, uptr RecordSize>
-void mpsc_queue<T, RecordSize>::push( value_type const& value )
+void mpmc_queue<T, RecordSize>::push( value_type const& value )
 {
 	u32 const new_push_index	= interlocked_inc( m_pre_push_index );
 	u32 const target_index		= new_push_index - 1;
@@ -46,14 +47,14 @@ void mpsc_queue<T, RecordSize>::push( value_type const& value )
 	
 	store_fence					( );
 
-	if ( interlocked_inc( m_current_size ) == 0 )
+	if ( interlocked_inc( m_current_size ) <= 0 )
 	{
 		m_empty_event.set		( );
 	}
 }
 
 template<typename T, uptr RecordSize>
-void mpsc_queue<T, RecordSize>::push( value_type const* const values, u32 const count )
+void mpmc_queue<T, RecordSize>::push( value_type const* const values, u32 const count )
 {
 	u32 const new_push_index	= interlocked_add( m_pre_push_index, count );
 	u32 const target_index		= new_push_index - count;
@@ -67,32 +68,37 @@ void mpsc_queue<T, RecordSize>::push( value_type const* const values, u32 const 
 
 	store_fence					( );
 
-	if ( interlocked_add( m_current_size, count ) == count - 1 )
+	if ( interlocked_add( m_current_size, count ) < count )
 	{
 		m_empty_event.set		( );
 	}
 }
 
 template<typename T, uptr RecordSize>
-void mpsc_queue<T, RecordSize>::pop( value_type& value )
+void mpmc_queue<T, RecordSize>::pop( value_type& value )
 {
-	if ( interlocked_exchange_add( m_current_size, (u32)-1 ) == 0 )
+	while ( interlocked_dec( m_current_size ) < 0 )
 	{
+		interlocked_inc			( m_current_size );
 		m_empty_event.wait_for	( );
 	}
 	
-	u32 const pop_index			= m_pop_index;
-	u32 const new_pop_index		= pop_index + 1;
+	u32 const new_pop_index		= interlocked_inc( m_pre_pop_index );
+	u32 const target_index		= new_pop_index - 1;
 	
-	value						= m_data[pop_index & m_index_mask];
-
+	value						= m_data[target_index & m_index_mask];
+	
+	m_data[target_index & m_index_mask] = value;
+	
+	SPIN_LOCK					( m_pop_index != target_index );
+	
 	m_pop_index					= new_pop_index;
 }
 
 template<typename T, uptr RecordSize>
-pointer mpsc_queue<T, RecordSize>::data( ) const
+pointer mpmc_queue<T, RecordSize>::data( ) const
 {
 	return m_data;
 }
 
-#endif // #ifndef __core_mpsc_queue_inline_h_inlcuded_
+#endif // #ifndef __core_mpmc_queue_inline_h_inlcuded_

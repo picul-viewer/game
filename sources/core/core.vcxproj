@@ -155,6 +155,8 @@
     <ClInclude Include="system\file_iterator.h" />
     <ClInclude Include="system\input.h" />
     <ClInclude Include="system\interlocked.h" />
+    <ClInclude Include="system\mpmc_queue.h" />
+    <ClInclude Include="system\mpmc_queue_inline.h" />
     <ClInclude Include="system\mpsc_queue.h" />
     <ClInclude Include="system\mpsc_queue_inline.h" />
     <ClInclude Include="system\path_inline.h" />

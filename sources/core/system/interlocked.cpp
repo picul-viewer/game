@@ -121,6 +121,26 @@ u64 interlocked_dec( mt_u64& left )
 	return _InterlockedDecrement64( (volatile LONG64*)&left );
 }
 
+s32 interlocked_exchange_add( mt_s32& left, s32 const right )
+{
+	return _InterlockedExchangeAdd( (volatile LONG*)&left, right );
+}
+
+u32 interlocked_exchange_add( mt_u32& left, u32 const right )
+{
+	return _InterlockedExchangeAdd( (volatile LONG*)&left, right );
+}
+
+s64 interlocked_exchange_add( mt_s64& left, s64 const right )
+{
+	return _InterlockedExchangeAdd64( (volatile LONG64*)&left, right );
+}
+
+u64 interlocked_exchange_add( mt_u64& left, u64 const right )
+{
+	return _InterlockedExchangeAdd64( (volatile LONG64*)&left, right );
+}
+
 s32 interlocked_add( mt_s32& left, s32 const right )
 {
 	return _InlineInterlockedAdd( (volatile LONG*)&left, right );

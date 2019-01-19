@@ -139,6 +139,9 @@
     <Filter Include="lib\memory\allocators\heap">
       <UniqueIdentifier>{6b493b4b-48ee-42e3-93b3-1147f99d98e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="system\threads\structs\mpmc_queue">
+      <UniqueIdentifier>{ac5cc153-8e79-4a4f-8d24-2c3e6fc27216}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -367,6 +370,12 @@
     </ClInclude>
     <ClInclude Include="lib\dynamic_heap.h">
       <Filter>lib\memory\allocators\heap</Filter>
+    </ClInclude>
+    <ClInclude Include="system\mpmc_queue.h">
+      <Filter>system\threads\structs\mpmc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\mpmc_queue_inline.h">
+      <Filter>system\threads\structs\mpmc_queue</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
