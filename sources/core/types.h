@@ -67,7 +67,7 @@ struct type_count<T, TList ...>
 struct pointer
 {
 	inline pointer( ) = default;
-	inline pointer( pvoid data ) { this->data = data; }
+	inline pointer( pcvoid data ) { this->data = (pvoid)data; }
 
 	template<typename T>
 	inline operator T*( ) const { return (T*)data; }
@@ -115,9 +115,7 @@ struct pointer
 	inline pointer operator--( int n ) { pointer p( *this ); data = (pbyte)data - 1; return p; }
 
 	template<typename T>
-	inline T& get( uptr offset = 0 ) { return *( (T*)data + offset ); }
-	template<typename T>
-	inline T const& get( uptr offset = 0 ) const { return *( (T const*)data + offset ); }
+	inline T& get( uptr offset = 0 ) const { return *( (T*)data + offset ); }
 
 	inline pointer align_down( uptr const alignment ) const { return (pvoid)( (uptr)data - (uptr)data % alignment ); }
 	inline pointer align_up( uptr const alignment ) const { return ( *this + alignment - 1 ).align_down( alignment ); }
