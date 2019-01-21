@@ -162,6 +162,69 @@ protected:
 	ID3D11DepthStencilView*	m_dsv;
 };
 
+class unordered_access_view
+{
+public:
+	struct cook
+	{
+		void set_buffer_uav(
+			DXGI_FORMAT	in_format,
+			u32			in_offset,
+			u32			in_width,
+			u32			in_flags
+		);
+
+		void set_tex1d_uav(
+			DXGI_FORMAT	in_format,
+			u32			in_mip_slice	= 0
+		);
+		
+		void set_tex1d_array_uav(
+			DXGI_FORMAT	in_format,
+			u32			in_mip_slice	= 0,
+			u32			in_array_first	= 0,
+			u32			in_array_size	= (u32)-1
+		);
+		
+		void set_tex2d_uav(
+			DXGI_FORMAT	in_format,
+			u32			in_mip_slice	= 0
+		);
+		
+		void set_tex2d_array_uav(
+			DXGI_FORMAT	in_format,
+			u32			in_mip_slice	= 0,
+			u32			in_array_first	= 0,
+			u32			in_array_size	= (u32)-1
+		);
+		
+		void set_tex3d_uav(
+			DXGI_FORMAT	in_format,
+			u32			in_mip_slice	= 0,
+			u32			in_slice_first	= 0,
+			u32			in_slice_size	= (u32)-1
+		);
+		
+		D3D11_UNORDERED_ACCESS_VIEW_DESC desc;
+	};
+	
+	unordered_access_view( );
+
+	void create( ID3D11Resource* in_resource, cook const& in_cook );
+	void destroy( );
+	
+	inline void set( ID3D11UnorderedAccessView* in_view ) { m_uav = in_view; }
+	inline ID3D11UnorderedAccessView* const& get( ) const { return m_uav; }
+
+	void bind_cs( u32 in_slot, u32 in_count = 1 ) const;
+	void bind_cs( u32 in_slot, u32* in_initial_counts, u32 in_count = 1 ) const;
+	void clear( math::float4 const& in_value ) const;
+	void clear( math::u32x4 const& in_value ) const;
+	
+protected:
+	ID3D11UnorderedAccessView*	m_uav;
+};
+
 class render_target_view
 {
 public:

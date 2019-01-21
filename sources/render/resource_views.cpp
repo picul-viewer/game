@@ -270,6 +270,111 @@ void depth_stencil_view::clear( float in_depth_value, u8 in_stencil_value ) cons
 }
 
 
+void unordered_access_view::cook::set_buffer_uav(
+	DXGI_FORMAT	in_format,
+	u32			in_offset,
+	u32			in_width,
+	u32			in_flags )
+{
+	desc.Format								= in_format;
+	desc.ViewDimension						= D3D11_UAV_DIMENSION_BUFFER;
+	desc.Buffer.FirstElement				= in_offset;
+	desc.Buffer.NumElements					= in_width;
+	desc.Buffer.Flags						= in_flags;
+}
+
+void unordered_access_view::cook::set_tex1d_uav(
+	DXGI_FORMAT	in_format,
+	u32			in_mip_slice )
+{
+	desc.Format								= in_format;
+	desc.ViewDimension						= D3D11_UAV_DIMENSION_TEXTURE1D;
+	desc.Texture1D.MipSlice					= in_mip_slice;
+}
+
+void unordered_access_view::cook::set_tex1d_array_uav(
+	DXGI_FORMAT	in_format,
+	u32			in_mip_slice,
+	u32			in_array_first,
+	u32			in_array_size )
+{
+	desc.Format								= in_format;
+	desc.ViewDimension						= D3D11_UAV_DIMENSION_TEXTURE1DARRAY;
+	desc.Texture1DArray.MipSlice			= in_mip_slice;
+	desc.Texture1DArray.FirstArraySlice		= in_array_first;
+	desc.Texture1DArray.ArraySize			= in_array_size;
+}
+
+void unordered_access_view::cook::set_tex2d_uav(
+	DXGI_FORMAT	in_format,
+	u32			in_mip_slice )
+{
+	desc.Format								= in_format;
+	desc.ViewDimension						= D3D11_UAV_DIMENSION_TEXTURE2D;
+	desc.Texture2D.MipSlice					= in_mip_slice;
+}
+
+void unordered_access_view::cook::set_tex2d_array_uav(
+	DXGI_FORMAT	in_format,
+	u32			in_mip_slice,
+	u32			in_array_first,
+	u32			in_array_size )
+{
+	desc.Format								= in_format;
+	desc.ViewDimension						= D3D11_UAV_DIMENSION_TEXTURE2DARRAY;
+	desc.Texture2DArray.MipSlice			= in_mip_slice;
+	desc.Texture2DArray.FirstArraySlice		= in_array_first;
+	desc.Texture2DArray.ArraySize			= in_array_size;
+}
+
+void unordered_access_view::cook::set_tex3d_uav(
+	DXGI_FORMAT	in_format,
+	u32			in_mip_slice,
+	u32			in_slice_first,
+	u32			in_slice_size )
+{
+	desc.Format								= in_format;
+	desc.ViewDimension						= D3D11_UAV_DIMENSION_TEXTURE3D;
+	desc.Texture3D.MipSlice					= in_mip_slice;
+	desc.Texture3D.FirstWSlice				= in_slice_first;
+	desc.Texture3D.WSize					= in_slice_size;
+}
+
+unordered_access_view::unordered_access_view( ) :
+	m_uav( nullptr )
+{ }
+
+void unordered_access_view::create( ID3D11Resource* in_resource, cook const& in_cook )
+{
+	g_api.get_device( )->CreateUnorderedAccessView( in_resource, &in_cook.desc, &m_uav );
+}
+
+void unordered_access_view::destroy( )
+{
+	dx_release( m_uav );
+}
+
+void unordered_access_view::bind_cs( u32 in_slot, u32 in_count ) const
+{
+	g_api.get_context( )->CSSetUnorderedAccessViews( in_slot, in_count, &m_uav, nullptr );
+}
+
+void unordered_access_view::bind_cs( u32 in_slot, u32* in_initial_counts, u32 in_count ) const
+{
+	g_api.get_context( )->CSSetUnorderedAccessViews( in_slot, in_count, &m_uav, in_initial_counts );
+}
+
+void unordered_access_view::clear( math::float4 const& in_value ) const
+{
+	g_api.get_context( )->ClearUnorderedAccessViewFloat( m_uav, in_value.data );
+}
+
+void unordered_access_view::clear( math::u32x4 const& in_value ) const
+{
+	g_api.get_context( )->ClearUnorderedAccessViewUint( m_uav, in_value.data );
+}
+
+
 void render_target_view::cook::set_buffer_rtv(
 	DXGI_FORMAT	in_format,
 	u32			in_offset,
