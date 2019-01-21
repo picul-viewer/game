@@ -50,6 +50,48 @@ protected:
 	unordered_access_view	m_uav;
 };
 
+class render_target_depth
+{
+public:
+	void create( DXGI_FORMAT in_format, math::u16x2 in_size, u32 in_bind_flags );
+	void destroy( );
+
+	void bind_depth_srv_vs( u32 in_slot ) const;
+	void bind_depth_srv_ps( u32 in_slot ) const;
+	void bind_depth_srv_gs( u32 in_slot ) const;
+	void bind_depth_srv_hs( u32 in_slot ) const;
+	void bind_depth_srv_ds( u32 in_slot ) const;
+	void bind_depth_srv_cs( u32 in_slot ) const;
+	void bind_depth_srv( u32 in_slot ) const;
+	
+	void bind_stencil_srv_vs( u32 in_slot ) const;
+	void bind_stencil_srv_ps( u32 in_slot ) const;
+	void bind_stencil_srv_gs( u32 in_slot ) const;
+	void bind_stencil_srv_hs( u32 in_slot ) const;
+	void bind_stencil_srv_ds( u32 in_slot ) const;
+	void bind_stencil_srv_cs( u32 in_slot ) const;
+	void bind_stencil_srv( u32 in_slot ) const;
+
+	inline texture2d&					get_texture			( ) { return m_texture; }
+	inline shader_resource_view&		get_depth_srv		( ) { return m_depth_srv; }
+	inline shader_resource_view&		get_stencil_srv		( ) { return m_stencil_srv; }
+	inline depth_stencil_view&			get_dsv				( ) { return m_dsv; }
+	inline depth_stencil_view&			get_const_dsv		( ) { return m_const_dsv; }
+	
+	inline texture2d const&				get_texture			( ) const { return m_texture; }
+	inline shader_resource_view const&	get_depth_srv		( ) const { return m_depth_srv; }
+	inline shader_resource_view const&	get_stencil_srv		( ) const { return m_stencil_srv; }
+	inline depth_stencil_view const&	get_dsv				( ) const { return m_dsv; }
+	inline depth_stencil_view const&	get_const_dsv		( ) const { return m_const_dsv; }
+
+protected:
+	texture2d				m_texture;
+	shader_resource_view	m_depth_srv;
+	shader_resource_view	m_stencil_srv;
+	depth_stencil_view		m_dsv;
+	depth_stencil_view		m_const_dsv;
+};
+
 } // namespace render
 
 #endif // #ifndef __render_render_targets_h_included_
