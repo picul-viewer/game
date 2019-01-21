@@ -1,4 +1,5 @@
 #include "render_targets.h"
+#include <macros.h>
 
 namespace render {
 
@@ -18,14 +19,11 @@ void render_target_tex2d::create_views( DXGI_FORMAT in_format, math::u16x2 in_si
 		m_rtv.create( m_texture.get( ), cook );
 	}
 	
-	if ( in_bind_flags & D3D11_BIND_DEPTH_STENCIL )
+	if ( in_bind_flags & D3D11_BIND_UNORDERED_ACCESS )
 	{
-		depth_stencil_view::cook cook;
-		cook.set_tex2d_dsv( in_format, 0, 0 );
-		m_dsv.create( m_texture.get( ), cook );
-		depth_stencil_view::cook const_cook;
-		const_cook.set_tex2d_dsv( in_format, 0, D3D11_DSV_READ_ONLY_DEPTH & D3D11_DSV_READ_ONLY_STENCIL );
-		m_const_dsv.create( m_texture.get( ), const_cook );
+		unordered_access_view::cook cook;
+		cook.set_tex2d_uav( in_format, 0 );
+		m_uav.create( m_texture.get( ), cook );
 	}
 }
 
@@ -52,8 +50,7 @@ void render_target_tex2d::destroy( )
 	m_texture.release( );
 	m_srv.destroy( );
 	m_rtv.destroy( );
-	m_dsv.destroy( );
-	m_const_dsv.destroy( );
+	m_uav.destroy( );
 }
 
 void render_target_tex2d::bind_srv_vs( u32 in_slot ) const
