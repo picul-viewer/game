@@ -46,7 +46,7 @@ void stage_forward_default::execute( )
 	RENDER_DEBUG_EVENT						( stage_forward_default );
 
 	render_target_view& backbuffer			= g_resources.get_backbuffer( );
-	render_target_tex2d& depth_buffer		= g_resources.get_depth_buffer( );
+	depth_stencil_view& depth_buffer		= g_resources.get_depth_buffer( ).get_dsv( );
 
 	D3D11_VIEWPORT viewport;
 	viewport.TopLeftX						= 0.0f;
@@ -57,7 +57,7 @@ void stage_forward_default::execute( )
 	viewport.MaxDepth						= 1.0f;
 	g_api.get_context( )->RSSetViewports	( 1, &viewport );
 
-	backbuffer.bind							( depth_buffer.get_dsv( ) );
+	backbuffer.bind							( depth_buffer );
 
 	m_forward_default_effect.apply( );
 
@@ -82,6 +82,8 @@ void stage_forward_default::execute( )
 
 		object->render( );
 	}
+
+	render_target_view( ).bind( );
 }
 
 } // namespace render

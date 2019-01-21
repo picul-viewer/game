@@ -83,7 +83,7 @@ public:
 	void destroy( );
 	
 	inline render_target_view& get_backbuffer( ) { return m_backbuffer; }
-	inline render_target_tex2d& get_depth_buffer( ) { return m_depth_buffer; }
+	inline render_target_depth& get_depth_buffer( ) { return m_depth_buffer; }
 
 	inline pipeline_state_pool& get_pipeline_state_pool( ) { return m_pipeline_state_pool; }
 
@@ -136,7 +136,7 @@ protected:
 
 protected:
 	render_target_view			m_backbuffer;
-	render_target_tex2d			m_depth_buffer;
+	render_target_depth			m_depth_buffer;
 	
 	pipeline_state_pool			m_pipeline_state_pool;
 
