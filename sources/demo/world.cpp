@@ -224,7 +224,13 @@ void world::window_input( )
 
 		if ( ( k == key::escape ) && pressed )
 		{
-			engine::g_world.exit( );
+			if ( m_console_visible )
+			{
+				m_console_visible = false;
+				m_camera.enable( true );
+			}
+			else
+				engine::g_world.exit( );
 		}
 
 		if ( ( k == key::f9 ) && pressed )
