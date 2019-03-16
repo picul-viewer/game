@@ -9,9 +9,10 @@
 
 #include <system/timer.h>
 #include <system/window_input_state.h>
-#include <demo/fly_camera.h>
 
 #include <ui/console.h>
+
+#include <utils/fly_camera.h>
 
 namespace game {
 
@@ -32,10 +33,9 @@ private:
 	static void on_console_command( pcstr const str );
 
 private:
-	math::u32x2 m_dimensions;
 	engine::scene* m_scene;
 	engine::object m_cubes;
-	fly_camera m_camera;
+	utils::fly_camera m_camera;
 	ui::console m_console;
 	sys::float_ticker m_ticker;
 	bool m_console_visible;

@@ -86,9 +86,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="fly_camera.h" />
     <ClInclude Include="resources_path.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="fly_camera.cpp" />
     <ClCompile Include="resources_path.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -170,13 +170,11 @@ void world::on_console_command( pcstr const str )
 
 void world::update( )
 {
-	if ( !m_console_visible )
-	{
-		float const elapsed_time = m_ticker.tick( );
+	float const elapsed_time = m_ticker.tick( );
+	m_camera.update( elapsed_time );
 
-		m_camera.update( elapsed_time );
+	if ( !m_console_visible )
 		render::g_world.get_parameters( ).camera.view = m_camera.get_view_matrix( );
-	}
 	else
 	{
 		render::ui_batch& batch = render::g_world.get_ui_batch( );
@@ -205,6 +203,7 @@ void world::window_char( u32 const key )
 	if ( key == 0x60 ) // tilde
 	{
 		m_console_visible = !m_console_visible;
+		m_camera.enable( !m_console_visible );
 		return;
 	}
 

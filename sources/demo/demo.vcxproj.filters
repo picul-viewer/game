@@ -8,9 +8,6 @@
     <ClCompile Include="world_interface.cpp">
       <Filter>common\world</Filter>
     </ClCompile>
-    <ClCompile Include="fly_camera.cpp">
-      <Filter>utils\fly_camera</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">
@@ -19,19 +16,10 @@
     <Filter Include="common\world">
       <UniqueIdentifier>{01c953e5-0994-411d-a330-3f12ccff5440}</UniqueIdentifier>
     </Filter>
-    <Filter Include="utils">
-      <UniqueIdentifier>{1a0ae2d7-4498-411f-a39e-a0ab9722c90f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="utils\fly_camera">
-      <UniqueIdentifier>{7dd24c61-f72d-46ca-9809-7fc91990c080}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="world.h">
       <Filter>common\world</Filter>
-    </ClInclude>
-    <ClInclude Include="fly_camera.h">
-      <Filter>utils\fly_camera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -3,21 +3,36 @@
 #include <math/math_3d.h>
 #include <system/window_input_state.h>
 
-namespace game {
+namespace utils {
 
-void fly_camera::create( math::float3 position, math::float2 rotation, math::float3 speed_values, float mouse_sensitivity )
+void fly_camera::create( math::float3 const& position, math::float2 const& rotation, math::float3 const& speed_values, float const mouse_sensitivity )
 {
 	m_position = position;
 	m_rotation = rotation;
 	m_speed_values = speed_values;
+	m_last_mouse_position = sys::g_input_state.get_mouse( ).mouse_position;
 	m_mouse_sensitivity = mouse_sensitivity;
+	m_enabled = true;
+}
+
+void fly_camera::enable( bool const enabled )
+{
+	m_enabled = enabled;
 }
 
 void fly_camera::update( float delta_time )
 {
 	using namespace sys;
 
-	m_rotation = - (math::float2)g_input_state.get_mouse( ).mouse_position * m_mouse_sensitivity;
+	if ( !m_enabled )
+	{
+		m_last_mouse_position = g_input_state.get_mouse( ).mouse_position;
+		return;
+	}
+
+	math::s32x2 const& current_position = g_input_state.get_mouse( ).mouse_position;
+	m_rotation -= math::float2( current_position - m_last_mouse_position ) * m_mouse_sensitivity;
+	m_last_mouse_position = current_position;
 
 	float const speed_value = g_input_state.get_keyboard( ).is_key_pressed( sys::key::shift ) ? m_speed_values.z :
 							( g_input_state.get_keyboard( ).is_key_pressed( sys::key::control ) ? m_speed_values.x : m_speed_values.y );
