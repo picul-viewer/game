@@ -7,3 +7,5 @@ build
 *.VC.db
 *.VC.opendb
 render/shader_compiler/obj
+
+vtune
