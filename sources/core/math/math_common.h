@@ -188,12 +188,14 @@ inline T lerp( T l, T r, F t )
 	return l + t * ( r - l );
 }
 
-inline uptr align_down( uptr const value, uptr const alignment )
+template<typename T, typename U>
+inline T align_down( T const value, U const alignment )
 {
 	return value - value % alignment;
 }
 
-inline uptr align_up( uptr const value, uptr const alignment )
+template<typename T, typename U>
+inline T align_up( T const value, U const alignment )
 {
 	return align_down( value + alignment - 1, alignment );
 }

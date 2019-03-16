@@ -4,12 +4,6 @@
 namespace math {
 
 template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
-octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::octree( )
-{
-	ASSERT( aligned( this, 16 ) );
-}
-
-template<typename T, typename NodeObjectContainer, typename NodeAllocator, pointer (T::*NodePtr)>
 typename octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::node* octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::new_node( )
 {
 	node* n = m_nodes->allocate( sizeof(node) );
