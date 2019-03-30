@@ -9,14 +9,16 @@ template<typename T>
 class dynamic_array
 {
 public:
+	typedef T value_type;
+
 	void create( pointer const in_reserved_memory, uptr const capacity, uptr const size = 0 );
 	void destroy( );
 
 	void push_back( T const& value );
 	T& emplace_back( );
 
-	void resize( uptr size );
-	void reserve( uptr size );
+	void resize( uptr const size );
+	void reserve( uptr const size );
 	void clear( );
 
 	T* data( );
@@ -33,10 +35,7 @@ public:
 	T& operator[]( uptr const index );
 	T const& operator[]( uptr const index ) const;
 
-	template<typename Pred>
-	void for_each( Pred const& functor ) const;
-
-protected:
+private:
 	T*	m_begin;
 	T*	m_end;
 	T*	m_max_end;

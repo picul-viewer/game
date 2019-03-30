@@ -27,9 +27,6 @@ public:
 	T const& at( uptr const index ) const;
 	T& operator[]( uptr const index );
 	T const& operator[]( uptr const index ) const;
-	
-	template<typename Pred>
-	void for_each( Pred const& functor ) const;
 
 private:
 	memory_block<sizeof(T)> m_data[Size];

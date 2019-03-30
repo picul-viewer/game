@@ -6,7 +6,7 @@
 #include "allocator.h"
 
 template<typename T>
-void lib::dynamic_array<T>::create( pointer const in_reserved_memory, uptr capacity, uptr size )
+void lib::dynamic_array<T>::create( pointer const in_reserved_memory, uptr const capacity, uptr const size )
 {
 	static_assert					( sizeof(T) <= Memory_Page_Size, "too big object size" );
 
@@ -53,7 +53,7 @@ T& lib::dynamic_array<T>::emplace_back( )
 }
 
 template<typename T>
-void lib::dynamic_array<T>::resize( uptr size )
+void lib::dynamic_array<T>::resize( uptr const size )
 {
 	T* new_end						= m_begin + size;
 	ASSERT_CMP						( new_end, <=, m_max_end );
@@ -70,7 +70,7 @@ void lib::dynamic_array<T>::resize( uptr size )
 }
 
 template<typename T>
-void lib::dynamic_array<T>::reserve( uptr size )
+void lib::dynamic_array<T>::reserve( uptr const size )
 {
 	T* new_end							= m_begin + size;
 	ASSERT_CMP							( new_end, <=, m_max_end );
@@ -140,37 +140,29 @@ T const* lib::dynamic_array<T>::end( ) const
 }
 
 template<typename T>
-T& lib::dynamic_array<T>::at( uptr index )
+T& lib::dynamic_array<T>::at( uptr const index )
 {
 	ASSERT_CMP( m_begin + index, <, m_end );
 	return m_begin[index];
 }
 
 template<typename T>
-T const& lib::dynamic_array<T>::at( uptr index ) const
+T const& lib::dynamic_array<T>::at( uptr const index ) const
 {
 	ASSERT_CMP( m_begin + index, <, m_end );
 	return m_begin[index];
 }
 
 template<typename T>
-T& lib::dynamic_array<T>::operator[]( uptr index )
+T& lib::dynamic_array<T>::operator[]( uptr const index )
 {
 	return at( index );
 }
 
 template<typename T>
-T const& lib::dynamic_array<T>::operator[]( uptr index ) const
+T const& lib::dynamic_array<T>::operator[]( uptr const index ) const
 {
 	return at( index );
-}
-
-template<typename T>
-template<typename Pred>
-void lib::dynamic_array<T>::for_each( Pred const& functor ) const
-{
-	for ( T* i = m_begin; i != m_end; ++i )
-		functor( i );
 }
 
 #endif // #ifndef __core_dynamic_array_inline_h_included_

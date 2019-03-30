@@ -71,12 +71,4 @@ T const& lib::fixed_array<T, Size>::operator[]( uptr const index ) const
 	return at( index );
 }
 
-template<typename T, uptr Size>
-template<typename Pred>
-void lib::fixed_array<T, Size>::for_each( Pred const& functor ) const
-{
-	for ( T* i = m_data; i != m_data + Size; ++i )
-		functor( i );
-}
-
 #endif // #ifndef __core_fixed_array_inline_h_included_
