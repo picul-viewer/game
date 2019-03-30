@@ -2,6 +2,7 @@
 #define __core_temporal_allocator_inline_h_included_
 
 #include <macros.h>
+#include <lib/allocator.h>
 
 template<u32 PageMaxCount>
 void temporal_allocator<PageMaxCount>::create( )

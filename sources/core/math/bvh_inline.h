@@ -7,13 +7,7 @@
 namespace math {
 
 template<typename T>
-static_bvh<T>::static_bvh( )
-{
-	ASSERT( aligned( this, 16 ) );
-}
-
-template<typename T>
-static inline float get_linear_sah( T* objects, uptr count, aabb_aligned* aabbs, uptr& best_division )
+static inline float get_linear_sah( T* const objects, uptr const count, aabb_aligned* const aabbs, uptr& best_division )
 {
 	aabb_aligned current_box;
 	float sah = FLT_MAX;
@@ -50,7 +44,7 @@ static inline float get_linear_sah( T* objects, uptr count, aabb_aligned* aabbs,
 
 template<typename T>
 template<typename NodeAllocator>
-typename static_bvh<T>::node* static_bvh<T>::build( NodeAllocator& node_allocator, T** first, uptr count, aabb_aligned* aabbs, u32 sorting )
+typename static_bvh<T>::node* static_bvh<T>::build( NodeAllocator& node_allocator, T** const first, uptr const count, aabb_aligned* const aabbs, u32 const sorting )
 {
 	node* n = node_allocator.allocate( sizeof(node) );
 
@@ -148,12 +142,12 @@ typename static_bvh<T>::node* static_bvh<T>::build( NodeAllocator& node_allocato
 
 template<typename T>
 template<typename NodeAllocator>
-void static_bvh<T>::create( NodeAllocator& node_allocator, buffer_array<T*>& objects )
+void static_bvh<T>::create( NodeAllocator& node_allocator, T** const objects, uptr const objects_size )
 {
-	if ( objects.size( ) == 0 )
+	if ( objects_size == 0 )
 		return;
 
-	if ( objects.size( ) == 1 )
+	if ( objects_size == 1 )
 	{
 		m_root = node_allocator.allocate( sizeof(node) );
 		m_root->box = objects[0]->get_aabb( );
@@ -162,7 +156,7 @@ void static_bvh<T>::create( NodeAllocator& node_allocator, buffer_array<T*>& obj
 		return;
 	}
 	
-	if ( objects.size( ) == 2 )
+	if ( objects_size == 2 )
 	{
 		m_root = node_allocator.allocate( sizeof(node) );
 		node* l = node_allocator.allocate( sizeof(node) );
@@ -183,15 +177,15 @@ void static_bvh<T>::create( NodeAllocator& node_allocator, buffer_array<T*>& obj
 		return;
 	}
 	
-	aabb_aligned* aabbs = aligned_std_allocator<16>( ).allocate( objects.size( ) * sizeof(aabb_aligned) );
+	aabb_aligned* aabbs = aligned_std_allocator<16>( ).allocate( objects_size * sizeof(aabb_aligned) );
 
 	// Pre-sort by max.x -> sorting == 0
-	std::sort( objects.begin( ), objects.end( ), []( T* l, T* r )
+	std::sort( objects, objects + objects_size, []( T* l, T* r )
 	{
 		return l->get_aabb( ).get_box( ).get_max( ).x < r->get_aabb( ).get_box( ).get_max( ).x;
 	} );
 
-	m_root = build( node_allocator, objects.begin( ), objects.size( ), aabbs, 0 );
+	m_root = build( node_allocator, objects, objects_size, aabbs, 0 );
 
 	aligned_std_allocator<16>( ).deallocate( aabbs );
 }
@@ -204,7 +198,7 @@ void static_bvh<T>::destroy( )
 }
 
 template<typename T>
-void static_bvh<T>::destroy_impl( node* n )
+void static_bvh<T>::destroy_impl( node* const n )
 {
 	if ( n->left && n->right )
 	{
@@ -223,7 +217,7 @@ void static_bvh<T>::for_each( Callback const& callback ) const
 
 template<typename T>
 template<typename Callback>
-void static_bvh<T>::for_each_impl( node* n, Callback const& callback ) const
+void static_bvh<T>::for_each_impl( node* const n, Callback const& callback ) const
 {
 	if ( n->right )
 	{
@@ -244,7 +238,7 @@ void static_bvh<T>::query_visibility( FrustumType const& frustum, Callback const
 
 template<typename T>
 template<typename Callback>
-void static_bvh<T>::query_visibility_impl_inside( node* n, Callback const& callback ) const
+void static_bvh<T>::query_visibility_impl_inside( node* const n, Callback const& callback ) const
 {
 	if ( n->right )
 	{
@@ -257,7 +251,7 @@ void static_bvh<T>::query_visibility_impl_inside( node* n, Callback const& callb
 
 template<typename T>
 template<typename FrustumType, typename Callback>
-void static_bvh<T>::query_visibility_impl( node* n, FrustumType const& frustum, Callback const& callback ) const
+void static_bvh<T>::query_visibility_impl( node* const n, FrustumType const& frustum, Callback const& callback ) const
 {
 	if ( n->right )
 	{

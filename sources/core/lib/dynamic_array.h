@@ -1,15 +1,16 @@
-#ifndef __core_buffer_array_h_included_
-#define __core_buffer_array_h_included_
+#ifndef __core_dynamic_array_h_included_
+#define __core_dynamic_array_h_included_
 
 #include <types.h>
 
 namespace lib {
 
 template<typename T>
-class buffer_array
+class dynamic_array
 {
 public:
-	void create( pointer buffer, uptr capacity, uptr size = 0 );
+	void create( pointer const in_reserved_memory, uptr const capacity, uptr const size = 0 );
+	void destroy( );
 
 	void push_back( T const& value );
 	T& emplace_back( );
@@ -27,11 +28,11 @@ public:
 	T* end( );
 	T const* end( ) const;
 
-	T& at( uptr index );
-	T const& at( uptr index ) const;
-	T& operator[]( uptr index );
-	T const& operator[]( uptr index ) const;
-	
+	T& at( uptr const index );
+	T const& at( uptr const index ) const;
+	T& operator[]( uptr const index );
+	T const& operator[]( uptr const index ) const;
+
 	template<typename Pred>
 	void for_each( Pred const& functor ) const;
 
@@ -43,6 +44,6 @@ protected:
 
 } // namespace lib
 
-#include "buffer_array_inline.h"
+#include "dynamic_array_inline.h"
 
-#endif // #ifndef __core_buffer_array_h_included_
+#endif // #ifndef __core_dynamic_array_h_included_

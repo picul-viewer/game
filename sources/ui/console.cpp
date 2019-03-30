@@ -21,7 +21,7 @@ void console::create( pcstr const in_font_path, u8 const in_visible_lines )
 	m_text_edit.create( m_text_edit_memory, text_edit_memory_size );
 
 	m_text.create( );
-	m_next_line_indices.create( 64 * Kb );
+	m_next_line_indices.create( nullptr, 64 * Kb );
 	m_next_line_indices.push_back( (u32)-1 );
 
 	m_callback = nullptr;

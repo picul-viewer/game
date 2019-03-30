@@ -36,7 +36,7 @@ public:
 private:
 	enum { max_char_count = 256 - 32 };
 
-	fixed_array<u8, max_char_count> m_chars_width;
+	lib::fixed_array<u8, max_char_count> m_chars_width;
 	math::u16x2 m_texture_dimensions;
 	render::texture_id m_texture;
 	u8 m_chars_in_row;

@@ -11,7 +11,7 @@ void scene::create( )
 
 	m_static_objects_memory = virtual_allocator( ).allocate( static_objects_memory_size );
 
-	m_static_render_objects_mesh_array.set	( m_static_objects_memory + (uptr)static_render_objects_mesh_memory_ptr, static_render_objects_mesh_count );
+	m_static_render_objects_mesh_array.create( m_static_objects_memory + (uptr)static_render_objects_mesh_memory_ptr, static_render_objects_mesh_count );
 	//m_static_render_objects_light_array.set	( m_static_objects_memory + static_render_objects_light_memory_ptr, static_render_objects_light_count );
 }
 
@@ -51,7 +51,7 @@ void scene::insert_static_object( object* in_object )
 void scene::build_static_scene( )
 {
 	m_static_render_objects_mesh_container.destroy( );
-	m_static_render_objects_mesh_container.create( m_bvh_node_allocator, m_static_render_objects_mesh_array );
+	m_static_render_objects_mesh_container.create( m_bvh_node_allocator, m_static_render_objects_mesh_array.data( ), m_static_render_objects_mesh_array.size( ) );
 }
 
 } // namespace render

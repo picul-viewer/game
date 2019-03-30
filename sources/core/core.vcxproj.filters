@@ -91,9 +91,6 @@
     <Filter Include="lib\array\buffer_array">
       <UniqueIdentifier>{530c7a45-8665-490d-8de0-b43a8ccee1fe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\array\extensible_array">
-      <UniqueIdentifier>{a63c3c2d-817e-4009-8be2-447dfeee8cd3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lib\array\fixed_array">
       <UniqueIdentifier>{3ada7f77-c0cf-4c88-a1cd-dfeac19bffa6}</UniqueIdentifier>
     </Filter>
@@ -142,6 +139,9 @@
     <Filter Include="system\threads\structs\mpmc_queue">
       <UniqueIdentifier>{ac5cc153-8e79-4a4f-8d24-2c3e6fc27216}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\array\dynamic_array">
+      <UniqueIdentifier>{a63c3c2d-817e-4009-8be2-447dfeee8cd3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -169,12 +169,6 @@
     </ClInclude>
     <ClInclude Include="system\window.h">
       <Filter>system\window</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\embedded_list.h">
-      <Filter>lib\list</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\embedded_list_inline.h">
-      <Filter>lib\list</Filter>
     </ClInclude>
     <ClInclude Include="lib\hash.h">
       <Filter>lib\map</Filter>
@@ -317,12 +311,6 @@
     <ClInclude Include="lib\buffer_array_inline.h">
       <Filter>lib\array\buffer_array</Filter>
     </ClInclude>
-    <ClInclude Include="lib\extensible_array.h">
-      <Filter>lib\array\extensible_array</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\extensible_array_inline.h">
-      <Filter>lib\array\extensible_array</Filter>
-    </ClInclude>
     <ClInclude Include="lib\fixed_array.h">
       <Filter>lib\array\fixed_array</Filter>
     </ClInclude>
@@ -376,6 +364,18 @@
     </ClInclude>
     <ClInclude Include="system\mpmc_queue_inline.h">
       <Filter>system\threads\structs\mpmc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dynamic_array.h">
+      <Filter>lib\array\dynamic_array</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dynamic_array_inline.h">
+      <Filter>lib\array\dynamic_array</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\embedded_list.h">
+      <Filter>lib\list</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\embedded_list_inline.h">
+      <Filter>lib\list</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

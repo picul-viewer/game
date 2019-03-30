@@ -8,7 +8,7 @@
 #include <math/vector.h>
 
 #include <lib/allocator.h>
-#include <lib/extensible_array.h>
+#include <lib/dynamic_array.h>
 
 #include <lib/weak_string.h>
 #include <lib/fixed_string.h>
@@ -129,7 +129,7 @@ bool operator==( bumpmapped_vertex const& l, bumpmapped_vertex const& r )
 }
 
 template<typename VertexType>
-static inline bool process_mesh( FbxMesh* const mesh, extensible_array<VertexType>& vertices, u32*& indices, u32& index_count )
+static inline bool process_mesh( FbxMesh* const mesh, lib::dynamic_array<VertexType>& vertices, u32*& indices, u32& index_count )
 {
 	typedef hash_map32<VertexType, u32, 16 * Memory_Page_Size, 256> vertices_map_type;
 
@@ -195,8 +195,8 @@ static inline bool process_mesh( FbxMesh* const mesh, extensible_array<VertexTyp
 template<typename VertexType>
 static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u32 const configure_mask )
 {
-	extensible_array<VertexType> vertices;
-	vertices.create( 32 * 1024 * 1024 );
+	lib::dynamic_array<VertexType> vertices;
+	vertices.create( nullptr, 32 * Mb );
 	
 	u32* indices;
 	u32 index_count;

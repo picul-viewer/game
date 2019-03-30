@@ -61,7 +61,7 @@ protected:
 		render_objects_memory_size = render_meshes_memory_offset + sizeof(render_object_mesh*) * max_render_meshes
 	};
 	
-	typedef buffer_array<render_object_mesh const*> render_meshes_type;
+	typedef lib::buffer_array<render_object_mesh const*> render_meshes_type;
 	
 protected:
 	camera					m_render_camera;

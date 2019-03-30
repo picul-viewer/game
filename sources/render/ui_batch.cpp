@@ -7,9 +7,9 @@ namespace render {
 
 void ui_batch::create( )
 {
-	m_temporal_memory.create( max_vertices );
-	m_buffer.create( max_vertices );
-	m_batch_data.create( max_batches );
+	m_temporal_memory.create( nullptr, max_vertices );
+	m_buffer.create( nullptr, max_vertices );
+	m_batch_data.create( nullptr, max_batches );
 }
 
 void ui_batch::destroy( )

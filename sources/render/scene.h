@@ -50,7 +50,7 @@ protected:
 		static_objects_memory_size				= static_render_objects_mesh_memory_size + static_render_objects_mesh_memory_size
 	};
 	
-	typedef buffer_array<
+	typedef lib::buffer_array<
 		render_object_mesh*> static_render_objects_mesh_array;
 	//typedef buffer_array<
 	//	render_object_light> static_render_objects_light_array;

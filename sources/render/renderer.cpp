@@ -30,7 +30,7 @@ void renderer::create( )
 	
 	m_render_objects_memory = virtual_allocator( ).allocate( render_objects_memory_size );
 
-	m_render_meshes.set(
+	m_render_meshes.create(
 		(render_object_mesh const**)( m_render_objects_memory + render_meshes_memory_offset ),
 		max_render_meshes
 	);

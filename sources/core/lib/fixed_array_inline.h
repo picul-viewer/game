@@ -4,76 +4,76 @@
 #include <macros.h>
 
 template<typename T, uptr Size>
-uptr fixed_array<T, Size>::size( ) const
+T* lib::fixed_array<T, Size>::data( )
+{
+	return begin( );
+}
+
+template<typename T, uptr Size>
+T const* lib::fixed_array<T, Size>::data( ) const
+{
+	return begin( );
+}
+
+template<typename T, uptr Size>
+uptr lib::fixed_array<T, Size>::size( ) const
 {
 	return Size;
 }
 
 template<typename T, uptr Size>
-T* fixed_array<T, Size>::data( )
-{
-	return begin( );
-}
-
-template<typename T, uptr Size>
-T const* fixed_array<T, Size>::data( ) const
-{
-	return begin( );
-}
-
-template<typename T, uptr Size>
-T* fixed_array<T, Size>::begin( )
+T* lib::fixed_array<T, Size>::begin( )
 {
 	return &(T&)m_data[0];
 }
 
 template<typename T, uptr Size>
-T const* fixed_array<T, Size>::begin( ) const
+T const* lib::fixed_array<T, Size>::begin( ) const
 {
 	return &(T&)m_data[0];
 }
 
 template<typename T, uptr Size>
-T* fixed_array<T, Size>::end( )
+T* lib::fixed_array<T, Size>::end( )
 {
 	return begin( ) + Size;
 }
 
 template<typename T, uptr Size>
-T const* fixed_array<T, Size>::end( ) const
+T const* lib::fixed_array<T, Size>::end( ) const
 {
 	return begin( ) + Size;
 }
 	
 template<typename T, uptr Size>
-T& fixed_array<T, Size>::at( uptr const index )
+T& lib::fixed_array<T, Size>::at( uptr const index )
 {
 	ASSERT_CMP( index, <, Size );
 	return m_data[index];
 }
 
 template<typename T, uptr Size>
-T const& fixed_array<T, Size>::at( uptr const index ) const
+T const& lib::fixed_array<T, Size>::at( uptr const index ) const
 {
 	ASSERT_CMP( index, <, Size );
 	return m_data[index];
 }
 
 template<typename T, uptr Size>
-T& fixed_array<T, Size>::operator[]( uptr const index )
+T& lib::fixed_array<T, Size>::operator[]( uptr const index )
 {
 	return at( index );
 }
 
 template<typename T, uptr Size>
-T const& fixed_array<T, Size>::operator[]( uptr const index ) const
+T const& lib::fixed_array<T, Size>::operator[]( uptr const index ) const
 {
 	return at( index );
 }
 
 template<typename T, uptr Size>
 template<typename Pred>
-void fixed_array<T, Size>::for_each( Pred const& functor ) const
+void lib::fixed_array<T, Size>::for_each( Pred const& functor ) const
 {
 	for ( T* i = m_data; i != m_data + Size; ++i )
 		functor( i );

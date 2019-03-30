@@ -2,7 +2,7 @@
 #define __ui_console_h_included_
 
 #include <types.h>
-#include <lib/extensible_array.h>
+#include <lib/dynamic_array.h>
 #include <lib/linear_allocator.h>
 #include <math/vector.h>
 
@@ -67,7 +67,7 @@ private:
 	char m_text_edit_memory[text_edit_memory_size];
 
 	dynamic_linear_allocator<Memory_Page_Size, 1024> m_text;
-	extensible_array<u32> m_next_line_indices;
+	lib::dynamic_array<u32> m_next_line_indices;
 
 	font m_font;
 

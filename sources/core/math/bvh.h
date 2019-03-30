@@ -12,10 +12,8 @@ template<typename T>
 class static_bvh
 {
 public:
-	static_bvh( );
-
 	template<typename NodeAllocator>
-	void create( NodeAllocator& node_allocator, buffer_array<T*>& objects );
+	void create( NodeAllocator& node_allocator, T** const objects, uptr const objects_size );
 	void destroy( );
 	
 	template<typename Callback>
@@ -36,14 +34,14 @@ protected:
 	};
 	
 	template<typename NodeAllocator>
-	node* build( NodeAllocator& node_allocator, T** first, uptr count, aabb_aligned* aabbs, u32 sorting );
+	node* build( NodeAllocator& node_allocator, T** const first, uptr const count, aabb_aligned* const aabbs, u32 const sorting );
 	
 	template<typename Callback>
-	void for_each_impl( node* n, Callback const& callback ) const;
+	void for_each_impl( node* const n, Callback const& callback ) const;
 	template<typename Callback>
-	void query_visibility_impl_inside( node* n, Callback const& callback ) const;
+	void query_visibility_impl_inside( node* const n, Callback const& callback ) const;
 	template<typename FrustumType, typename Callback>
-	void query_visibility_impl( node* n, FrustumType const& frustum, Callback const& callback ) const;
+	void query_visibility_impl( node* const n, FrustumType const& frustum, Callback const& callback ) const;
 
 	void destroy_impl( node* n );
 

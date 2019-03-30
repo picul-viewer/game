@@ -4,7 +4,7 @@
 #include <types.h>
 #include <math/vector.h>
 
-#include <lib/extensible_array.h>
+#include <lib/dynamic_array.h>
 
 #include "resource_ids.h"
 
@@ -57,14 +57,14 @@ public:
 	
 	inline pcvoid get_buffer( ) const { return m_buffer.data( ); }
 	inline u32 get_buffer_size( ) const { return sizeof(gpu_vertex_data) * (u32)m_buffer.size( ); }
-	inline extensible_array<batch_data> const& get_batch_data( ) const { return m_batch_data; }
+	inline lib::dynamic_array<batch_data> const& get_batch_data( ) const { return m_batch_data; }
 
 	void clear( );
 
 private:
-	extensible_array<ui_quad_data> m_temporal_memory;
-	extensible_array<gpu_vertex_data> m_buffer;
-	extensible_array<batch_data> m_batch_data;
+	lib::dynamic_array<ui_quad_data> m_temporal_memory;
+	lib::dynamic_array<gpu_vertex_data> m_buffer;
+	lib::dynamic_array<batch_data> m_batch_data;
 
 };
 

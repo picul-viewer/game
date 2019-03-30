@@ -105,8 +105,8 @@
     <ClInclude Include="lib\dynamic_writer.h" />
     <ClInclude Include="lib\embedded_list.h" />
     <ClInclude Include="lib\embedded_list_inline.h" />
-    <ClInclude Include="lib\extensible_array.h" />
-    <ClInclude Include="lib\extensible_array_inline.h" />
+    <ClInclude Include="lib\dynamic_array.h" />
+    <ClInclude Include="lib\dynamic_array_inline.h" />
     <ClInclude Include="lib\fixed_array.h" />
     <ClInclude Include="lib\fixed_array_inline.h" />
     <ClInclude Include="lib\fixed_string.h" />
