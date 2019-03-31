@@ -5,6 +5,8 @@
 #include "pool.h"
 #include "hash.h"
 
+namespace lib {
+
 template<
 	typename K,
 	typename V,
@@ -239,6 +241,8 @@ using object_hash_map32 = hash_map_template<K, V,
 	>,
 	dynamic_pool<sizeof(hash_map_kv_store_32<K, V>), PoolPageSize, PoolPageMaxCount>
 >;
+
+} // namespace lib
 
 #include "hash_map_inline.h"
 

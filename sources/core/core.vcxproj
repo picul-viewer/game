@@ -132,8 +132,6 @@
     <ClInclude Include="lib\reversable_double_linked_list_inline.h" />
     <ClInclude Include="lib\separate_arena_temporal_allocator.h" />
     <ClInclude Include="lib\separate_arena_temporal_allocator_inline.h" />
-    <ClInclude Include="lib\std_map.h" />
-    <ClInclude Include="lib\std_map_inline.h" />
     <ClInclude Include="lib\strings.h" />
     <ClInclude Include="lib\temporal_allocator.h" />
     <ClInclude Include="lib\temporal_allocator_inline.h" />

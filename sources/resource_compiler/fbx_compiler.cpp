@@ -131,7 +131,7 @@ bool operator==( bumpmapped_vertex const& l, bumpmapped_vertex const& r )
 template<typename VertexType>
 static inline bool process_mesh( FbxMesh* const mesh, lib::dynamic_array<VertexType>& vertices, u32*& indices, u32& index_count )
 {
-	typedef hash_map32<VertexType, u32, 16 * Memory_Page_Size, 256> vertices_map_type;
+	typedef lib::hash_map32<VertexType, u32, 16 * Memory_Page_Size, 256> vertices_map_type;
 
 	vertices_map_type::kv_store_pool_type vertices_map_pool;
 	vertices_map_pool.create( );

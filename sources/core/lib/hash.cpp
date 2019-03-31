@@ -2,7 +2,7 @@
 
 #include <nmmintrin.h>
 
-u16 const hash16::table[256] = {
+u16 const lib::hash16::table[256] = {
 	0, 49345, 49537, 320, 4992, 960, 640, 49729, 50689, 1728, 1920, 51009, 1280, 50625, 50305, 1088,
 	52225, 3264, 3456, 52545, 3840, 53185, 52865, 3648, 2560, 51905, 52097, 2880, 51457, 2496, 2176, 51265,
 	55297, 6336, 6528, 55617, 6912, 56257, 55937, 6720, 7680, 57025, 57217, 8000, 56577, 7616, 7296, 56385,
@@ -20,7 +20,7 @@ u16 const hash16::table[256] = {
 	19584, 35905, 17408, 33985, 34177, 17728, 34561, 18368, 18048, 34369, 33281, 17088, 17280, 33601, 16640, 33217, 32897, 16448
 };
 
-u16 hash16::operator( )( pcvoid data, uptr size, u16 initial_value )
+u16 lib::hash16::operator( )( pcvoid data, uptr size, u16 initial_value )
 {
 	u16 result = initial_value;
 
@@ -32,7 +32,7 @@ u16 hash16::operator( )( pcvoid data, uptr size, u16 initial_value )
 	return result;
 }
 
-u32 hash32::operator( )( pcvoid data, uptr size, u32 initial_value )
+u32 lib::hash32::operator( )( pcvoid data, uptr size, u32 initial_value )
 {
 	u32 result = initial_value;
 

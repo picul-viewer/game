@@ -4,7 +4,7 @@ namespace render {
 
 namespace __render_resource_path_registry {
 
-hash32::value_type resource_path_registry_key_hash_pred::operator( )( char const& value )
+lib::hash32::value_type resource_path_registry_key_hash_pred::operator( )( char const& value )
 {
 	return weak_const_string( &value ).hash( );
 }

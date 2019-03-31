@@ -188,12 +188,6 @@
     <ClInclude Include="lib\hash_map_inline.h">
       <Filter>lib\map</Filter>
     </ClInclude>
-    <ClInclude Include="lib\std_map.h">
-      <Filter>lib\map</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\std_map_inline.h">
-      <Filter>lib\map</Filter>
-    </ClInclude>
     <ClInclude Include="lib\memory.h">
       <Filter>lib\memory</Filter>
     </ClInclude>

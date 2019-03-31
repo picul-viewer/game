@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+namespace lib {
+
 struct hash16
 {
 protected:
@@ -21,5 +23,7 @@ public:
 
 	u32 operator( )( pcvoid data, uptr size, u32 initial_value = 0xFFFFFFFF );
 };
+
+} // namespace lib
 
 #endif // #ifndef __core_hash_h_included_

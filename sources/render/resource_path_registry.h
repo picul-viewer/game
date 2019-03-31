@@ -10,9 +10,9 @@ namespace __render_resource_path_registry {
 
 struct resource_path_registry_key_hash_pred
 {
-	typedef hash32::value_type type;
+	typedef lib::hash32::value_type type;
 
-	hash32::value_type operator( )( char const& value );
+	lib::hash32::value_type operator( )( char const& value );
 };
 
 struct resource_path_registry_key_equal_pred
@@ -56,7 +56,7 @@ struct resource_path_registry_key_value_store_index
 
 } // namespace __render_resource_path_registry
 
-typedef hash_map_template<
+typedef lib::hash_map_template<
 	char const&, u32,
 	__render_resource_path_registry::resource_path_registry_key_hash_pred,
 	__render_resource_path_registry::resource_path_registry_key_equal_pred,
