@@ -1,5 +1,5 @@
-#ifndef __demo_fly_camera_h_included_
-#define __demo_fly_camera_h_included_
+#ifndef GUARD_DEMO_FLY_CAMERA_H_INCLUDED
+#define GUARD_DEMO_FLY_CAMERA_H_INCLUDED
 
 #include <types.h>
 #include <math/vector.h>
@@ -30,4 +30,4 @@ protected:
 
 } // namespace game
 
-#endif // #ifndef __demo_fly_camera_h_included_
+#endif // #ifndef GUARD_DEMO_FLY_CAMERA_H_INCLUDED

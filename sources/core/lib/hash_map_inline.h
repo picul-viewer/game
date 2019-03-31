@@ -1,5 +1,5 @@
-#ifndef __core_hash_map_inline_h_included_
-#define __core_hash_map_inline_h_included_
+#ifndef GUARD_CORE_HASH_MAP_INLINE_H_INCLUDED
+#define GUARD_CORE_HASH_MAP_INLINE_H_INCLUDED
 
 #include <macros.h>
 
@@ -272,4 +272,4 @@ inline void lib::hash_map_template<K, V, HashPred, KeyEqualPred, KVStore, KVStor
 	}
 }
 
-#endif // #ifndef __core_hash_map_inline_h_included_
+#endif // #ifndef GUARD_CORE_HASH_MAP_INLINE_H_INCLUDED

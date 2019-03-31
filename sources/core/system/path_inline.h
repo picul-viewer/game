@@ -1,5 +1,5 @@
-#ifndef __core_path_inline_h_included_
-#define __core_path_inline_h_included_
+#ifndef GUARD_CORE_PATH_INLINE_H_INCLUDED
+#define GUARD_CORE_PATH_INLINE_H_INCLUDED
 
 namespace sys {
 
@@ -28,4 +28,4 @@ path& path::operator+=( i_const_string<StringClass> const& str )
 
 } // namespace sys
 
-#endif // #ifndef __core_path_inline_h_included_
+#endif // #ifndef GUARD_CORE_PATH_INLINE_H_INCLUDED

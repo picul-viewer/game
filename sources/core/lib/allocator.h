@@ -1,5 +1,5 @@
-#ifndef __core_allocator_h_included_
-#define __core_allocator_h_included_
+#ifndef GUARD_CORE_ALLOCATOR_H_INCLUDED
+#define GUARD_CORE_ALLOCATOR_H_INCLUDED
 
 #include <types.h>
 
@@ -54,4 +54,4 @@ private:
 
 #include "allocator_inline.h"
 
-#endif // #ifndef __core_allocator_h_included_
+#endif // #ifndef GUARD_CORE_ALLOCATOR_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __core_writer_h_included_
-#define __core_writer_h_included_
+#ifndef GUARD_CORE_WRITER_H_INCLUDED
+#define GUARD_CORE_WRITER_H_INCLUDED
 
 #include <types.h>
 
@@ -40,4 +40,4 @@ void writer::write( T const& value )
 
 } // namespace lib
 
-#endif // #ifndef __core_writer_h_included_
+#endif // #ifndef GUARD_CORE_WRITER_H_INCLUDED

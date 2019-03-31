@@ -1,5 +1,5 @@
-#ifndef __render_shader_container_inline_h_included_
-#define __render_shader_container_inline_h_included_
+#ifndef GUARD_RENDER_SHADER_CONTAINER_INLINE_H_INCLUDED
+#define GUARD_RENDER_SHADER_CONTAINER_INLINE_H_INCLUDED
 
 #include <macros.h>
 #include <lib/allocator.h>
@@ -60,4 +60,4 @@ ShaderType shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::
 
 } // namespace render
 
-#endif // #ifndef __render_shader_container_inline_h_included_
+#endif // #ifndef GUARD_RENDER_SHADER_CONTAINER_INLINE_H_INCLUDED

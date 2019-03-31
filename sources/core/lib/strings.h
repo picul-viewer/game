@@ -1,5 +1,5 @@
-#ifndef __core_strings_h_included_
-#define __core_strings_h_included_
+#ifndef GUARD_CORE_STRINGS_H_INCLUDED
+#define GUARD_CORE_STRINGS_H_INCLUDED
 
 #include <types.h>
 
@@ -26,4 +26,4 @@ void copy_n( pstr destination, pcstr source, uptr size );
 
 }
 
-#endif // #ifndef __core_strings_h_included_
+#endif // #ifndef GUARD_CORE_STRINGS_H_INCLUDED

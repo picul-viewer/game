@@ -1,5 +1,5 @@
-#ifndef __render_render_object_allocator_inline_h_included_
-#define __render_render_object_allocator_inline_h_included_
+#ifndef GUARD_RENDER_RENDER_OBJECT_ALLOCATOR_INLINE_H_INCLUDED
+#define GUARD_RENDER_RENDER_OBJECT_ALLOCATOR_INLINE_H_INCLUDED
 
 namespace render {
 
@@ -34,4 +34,4 @@ void render_object_allocator::execute( render_object* in_object, Callback const&
 
 } // namespace render
 
-#endif // #ifndef __render_render_object_allocator_inline_h_included_
+#endif // #ifndef GUARD_RENDER_RENDER_OBJECT_ALLOCATOR_INLINE_H_INCLUDED

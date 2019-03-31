@@ -1,5 +1,5 @@
-#ifndef __engine_object_h_included_
-#define __engine_object_h_included_
+#ifndef GUARD_ENGINE_OBJECT_H_INCLUDED
+#define GUARD_ENGINE_OBJECT_H_INCLUDED
 
 #include <types.h>
 #include <math/matrix.h>
@@ -36,4 +36,4 @@ public:
 
 } // namespace engine
 
-#endif // #ifndef __engine_object_h_included_
+#endif // #ifndef GUARD_ENGINE_OBJECT_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __core_mpmc_queue_inline_h_inlcuded_
-#define __core_mpmc_queue_inline_h_inlcuded_
+#ifndef GUARD_CORE_MPMC_QUEUE_INLINE_H_INLCUDED
+#define GUARD_CORE_MPMC_QUEUE_INLINE_H_INLCUDED
 
 #include <macros.h>
 
@@ -101,4 +101,4 @@ pointer mpmc_queue<T, RecordSize>::data( ) const
 	return m_data;
 }
 
-#endif // #ifndef __core_mpmc_queue_inline_h_inlcuded_
+#endif // #ifndef GUARD_CORE_MPMC_QUEUE_INLINE_H_INLCUDED

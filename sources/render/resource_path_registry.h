@@ -1,5 +1,5 @@
-#ifndef __render_resource_path_registry_h_inlcuded_
-#define __render_resource_path_registry_h_inlcuded_
+#ifndef GUARD_RENDER_RESOURCE_PATH_REGISTRY_H_INLCUDED
+#define GUARD_RENDER_RESOURCE_PATH_REGISTRY_H_INLCUDED
 
 #include <lib/fixed_string.h>
 #include <lib/hash_map.h>
@@ -66,4 +66,4 @@ typedef lib::hash_map_template<
 
 } // namespace render
 
-#endif // #ifndef __render_resource_path_registry_h_inlcuded_
+#endif // #ifndef GUARD_RENDER_RESOURCE_PATH_REGISTRY_H_INLCUDED

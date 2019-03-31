@@ -1,5 +1,5 @@
-#ifndef __core_basic_string_h_included_
-#define __core_basic_string_h_included_
+#ifndef GUARD_CORE_BASIC_STRING_H_INCLUDED
+#define GUARD_CORE_BASIC_STRING_H_INCLUDED
 
 #include <types.h>
 
@@ -85,4 +85,4 @@ public:
 
 #include "basic_string_inline.h"
 
-#endif // #ifndef __core_basic_string_h_included_
+#endif // #ifndef GUARD_CORE_BASIC_STRING_H_INCLUDED

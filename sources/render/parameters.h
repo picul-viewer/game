@@ -1,5 +1,5 @@
-#ifndef __render_parameters_h_included_
-#define __render_parameters_h_included_
+#ifndef GUARD_RENDER_PARAMETERS_H_INCLUDED
+#define GUARD_RENDER_PARAMETERS_H_INCLUDED
 
 #include "parameters_type.h"
 
@@ -9,4 +9,4 @@ extern parameters g_parameters;
 
 } // namespace render
 
-#endif // #ifndef __render_parameters_h_included_
+#endif // #ifndef GUARD_RENDER_PARAMETERS_H_INCLUDED

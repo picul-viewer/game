@@ -1,5 +1,5 @@
-#ifndef __render_dx_include_h_included_
-#define __render_dx_include_h_included_
+#ifndef GUARD_RENDER_DX_INCLUDE_H_INCLUDED
+#define GUARD_RENDER_DX_INCLUDE_H_INCLUDED
 
 #pragma warning(push)
 #pragma warning(disable:4005)
@@ -354,4 +354,4 @@ inline bool format_is_dxt( DXGI_FORMAT const in_format )
 
 } // namespace render
 
-#endif
+#endif // #ifndef GUARD_RENDER_DX_INCLUDE_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __engine_world_h_included_
-#define __engine_world_h_included_
+#ifndef GUARD_ENGINE_WORLD_H_INCLUDED
+#define GUARD_ENGINE_WORLD_H_INCLUDED
 
 #include <types.h>
 #include <math/vector.h>
@@ -104,4 +104,4 @@ void window_input( );
 
 } // namespace game
 
-#endif // #ifndef __engine_world_h_included_
+#endif // #ifndef GUARD_ENGINE_WORLD_H_INCLUDED

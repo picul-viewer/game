@@ -1,5 +1,5 @@
-#ifndef __core_macros_h_included_
-#define __core_macros_h_included_
+#ifndef GUARD_CORE_MACROS_H_INCLUDED
+#define GUARD_CORE_MACROS_H_INCLUDED
 
 #include <types.h>
 #include <stdio.h>
@@ -152,4 +152,4 @@ void pause( );
 
 #define SPIN_LOCK( expression ) while ( expression ) macros::pause( )
 
-#endif // #ifndef __core_macros_h_included_
+#endif // #ifndef GUARD_CORE_MACROS_H_INCLUDED

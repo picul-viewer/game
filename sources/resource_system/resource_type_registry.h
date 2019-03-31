@@ -1,5 +1,5 @@
-#ifndef __resource_system_resource_type_registry_h_included_
-#define __resource_system_resource_type_registry_h_included_
+#ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_TYPE_REGISTRY_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_RESOURCE_TYPE_REGISTRY_H_INCLUDED
 
 #include <types.h>
 #include "resource_system_types.h"
@@ -49,4 +49,4 @@ extern resource_type_registry g_resource_type_registry;
 
 #include "resource_type_registry_inline.h"
 
-#endif // #ifndef __resource_system_resource_type_registry_h_included_
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_TYPE_REGISTRY_H_INCLUDED

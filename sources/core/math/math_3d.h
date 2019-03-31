@@ -1,5 +1,5 @@
-#ifndef __core_math_3d_h_included_
-#define __core_math_3d_h_included_
+#ifndef GUARD_CORE_MATH_3D_H_INCLUDED
+#define GUARD_CORE_MATH_3D_H_INCLUDED
 
 #include "vector.h"
 #include "matrix.h"
@@ -245,4 +245,4 @@ inline float4x4 matrix_look_at( float3 const& position, float3 const& center, fl
 
 } // namespace math
 
-#endif // #ifndef __core_math_3d_h_included_
+#endif // #ifndef GUARD_CORE_MATH_3D_H_INCLUDED

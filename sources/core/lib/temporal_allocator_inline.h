@@ -1,5 +1,5 @@
-#ifndef __core_temporal_allocator_inline_h_included_
-#define __core_temporal_allocator_inline_h_included_
+#ifndef GUARD_CORE_TEMPORAL_ALLOCATOR_INLINE_H_INCLUDED
+#define GUARD_CORE_TEMPORAL_ALLOCATOR_INLINE_H_INCLUDED
 
 #include <macros.h>
 #include <lib/allocator.h>
@@ -108,4 +108,4 @@ pointer temporal_allocator<PageMaxCount>::data( ) const
 	return m_data;
 }
 
-#endif // #ifndef __core_temporal_allocator_inline_h_included_
+#endif // #ifndef GUARD_CORE_TEMPORAL_ALLOCATOR_INLINE_H_INCLUDED

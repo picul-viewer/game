@@ -1,5 +1,5 @@
-#ifndef __core_mpsc_queue_inline_h_inlcuded_
-#define __core_mpsc_queue_inline_h_inlcuded_
+#ifndef GUARD_CORE_MPSC_QUEUE_INLINE_H_INLCUDED
+#define GUARD_CORE_MPSC_QUEUE_INLINE_H_INLCUDED
 
 #include <macros.h>
 
@@ -95,4 +95,4 @@ pointer mpsc_queue<T, RecordSize>::data( ) const
 	return m_data;
 }
 
-#endif // #ifndef __core_mpsc_queue_inline_h_inlcuded_
+#endif // #ifndef GUARD_CORE_MPSC_QUEUE_INLINE_H_INLCUDED

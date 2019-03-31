@@ -1,5 +1,5 @@
-#ifndef __core_matrix_h_included_
-#define __core_matrix_h_included_
+#ifndef GUARD_CORE_MATRIX_H_INCLUDED
+#define GUARD_CORE_MATRIX_H_INCLUDED
 
 #include <types.h>
 #include <math.h>
@@ -431,4 +431,4 @@ inline float4x4 mul( float4x4 const& l, float4x4 const& r )
 
 } // namespace math
 
-#endif // #ifndef __core_matrix_h_included_
+#endif // #ifndef GUARD_CORE_MATRIX_H_INCLUDED

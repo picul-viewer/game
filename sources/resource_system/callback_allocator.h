@@ -1,5 +1,5 @@
-#ifndef __resource_system_callback_allocator_h_included_
-#define __resource_system_callback_allocator_h_included_
+#ifndef GUARD_RESOURCE_SYSTEM_CALLBACK_ALLOCATOR_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_CALLBACK_ALLOCATOR_H_INCLUDED
 
 #include <types.h>
 #include <lib/temporal_allocator.h>
@@ -25,4 +25,4 @@ extern callback_allocator g_callback_allocator;
 
 } // namespace resource_system
 
-#endif // #ifndef __resource_system_callback_allocator_h_included_
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_CALLBACK_ALLOCATOR_H_INCLUDED

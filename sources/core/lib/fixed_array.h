@@ -1,5 +1,5 @@
-#ifndef __core_fixed_array_h_included_
-#define __core_fixed_array_h_included_
+#ifndef GUARD_CORE_FIXED_ARRAY_H_INCLUDED
+#define GUARD_CORE_FIXED_ARRAY_H_INCLUDED
 
 #include <types.h>
 #include "memory_block.h"
@@ -37,4 +37,4 @@ private:
 
 #include "fixed_array_inline.h"
 
-#endif // #ifndef __core_fixed_array_h_included_
+#endif // #ifndef GUARD_CORE_FIXED_ARRAY_H_INCLUDED

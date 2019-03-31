@@ -1,5 +1,5 @@
-#ifndef __core_hash_h_included_
-#define __core_hash_h_included_
+#ifndef GUARD_CORE_HASH_H_INCLUDED
+#define GUARD_CORE_HASH_H_INCLUDED
 
 #include <types.h>
 
@@ -26,4 +26,4 @@ public:
 
 } // namespace lib
 
-#endif // #ifndef __core_hash_h_included_
+#endif // #ifndef GUARD_CORE_HASH_H_INCLUDED

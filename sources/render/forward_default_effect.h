@@ -1,5 +1,5 @@
-#ifndef __render_forward_default_effect_h_included_
-#define __render_forward_default_effect_h_included_
+#ifndef GUARD_RENDER_FORWARD_DEFAULT_EFFECT_H_INCLUDED
+#define GUARD_RENDER_FORWARD_DEFAULT_EFFECT_H_INCLUDED
 
 #include "effect.h"
 #include <core/game.h>
@@ -64,4 +64,4 @@ protected:
 
 } // namespace redner
 
-#endif // #ifndef __render_forward_default_effect_h_included_
+#endif // #ifndef GUARD_RENDER_FORWARD_DEFAULT_EFFECT_H_INCLUDED

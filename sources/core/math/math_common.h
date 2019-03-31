@@ -1,5 +1,5 @@
-#ifndef __core_math_common_h_included_
-#define __core_math_common_h_included_
+#ifndef GUARD_CORE_MATH_COMMON_H_INCLUDED
+#define GUARD_CORE_MATH_COMMON_H_INCLUDED
 
 #include <types.h>
 
@@ -202,4 +202,4 @@ inline T align_up( T const value, U const alignment )
 
 } // namespace math
 
-#endif // #ifndef __core_math_common_h_included_
+#endif // #ifndef GUARD_CORE_MATH_COMMON_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __render_renderer_h_included_
-#define __render_renderer_h_included_
+#ifndef GUARD_RENDER_RENDERER_H_INCLUDED
+#define GUARD_RENDER_RENDERER_H_INCLUDED
 
 #include <types.h>
 
@@ -86,4 +86,4 @@ extern renderer g_renderer;
 
 } // namespace render
 
-#endif // #ifndef __render_renderer_h_included_
+#endif // #ifndef GUARD_RENDER_RENDERER_H_INCLUDED

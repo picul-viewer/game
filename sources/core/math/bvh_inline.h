@@ -1,5 +1,5 @@
-#ifndef __core_bvh_inline_h_included_
-#define __core_bvh_inline_h_included_
+#ifndef GUARD_CORE_BVH_INLINE_H_INCLUDED
+#define GUARD_CORE_BVH_INLINE_H_INCLUDED
 
 #include <lib/memory.h>
 #include <lib/algorithms.h>
@@ -282,4 +282,4 @@ void static_bvh<T>::query_visibility_impl( node* const n, FrustumType const& fru
 
 } // namespace math
 
-#endif // #ifndef __core_bvh_inline_h_included_
+#endif // #ifndef GUARD_CORE_BVH_INLINE_H_INCLUDED

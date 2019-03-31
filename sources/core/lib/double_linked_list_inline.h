@@ -1,5 +1,5 @@
-#ifndef __core_double_linked_list_inline_h_included_
-#define __core_double_linked_list_inline_h_included_
+#ifndef GUARD_CORE_DOUBLE_LINKED_LIST_INLINE_H_INCLUDED
+#define GUARD_CORE_DOUBLE_LINKED_LIST_INLINE_H_INCLUDED
 
 #include <macros.h>
 
@@ -124,4 +124,4 @@ T const* lib::intrusive_double_linked_list_linker<T, Prev, Next>::get_next( T co
 	return object->*Next;
 }
 
-#endif // #ifndef __core_double_linked_list_inline_h_included_
+#endif // #ifndef GUARD_CORE_DOUBLE_LINKED_LIST_INLINE_H_INCLUDED

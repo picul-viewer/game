@@ -1,5 +1,5 @@
-#ifndef __core_alloc_string_inline_h_included_
-#define __core_alloc_string_inline_h_included_
+#ifndef GUARD_CORE_ALLOC_STRING_INLINE_H_INCLUDED
+#define GUARD_CORE_ALLOC_STRING_INLINE_H_INCLUDED
 
 #include <macros.h>
 #include <cstring>
@@ -32,4 +32,4 @@ alloc_string::alloc_string( AllocatorType& allocator, pcstr str, uptr size )
 	m_data[size] = '\0';
 }
 
-#endif // #ifndef __core_alloc_string_inline_h_included_
+#endif // #ifndef GUARD_CORE_ALLOC_STRING_INLINE_H_INCLUDED

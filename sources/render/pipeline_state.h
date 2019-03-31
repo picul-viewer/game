@@ -1,5 +1,5 @@
-#ifndef __render_pipeline_state_h_included_
-#define __render_pipeline_state_h_included_
+#ifndef GUARD_RENDER_PIPELINE_STATE_H_INCLUDED
+#define GUARD_RENDER_PIPELINE_STATE_H_INCLUDED
 
 #include <types.h>
 #include <math/vector.h>
@@ -116,4 +116,4 @@ protected:
 
 } // namespace render
 
-#endif // #ifndef __render_pipeline_state_h_included_
+#endif // #ifndef GUARD_RENDER_PIPELINE_STATE_H_INCLUDED

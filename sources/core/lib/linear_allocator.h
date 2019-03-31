@@ -1,5 +1,5 @@
-#ifndef __core_linear_allocator_h_included_
-#define __core_linear_allocator_h_included_
+#ifndef GUARD_CORE_LINEAR_ALLOCATOR_H_INCLUDED
+#define GUARD_CORE_LINEAR_ALLOCATOR_H_INCLUDED
 
 #include <types.h>
 #include "allocator.h"
@@ -50,4 +50,4 @@ protected:
 
 #include "linear_allocator_inline.h"
 
-#endif // #ifndef __core_linear_allocator_h_included_
+#endif // #ifndef GUARD_CORE_LINEAR_ALLOCATOR_H_INCLUDED

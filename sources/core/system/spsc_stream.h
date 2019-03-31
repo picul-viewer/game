@@ -1,5 +1,5 @@
-#ifndef __core_spsc_stream_h_included_
-#define __core_spsc_stream_h_included_
+#ifndef GUARD_CORE_SPSC_STREAM_H_INCLUDED
+#define GUARD_CORE_SPSC_STREAM_H_INCLUDED
 
 #include <types.h>
 #include "interlocked.h"
@@ -56,4 +56,4 @@ void spsc_stream::write( T const& value )
 	write_data		( &value, sizeof(T) );
 }
 
-#endif // #ifndef __core_spsc_stream_h_included_
+#endif // #ifndef GUARD_CORE_SPSC_STREAM_H_INCLUDED

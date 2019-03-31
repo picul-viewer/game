@@ -1,5 +1,5 @@
-#ifndef __render_constant_buffer_inline_h_included_
-#define __render_constant_buffer_inline_h_included_
+#ifndef GUARD_RENDER_CONSTANT_BUFFER_INLINE_H_INCLUDED
+#define GUARD_RENDER_CONSTANT_BUFFER_INLINE_H_INCLUDED
 
 namespace render {
 
@@ -21,4 +21,4 @@ ID3D11Buffer* const& constant_buffer::get( ) const
 
 } // namespace render
 
-#endif // #ifndef __render_constant_buffer_inline_h_included_
+#endif // #ifndef GUARD_RENDER_CONSTANT_BUFFER_INLINE_H_INCLUDED

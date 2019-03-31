@@ -1,5 +1,5 @@
-#ifndef __resource_system_queried_resources_h_included_
-#define __resource_system_queried_resources_h_included_
+#ifndef GUARD_RESOURCE_SYSTEM_QUERIED_RESOURCES_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_QUERIED_RESOURCES_H_INCLUDED
 
 #include <types.h>
 #include "resource_system_types.h"
@@ -43,4 +43,4 @@ private:
 
 #include "queried_resources_inline.h"
 
-#endif // #ifndef __resource_system_queried_resources_h_included_
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_QUERIED_RESOURCES_H_INCLUDED

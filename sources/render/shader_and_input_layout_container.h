@@ -1,5 +1,5 @@
-#ifndef __render_shader_and_input_layout_container_h_included_
-#define __render_shader_and_input_layout_container_h_included_
+#ifndef GUARD_RENDER_SHADER_AND_INPUT_LAYOUT_CONTAINER_H_INCLUDED
+#define GUARD_RENDER_SHADER_AND_INPUT_LAYOUT_CONTAINER_H_INCLUDED
 
 #include <types.h>
 #include <lib/reader.h>
@@ -34,4 +34,4 @@ protected:
 
 #include "shader_and_input_layout_container_inline.h"
 
-#endif // #ifndef __render_shader_and_input_layout_container_h_included_
+#endif // #ifndef GUARD_RENDER_SHADER_AND_INPUT_LAYOUT_CONTAINER_H_INCLUDED

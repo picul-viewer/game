@@ -1,5 +1,5 @@
-#ifndef __core_list_inline_h_included_
-#define __core_list_inline_h_included_
+#ifndef GUARD_CORE_LIST_INLINE_H_INCLUDED
+#define GUARD_CORE_LIST_INLINE_H_INCLUDED
 
 #include <macros.h>
 
@@ -206,4 +206,4 @@ T const* lib::intrusive_list_linker<T, Next>::get_next( T const* const object )
 	return object->*Next;
 }
 
-#endif // #ifndef __core_list_inline_h_included_
+#endif // #ifndef GUARD_CORE_LIST_INLINE_H_INCLUDED

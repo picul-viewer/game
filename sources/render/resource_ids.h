@@ -1,5 +1,5 @@
-#ifndef __render_resource_ids_h_included_
-#define __render_resource_ids_h_included_
+#ifndef GUARD_RENDER_RESOURCE_IDS_H_INCLUDED
+#define GUARD_RENDER_RESOURCE_IDS_H_INCLUDED
 
 #include <types.h>
 
@@ -12,4 +12,4 @@ typedef u16 render_model_mesh_id;
 
 } // namespace render
 
-#endif // #ifndef __render_resource_ids_h_included_
+#endif // #ifndef GUARD_RENDER_RESOURCE_IDS_H_INCLUDED

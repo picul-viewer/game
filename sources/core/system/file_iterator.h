@@ -1,5 +1,5 @@
-#ifndef __core_file_iterator_h_included_
-#define __core_file_iterator_h_included_
+#ifndef GUARD_CORE_FILE_ITERATOR_H_INCLUDED
+#define GUARD_CORE_FILE_ITERATOR_H_INCLUDED
 
 #include <types.h>
 
@@ -30,4 +30,4 @@ protected:
 
 } // namespace sys
 
-#endif // #ifndef __core_file_iterator_h_included_
+#endif // #ifndef GUARD_CORE_FILE_ITERATOR_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __render_resource_pool_inline_h_included_
-#define __render_resource_pool_inline_h_included_
+#ifndef GUARD_RENDER_RESOURCE_POOL_INLINE_H_INCLUDED
+#define GUARD_RENDER_RESOURCE_POOL_INLINE_H_INCLUDED
 
 #include <lib/alloc_string.h>
 
@@ -106,4 +106,4 @@ uptr resource_pool<Resource>::index_of( Resource* const in_resource )
 
 } // namespace render
 
-#endif // #ifndef __render_resource_pool_inline_h_included_
+#endif // #ifndef GUARD_RENDER_RESOURCE_POOL_INLINE_H_INCLUDED

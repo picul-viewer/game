@@ -1,5 +1,5 @@
-#ifndef __core_spsc_queue_h_inlcuded_
-#define __core_spsc_queue_h_inlcuded_
+#ifndef GUARD_CORE_SPSC_QUEUE_H_INLCUDED
+#define GUARD_CORE_SPSC_QUEUE_H_INLCUDED
 
 #include <types.h>
 
@@ -46,4 +46,4 @@ private:
 
 #include "spsc_queue_inline.h"
 
-#endif // #ifndef __core_spsc_queue_h_inlcuded_
+#endif // #ifndef GUARD_CORE_SPSC_QUEUE_H_INLCUDED

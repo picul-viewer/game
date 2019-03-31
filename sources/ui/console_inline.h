@@ -1,5 +1,5 @@
-#ifndef __ui_console_inline_h_included_
-#define __ui_console_inline_h_included_
+#ifndef GUARD_UI_CONSOLE_INLINE_H_INCLUDED
+#define GUARD_UI_CONSOLE_INLINE_H_INCLUDED
 
 #include <lib/strings.h>
 
@@ -26,4 +26,4 @@ inline void console::printf( pcstr const in_mask, Args const& ... args )
 
 } // namespace ui
 
-#endif // #ifndef __ui_console_inline_h_included_
+#endif // #ifndef GUARD_UI_CONSOLE_INLINE_H_INCLUDED

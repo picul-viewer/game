@@ -1,5 +1,5 @@
-#ifndef __core_dynamic_writer_h_included_
-#define __core_dynamic_writer_h_included_
+#ifndef GUARD_CORE_DYNAMIC_WRITER_H_INCLUDED
+#define GUARD_CORE_DYNAMIC_WRITER_H_INCLUDED
 
 #include <types.h>
 #include "linear_allocator.h"
@@ -41,4 +41,4 @@ void dynamic_writer::write( T const& value )
 
 } // namespace lib
 
-#endif // #ifndef __core_dynamic_writer_h_included_
+#endif // #ifndef GUARD_CORE_DYNAMIC_WRITER_H_INCLUDED

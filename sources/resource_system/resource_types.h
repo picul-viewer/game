@@ -1,5 +1,5 @@
-#ifndef __resource_system_resource_types_h_included_
-#define __resource_system_resource_types_h_included_
+#ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_TYPES_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_RESOURCE_TYPES_H_INCLUDED
 
 #include <types.h>
 #include "resource_system_types.h"
@@ -43,4 +43,4 @@ struct request_cook_data
 
 } // namespace resource_system
 
-#endif // #ifndef __resource_system_resource_types_h_included_
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_TYPES_H_INCLUDED

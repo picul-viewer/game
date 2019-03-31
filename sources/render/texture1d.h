@@ -1,5 +1,5 @@
-#ifndef __render_texture1d_h_included_
-#define __render_texture1d_h_included_
+#ifndef GUARD_RENDER_TEXTURE1D_H_INCLUDED
+#define GUARD_RENDER_TEXTURE1D_H_INCLUDED
 
 #include <types.h>
 #include "dx_include.h"
@@ -40,4 +40,4 @@ protected:
 
 } // namespace render
 
-#endif // #ifndef __render_texture1d_h_included_
+#endif // #ifndef GUARD_RENDER_TEXTURE1D_H_INCLUDED

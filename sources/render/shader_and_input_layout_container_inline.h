@@ -1,5 +1,5 @@
-#ifndef __render_shader_and_input_layout_container_inline_h_included_
-#define __render_shader_and_input_layout_container_inline_h_included_
+#ifndef GUARD_RENDER_SHADER_AND_INPUT_LAYOUT_CONTAINER_INLINE_H_INCLUDED
+#define GUARD_RENDER_SHADER_AND_INPUT_LAYOUT_CONTAINER_INLINE_H_INCLUDED
 
 #include "shader_and_input_layout_container.h"
 
@@ -61,4 +61,4 @@ ShaderType shader_and_input_layout_container<ShaderType, ShaderEnumerator, Shade
 
 } // namespace render
 
-#endif // #ifndef __render_shader_and_input_layout_container_inline_h_included_
+#endif // #ifndef GUARD_RENDER_SHADER_AND_INPUT_LAYOUT_CONTAINER_INLINE_H_INCLUDED

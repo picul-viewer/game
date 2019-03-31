@@ -1,5 +1,5 @@
-#ifndef __core_temporal_allocator_h_included_
-#define __core_temporal_allocator_h_included_
+#ifndef GUARD_CORE_TEMPORAL_ALLOCATOR_H_INCLUDED
+#define GUARD_CORE_TEMPORAL_ALLOCATOR_H_INCLUDED
 
 #include <types.h>
 #include <system/interlocked.h>
@@ -44,4 +44,4 @@ private:
 
 #include "temporal_allocator_inline.h"
 
-#endif // #ifndef __core_temporal_allocator_h_included_
+#endif // #ifndef GUARD_CORE_TEMPORAL_ALLOCATOR_H_INCLUDED

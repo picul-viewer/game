@@ -1,5 +1,5 @@
-#ifndef __render_pipeline_state_pool_inline_h_included_
-#define __render_pipeline_state_pool_inline_h_included_
+#ifndef GUARD_RENDER_PIPELINE_STATE_POOL_INLINE_H_INCLUDED
+#define GUARD_RENDER_PIPELINE_STATE_POOL_INLINE_H_INCLUDED
 
 namespace render {
 
@@ -45,4 +45,4 @@ void pipeline_state_pool<DS_max, B_max, R_max>::destroy( )
 
 } // namespace render
 
-#endif // #ifndef __render_pipeline_state_pool_inline_h_included_
+#endif // #ifndef GUARD_RENDER_PIPELINE_STATE_POOL_INLINE_H_INCLUDED

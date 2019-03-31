@@ -1,5 +1,5 @@
-#ifndef __render_per_material_constant_buffer_h_included_
-#define __render_per_material_constant_buffer_h_included_
+#ifndef GUARD_RENDER_PER_MATERIAL_CONSTANT_BUFFER_H_INCLUDED
+#define GUARD_RENDER_PER_MATERIAL_CONSTANT_BUFFER_H_INCLUDED
 
 #include <types.h>
 #include <macros.h>
@@ -25,4 +25,4 @@ typedef constant_buffer<miscellaneous_constants> miscellaneous_constant_buffer;
 
 } // namespace render
 
-#endif // #ifndef __render_per_material_constant_buffer_h_included_
+#endif // #ifndef GUARD_RENDER_PER_MATERIAL_CONSTANT_BUFFER_H_INCLUDED

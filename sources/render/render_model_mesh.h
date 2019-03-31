@@ -1,5 +1,5 @@
-#ifndef __render_render_model_mesh_h_included_
-#define __render_render_model_mesh_h_included_
+#ifndef GUARD_RENDER_RENDER_MODEL_MESH_H_INCLUDED
+#define GUARD_RENDER_RENDER_MODEL_MESH_H_INCLUDED
 
 #include <types.h>
 #include <math/aabb.h>
@@ -65,4 +65,4 @@ DEFINE_HANDLE( render_model_mesh );
 
 } // namespace render
 
-#endif // #ifndef __render_render_model_mesh_h_included_
+#endif // #ifndef GUARD_RENDER_RENDER_MODEL_MESH_H_INCLUDED

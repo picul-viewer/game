@@ -1,5 +1,5 @@
-#ifndef __resource_compiler_resource_compiler_h_included_
-#define __resource_compiler_resource_compiler_h_included_
+#ifndef GUARD_RESOURCE_COMPILER_RESOURCE_COMPILER_H_INCLUDED
+#define GUARD_RESOURCE_COMPILER_RESOURCE_COMPILER_H_INCLUDED
 
 #include <types.h>
 
@@ -51,4 +51,4 @@ protected:
 
 } // namespace resource_compiler
 
-#endif // #ifndef __resource_compiler_resource_compiler_h_included_
+#endif // #ifndef GUARD_RESOURCE_COMPILER_RESOURCE_COMPILER_H_INCLUDED

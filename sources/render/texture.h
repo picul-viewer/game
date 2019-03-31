@@ -1,5 +1,5 @@
-#ifndef __render_texture_h_included_
-#define __render_texture_h_included_
+#ifndef GUARD_RENDER_TEXTURE_H_INCLUDED
+#define GUARD_RENDER_TEXTURE_H_INCLUDED
 
 #include <types.h>
 
@@ -40,4 +40,4 @@ DEFINE_HANDLE( texture );
 
 } // namespace render
 
-#endif // #ifndef __render_texture_h_included_
+#endif // #ifndef GUARD_RENDER_TEXTURE_H_INCLUDED

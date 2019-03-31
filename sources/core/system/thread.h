@@ -1,5 +1,5 @@
-#ifndef __core_thread_h_included_
-#define __core_thread_h_included_
+#ifndef GUARD_CORE_THREAD_H_INCLUDED
+#define GUARD_CORE_THREAD_H_INCLUDED
 
 #include <types.h>
 
@@ -55,4 +55,4 @@ protected:
 	pvoid	m_id;
 };
 
-#endif // #ifndef __core_thread_h_included_
+#endif // #ifndef GUARD_CORE_THREAD_H_INCLUDED

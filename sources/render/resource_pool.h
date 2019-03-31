@@ -1,5 +1,5 @@
-#ifndef __render_resource_pool_h_included_
-#define __render_resource_pool_h_included_
+#ifndef GUARD_RENDER_RESOURCE_POOL_H_INCLUDED
+#define GUARD_RENDER_RESOURCE_POOL_H_INCLUDED
 
 #include <types.h>
 #include <lib/weak_string.h>
@@ -39,4 +39,4 @@ protected:
 
 #include "resource_pool_inline.h"
 
-#endif // #ifndef __render_resource_pool_h_included_
+#endif // #ifndef GUARD_RENDER_RESOURCE_POOL_H_INCLUDED

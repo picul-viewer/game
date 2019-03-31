@@ -1,5 +1,5 @@
-#ifndef __core_vector_h_included_
-#define __core_vector_h_included_
+#ifndef GUARD_CORE_VECTOR_H_INCLUDED
+#define GUARD_CORE_VECTOR_H_INCLUDED
 
 #include <types.h>
 #include <math.h>
@@ -433,4 +433,4 @@ using double4 = vec4<f64>;
 
 } // namespace math
 
-#endif // #ifndef __core_vector_h_included_
+#endif // #ifndef GUARD_CORE_VECTOR_H_INCLUDED

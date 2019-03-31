@@ -1,5 +1,5 @@
-#ifndef __core_reversable_double_linked_list_inline_h_included_
-#define __core_reversable_double_linked_list_inline_h_included_
+#ifndef GUARD_CORE_REVERSABLE_DOUBLE_LINKED_LIST_INLINE_H_INCLUDED
+#define GUARD_CORE_REVERSABLE_DOUBLE_LINKED_LIST_INLINE_H_INCLUDED
 
 #include <macros.h>
 
@@ -197,4 +197,4 @@ T const* lib::reversable_double_linked_list<T, Linker>::const_reverse_iterator::
 	return m_object;
 }
 
-#endif // #ifndef __core_reversable_double_linked_list_inline_h_included_
+#endif // #ifndef GUARD_CORE_REVERSABLE_DOUBLE_LINKED_LIST_INLINE_H_INCLUDED

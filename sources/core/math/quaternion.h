@@ -1,5 +1,5 @@
-#ifndef __core_quaternion_h_included_
-#define __core_quaternion_h_included_
+#ifndef GUARD_CORE_QUATERNION_H_INCLUDED
+#define GUARD_CORE_QUATERNION_H_INCLUDED
 
 #include <types.h>
 #include "vector.h"
@@ -60,4 +60,4 @@ inline float3x3 const& quat_to_mat( quat const& q )
 
 } // namespace math
 
-#endif // #ifndef __core_quaternion_h_included_
+#endif // #ifndef GUARD_CORE_QUATERNION_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __core_pool_inline_h_included_
-#define __core_pool_inline_h_included_
+#ifndef GUARD_CORE_POOL_INLINE_H_INCLUDED
+#define GUARD_CORE_POOL_INLINE_H_INCLUDED
 
 #include <macros.h>
 
@@ -182,4 +182,4 @@ void dynamic_pool<ElemSize, PageSize, PageMaxCount>::deallocate( pointer p )
 	m_push_pointer		= p;
 }
 
-#endif // #ifndef __core_pool_inline_h_included_
+#endif // #ifndef GUARD_CORE_POOL_INLINE_H_INCLUDED

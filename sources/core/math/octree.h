@@ -1,5 +1,5 @@
-#ifndef __core_octree_h_included_
-#define __core_octree_h_included_
+#ifndef GUARD_CORE_OCTREE_H_INCLUDED
+#define GUARD_CORE_OCTREE_H_INCLUDED
 
 #include <types.h>
 
@@ -60,4 +60,4 @@ struct octree_node_size
 
 #include "octree_inline.h"
 
-#endif // #ifndef __core_octree_h_included_
+#endif // #ifndef GUARD_CORE_OCTREE_H_INCLUDED

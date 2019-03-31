@@ -1,5 +1,5 @@
-#ifndef __core_fixed_string_h_included_
-#define __core_fixed_string_h_included_
+#ifndef GUARD_CORE_FIXED_STRING_H_INCLUDED
+#define GUARD_CORE_FIXED_STRING_H_INCLUDED
 
 #include <types.h>
 #include "basic_string.h"
@@ -58,4 +58,4 @@ typedef fixed_string<8192>			str8192;
 
 #include "fixed_string_inline.h"
 
-#endif // #ifndef __core_fixed_string_h_included_
+#endif // #ifndef GUARD_CORE_FIXED_STRING_H_INCLUDED

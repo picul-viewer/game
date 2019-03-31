@@ -1,5 +1,5 @@
-#ifndef __core_double_linked_list_h_included_
-#define __core_double_linked_list_h_included_
+#ifndef GUARD_CORE_DOUBLE_LINKED_LIST_H_INCLUDED
+#define GUARD_CORE_DOUBLE_LINKED_LIST_H_INCLUDED
 
 #include <types.h>
 #include "list.h"
@@ -51,4 +51,4 @@ using intrusive_double_linked_list = list<T, intrusive_double_linked_list_linker
 
 #include "double_linked_list_inline.h"
 
-#endif // #ifndef __core_double_linked_list_h_included_
+#endif // #ifndef GUARD_CORE_DOUBLE_LINKED_LIST_H_INCLUDED

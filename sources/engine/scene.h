@@ -1,5 +1,5 @@
-#ifndef __engine_scene_h_included_
-#define __engine_scene_h_included_
+#ifndef GUARD_ENGINE_SCENE_H_INCLUDED
+#define GUARD_ENGINE_SCENE_H_INCLUDED
 
 #include <types.h>
 
@@ -30,4 +30,4 @@ protected:
 
 } // namespace engine
 
-#endif // #ifndef __engine_scene_h_included_
+#endif // #ifndef GUARD_ENGINE_SCENE_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __core_mpmc_queue_h_inlcuded_
-#define __core_mpmc_queue_h_inlcuded_
+#ifndef GUARD_CORE_MPMC_QUEUE_H_INLCUDED
+#define GUARD_CORE_MPMC_QUEUE_H_INLCUDED
 
 #include <types.h>
 #include "interlocked.h"
@@ -55,4 +55,4 @@ private:
 
 #include "mpmc_queue_inline.h"
 
-#endif // #ifndef __core_mpmc_queue_h_inlcuded_
+#endif // #ifndef GUARD_CORE_MPMC_QUEUE_H_INLCUDED

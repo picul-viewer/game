@@ -1,5 +1,5 @@
-#ifndef __core_spsc_queue_inline_h_inlcuded_
-#define __core_spsc_queue_inline_h_inlcuded_
+#ifndef GUARD_CORE_SPSC_QUEUE_INLINE_H_INLCUDED
+#define GUARD_CORE_SPSC_QUEUE_INLINE_H_INLCUDED
 
 #include <lib/allocator.h>
 
@@ -90,4 +90,4 @@ pointer spsc_queue<T, RecordSize>::data( ) const
 	return m_data;
 }
 
-#endif // #ifndef __core_spsc_queue_inline_h_inlcuded_
+#endif // #ifndef GUARD_CORE_SPSC_QUEUE_INLINE_H_INLCUDED

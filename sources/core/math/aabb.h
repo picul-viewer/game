@@ -1,5 +1,5 @@
-#ifndef __core_aabb_h_included_
-#define __core_aabb_h_included_
+#ifndef GUARD_CORE_AABB_H_INCLUDED
+#define GUARD_CORE_AABB_H_INCLUDED
 
 #include <types.h>
 
@@ -69,4 +69,4 @@ public:
 
 } // namespace math
 
-#endif // #ifndef __core_aabb_h_included_
+#endif // #ifndef GUARD_CORE_AABB_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __core_fixed_array_inline_h_included_
-#define __core_fixed_array_inline_h_included_
+#ifndef GUARD_CORE_FIXED_ARRAY_INLINE_H_INCLUDED
+#define GUARD_CORE_FIXED_ARRAY_INLINE_H_INCLUDED
 
 #include <macros.h>
 
@@ -71,4 +71,4 @@ T const& lib::fixed_array<T, Size>::operator[]( uptr const index ) const
 	return at( index );
 }
 
-#endif // #ifndef __core_fixed_array_inline_h_included_
+#endif // #ifndef GUARD_CORE_FIXED_ARRAY_INLINE_H_INCLUDED

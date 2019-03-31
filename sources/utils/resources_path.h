@@ -1,5 +1,5 @@
-#ifndef __utils_resources_path_h_included_
-#define __utils_resources_path_h_included_
+#ifndef GUARD_UTILS_RESOURCES_PATH_H_INCLUDED
+#define GUARD_UTILS_RESOURCES_PATH_H_INCLUDED
 
 #include <types.h>
 #include <system/path.h>
@@ -16,4 +16,4 @@ sys::path get_resource_path( pcstr relative_path );
 
 } // namespace utils
 
-#endif // #ifndef __utils_resources_path_h_included_
+#endif // #ifndef GUARD_UTILS_RESOURCES_PATH_H_INCLUDED

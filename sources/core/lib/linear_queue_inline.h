@@ -1,5 +1,5 @@
-#ifndef __core_linear_queue_inline_h_included_
-#define __core_linear_queue_inline_h_included_
+#ifndef GUARD_CORE_LINEAR_QUEUE_INLINE_H_INCLUDED
+#define GUARD_CORE_LINEAR_QUEUE_INLINE_H_INCLUDED
 
 #include "memory.h"
 
@@ -71,4 +71,4 @@ bool lib::linear_queue<T>::empty( ) const
 	return m_push_index != m_pop_index;
 }
 
-#endif // #ifndef __core_linear_queue_inline_h_included_
+#endif // #ifndef GUARD_CORE_LINEAR_QUEUE_INLINE_H_INCLUDED

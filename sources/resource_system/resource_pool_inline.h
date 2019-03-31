@@ -1,5 +1,5 @@
-#ifndef __resource_pool_inline_h_included_
-#define __resource_pool_inline_h_included_
+#ifndef GUARD_RESOURCE_POOL_INLINE_H_INCLUDED
+#define GUARD_RESOURCE_POOL_INLINE_H_INCLUDED
 
 #include <macros.h>
 #include <math/math_common.h>
@@ -408,4 +408,4 @@ u32 resource_pool2<Resource, TableSize, MaxSize, PageSize>::release( u32 const i
 
 } // namespace resource_system
 
-#endif // #ifndef __resource_pool_inline_h_included_
+#endif // #ifndef GUARD_RESOURCE_POOL_INLINE_H_INCLUDED

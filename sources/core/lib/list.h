@@ -1,5 +1,5 @@
-#ifndef __core_list_h_included_
-#define __core_list_h_included_
+#ifndef GUARD_CORE_LIST_H_INCLUDED
+#define GUARD_CORE_LIST_H_INCLUDED
 
 #include <types.h>
 
@@ -87,4 +87,4 @@ using intrusive_list = list<T, intrusive_list_linker<T, Next>>;
 
 #include "list_inline.h"
 
-#endif // #ifndef __core_list_h_included_
+#endif // #ifndef GUARD_CORE_LIST_H_INCLUDED

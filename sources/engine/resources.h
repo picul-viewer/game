@@ -1,5 +1,5 @@
-#ifndef __engine_resources_h_included_
-#define __engine_resources_h_included_
+#ifndef GUARD_ENGINE_RESOURCES_H_INCLUDED
+#define GUARD_ENGINE_RESOURCES_H_INCLUDED
 
 #include <types.h>
 #include <lib/pool.h>
@@ -28,4 +28,4 @@ extern resources g_resources;
 
 } // namespace engine
 
-#endif // #ifndef __engine_resources_h_included_
+#endif // #ifndef GUARD_ENGINE_RESOURCES_H_INCLUDED

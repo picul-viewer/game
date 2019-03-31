@@ -1,5 +1,5 @@
-#ifndef __core_timer_h_included_
-#define __core_timer_h_included_
+#ifndef GUARD_CORE_TIMER_H_INCLUDED
+#define GUARD_CORE_TIMER_H_INCLUDED
 
 #include <types.h>
 
@@ -79,4 +79,4 @@ private:
 
 } // namespace sys
 
-#endif // #ifndef __core_timer_h_included_
+#endif // #ifndef GUARD_CORE_TIMER_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __render_ui_batch_h_included_
-#define __render_ui_batch_h_included_
+#ifndef GUARD_RENDER_UI_BATCH_H_INCLUDED
+#define GUARD_RENDER_UI_BATCH_H_INCLUDED
 
 #include <types.h>
 #include <math/vector.h>
@@ -70,4 +70,4 @@ private:
 
 } // namespace render
 
-#endif // #ifndef __render_ui_batch_h_included_
+#endif // #ifndef GUARD_RENDER_UI_BATCH_H_INCLUDED

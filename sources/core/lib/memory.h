@@ -1,5 +1,5 @@
-#ifndef __core_memory_h_included_
-#define __core_memory_h_included_
+#ifndef GUARD_CORE_MEMORY_H_INCLUDED
+#define GUARD_CORE_MEMORY_H_INCLUDED
 
 #include <types.h>
 #include <macros.h>
@@ -541,4 +541,4 @@ inline bool greater( pcvoid left, pcvoid right, uptr size )
 
 } // namespace memory
 
-#endif // #ifndef __core_memory_h_included_
+#endif // #ifndef GUARD_CORE_MEMORY_H_INCLUDED

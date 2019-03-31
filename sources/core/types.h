@@ -1,5 +1,5 @@
-#ifndef __core_types_h_included_
-#define __core_types_h_included_
+#ifndef GUARD_CORE_TYPES_H_INCLUDED
+#define GUARD_CORE_TYPES_H_INCLUDED
 
 #include <cstddef>
 #include <new>
@@ -131,4 +131,4 @@ private:
 
 #define aligned(p, n) ((uptr)p % n == 0)
 
-#endif // #ifndef __core_types_h_included_
+#endif // #ifndef GUARD_CORE_TYPES_H_INCLUDED

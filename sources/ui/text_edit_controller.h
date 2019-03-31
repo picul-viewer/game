@@ -1,5 +1,5 @@
-#ifndef __ui_text_edit_controller_h_included_
-#define __ui_text_edit_controller_h_included_
+#ifndef GUARD_UI_TEXT_EDIT_CONTROLLER_H_INCLUDED
+#define GUARD_UI_TEXT_EDIT_CONTROLLER_H_INCLUDED
 
 #include <types.h>
 #include <math/vector.h>
@@ -35,4 +35,4 @@ private:
 
 } // namespace ui
 
-#endif // #ifndef __ui_text_edit_controller_h_included_
+#endif // #ifndef GUARD_UI_TEXT_EDIT_CONTROLLER_H_INCLUDED

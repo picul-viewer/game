@@ -1,5 +1,5 @@
-#ifndef __resource_compiler_config_compiler_macros_h_included_
-#define __resource_compiler_config_compiler_macros_h_included_
+#ifndef GUARD_RESOURCE_COMPILER_CONFIG_COMPILER_MACROS_H_INCLUDED
+#define GUARD_RESOURCE_COMPILER_CONFIG_COMPILER_MACROS_H_INCLUDED
 
 #define DECLARE_TYPE( type )																	\
 	bool compile_config_##type( pvoid const data,												\
@@ -18,4 +18,4 @@
 
 #define COMPILE( types ) types( COMPILE_TYPE )
 
-#endif // #ifndef __resource_compiler_config_compiler_macros_h_included_
+#endif // #ifndef GUARD_RESOURCE_COMPILER_CONFIG_COMPILER_MACROS_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __resource_system_resource_system_types_h_included_
-#define __resource_system_resource_system_types_h_included_
+#ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_SYSTEM_TYPES_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_RESOURCE_SYSTEM_TYPES_H_INCLUDED
 
 #include <types.h>
 
@@ -18,4 +18,4 @@ typedef void( *query_callback )( queried_resources&, pointer const );
 
 } // namespace resource_system
 
-#endif // #ifndef __resource_system_resource_system_types_h_included_
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_SYSTEM_TYPES_H_INCLUDED

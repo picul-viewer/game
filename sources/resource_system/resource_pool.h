@@ -1,5 +1,5 @@
-#ifndef __resource_pool_h_included_
-#define __resource_pool_h_included_
+#ifndef GUARD_RESOURCE_POOL_H_INCLUDED
+#define GUARD_RESOURCE_POOL_H_INCLUDED
 
 #include <types.h>
 #include <intrin.h>
@@ -93,4 +93,4 @@ private:
 
 #include "resource_pool_inline.h"
 
-#endif // #ifndef __resource_pool_h_included_
+#endif // #ifndef GUARD_RESOURCE_POOL_H_INCLUDED

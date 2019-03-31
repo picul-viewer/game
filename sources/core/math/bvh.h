@@ -1,5 +1,5 @@
-#ifndef __core_bvh_h_included_
-#define __core_bvh_h_included_
+#ifndef GUARD_CORE_BVH_H_INCLUDED
+#define GUARD_CORE_BVH_H_INCLUDED
 
 #include <types.h>
 #include <lib/buffer_array.h>
@@ -57,4 +57,4 @@ struct static_bvh_node_size
 
 #include "bvh_inline.h"
 
-#endif // #ifndef __core_bvh_h_included_
+#endif // #ifndef GUARD_CORE_BVH_H_INCLUDED

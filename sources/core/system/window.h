@@ -1,5 +1,5 @@
-#ifndef __core_window_h_included_
-#define __core_window_h_included_
+#ifndef GUARD_CORE_WINDOW_H_INCLUDED
+#define GUARD_CORE_WINDOW_H_INCLUDED
 
 #include <types.h>
 #include <math/vector.h>
@@ -25,4 +25,4 @@ protected:
 
 } // namespace sys
 
-#endif // #ifndef __core_window_h_included_
+#endif // #ifndef GUARD_CORE_WINDOW_H_INCLUDED

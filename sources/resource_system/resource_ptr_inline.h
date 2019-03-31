@@ -1,5 +1,5 @@
-#ifndef __resource_system_resource_ptr_inline_h_included_
-#define __resource_system_resource_ptr_inline_h_included_
+#ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_PTR_INLINE_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_RESOURCE_PTR_INLINE_H_INCLUDED
 
 namespace resource_system {
 
@@ -61,4 +61,4 @@ ResourceType* resource_ptr<ResourceType>::operator->( ) const
 
 } // namespace resource_system
 
-#endif // #ifndef __resource_system_resource_ptr_inline_h_included_
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_PTR_INLINE_H_INCLUDED

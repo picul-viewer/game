@@ -1,5 +1,5 @@
-#ifndef __render_constant_buffers_constants_h_included_
-#define __render_constant_buffers_constants_h_included_
+#ifndef GUARD_RENDER_CONSTANT_BUFFERS_CONSTANTS_H_INCLUDED
+#define GUARD_RENDER_CONSTANT_BUFFERS_CONSTANTS_H_INCLUDED
 
 #include <types.h>
 #include <math/vector.h>
@@ -31,4 +31,4 @@ struct per_instance_constants
 
 } // namespace render
 
-#endif // #ifndef __render_constant_buffers_constants_h_included_
+#endif // #ifndef GUARD_RENDER_CONSTANT_BUFFERS_CONSTANTS_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __core_pool_h_included_
-#define __core_pool_h_included_
+#ifndef GUARD_CORE_POOL_H_INCLUDED
+#define GUARD_CORE_POOL_H_INCLUDED
 
 #include <types.h>
 #include "allocator.h"
@@ -60,4 +60,4 @@ protected:
 
 #include "pool_inline.h"
 
-#endif // #ifndef __core_pool_h_included_
+#endif // #ifndef GUARD_CORE_POOL_H_INCLUDED

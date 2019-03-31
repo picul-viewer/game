@@ -1,5 +1,5 @@
-#ifndef __core_linear_queue_h_included_
-#define __core_linear_queue_h_included_
+#ifndef GUARD_CORE_LINEAR_QUEUE_H_INCLUDED
+#define GUARD_CORE_LINEAR_QUEUE_H_INCLUDED
 
 #include <types.h>
 
@@ -37,4 +37,4 @@ protected:
 
 #include "linear_queue_inline.h"
 
-#endif // #ifndef __core_linear_queue_h_included_
+#endif // #ifndef GUARD_CORE_LINEAR_QUEUE_H_INCLUDED

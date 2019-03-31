@@ -1,5 +1,5 @@
-#ifndef __core_weak_string_h_included_
-#define __core_weak_string_h_included_
+#ifndef GUARD_CORE_WEAK_STRING_H_INCLUDED
+#define GUARD_CORE_WEAK_STRING_H_INCLUDED
 
 #include <types.h>
 #include "basic_string.h"
@@ -41,4 +41,4 @@ protected:
 
 #include "weak_string_inline.h"
 
-#endif // #ifndef __core_weak_string_h_included_
+#endif // #ifndef GUARD_CORE_WEAK_STRING_H_INCLUDED

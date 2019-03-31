@@ -1,5 +1,5 @@
-#ifndef __render_effect_h_included_
-#define __render_effect_h_included_
+#ifndef GUARD_RENDER_EFFECT_H_INCLUDED
+#define GUARD_RENDER_EFFECT_H_INCLUDED
 
 #include <types.h>
 #include <math/vector.h>
@@ -70,4 +70,4 @@ protected:
 
 #include "effect_inline.h"
 
-#endif // #ifndef __render_effect_h_included_
+#endif // #ifndef GUARD_RENDER_EFFECT_H_INCLUDED

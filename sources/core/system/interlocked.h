@@ -1,5 +1,5 @@
-#ifndef __core_interlocked_h_included_
-#define __core_interlocked_h_included_
+#ifndef GUARD_CORE_INTERLOCKED_H_INCLUDED
+#define GUARD_CORE_INTERLOCKED_H_INCLUDED
 
 #include <types.h>
 
@@ -70,4 +70,4 @@ void load_fence( );
 void store_fence( );
 void full_fence( );
 
-#endif
+#endif // #ifndef GUARD_CORE_INTERLOCKED_H_INCLUDED

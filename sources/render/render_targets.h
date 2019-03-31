@@ -1,5 +1,5 @@
-#ifndef __render_render_targets_h_included_
-#define __render_render_targets_h_included_
+#ifndef GUARD_RENDER_RENDER_TARGETS_H_INCLUDED
+#define GUARD_RENDER_RENDER_TARGETS_H_INCLUDED
 
 #include <types.h>
 #include "dx_include.h"
@@ -94,4 +94,4 @@ protected:
 
 } // namespace render
 
-#endif // #ifndef __render_render_targets_h_included_
+#endif // #ifndef GUARD_RENDER_RENDER_TARGETS_H_INCLUDED

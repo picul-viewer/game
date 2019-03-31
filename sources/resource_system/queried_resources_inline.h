@@ -1,5 +1,5 @@
-#ifndef __resource_system_queried_resources_inline_h_included_
-#define __resource_system_queried_resources_inline_h_included_
+#ifndef GUARD_RESOURCE_SYSTEM_QUERIED_RESOURCES_INLINE_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_QUERIED_RESOURCES_INLINE_H_INCLUDED
 
 #include <macros.h>
 
@@ -14,4 +14,4 @@ resource_ptr<ResourceType>&& queried_resources::get_resource( )
 
 } // namespace resource_system
 
-#endif // #ifndef __resource_system_queried_resources_inline_h_included_
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_QUERIED_RESOURCES_INLINE_H_INCLUDED

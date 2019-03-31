@@ -1,5 +1,5 @@
-#ifndef __core_separate_arena_temporal_allocator_inline_h_included_
-#define __core_separate_arena_temporal_allocator_inline_h_included_
+#ifndef GUARD_CORE_SEPARATE_ARENA_TEMPORAL_ALLOCATOR_INLINE_H_INCLUDED
+#define GUARD_CORE_SEPARATE_ARENA_TEMPORAL_ALLOCATOR_INLINE_H_INCLUDED
 
 #include <macros.h>
 
@@ -105,4 +105,4 @@ pointer separate_arena_temporal_allocator<PageSize, PagesPerThread, ThreadMaxCou
 	return m_data;
 }
 
-#endif // #ifndef __core_separate_arena_temporal_allocator_inline_h_included_
+#endif // #ifndef GUARD_CORE_SEPARATE_ARENA_TEMPORAL_ALLOCATOR_INLINE_H_INCLUDED

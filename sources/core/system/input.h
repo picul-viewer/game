@@ -1,5 +1,5 @@
-#ifndef __core_input_h_included_
-#define __core_input_h_included_
+#ifndef GUARD_CORE_INPUT_H_INCLUDED
+#define GUARD_CORE_INPUT_H_INCLUDED
 
 #include <types.h>
 #include <math/vector.h>
@@ -170,4 +170,4 @@ struct keyboard
 
 } // namespace sys
 
-#endif // #ifndef __core_input_h_included_
+#endif // #ifndef GUARD_CORE_INPUT_H_INCLUDED

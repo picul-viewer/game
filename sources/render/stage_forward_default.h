@@ -1,5 +1,5 @@
-#ifndef __render_stage_forward_default_h_included_
-#define __render_stage_forward_default_h_included_
+#ifndef GUARD_RENDER_STAGE_FORWARD_DEFAULT_H_INCLUDED
+#define GUARD_RENDER_STAGE_FORWARD_DEFAULT_H_INCLUDED
 
 #include "effect.h"
 
@@ -20,4 +20,4 @@ protected:
 
 } // namespace render
 
-#endif // #ifndef __render_stage_forward_default_h_included_
+#endif // #ifndef GUARD_RENDER_STAGE_FORWARD_DEFAULT_H_INCLUDED

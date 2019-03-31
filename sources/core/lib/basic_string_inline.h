@@ -1,5 +1,5 @@
-#ifndef __core_basic_string_inline_h_included_
-#define __core_basic_string_inline_h_included_
+#ifndef GUARD_CORE_BASIC_STRING_INLINE_H_INCLUDED
+#define GUARD_CORE_BASIC_STRING_INLINE_H_INCLUDED
 
 #include <macros.h>
 #include "strings.h"
@@ -241,4 +241,4 @@ inline void i_string<StringClass>::replace( char value, char new_value )
 			this_casted->data( )[i] = new_value;
 }
 
-#endif // #ifndef __core_basic_string_inline_h_included_
+#endif // #ifndef GUARD_CORE_BASIC_STRING_INLINE_H_INCLUDED

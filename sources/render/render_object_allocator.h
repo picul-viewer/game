@@ -1,5 +1,5 @@
-#ifndef __render_render_object_allocator_h_included_
-#define __render_render_object_allocator_h_included_
+#ifndef GUARD_RENDER_RENDER_OBJECT_ALLOCATOR_H_INCLUDED
+#define GUARD_RENDER_RENDER_OBJECT_ALLOCATOR_H_INCLUDED
 
 #include <types.h>
 #include <lib/poolset.h>
@@ -39,4 +39,4 @@ protected:
 
 #include "render_object_allocator_inline.h"
 
-#endif // #ifndef __render_render_object_allocator_h_included_
+#endif // #ifndef GUARD_RENDER_RENDER_OBJECT_ALLOCATOR_H_INCLUDED

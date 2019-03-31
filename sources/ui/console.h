@@ -1,5 +1,5 @@
-#ifndef __ui_console_h_included_
-#define __ui_console_h_included_
+#ifndef GUARD_UI_CONSOLE_H_INCLUDED
+#define GUARD_UI_CONSOLE_H_INCLUDED
 
 #include <types.h>
 #include <lib/dynamic_array.h>
@@ -90,4 +90,4 @@ private:
 
 #include "console_inline.h"
 
-#endif // #ifndef __ui_console_h_included_
+#endif // #ifndef GUARD_UI_CONSOLE_H_INCLUDED

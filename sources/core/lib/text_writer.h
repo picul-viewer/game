@@ -1,5 +1,5 @@
-#ifndef __core_text_writer_h_included_
-#define __core_text_writer_h_included_
+#ifndef GUARD_CORE_TEXT_WRITER_H_INCLUDED
+#define GUARD_CORE_TEXT_WRITER_H_INCLUDED
 
 #include <types.h>
 #include <stdio.h>
@@ -68,4 +68,4 @@ void text_writer::write_mask( pcstr const mask, Args const& ... args )
 
 } // namespace lib
 
-#endif // #ifndef __core_text_writer_h_included_
+#endif // #ifndef GUARD_CORE_TEXT_WRITER_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __ui_font_h_included_
-#define __ui_font_h_included_
+#ifndef GUARD_UI_FONT_H_INCLUDED
+#define GUARD_UI_FONT_H_INCLUDED
 
 #include <types.h>
 #include <lib/reader.h>
@@ -49,4 +49,4 @@ private:
 
 } // namespace ui
 
-#endif // #ifndef __ui_font_h_included_
+#endif // #ifndef GUARD_UI_FONT_H_INCLUDED

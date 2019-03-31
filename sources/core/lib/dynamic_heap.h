@@ -1,5 +1,5 @@
-#ifndef __core_dynamic_heap_h_included_
-#define __core_dynamic_heap_h_included_
+#ifndef GUARD_CORE_DYNAMIC_HEAP_H_INCLUDED
+#define GUARD_CORE_DYNAMIC_HEAP_H_INCLUDED
 
 #include <types.h>
 
@@ -43,4 +43,4 @@ private:
 
 };
 
-#endif // #ifndef __core_dynamic_heap_h_included_
+#endif // #ifndef GUARD_CORE_DYNAMIC_HEAP_H_INCLUDED

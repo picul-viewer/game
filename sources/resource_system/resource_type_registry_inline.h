@@ -1,5 +1,5 @@
-#ifndef __resource_system_resource_type_registry_inline_h_included_
-#define __resource_system_resource_type_registry_inline_h_included_
+#ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_TYPE_REGISTRY_INLINE_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_RESOURCE_TYPE_REGISTRY_INLINE_H_INCLUDED
 
 namespace resource_system {
 
@@ -14,4 +14,4 @@ void resource_type_registry::register_resource_type( resource_type const in_reso
 
 } // namespace resource_system
 
-#endif // #ifndef __resource_system_resource_type_registry_inline_h_included_
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_TYPE_REGISTRY_INLINE_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __render_input_layout_h_included_
-#define __render_input_layout_h_included_
+#ifndef GUARD_RENDER_INPUT_LAYOUT_H_INCLUDED
+#define GUARD_RENDER_INPUT_LAYOUT_H_INCLUDED
 
 #include <types.h>
 
@@ -27,4 +27,4 @@ u32	get_vertex_type_size( u32 in_buffer_index, vertex_type in_vertex_type );
 
 } // namespace render
 
-#endif // #ifndef __render_input_layout_h_included_
+#endif // #ifndef GUARD_RENDER_INPUT_LAYOUT_H_INCLUDED

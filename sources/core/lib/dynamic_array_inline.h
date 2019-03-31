@@ -1,5 +1,5 @@
-#ifndef __core_dynamic_array_inline_h_included_
-#define __core_dynamic_array_inline_h_included_
+#ifndef GUARD_CORE_DYNAMIC_ARRAY_INLINE_H_INCLUDED
+#define GUARD_CORE_DYNAMIC_ARRAY_INLINE_H_INCLUDED
 
 #include <macros.h>
 #include <math/math_common.h>
@@ -165,4 +165,4 @@ T const& lib::dynamic_array<T>::operator[]( uptr const index ) const
 	return at( index );
 }
 
-#endif // #ifndef __core_dynamic_array_inline_h_included_
+#endif // #ifndef GUARD_CORE_DYNAMIC_ARRAY_INLINE_H_INCLUDED

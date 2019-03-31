@@ -1,5 +1,5 @@
-#ifndef __core_path_h_included_
-#define __core_path_h_included_
+#ifndef GUARD_CORE_PATH_H_INCLUDED
+#define GUARD_CORE_PATH_H_INCLUDED
 
 #include <types.h>
 #include <lib/basic_string.h>
@@ -48,4 +48,4 @@ protected:
 
 #include "path_inline.h"
 
-#endif // #ifndef __core_path_h_included_
+#endif // #ifndef GUARD_CORE_PATH_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __core_memory_block_h_included_
-#define __core_memory_block_h_included_
+#ifndef GUARD_CORE_MEMORY_BLOCK_H_INCLUDED
+#define GUARD_CORE_MEMORY_BLOCK_H_INCLUDED
 
 #include <types.h>
 
@@ -23,4 +23,4 @@ struct mem_align(1) memory_block
 	}
 };
 
-#endif // #ifndef __core_memory_block_h_included_
+#endif // #ifndef GUARD_CORE_MEMORY_BLOCK_H_INCLUDED

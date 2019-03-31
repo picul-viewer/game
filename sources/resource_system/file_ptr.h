@@ -1,5 +1,5 @@
-#ifndef __resource_system_file_ptr_h_included_
-#define __resource_system_file_ptr_h_included_
+#ifndef GUARD_RESOURCE_SYSTEM_FILE_PTR_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_FILE_PTR_H_INCLUDED
 
 #include <types.h>
 #include "resource_system_types.h"
@@ -37,4 +37,4 @@ private:
 
 } // namespace resource_system
 
-#endif // #ifndef __resource_system_file_ptr_h_included_
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_FILE_PTR_H_INCLUDED

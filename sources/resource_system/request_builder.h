@@ -1,5 +1,5 @@
-#ifndef __resource_system_request_builder_h_included_
-#define __resource_system_request_builder_h_included_
+#ifndef GUARD_RESOURCE_SYSTEM_REQUEST_BUILDER_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_REQUEST_BUILDER_H_INCLUDED
 
 #include <types.h>
 #include <lib/linear_allocator.h>
@@ -117,4 +117,4 @@ private:
 
 #include "request_builder_inline.h"
 
-#endif // #ifndef __resource_system_request_builder_h_included_
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_REQUEST_BUILDER_H_INCLUDED

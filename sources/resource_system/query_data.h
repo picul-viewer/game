@@ -1,5 +1,5 @@
-#ifndef __resource_system_query_data_h_included_
-#define __resource_system_query_data_h_included_
+#ifndef GUARD_RESOURCE_SYSTEM_QUERY_DATA_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_QUERY_DATA_H_INCLUDED
 
 #include <types.h>
 #include <system/interlocked.h>
@@ -50,4 +50,4 @@ struct request_header
 
 } // namespace resource_system
 
-#endif // #ifndef __resource_system_query_data_h_included_
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_QUERY_DATA_H_INCLUDED

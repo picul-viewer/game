@@ -1,5 +1,5 @@
-#ifndef __core_octree_inline_h_included_
-#define __core_octree_inline_h_included_
+#ifndef GUARD_CORE_OCTREE_INLINE_H_INCLUDED
+#define GUARD_CORE_OCTREE_INLINE_H_INCLUDED
 
 namespace math {
 
@@ -233,4 +233,4 @@ void octree<T, NodeObjectContainer, NodeAllocator, NodePtr>::query_visibility_im
 
 } // namespace math
 
-#endif // #ifndef __core_octree_inline_h_included_
+#endif // #ifndef GUARD_CORE_OCTREE_INLINE_H_INCLUDED

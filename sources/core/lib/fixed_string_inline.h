@@ -1,5 +1,5 @@
-#ifndef __core_fixed_string_inline_h_included_
-#define __core_fixed_string_inline_h_included_
+#ifndef GUARD_CORE_FIXED_STRING_INLINE_H_INCLUDED
+#define GUARD_CORE_FIXED_STRING_INLINE_H_INCLUDED
 
 #include <macros.h>
 #include <cstring>
@@ -140,4 +140,4 @@ fixed_string<MaxSize> operator+( fixed_string<MaxSize> const& l, i_const_string<
 	return result;
 }
 
-#endif // #ifndef __core_fixed_string_inline_h_included_
+#endif // #ifndef GUARD_CORE_FIXED_STRING_INLINE_H_INCLUDED

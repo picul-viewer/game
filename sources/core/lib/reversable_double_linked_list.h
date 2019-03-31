@@ -1,5 +1,5 @@
-#ifndef __core_reversable_double_linked_list_h_included_
-#define __core_reversable_double_linked_list_h_included_
+#ifndef GUARD_CORE_REVERSABLE_DOUBLE_LINKED_LIST_H_INCLUDED
+#define GUARD_CORE_REVERSABLE_DOUBLE_LINKED_LIST_H_INCLUDED
 
 #include <types.h>
 #include "double_linked_list.h"
@@ -88,4 +88,4 @@ private:
 
 #include "reversable_double_linked_list_inline.h"
 
-#endif // #ifndef __core_reversable_double_linked_list_h_included_
+#endif // #ifndef GUARD_CORE_REVERSABLE_DOUBLE_LINKED_LIST_H_INCLUDED

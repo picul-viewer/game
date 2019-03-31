@@ -1,5 +1,5 @@
-#ifndef __core_function_h_included_
-#define __core_function_h_included_
+#ifndef GUARD_CORE_FUNCTION_H_INCLUDED
+#define GUARD_CORE_FUNCTION_H_INCLUDED
 
 #include <types.h>
 #include <macros.h>
@@ -658,4 +658,4 @@ inline typename __lib_function_detail::template auto_from_fixed_bind_result_help
 	return result_type( functor );
 }
 
-#endif // #ifndef __core_function_h_included_
+#endif // #ifndef GUARD_CORE_FUNCTION_H_INCLUDED

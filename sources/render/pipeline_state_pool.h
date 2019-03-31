@@ -1,5 +1,5 @@
-#ifndef __render_pipeline_state_pool_h_included_
-#define __render_pipeline_state_pool_h_included_
+#ifndef GUARD_RENDER_PIPELINE_STATE_POOL_H_INCLUDED
+#define GUARD_RENDER_PIPELINE_STATE_POOL_H_INCLUDED
 
 #include <types.h>
 #include "pipeline_state.h"
@@ -57,4 +57,4 @@ protected:
 
 #include "pipeline_state_pool_inline.h"
 
-#endif // #ifndef __render_pipeline_state_pool_h_included_
+#endif // #ifndef GUARD_RENDER_PIPELINE_STATE_POOL_H_INCLUDED

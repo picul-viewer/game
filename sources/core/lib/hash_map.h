@@ -1,5 +1,5 @@
-#ifndef __core_hash_map_h_included_
-#define __core_hash_map_h_included_
+#ifndef GUARD_CORE_HASH_MAP_H_INCLUDED
+#define GUARD_CORE_HASH_MAP_H_INCLUDED
 
 #include <types.h>
 #include "pool.h"
@@ -246,4 +246,4 @@ using object_hash_map32 = hash_map_template<K, V,
 
 #include "hash_map_inline.h"
 
-#endif // #ifndef __core_hash_map_h_included_
+#endif // #ifndef GUARD_CORE_HASH_MAP_H_INCLUDED

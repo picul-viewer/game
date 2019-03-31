@@ -1,5 +1,5 @@
-#ifndef __render_constant_buffer_h_included_
-#define __render_constant_buffer_h_included_
+#ifndef GUARD_RENDER_CONSTANT_BUFFER_H_INCLUDED
+#define GUARD_RENDER_CONSTANT_BUFFER_H_INCLUDED
 
 #include <types.h>
 #include "dx_include.h"
@@ -39,4 +39,4 @@ protected:
 
 #include "constant_buffer_inline.h"
 
-#endif // #ifndef __render_constant_buffer_h_included_
+#endif // #ifndef GUARD_RENDER_CONSTANT_BUFFER_H_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef __render_statistics_h_included_
-#define __render_statistics_h_included_
+#ifndef GUARD_RENDER_STATISTICS_H_INCLUDED
+#define GUARD_RENDER_STATISTICS_H_INCLUDED
 
 #include <types.h>
 #include "dx_include.h"
@@ -115,4 +115,4 @@ extern statistics g_statistics;
 #	define RENDER_PROFILE_EVENT( name )
 #endif // #ifdef USE_RENDER_PROFILING
 
-#endif // #ifndef __render_statistics_h_included_
+#endif // #ifndef GUARD_RENDER_STATISTICS_H_INCLUDED

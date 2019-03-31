@@ -1,5 +1,5 @@
-#ifndef __resource_system_request_builder_inline_h_included_
-#define __resource_system_request_builder_inline_h_included_
+#ifndef GUARD_RESOURCE_SYSTEM_REQUEST_BUILDER_INLINE_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_REQUEST_BUILDER_INLINE_H_INCLUDED
 
 namespace resource_system {
 
@@ -35,4 +35,4 @@ query<CookDataType>& request_builder::create_query( CookDataType* const in_cook_
 
 } // namespace resource_system
 
-#endif // #ifndef __resource_system_request_builder_inline_h_included_
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_REQUEST_BUILDER_INLINE_H_INCLUDED

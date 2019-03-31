@@ -1,5 +1,5 @@
-#ifndef __core_linear_allocator_inline_h_included_
-#define __core_linear_allocator_inline_h_included_
+#ifndef GUARD_CORE_LINEAR_ALLOCATOR_INLINE_H_INCLUDED
+#define GUARD_CORE_LINEAR_ALLOCATOR_INLINE_H_INCLUDED
 
 #include <macros.h>
 
@@ -58,4 +58,4 @@ void dynamic_linear_allocator<PageSize, PageMaxCount>::shrink( uptr const shrink
 	m_last_pointer			-= shrink_size;
 }
 
-#endif // #ifndef __core_linear_allocator_inline_h_included_
+#endif // #ifndef GUARD_CORE_LINEAR_ALLOCATOR_INLINE_H_INCLUDED

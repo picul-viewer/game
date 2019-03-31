@@ -1,5 +1,5 @@
-#ifndef __resource_system_api_h_included_
-#define __resource_system_api_h_included_
+#ifndef GUARD_RESOURCE_SYSTEM_API_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_API_H_INCLUDED
 
 #include <types.h>
 #include "request_ptr.h"
@@ -17,4 +17,4 @@ void query_request( pcstr const in_file_path, query_callback const& in_callback,
 
 } // namespace resource_system
 
-#endif // #ifndef __resource_system_api_h_included_
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_API_H_INCLUDED

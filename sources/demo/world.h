@@ -1,5 +1,5 @@
-#ifndef __demo_world_h_included_
-#define __demo_world_h_included_
+#ifndef GUARD_DEMO_WORLD_H_INCLUDED
+#define GUARD_DEMO_WORLD_H_INCLUDED
 
 #include <types.h>
 #include <math/vector.h>
@@ -46,4 +46,4 @@ extern world g_world;
 
 } // namespace game
 
-#endif // #ifndef __demo_world_h_included_
+#endif // #ifndef GUARD_DEMO_WORLD_H_INCLUDED

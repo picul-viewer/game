@@ -1,5 +1,5 @@
-#ifndef __core_poolset_h_included_
-#define __core_poolset_h_included_
+#ifndef GUARD_CORE_POOLSET_H_INCLUDED
+#define GUARD_CORE_POOLSET_H_INCLUDED
 
 #include <types.h>
 #include <macros.h>
@@ -258,4 +258,4 @@ using poolset = base_poolset<pool, PageSize, TList ...>;
 template<uptr PageSize, uptr PageMaxCount, typename ... TList>
 using dynamic_poolset = base_dynamic_poolset<dynamic_pool, PageSize, PageMaxCount, TList ...>;
 
-#endif // #ifndef __core_poolset_h_included_
+#endif // #ifndef GUARD_CORE_POOLSET_H_INCLUDED
