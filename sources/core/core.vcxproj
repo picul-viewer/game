@@ -125,8 +125,8 @@
     <ClInclude Include="lib\pool.h" />
     <ClInclude Include="lib\poolset.h" />
     <ClInclude Include="lib\pool_inline.h" />
-    <ClInclude Include="lib\queue.h" />
-    <ClInclude Include="lib\queue_inline.h" />
+    <ClInclude Include="lib\linear_queue.h" />
+    <ClInclude Include="lib\linear_queue_inline.h" />
     <ClInclude Include="lib\reader.h" />
     <ClInclude Include="lib\reversable_double_linked_list.h" />
     <ClInclude Include="lib\reversable_double_linked_list_inline.h" />

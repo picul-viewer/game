@@ -1,20 +1,22 @@
-#ifndef __core_queue_h_included_
-#define __core_queue_h_included_
+#ifndef __core_linear_queue_h_included_
+#define __core_linear_queue_h_included_
 
 #include <types.h>
+
+namespace lib {
 
 template<typename T>
 struct linear_queue
 {
 public:
-	linear_queue( ) = default;
+	typedef T value_type;
 
+public:
 	void create( pvoid const memory, uptr const size );
-	void destroy( );
 
 	void push( T const& value );
 	void pop( T& value );
-	
+
 	T& front( );
 	T const& front( ) const;
 
@@ -22,7 +24,6 @@ public:
 	T const& back( ) const;
 
 	bool empty( ) const;
-	bool full( ) const;
 
 protected:
 	T*		m_data;
@@ -32,6 +33,8 @@ protected:
 	uptr	m_pop_index;
 };
 
-#include "queue_inline.h"
+} // namespace lib
 
-#endif // #ifndef __core_queue_h_included_
+#include "linear_queue_inline.h"
+
+#endif // #ifndef __core_linear_queue_h_included_
