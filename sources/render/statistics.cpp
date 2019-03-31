@@ -184,7 +184,7 @@ void statistics::output_render_statistics( uptr const in_delay, pstr const out_s
 	if ( frame.m_events_end == (uptr)-1 )
 		return;
 
-	text_writer w( out_string, in_max_chars );
+	lib::text_writer w( out_string, in_max_chars );
 	
 	w.write_mask( TEXT_WRITER_MASK( "Frametime: %4.3f ms\n" ), frame.m_frame_time );
 	w.write_mask( TEXT_WRITER_MASK( "CPU render: %4.3f ms\n" ), frame.m_render_cpu_frame_time );

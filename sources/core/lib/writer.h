@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+namespace lib {
+
 class writer
 {
 public:
@@ -35,5 +37,7 @@ void writer::write( T const& value )
 {
 	write_data		( &value, sizeof(T) );
 }
+
+} // namespace lib
 
 #endif // #ifndef __core_writer_h_included_

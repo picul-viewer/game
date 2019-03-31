@@ -69,7 +69,7 @@ void world::create( )
 	{
 		float const dimensions = 9.0f;
 
-		dynamic_writer w;
+		lib::dynamic_writer w;
 		w.create( );
 
 		// Create render object.
@@ -124,7 +124,7 @@ void world::create( )
 			);
 		}
 
-		m_cubes.create( reader( w.data( ), w.size( ) ) );
+		m_cubes.create( lib::reader( w.data( ), w.size( ) ) );
 		
 		mem_align(16) math::float4x3 world = math::float4x3( math::float4( 1.0f, 0.0f, 0.0f, 0.0f ),
 															 math::float4( 0.0f, 1.0f, 0.0f, 0.0f ),

@@ -16,7 +16,7 @@ class resource_pool;
 class texture : public shader_resource_view
 {
 public:
-	void create( reader& in_reader );
+	void create( lib::reader& in_reader );
 
 	u32 add_ref( ) const;
 	u32 release( ) const;

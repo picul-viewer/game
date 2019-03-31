@@ -5,7 +5,7 @@
 
 namespace engine {
 
-void object::create( reader& in_reader )
+void object::create( lib::reader& in_reader )
 {
 	ASSERT( in_reader.is_valid( ) );
 

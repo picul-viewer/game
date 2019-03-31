@@ -195,7 +195,7 @@ void resources::create_shaders( )
 	f.read( data, size );
 	f.close( );
 
-	reader r( data, size );
+	lib::reader r( data, size );
 
 	m_vertex_shader_container.create( r );
 	m_pixel_shader_container.create( r );

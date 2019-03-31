@@ -16,7 +16,7 @@ namespace render {
 class render_object_mesh : public render_object
 {
 public:
-	void create( reader& in_reader );
+	void create( lib::reader& in_reader );
 	void destroy( );
 
 	void update( math::float4x3 const& in_transform );

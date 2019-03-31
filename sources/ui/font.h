@@ -16,7 +16,7 @@ namespace ui {
 class font
 {
 public:
-	void create( reader& in_reader );
+	void create( lib::reader& in_reader );
 	void destroy( );
 
 	inline u8 get_font_size( ) const { return m_char_height; }

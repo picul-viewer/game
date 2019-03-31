@@ -4,6 +4,8 @@
 #include <types.h>
 #include "linear_allocator.h"
 
+namespace lib {
+
 class dynamic_writer
 {
 public:
@@ -36,5 +38,7 @@ void dynamic_writer::write( T const& value )
 {
 	write_data		( &value, sizeof(T) );
 }
+
+} // namespace lib
 
 #endif // #ifndef __core_dynamic_writer_h_included_

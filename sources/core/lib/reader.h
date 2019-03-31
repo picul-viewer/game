@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+namespace lib {
+
 class reader
 {
 public:
@@ -35,5 +37,7 @@ T const& reader::read( )
 	T* const data	= (T*)read_data( sizeof(T) );
 	return			*data;
 }
+
+} // namespace lib
 
 #endif // #ifndef __core_reader_h_included_

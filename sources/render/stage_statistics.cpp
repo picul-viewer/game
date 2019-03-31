@@ -19,7 +19,7 @@ void stage_statistics::create( )
 	f.read( data, size );
 	f.close( );
 
-	m_font.create( reader( data, size ) );
+	m_font.create( lib::reader( data, size ) );
 
 	g_statistics.create( );
 }

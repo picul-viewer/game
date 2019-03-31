@@ -67,7 +67,7 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 
 	str256 str;
 
-	text_reader r( data, size );
+	lib::text_reader r( data, size );
 	r.read_str( str.data( ) );
 
 	if ( str == "format" )

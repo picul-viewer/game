@@ -13,7 +13,7 @@
 namespace render
 {
 
-void mesh::create( reader& in_reader )
+void mesh::create( lib::reader& in_reader )
 {
 	ASSERT( in_reader.is_valid( ) );
 

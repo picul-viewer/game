@@ -4,6 +4,8 @@
 #include <types.h>
 #include <stdio.h>
 
+namespace lib {
+
 class text_reader
 {
 public:
@@ -67,5 +69,7 @@ void text_reader::read_mask( pcstr const mask, Args* const ... args )
 	_snscanf( m_pointer, m_end - m_pointer, mask, args ..., &pos );
 	m_pointer += pos;
 }
+
+} // namespace lib
 
 #endif // #ifndef __core_text_reader_h_included_

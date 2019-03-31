@@ -12,7 +12,7 @@ class shader_container
 public:
 	shader_container( );
 	
-	void create( reader& in_reader );
+	void create( lib::reader& in_reader );
 	void destroy( );
 
 	ShaderType operator[]( ShaderEnumerator const in_index );

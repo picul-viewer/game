@@ -21,7 +21,7 @@ shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumerator
 }
 
 template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax>
-void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::create( reader& in_reader )
+void shader_and_input_layout_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::create( lib::reader& in_reader )
 {
 	ASSERT( m_created == false );
 

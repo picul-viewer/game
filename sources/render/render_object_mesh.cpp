@@ -5,7 +5,7 @@
 
 namespace render {
 
-void render_object_mesh::create( reader& in_reader )
+void render_object_mesh::create( lib::reader& in_reader )
 {
 	ASSERT( in_reader.is_valid( ) );
 

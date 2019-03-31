@@ -19,7 +19,7 @@ class mesh
 public:
 	enum { max_vertex_buffers_count = 4 };
 	
-	void create( reader& in_reader );
+	void create( lib::reader& in_reader );
 
 	u32 add_ref( ) const;
 	u32 release( ) const;

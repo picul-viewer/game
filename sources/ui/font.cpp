@@ -7,7 +7,7 @@
 
 namespace ui {
 
-void font::create( reader& in_reader )
+void font::create( lib::reader& in_reader )
 {
 	pcstr const texture_path = in_reader.read_str( );
 	m_texture = render::g_world.create_texture( utils::get_resource_path( texture_path ).c_str( ) );

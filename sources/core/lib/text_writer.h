@@ -4,6 +4,8 @@
 #include <types.h>
 #include <stdio.h>
 
+namespace lib {
+
 class text_writer
 {
 public:
@@ -63,5 +65,7 @@ void text_writer::write_mask( pcstr const mask, Args const& ... args )
 {
 	m_pointer += snprintf( m_pointer, m_end - m_pointer, mask, args ... );
 }
+
+} // namespace lib
 
 #endif // #ifndef __core_text_writer_h_included_

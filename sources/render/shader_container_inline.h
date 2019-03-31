@@ -23,7 +23,7 @@ shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::shader_cont
 }
 
 template<typename ShaderType, typename ShaderEnumerator, u32 ShaderEnumeratorMax>
-void shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::create( reader& in_reader  )
+void shader_container<ShaderType, ShaderEnumerator, ShaderEnumeratorMax>::create( lib::reader& in_reader  )
 {
 	ASSERT( m_created == false );
 

@@ -227,7 +227,7 @@ static inline void compile_shader(	weak_const_string const input_directory,
 		uptr const output_size = sizeof(u32) + result_size_uptr + ( WriteVertexType ? sizeof(u8) : 0 );
 		pointer const output_ptr = shader_data.allocate( output_size );
 			
-		writer w( output_ptr, output_size );
+		lib::writer w( output_ptr, output_size );
 		w.write( result_size );
 
 		if ( WriteVertexType )

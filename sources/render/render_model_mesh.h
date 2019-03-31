@@ -15,7 +15,7 @@ class resource_pool;
 class render_model_mesh
 {
 public:
-	void create( reader& in_reader );
+	void create( lib::reader& in_reader );
 
 	u32 add_ref( );
 	u32 release( );

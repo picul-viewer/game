@@ -439,7 +439,7 @@ void fill_init_data( uptr						width,
 					 uptr						mip_count,
 					 uptr						array_size,
 					 DXGI_FORMAT				format,
-					 reader&					reader,
+					 lib::reader&				reader,
 					 D3D11_SUBRESOURCE_DATA*	init_data )
 {
 	ASSERT( init_data );
@@ -472,7 +472,7 @@ void fill_init_data( uptr						width,
 	}
 }
 
-void texture::create( reader& in_reader )
+void texture::create( lib::reader& in_reader )
 {
 	ASSERT( in_reader.is_valid( ) );
 

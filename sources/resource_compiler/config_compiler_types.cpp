@@ -21,7 +21,7 @@ static bool save( pvoid const data, uptr const size, pcstr const output_path )
 
 bool compile_config_font( pvoid const data, uptr const size, pcstr const file_name, pcstr const output_path )
 {
-	text_reader cfg( data, size );
+	lib::text_reader cfg( data, size );
 
 	u32 image_width;
 	u32 image_height;
@@ -54,7 +54,7 @@ bool compile_config_font( pvoid const data, uptr const size, pcstr const file_na
 	enum { max_font_config = 2 * Kb };
 
 	pvoid const output_data = stack_allocate( max_font_config );
-	writer output_cfg( output_data, max_font_config );
+	lib::writer output_cfg( output_data, max_font_config );
 
 	output_cfg.write_str( str256( "textures\\fonts\\" ) + file_name + ".dds" );
 	

@@ -13,7 +13,7 @@ class shader_and_input_layout_container
 public:
 	shader_and_input_layout_container( );
 	
-	void create( reader& in_reader );
+	void create( lib::reader& in_reader );
 	void destroy( );
 
 	ShaderType operator[]( ShaderEnumerator const in_index );
