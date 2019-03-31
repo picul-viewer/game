@@ -142,6 +142,15 @@
     <Filter Include="lib\array\dynamic_array">
       <UniqueIdentifier>{a63c3c2d-817e-4009-8be2-447dfeee8cd3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\list\list">
+      <UniqueIdentifier>{4787ebd3-5218-44e1-9fbc-1c6921af6922}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\list\double_linked_list">
+      <UniqueIdentifier>{86d6db87-61e8-4d2a-aef7-421c14b81898}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\list\reversable_double_linked_list">
+      <UniqueIdentifier>{29c008de-7ffc-4272-a0eb-4410a9fe0ca1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -371,11 +380,23 @@
     <ClInclude Include="lib\dynamic_array_inline.h">
       <Filter>lib\array\dynamic_array</Filter>
     </ClInclude>
-    <ClInclude Include="lib\embedded_list.h">
-      <Filter>lib\list</Filter>
+    <ClInclude Include="lib\list.h">
+      <Filter>lib\list\list</Filter>
     </ClInclude>
-    <ClInclude Include="lib\embedded_list_inline.h">
-      <Filter>lib\list</Filter>
+    <ClInclude Include="lib\list_inline.h">
+      <Filter>lib\list\list</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\double_linked_list_inline.h">
+      <Filter>lib\list\double_linked_list</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\double_linked_list.h">
+      <Filter>lib\list\double_linked_list</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\reversable_double_linked_list.h">
+      <Filter>lib\list\reversable_double_linked_list</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\reversable_double_linked_list_inline.h">
+      <Filter>lib\list\reversable_double_linked_list</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

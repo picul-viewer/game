@@ -57,7 +57,7 @@ void ui_batch::next_level( )
 		return l.texture < r.texture;
 	};
 
-	sort( begin, end, comparator );
+	lib::sort( begin, end, comparator );
 	
 	math::u32x4 const half_dimensions = math::u16x4( g_parameters.screen_resolution.x, g_parameters.screen_resolution.y, g_parameters.screen_resolution.x, g_parameters.screen_resolution.y );
 

@@ -93,12 +93,12 @@ typename static_bvh<T>::node* static_bvh<T>::build( NodeAllocator& node_allocato
 		memory::copy( objects[sorting1], first, buffer_size );
 		memory::copy( objects[sorting2], first, buffer_size );
 		
-		std::sort( objects[sorting1], objects[sorting1] + count, [sorting1]( T* l, T* r )
+		lib::sort( objects[sorting1], objects[sorting1] + count, [sorting1]( T* l, T* r )
 		{
 			return l->get_aabb( ).get_box( ).get_max( ).data[sorting1] < r->get_aabb( ).get_box( ).get_max( ).data[sorting1];
 		} );
 		
-		std::sort( objects[sorting2], objects[sorting2] + count, [sorting2]( T* l, T* r )
+		lib::sort( objects[sorting2], objects[sorting2] + count, [sorting2]( T* l, T* r )
 		{
 			return l->get_aabb( ).get_box( ).get_max( ).data[sorting2] < r->get_aabb( ).get_box( ).get_max( ).data[sorting2];
 		} );
@@ -180,7 +180,7 @@ void static_bvh<T>::create( NodeAllocator& node_allocator, T** const objects, up
 	aabb_aligned* aabbs = aligned_std_allocator<16>( ).allocate( objects_size * sizeof(aabb_aligned) );
 
 	// Pre-sort by max.x -> sorting == 0
-	std::sort( objects, objects + objects_size, []( T* l, T* r )
+	lib::sort( objects, objects + objects_size, []( T* l, T* r )
 	{
 		return l->get_aabb( ).get_box( ).get_max( ).x < r->get_aabb( ).get_box( ).get_max( ).x;
 	} );

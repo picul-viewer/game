@@ -3,7 +3,7 @@
 
 #include <types.h>
 #include <math/matrix.h>
-#include <lib/embedded_list.h>
+#include <lib/list.h>
 #include <lib/reader.h>
 
 #include "render_object.h"
@@ -21,11 +21,11 @@ public:
 	template<typename Pred>
 	inline void for_each( Pred const& functor )
 	{
-		m_objects.for_each( functor );
+		lib::for_each( m_objects.begin( ), m_objects.end( ), functor );
 	}
 
 protected:
-	typedef embedded_typeless_list render_object_list;
+	typedef lib::intrusive_list<render_object, &render_object::m_next> render_object_list;
 	render_object_list	m_objects;
 };
 
