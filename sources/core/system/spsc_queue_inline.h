@@ -4,7 +4,7 @@
 #include <lib/allocator.h>
 
 template<typename T, uptr RecordSize>
-void spsc_queue<T, RecordSize>::create( pointer const data, uptr const size )
+void sys::spsc_queue<T, RecordSize>::create( pointer const data, uptr const size )
 {
 	static_assert				( sizeof(T) <= RecordSize, "incorrect template parameters" );
 
@@ -26,13 +26,13 @@ void spsc_queue<T, RecordSize>::create( pointer const data, uptr const size )
 }
 
 template<typename T, uptr RecordSize>
-void spsc_queue<T, RecordSize>::destroy( )
+void sys::spsc_queue<T, RecordSize>::destroy( )
 {
 	m_empty_event.destroy		( );
 }
 
 template<typename T, uptr RecordSize>
-void spsc_queue<T, RecordSize>::push( value_type const& value )
+void sys::spsc_queue<T, RecordSize>::push( value_type const& value )
 {
 	u32 const push_index		= m_push_index;
 	u32 const new_push_index	= push_index + 1;
@@ -50,7 +50,7 @@ void spsc_queue<T, RecordSize>::push( value_type const& value )
 }
 
 template<typename T, uptr RecordSize>
-void spsc_queue<T, RecordSize>::push( value_type const* const values, u32 const count )
+void sys::spsc_queue<T, RecordSize>::push( value_type const* const values, u32 const count )
 {
 	u32 const push_index		= m_push_index;
 	u32 const new_push_index	= push_index + count;
@@ -69,11 +69,11 @@ void spsc_queue<T, RecordSize>::push( value_type const* const values, u32 const 
 }
 
 template<typename T, uptr RecordSize>
-void spsc_queue<T, RecordSize>::pop( value_type& value )
+void sys::spsc_queue<T, RecordSize>::pop( value_type& value )
 {
 	if ( interlocked_exchange_add( m_current_size, (u32)-1 ) == 0 )
 	{
-		m_empty_event.wait_for	( );
+		m_empty_event.wait		( );
 	}
 	
 	u32 const pop_index			= m_pop_index;
@@ -85,7 +85,7 @@ void spsc_queue<T, RecordSize>::pop( value_type& value )
 }
 
 template<typename T, uptr RecordSize>
-pointer spsc_queue<T, RecordSize>::data( ) const
+pointer sys::spsc_queue<T, RecordSize>::data( ) const
 {
 	return m_data;
 }

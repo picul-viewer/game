@@ -4,7 +4,7 @@
 #include <macros.h>
 
 template<typename T, uptr RecordSize>
-void mpmc_queue<T, RecordSize>::create( pointer const data, uptr const size )
+void sys::mpmc_queue<T, RecordSize>::create( pointer const data, uptr const size )
 {
 	static_assert				( sizeof(T) <= RecordSize, "incorrect template parameters" );
 
@@ -28,13 +28,13 @@ void mpmc_queue<T, RecordSize>::create( pointer const data, uptr const size )
 }
 
 template<typename T, uptr RecordSize>
-void mpmc_queue<T, RecordSize>::destroy( )
+void sys::mpmc_queue<T, RecordSize>::destroy( )
 {
 	m_empty_event.destroy		( );
 }
 
 template<typename T, uptr RecordSize>
-void mpmc_queue<T, RecordSize>::push( value_type const& value )
+void sys::mpmc_queue<T, RecordSize>::push( value_type const& value )
 {
 	u32 const new_push_index	= interlocked_inc( m_pre_push_index );
 	u32 const target_index		= new_push_index - 1;
@@ -54,7 +54,7 @@ void mpmc_queue<T, RecordSize>::push( value_type const& value )
 }
 
 template<typename T, uptr RecordSize>
-void mpmc_queue<T, RecordSize>::push( value_type const* const values, u32 const count )
+void sys::mpmc_queue<T, RecordSize>::push( value_type const* const values, u32 const count )
 {
 	u32 const new_push_index	= interlocked_add( m_pre_push_index, count );
 	u32 const target_index		= new_push_index - count;
@@ -75,7 +75,7 @@ void mpmc_queue<T, RecordSize>::push( value_type const* const values, u32 const 
 }
 
 template<typename T, uptr RecordSize>
-void mpmc_queue<T, RecordSize>::pop( value_type& value )
+void sys::mpmc_queue<T, RecordSize>::pop( value_type& value )
 {
 	while ( interlocked_dec( m_current_size ) < 0 )
 	{
@@ -88,15 +88,13 @@ void mpmc_queue<T, RecordSize>::pop( value_type& value )
 	
 	value						= m_data[target_index & m_index_mask];
 	
-	m_data[target_index & m_index_mask] = value;
-	
 	SPIN_LOCK					( m_pop_index != target_index );
 	
 	m_pop_index					= new_pop_index;
 }
 
 template<typename T, uptr RecordSize>
-pointer mpmc_queue<T, RecordSize>::data( ) const
+pointer sys::mpmc_queue<T, RecordSize>::data( ) const
 {
 	return m_data;
 }

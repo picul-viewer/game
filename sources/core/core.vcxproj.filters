@@ -46,15 +46,6 @@
     <Filter Include="system\threads">
       <UniqueIdentifier>{23b05134-1f20-4175-b204-00e3dc1ffd55}</UniqueIdentifier>
     </Filter>
-    <Filter Include="system\threads\thread">
-      <UniqueIdentifier>{361eee4f-ab60-45b5-8fa5-1b15070f9057}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="system\threads\threading_event">
-      <UniqueIdentifier>{7b694da7-b212-44b9-bf03-fa58d3c0f6bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="system\threads\interlocked">
-      <UniqueIdentifier>{228245d0-c358-42c5-8627-bee6d6b8d673}</UniqueIdentifier>
-    </Filter>
     <Filter Include="math\collision">
       <UniqueIdentifier>{5fdc8b69-a335-4f53-8881-b0ab891cf780}</UniqueIdentifier>
     </Filter>
@@ -151,6 +142,21 @@
     <Filter Include="lib\list\reversable_double_linked_list">
       <UniqueIdentifier>{29c008de-7ffc-4272-a0eb-4410a9fe0ca1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="system\threads\thread">
+      <UniqueIdentifier>{361eee4f-ab60-45b5-8fa5-1b15070f9057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\sync">
+      <UniqueIdentifier>{690b429b-8118-4bb0-88f6-1191bebf15e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\sync\interlocked">
+      <UniqueIdentifier>{228245d0-c358-42c5-8627-bee6d6b8d673}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\sync\mutex">
+      <UniqueIdentifier>{4aeceae0-0151-4dab-9e37-dcfe77fb318b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\sync\system_event">
+      <UniqueIdentifier>{7b694da7-b212-44b9-bf03-fa58d3c0f6bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -234,7 +240,7 @@
       <Filter>lib\string</Filter>
     </ClInclude>
     <ClInclude Include="system\interlocked.h">
-      <Filter>system\threads\interlocked</Filter>
+      <Filter>system\threads\sync\interlocked</Filter>
     </ClInclude>
     <ClInclude Include="system\spsc_queue.h">
       <Filter>system\threads\structs\spsc_queue</Filter>
@@ -244,9 +250,6 @@
     </ClInclude>
     <ClInclude Include="system\thread.h">
       <Filter>system\threads\thread</Filter>
-    </ClInclude>
-    <ClInclude Include="system\threading_event.h">
-      <Filter>system\threads\threading_event</Filter>
     </ClInclude>
     <ClInclude Include="math\aabb.h">
       <Filter>math\collision\aabb</Filter>
@@ -392,6 +395,12 @@
     <ClInclude Include="lib\linear_queue_inline.h">
       <Filter>lib\queue</Filter>
     </ClInclude>
+    <ClInclude Include="system\mutex.h">
+      <Filter>system\threads\sync\mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="system\system_event.h">
+      <Filter>system\threads\sync\system_event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="system\timer.cpp">
@@ -420,13 +429,10 @@
       <Filter>lib\string</Filter>
     </ClCompile>
     <ClCompile Include="system\interlocked.cpp">
-      <Filter>system\threads\interlocked</Filter>
+      <Filter>system\threads\sync\interlocked</Filter>
     </ClCompile>
     <ClCompile Include="system\thread.cpp">
       <Filter>system\threads\thread</Filter>
-    </ClCompile>
-    <ClCompile Include="system\threading_event.cpp">
-      <Filter>system\threads\threading_event</Filter>
     </ClCompile>
     <ClCompile Include="math\aabb.cpp">
       <Filter>math\collision\aabb</Filter>
@@ -475,6 +481,12 @@
     </ClCompile>
     <ClCompile Include="lib\linear_allocator.cpp">
       <Filter>lib\memory\allocators\linear</Filter>
+    </ClCompile>
+    <ClCompile Include="system\mutex.cpp">
+      <Filter>system\threads\sync\mutex</Filter>
+    </ClCompile>
+    <ClCompile Include="system\system_event.cpp">
+      <Filter>system\threads\sync\system_event</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

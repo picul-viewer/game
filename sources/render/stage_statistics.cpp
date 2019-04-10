@@ -12,12 +12,13 @@ void stage_statistics::create( )
 {
 	pcstr const font_path = GET_RESOURCE_PATH( "configs\\fonts\\console.cfg" );
 
-	sys::file f( font_path, sys::file::open_read );
+	sys::file f;
+	f.create( font_path, sys::file::open_read );
 	ASSERT( f.is_valid( ) );
 	uptr const size = f.size( );
 	pvoid const data = stack_allocate( size );
 	f.read( data, size );
-	f.close( );
+	f.destroy( );
 
 	m_font.create( lib::reader( data, size ) );
 

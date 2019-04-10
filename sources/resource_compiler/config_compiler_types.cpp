@@ -9,12 +9,13 @@ namespace resource_compiler {
 
 static bool save( pvoid const data, uptr const size, pcstr const output_path )
 {
-	sys::file f( output_path, sys::file::open_write );
+	sys::file f;
+	f.create( output_path, sys::file::open_write );
 	if ( !f.is_valid( ) )
 		return false;
 
 	f.write( data, size );
-	f.close( );
+	f.destroy( );
 
 	return true;
 }

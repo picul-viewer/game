@@ -3,7 +3,9 @@
 
 #include <types.h>
 #include "interlocked.h"
-#include "threading_event.h"
+#include "system_event.h"
+
+namespace sys {
 
 // Multiple producers, single consumer.
 template<typename T, uptr RecordSize = sizeof(T)>
@@ -45,8 +47,10 @@ private:
 	};
 	value_type*			m_data;
 	u32					m_index_mask;
-	threading_event		m_empty_event;
+	system_event		m_empty_event;
 };
+
+} // namespace sys
 
 #include "mpsc_queue_inline.h"
 

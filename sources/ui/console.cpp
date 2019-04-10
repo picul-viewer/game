@@ -9,12 +9,13 @@ namespace ui {
 
 void console::create( pcstr const in_font_path, u8 const in_visible_lines )
 {
-	sys::file f( in_font_path, sys::file::open_read );
+	sys::file f;
+	f.create( in_font_path, sys::file::open_read );
 	ASSERT( f.is_valid( ) );
 	uptr const size = f.size( );
 	pvoid const data = stack_allocate( size );
 	f.read( data, size );
-	f.close( );
+	f.destroy( );
 
 	m_font.create( lib::reader( data, size ) );
 

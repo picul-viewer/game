@@ -4,7 +4,8 @@
 #include <types.h>
 #include "interlocked.h"
 
-mem_align(16)
+namespace sys {
+
 class spsc_stream
 {
 public:
@@ -55,5 +56,7 @@ void spsc_stream::write( T const& value )
 {
 	write_data		( &value, sizeof(T) );
 }
+
+} // namespace sys
 
 #endif // #ifndef GUARD_CORE_SPSC_STREAM_H_INCLUDED

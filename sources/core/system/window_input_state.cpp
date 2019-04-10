@@ -2,9 +2,7 @@
 #include <Windows.h>
 #include <macros.h>
 
-namespace sys {
-
-void window_input_state::on_message( pvoid raw_data )
+void sys::window_input_state::on_message( pvoid raw_data )
 {
     RAWINPUT* const raw = (RAWINPUT*)raw_data;
 
@@ -61,6 +59,6 @@ void window_input_state::on_message( pvoid raw_data )
 		UNREACHABLE_CODE
 }
 
+namespace sys {
 window_input_state g_input_state;
-
 } // namespace sys

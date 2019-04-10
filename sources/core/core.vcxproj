@@ -163,12 +163,13 @@
     <ClInclude Include="system\mpmc_queue_inline.h" />
     <ClInclude Include="system\mpsc_queue.h" />
     <ClInclude Include="system\mpsc_queue_inline.h" />
+    <ClInclude Include="system\mutex.h" />
     <ClInclude Include="system\path_inline.h" />
     <ClInclude Include="system\spsc_queue.h" />
     <ClInclude Include="system\spsc_queue_inline.h" />
     <ClInclude Include="system\spsc_stream.h" />
     <ClInclude Include="system\thread.h" />
-    <ClInclude Include="system\threading_event.h" />
+    <ClInclude Include="system\system_event.h" />
     <ClInclude Include="system\window_input.h" />
     <ClInclude Include="system\path.h" />
     <ClInclude Include="system\timer.h" />
@@ -197,9 +198,10 @@
     <ClCompile Include="system\file_iterator.cpp" />
     <ClCompile Include="system\input.cpp" />
     <ClCompile Include="system\interlocked.cpp" />
+    <ClCompile Include="system\mutex.cpp" />
     <ClCompile Include="system\spsc_stream.cpp" />
     <ClCompile Include="system\thread.cpp" />
-    <ClCompile Include="system\threading_event.cpp" />
+    <ClCompile Include="system\system_event.cpp" />
     <ClCompile Include="system\window_input.cpp" />
     <ClCompile Include="system\path.cpp" />
     <ClCompile Include="system\timer.cpp" />

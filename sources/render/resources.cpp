@@ -186,14 +186,15 @@ void resources::create_shaders( )
 		GET_RESOURCE_PATH( "shaders\\release_4_0" );
 #endif // #ifdef DEBUG
 
-	sys::file f( root_path, sys::file::open_read );
+	sys::file f;
+	f.create( root_path, sys::file::open_read );
 	ASSERT( f.is_valid( ) );
 
 	uptr const size = f.size( );
 	pvoid const data = virtual_allocator( ).allocate( size );
 
 	f.read( data, size );
-	f.close( );
+	f.destroy( );
 
 	lib::reader r( data, size );
 

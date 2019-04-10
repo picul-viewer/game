@@ -51,7 +51,8 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 	sys::path::remove_file_extension( config_path );
 	config_path.append( ".texconfig" );
 
-	sys::file config( config_path.c_str( ), sys::file::open_read );
+	sys::file config;
+	config.create( config_path.c_str( ), sys::file::open_read );
 	if ( !config.is_valid( ) )
 	{
 		LOG( "texture_compiler: texture config is missing: \"%s\"\n", config_path.c_str( ) );
@@ -63,7 +64,7 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 	u8* const data = stack_allocate( size );
 	config.read( data, size );
 
-	config.close( );
+	config.destroy( );
 
 	str256 str;
 

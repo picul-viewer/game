@@ -3,9 +3,7 @@
 #include <Windows.h>
 #include "window_input_state.h"
 
-namespace sys {
-
-void window_input::create( )
+void sys::window_input::create( )
 {
 	static_assert( raw_input_size == sizeof(RAWINPUT), "internal input store has incorrect size" );
 
@@ -36,12 +34,12 @@ void window_input::create( )
 	ASSERT( result != FALSE );
 }
 
-void window_input::destroy( )
+void sys::window_input::destroy( )
 {
 	//
 }
 
-void window_input::on_message( pvoid handle )
+void sys::window_input::on_message( pvoid handle )
 {
 	// NOTE: don't support joistics for now, so sizeof(RAWINPUT) is known.
 	u32 size = sizeof(RAWINPUT);
@@ -51,6 +49,6 @@ void window_input::on_message( pvoid handle )
 	g_input_state.on_message( m_last_input );
 }
 
+namespace sys {
 window_input g_window_input;
-
 } // namespace sys

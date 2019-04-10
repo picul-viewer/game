@@ -96,7 +96,7 @@ void world::window_thread( )
 	m_alive_events[event_window].set( );
 
 	// Waiting for all systems to create.
-	m_alive_events->wait_for( time::infinite, event_count );
+	sys::system_event::wait_all( event_count, m_alive_events );
 
 	m_window.run( );
 	exit( );
@@ -108,10 +108,10 @@ void world::window_thread( )
 	m_exit_events[event_window].set( );
 	
 	// Waiting for all engine systems to stop.
-	m_exit_events->wait_for( time::infinite, event_count );
+	sys::system_event::wait_all( event_count, m_exit_events );
 
 	// Waiting for render to destroy.
-	m_alive_events[event_main].wait_for( );
+	m_alive_events[event_main].wait( );
 
 	m_window.destroy( );
 	sys::g_window_input.destroy( );
@@ -121,7 +121,7 @@ void world::window_thread( )
 void world::main_thread( )
 {
 	// Waiting for window to create.
-	m_alive_events->wait_for( time::infinite, system_event_count );
+	sys::system_event::wait_all( system_event_count, m_alive_events );
 
 	ASSERT( ( m_window_dimensions.x < 0x10000 ) && ( m_window_dimensions.y < 0x10000 ) );
 	render::g_world.create( (HWND)m_window.get_hwnd( ), m_window_dimensions, true );
@@ -143,7 +143,7 @@ void world::main_thread( )
 	m_exit_events[event_main].set( );
 
 	// Waiting for window to stop.
-	m_exit_events->wait_for( time::infinite, event_count );
+	sys::system_event::wait_all( event_count, m_exit_events );
 
 	game::world_interface::destroy( );
 	render::g_world.destroy( );
@@ -166,14 +166,18 @@ void world::create( )
 		m_exit_events[i].create( false, true );
 	}
 
-	m_threads[thread_window].create( thread::method_helper<world, &world::window_thread>, 1 * Mb, this );
+	m_threads[thread_window].create( sys::thread::method_helper<world, &world::window_thread>, 1 * Mb, this );
 }
 
 void world::destroy( )
 {
-	m_threads->destroy( time::infinite, thread_count );
-	m_alive_events->destroy( event_count );
-	m_exit_events->destroy( event_count );
+	sys::thread::destroy( thread_count, m_threads );
+
+	for ( u32 i = 0; i < event_count; ++i )
+	{
+		m_alive_events[i].destroy( );
+		m_exit_events[i].destroy( );
+	}
 	
 	g_resources.destroy( );
 }

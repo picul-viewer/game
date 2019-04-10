@@ -2,12 +2,12 @@
 #include <macros.h>
 #include <lib/memory.h>
 
-spsc_stream::spsc_stream( pointer const memory, uptr const size )
+sys::spsc_stream::spsc_stream( pointer const memory, uptr const size )
 {
 	create( memory, size );
 }
 
-void spsc_stream::create( pointer const memory, uptr const size )
+void sys::spsc_stream::create( pointer const memory, uptr const size )
 {
 	ASSERT( memory );
 	ASSERT_CMP( size, <, 0x100000000 );
@@ -18,18 +18,18 @@ void spsc_stream::create( pointer const memory, uptr const size )
 	clear( );
 }
 
-void spsc_stream::clear( )
+void sys::spsc_stream::clear( )
 {
 	m_push_pointer = 0;
 	m_pop_pointer = 0;
 }
 
-pvoid spsc_stream::data( ) const
+pvoid sys::spsc_stream::data( ) const
 {
 	return m_data;
 }
 
-pvoid spsc_stream::read_data( u32 const size )
+pvoid sys::spsc_stream::read_data( u32 const size )
 {
 	u32 const pop_pointer = m_pop_pointer;
 	u32 const new_pop_pointer = pop_pointer + size;
@@ -42,7 +42,7 @@ pvoid spsc_stream::read_data( u32 const size )
 	return result;
 }
 
-void spsc_stream::write_data( pcvoid const data, u32 const size )
+void sys::spsc_stream::write_data( pcvoid const data, u32 const size )
 {
 	u32 const push_pointer = m_push_pointer;
 	u32 const new_push_pointer = push_pointer + size;

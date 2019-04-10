@@ -3,23 +3,20 @@
 
 #include <types.h>
 
+namespace sys {
+
 class thread
 {
 public:
 	static const u32 max_priority = 30;
 
 public:
-	thread( ) = default;
-	~thread( ) = default;
-
 	typedef unsigned long ( __stdcall *thread_func_type )( void* );
 
-	thread( thread_func_type const func, u32 const stack_size, pvoid const arg );
-	
 	void create( thread_func_type const func, u32 const stack_size, pvoid const arg );
 	void destroy( u32 const wait_ms = time::infinite );
-	void destroy( u32 const wait_ms, u32 const count );
-	void destroy_any( u32 const wait_ms, u32 const count );
+
+	static void destroy( u32 const count, thread* const threads, u32 const wait_ms = time::infinite );
 
 	void suspend( );
 	void resume( );
@@ -28,6 +25,8 @@ public:
 	void advise_processor_index( u32 const index );
 	void set_priority( u32 const priority );
 	void set_affinity_mask( u64 const mask );
+
+	inline pvoid get_handle( ) const { return m_id; }
 
 	template<void( *Functor )( void* )>
 	static unsigned long __stdcall func_helper( void* const arg )
@@ -51,8 +50,11 @@ public:
 		return 0;
 	}
 
-protected:
-	pvoid	m_id;
+private:
+	pvoid m_id;
+
 };
+
+} // namespace sys
 
 #endif // #ifndef GUARD_CORE_THREAD_H_INCLUDED

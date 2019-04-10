@@ -4,18 +4,7 @@
 
 #include <macros.h>
 
-namespace sys {
-
-file::file( ) :
-	m_handle( INVALID_HANDLE_VALUE )
-{ }
-
-file::file( pcstr path, open_mode mode )
-{
-	open( path, mode );
-}
-
-void file::open( pcstr path, open_mode mode )
+void sys::file::create( pcstr path, open_mode mode )
 {
 	DWORD access_flags = 0;
 	DWORD share_flags = 0;
@@ -41,20 +30,14 @@ void file::open( pcstr path, open_mode mode )
 	ASSERT( m_handle != INVALID_HANDLE_VALUE, "open file error: \"%s\"\nerror type: %d\n", path, GetLastError( ) );
 }
 
-file::~file( )
-{
-	if ( is_valid( ) )
-		close( );
-}
-
-void file::close( )
+void sys::file::destroy( )
 {
 	ASSERT( is_valid( ) );
 	CloseHandle( m_handle );
 	m_handle = INVALID_HANDLE_VALUE;
 }
 
-uptr file::size( ) const
+uptr sys::file::size( ) const
 {
 	LARGE_INTEGER size;
 	BOOL result = GetFileSizeEx( m_handle, &size );
@@ -65,7 +48,7 @@ uptr file::size( ) const
 	return (uptr)size.QuadPart;
 }
 
-void file::seek( ptr position, seek_mode mode )
+void sys::file::seek( ptr position, seek_mode mode )
 {
 	DWORD origin = -1;
 
@@ -90,7 +73,7 @@ void file::seek( ptr position, seek_mode mode )
 	ASSERT( result == TRUE, "FS error: 0x%016d\n", GetLastError( ) );
 }
 
-void file::read( pvoid buffer, uptr size )
+void sys::file::read( pvoid buffer, uptr size )
 {
 	ASSERT( buffer );
 	ASSERT_CMP( size, <=, 0x7FFFFFFF );
@@ -102,7 +85,7 @@ void file::read( pvoid buffer, uptr size )
 	ASSERT_CMP( bytes_read, ==, (DWORD)size );
 }
 
-void file::write( pvoid buffer, uptr size )
+void sys::file::write( pvoid buffer, uptr size )
 {
 	ASSERT( buffer );
 	ASSERT_CMP( size, <=, 0x7FFFFFFF );
@@ -114,9 +97,7 @@ void file::write( pvoid buffer, uptr size )
 	ASSERT_CMP( bytes_written, ==, (DWORD)size );
 }
 
-bool file::is_valid( ) const
+bool sys::file::is_valid( ) const
 {
 	return m_handle != INVALID_HANDLE_VALUE;
-}
-
 }

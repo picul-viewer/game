@@ -4,9 +4,7 @@
 
 #include <Shlwapi.h>
 
-namespace sys {
-
-void file_iterator::create( pcstr mask )
+void sys::file_iterator::create( pcstr mask )
 {
 	static_assert( find_data_size == sizeof(WIN32_FIND_DATA), "revisit find data size value in header" );
 
@@ -26,7 +24,7 @@ void file_iterator::create( pcstr mask )
 	}
 }
 
-void file_iterator::destroy( )
+void sys::file_iterator::destroy( )
 {
 	if ( is_valid( ) )
 	{
@@ -35,7 +33,7 @@ void file_iterator::destroy( )
 	}
 }
 
-bool file_iterator::next( )
+bool sys::file_iterator::next( )
 {
 	bool result = false;
 	
@@ -48,34 +46,32 @@ bool file_iterator::next( )
 	return result;
 }
 
-bool file_iterator::is_valid( ) const
+bool sys::file_iterator::is_valid( ) const
 {
 	return m_handle != INVALID_HANDLE_VALUE;
 }
 
-bool file_iterator::is_directory( ) const
+bool sys::file_iterator::is_directory( ) const
 {
 	return ( (WIN32_FIND_DATA*)m_find_data )->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 }
 
-pcstr file_iterator::get_file_name( ) const
+pcstr sys::file_iterator::get_file_name( ) const
 {
 	return ( (WIN32_FIND_DATA*)m_find_data )->cFileName;
 }
 
-uptr file_iterator::get_file_size( ) const
+uptr sys::file_iterator::get_file_size( ) const
 {
 	return ( (WIN32_FIND_DATA*)m_find_data )->nFileSizeLow | ( (uptr)( (WIN32_FIND_DATA*)m_find_data )->nFileSizeLow << ( sizeof(DWORD) * 8 ) );
 }
 
-u64 file_iterator::get_creation_time( ) const
+u64 sys::file_iterator::get_creation_time( ) const
 {
 	return *(u64*)&( (WIN32_FIND_DATA*)m_find_data )->ftCreationTime;
 }
 
-u64 file_iterator::get_modification_time( ) const
+u64 sys::file_iterator::get_modification_time( ) const
 {
 	return *(u64*)&( (WIN32_FIND_DATA*)m_find_data )->ftLastWriteTime;
 }
-
-} // namespace sys

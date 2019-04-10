@@ -77,14 +77,15 @@ void resource_pool<Resource>::free_resource( Resource* const in_resource )
 template<typename Resource>
 void resource_pool<Resource>::create_resource_from_file( Resource* const in_resource, weak_const_string const& in_path )
 {
-	sys::file f							( in_path.c_str( ), sys::file::open_read );
+	sys::file f;
+	f.create							( in_path.c_str( ), sys::file::open_read );
 	ASSERT								( f.is_valid( ) );
 	uptr const size						= f.size( );
 
 	pvoid const memory					= std_allocator( ).allocate( size );
 
 	f.read								( memory, size );
-	f.close								( );
+	f.destroy							( );
 
 	lib::reader r						( memory, size );
 	in_resource->create					( r );

@@ -226,7 +226,8 @@ static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u3
 	memcpy( file_data + sizeof(u32) + indices_size, &vertices_size, sizeof(u32) );
 	memcpy( file_data + sizeof(u32) + indices_size + sizeof(u32), vertices.data( ), vertices_size );
 
-	sys::file f( path.c_str( ), sys::file::open_write );
+	sys::file f;
+	f.create( path.c_str( ), sys::file::open_write );
 	if ( !f.is_valid( ) )
 	{
 		LOG( "fbx_compiler: unable to create a file: \"%s\"\n", path.c_str( ) );
@@ -234,7 +235,7 @@ static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u3
 	}
 
 	f.write( file_data, total_size );
-	f.close( );
+	f.destroy( );
 
 	vertices.destroy( );
 	std_allocator( ).deallocate( indices );

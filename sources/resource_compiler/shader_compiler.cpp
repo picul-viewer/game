@@ -173,7 +173,8 @@ static inline void compile_shader(	weak_const_string const input_directory,
 	sys::path input_path( input_directory );
 	input_path += shader_name;
 
-	sys::file input( input_path.c_str( ), sys::file::open_read );
+	sys::file input;
+	input.create( input_path.c_str( ), sys::file::open_read );
 	if ( !input.is_valid( ) )
 	{
 		LOG( "shader_compiler: unable to open source file for %s shader: \"%s\"\n", shader_type, shader_name );
@@ -184,7 +185,7 @@ static inline void compile_shader(	weak_const_string const input_directory,
 
 	pvoid const data = stack_allocate( input_file_size );
 	input.read( data, input_file_size );
-	input.close( );
+	input.destroy( );
 
 	little_string const& config = shader_parameters_to_string( parameters );
 	D3D_SHADER_MACRO macros[2];
@@ -307,7 +308,8 @@ void shader_compiler::compile( weak_const_string const input_directory, weak_con
 	output_path.create_directory( );
 	output_path += shaders_mode;
 	
-	sys::file f( output_path.c_str( ), sys::file::open_write );
+	sys::file f;
+	f.create( output_path.c_str( ), sys::file::open_write );
 	if ( !f.is_valid( ) )
 	{
 		LOG( "shader_compiler: unable to write compiled shaders" );
@@ -315,7 +317,7 @@ void shader_compiler::compile( weak_const_string const input_directory, weak_con
 	}
 
 	f.write( shader_data.data(), shader_data.data_end( ) - shader_data.data( ) );
-	f.close( );
+	f.destroy( );
 
 	shader_data.destroy( );
 }

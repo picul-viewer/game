@@ -7,7 +7,7 @@
 #include <system/window.h>
 
 #include <system/thread.h>
-#include <system/threading_event.h>
+#include <system/system_event.h>
 
 #include "scene.h"
 #include "object.h"
@@ -65,10 +65,10 @@ private:
 private:
 	sys::window m_window;
 
-	thread m_threads[thread_count];
+	sys::thread m_threads[thread_count];
 	
-	threading_event m_alive_events[event_count];
-	threading_event m_exit_events[event_count];
+	sys::system_event m_alive_events[event_count];
+	sys::system_event m_exit_events[event_count];
 
 	math::u32x2 m_window_dimensions;
 	bool m_is_active;

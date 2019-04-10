@@ -87,7 +87,7 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 		threads_count
 	};
 
-	thread threads[threads_count];
+	sys::thread threads[threads_count];
 
 	u32 thread_index = 0;
 
@@ -123,7 +123,7 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 
 		for ( u32 i = 0; i < 4; ++i )
 		{
-			threads[thread_index].create( thread::func_helper<&shader_compiler_thread_function>, 1 * Mb, &shader_thread_data[i] );
+			threads[thread_index].create( sys::thread::func_helper<&shader_compiler_thread_function>, 1 * Mb, &shader_thread_data[i] );
 			++thread_index;
 		}
 	}
@@ -144,7 +144,7 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 
 		fbx_thread_data = { this, &resource_compiler::scan, fbx_input.c_str( ), fbx_output.c_str( ), ".fbx", &resource_compiler::compile_fbx };
 
-		threads[thread_index].create( thread::func_helper<&scan_thread_function>, 1 * Mb, &fbx_thread_data );
+		threads[thread_index].create( sys::thread::func_helper<&scan_thread_function>, 1 * Mb, &fbx_thread_data );
 		++thread_index;
 	}
 	
@@ -164,7 +164,7 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 
 		texture_thread_data = { this, &resource_compiler::scan, texture_input.c_str( ), texture_output.c_str( ), "", &resource_compiler::compile_texture };
 
-		threads[thread_index].create( thread::func_helper<&scan_thread_function>, 1 * Mb, &texture_thread_data );
+		threads[thread_index].create( sys::thread::func_helper<&scan_thread_function>, 1 * Mb, &texture_thread_data );
 		++thread_index;
 	}
 	
@@ -184,13 +184,13 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 
 		config_thread_data = { this, &resource_compiler::scan, config_input.c_str( ), config_output.c_str( ), ".cfg", &resource_compiler::compile_config };
 
-		threads[thread_index].create( thread::func_helper<&scan_thread_function>, 1 * Mb, &config_thread_data );
+		threads[thread_index].create( sys::thread::func_helper<&scan_thread_function>, 1 * Mb, &config_thread_data );
 		++thread_index;
 	}
 
 	ASSERT_CMP( thread_index, ==, threads_count );
 
-	threads->destroy( time::infinite, threads_count );
+	sys::thread::destroy( threads_count, threads );
 }
 
 void resource_compiler::scan(

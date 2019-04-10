@@ -22,12 +22,8 @@ public:
 	};
 
 public:
-	file( );
-	file( pcstr path, open_mode mode );
-	~file( );
-
-	void open( pcstr path, open_mode mode );
-	void close( );
+	void create( pcstr path, open_mode mode );
+	void destroy( );
 
 	uptr size( ) const;
 
@@ -38,8 +34,8 @@ public:
 
 	bool is_valid( ) const;
 
-protected:
-	pvoid m_handle;
+private:
+	pvoid m_handle = (pvoid)-1;
 
 };
 

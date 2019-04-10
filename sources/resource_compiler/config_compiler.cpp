@@ -39,14 +39,15 @@ void config_compiler::compile( u64 const relevant_date, pcstr const input_file_n
 			return;
 		}
 
-	sys::file f( input_file_name, sys::file::open_read );
+	sys::file f;
+	f.create( input_file_name, sys::file::open_read );
 	ASSERT( f.is_valid( ) );
 
 	uptr const size = f.size( );
 	pvoid const data = stack_allocate( size );
 
 	f.read( data, size );
-	f.close( );
+	f.destroy( );
 
 	bool result = false;
 	bool found_type = false;

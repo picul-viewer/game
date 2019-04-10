@@ -4,9 +4,7 @@
 #include <windowsx.h>
 #include <macros.h>
 
-namespace sys {
-
-void window::create( pcstr title, math::s32x2 const& dimensions, bool fullscreen, pointer window_procedure )
+void sys::window::create( pcstr title, math::s32x2 const& dimensions, bool fullscreen, pointer window_procedure )
 {
 	ASSERT_CMP			( dimensions.x, >, 0 );
 	ASSERT_CMP			( dimensions.y, >, 0 );
@@ -49,7 +47,7 @@ void window::create( pcstr title, math::s32x2 const& dimensions, bool fullscreen
 	ShowWindow			( (HWND)m_hwnd, SW_SHOW );
 }
 
-void window::destroy( )
+void sys::window::destroy( )
 {
 	ASSERT				( m_hwnd );
 
@@ -57,7 +55,7 @@ void window::destroy( )
 	m_hwnd				= nullptr;
 }
 
-void window::run( )
+void sys::window::run( )
 {
 	MSG msg;
 
@@ -68,9 +66,7 @@ void window::run( )
 	}
 }
 
-void window::exit( )
+void sys::window::exit( )
 {
 	SendMessage( (HWND)m_hwnd, WM_CLOSE, 0, 0 );
 }
-
-} // namespace sys
