@@ -124,6 +124,25 @@ typename lib::reversable_double_linked_list<T, Linker>::reverse_iterator lib::re
 }
 
 template<typename T, typename Linker>
+typename lib::reversable_double_linked_list<T, Linker>::reverse_iterator& lib::reversable_double_linked_list<T, Linker>::reverse_iterator::operator--( )
+{
+	ASSERT( m_object );
+	m_object = Linker::get_next( m_object );
+	return *this;
+}
+
+template<typename T, typename Linker>
+typename lib::reversable_double_linked_list<T, Linker>::reverse_iterator lib::reversable_double_linked_list<T, Linker>::reverse_iterator::operator--( int )
+{
+	reverse_iterator const temp = *this;
+
+	ASSERT( m_object );
+	m_object = Linker::get_next( m_object );
+
+	return temp;
+}
+
+template<typename T, typename Linker>
 bool lib::reversable_double_linked_list<T, Linker>::reverse_iterator::operator==( reverse_iterator const other ) const
 {
 	return m_object == other.m_object;
@@ -136,9 +155,9 @@ bool lib::reversable_double_linked_list<T, Linker>::reverse_iterator::operator!=
 }
 
 template<typename T, typename Linker>
-T* lib::reversable_double_linked_list<T, Linker>::reverse_iterator::operator*( ) const
+T& lib::reversable_double_linked_list<T, Linker>::reverse_iterator::operator*( ) const
 {
-	return m_object;
+	return *m_object;
 }
 
 template<typename T, typename Linker>
@@ -174,6 +193,25 @@ typename lib::reversable_double_linked_list<T, Linker>::const_reverse_iterator l
 }
 
 template<typename T, typename Linker>
+typename lib::reversable_double_linked_list<T, Linker>::const_reverse_iterator& lib::reversable_double_linked_list<T, Linker>::const_reverse_iterator::operator--( )
+{
+	ASSERT( m_object );
+	m_object = Linker::get_next( m_object );
+	return *this;
+}
+
+template<typename T, typename Linker>
+typename lib::reversable_double_linked_list<T, Linker>::const_reverse_iterator lib::reversable_double_linked_list<T, Linker>::const_reverse_iterator::operator--( int )
+{
+	const_reverse_iterator const temp = *this;
+
+	ASSERT( m_object );
+	m_object = Linker::get_next( m_object );
+
+	return temp;
+}
+
+template<typename T, typename Linker>
 bool lib::reversable_double_linked_list<T, Linker>::const_reverse_iterator::operator==( const_reverse_iterator const other ) const
 {
 	return m_object == other.m_object;
@@ -186,9 +224,9 @@ bool lib::reversable_double_linked_list<T, Linker>::const_reverse_iterator::oper
 }
 
 template<typename T, typename Linker>
-T const* lib::reversable_double_linked_list<T, Linker>::const_reverse_iterator::operator*( ) const
+T const& lib::reversable_double_linked_list<T, Linker>::const_reverse_iterator::operator*( ) const
 {
-	return m_object;
+	return *m_object;
 }
 
 template<typename T, typename Linker>

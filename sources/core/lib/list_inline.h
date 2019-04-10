@@ -126,9 +126,9 @@ bool lib::list<T, Linker>::iterator::operator!=( iterator const other ) const
 }
 
 template<typename T, typename Linker>
-T* lib::list<T, Linker>::iterator::operator*( ) const
+T& lib::list<T, Linker>::iterator::operator*( ) const
 {
-	return m_object;
+	return *m_object;
 }
 
 template<typename T, typename Linker>
@@ -176,9 +176,9 @@ bool lib::list<T, Linker>::const_iterator::operator!=( const_iterator const othe
 }
 
 template<typename T, typename Linker>
-T const* lib::list<T, Linker>::const_iterator::operator*( ) const
+T const& lib::list<T, Linker>::const_iterator::operator*( ) const
 {
-	return m_object;
+	return *m_object;
 }
 
 template<typename T, typename Linker>

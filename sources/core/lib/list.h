@@ -2,6 +2,7 @@
 #define GUARD_CORE_LIST_H_INCLUDED
 
 #include <types.h>
+#include "algorithms.h"
 
 namespace lib {
 
@@ -33,7 +34,7 @@ protected:
 };
 
 template<typename T, typename Linker>
-class list<T, Linker>::iterator
+class list<T, Linker>::iterator : public lib::iterator<forward_iterator_tag, T>
 {
 public:
 	iterator( T* const object );
@@ -44,7 +45,7 @@ public:
 	bool operator==( iterator const other ) const;
 	bool operator!=( iterator const other ) const;
 
-	T* operator*( ) const;
+	T& operator*( ) const;
 	T* operator->( ) const;
 
 private:
@@ -53,7 +54,7 @@ private:
 };
 
 template<typename T, typename Linker>
-class list<T, Linker>::const_iterator
+class list<T, Linker>::const_iterator : public lib::iterator<forward_iterator_tag, T const>
 {
 public:
 	const_iterator( T const* const object );
@@ -64,7 +65,7 @@ public:
 	bool operator==( const_iterator const other ) const;
 	bool operator!=( const_iterator const other ) const;
 
-	T const* operator*( ) const;
+	T const& operator*( ) const;
 	T const* operator->( ) const;
 
 private:

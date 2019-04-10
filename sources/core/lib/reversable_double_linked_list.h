@@ -45,7 +45,7 @@ private:
 };
 
 template<typename T, typename Linker>
-class reversable_double_linked_list<T, Linker>::reverse_iterator
+class reversable_double_linked_list<T, Linker>::reverse_iterator : public lib::iterator<bidirectional_iterator_tag, T>
 {
 public:
 	reverse_iterator( T* const object );
@@ -53,19 +53,22 @@ public:
 	reverse_iterator& operator++( );
 	reverse_iterator operator++( int );
 
+	reverse_iterator& operator--( );
+	reverse_iterator operator--( int );
+
 	bool operator==( reverse_iterator const other ) const;
 	bool operator!=( reverse_iterator const other ) const;
 
-	T* operator*( ) const;
+	T& operator*( ) const;
 	T* operator->( ) const;
 
 private:
 	T* m_object;
 
 };
-
+ 
 template<typename T, typename Linker>
-class reversable_double_linked_list<T, Linker>::const_reverse_iterator
+class reversable_double_linked_list<T, Linker>::const_reverse_iterator : public lib::iterator<bidirectional_iterator_tag, T const>
 {
 public:
 	const_reverse_iterator( T const* const object );
@@ -73,16 +76,25 @@ public:
 	const_reverse_iterator& operator++( );
 	const_reverse_iterator operator++( int );
 
+	const_reverse_iterator& operator--( );
+	const_reverse_iterator operator--( int );
+
 	bool operator==( const_reverse_iterator const other ) const;
 	bool operator!=( const_reverse_iterator const other ) const;
 
-	T const* operator*( ) const;
+	T const& operator*( ) const;
 	T const* operator->( ) const;
 
 private:
 	T const* m_object;
 
 };
+
+template<typename T, T* (T::*Prev), T* (T::*Next)>
+using intrusive_reversable_double_linked_list_linker = intrusive_double_linked_list_linker<T, Prev, Next>;
+
+template<typename T, T* (T::*Prev), T* (T::*Next)>
+using intrusive_reversable_double_linked_list = reversable_double_linked_list<T, intrusive_reversable_double_linked_list_linker<T, Prev, Next>>;
 
 } // namespace lib
 

@@ -87,6 +87,168 @@ void lib::double_linked_list<T, Linker>::remove( T* const object )
 		Linker::set_prev	( next, prev );
 }
 
+template<typename T, typename Linker>
+typename lib::double_linked_list<T, Linker>::iterator lib::double_linked_list<T, Linker>::begin( )
+{
+	return m_first;
+}
+
+template<typename T, typename Linker>
+typename lib::double_linked_list<T, Linker>::const_iterator lib::double_linked_list<T, Linker>::begin( ) const
+{
+	return m_first;
+}
+
+template<typename T, typename Linker>
+typename lib::double_linked_list<T, Linker>::iterator lib::double_linked_list<T, Linker>::end( )
+{
+	return nullptr;
+}
+
+template<typename T, typename Linker>
+typename lib::double_linked_list<T, Linker>::const_iterator lib::double_linked_list<T, Linker>::end( ) const
+{
+	return nullptr;
+}
+
+
+template<typename T, typename Linker>
+lib::double_linked_list<T, Linker>::iterator::iterator( T* const object )
+{
+	m_object = object;
+}
+
+template<typename T, typename Linker>
+typename lib::double_linked_list<T, Linker>::iterator& lib::double_linked_list<T, Linker>::iterator::operator++( )
+{
+	ASSERT( m_object );
+	m_object = Linker::get_next( m_object );
+	return *this;
+}
+
+template<typename T, typename Linker>
+typename lib::double_linked_list<T, Linker>::iterator lib::double_linked_list<T, Linker>::iterator::operator++( int )
+{
+	iterator const temp = *this;
+
+	ASSERT( m_object );
+	m_object = Linker::get_next( m_object );
+
+	return temp;
+}
+
+template<typename T, typename Linker>
+typename lib::double_linked_list<T, Linker>::iterator& lib::double_linked_list<T, Linker>::iterator::operator--( )
+{
+	ASSERT( m_object );
+	m_object = Linker::get_prev( m_object );
+	return *this;
+}
+
+template<typename T, typename Linker>
+typename lib::double_linked_list<T, Linker>::iterator lib::double_linked_list<T, Linker>::iterator::operator--( int )
+{
+	iterator const temp = *this;
+
+	ASSERT( m_object );
+	m_object = Linker::get_prev( m_object );
+
+	return temp;
+}
+
+template<typename T, typename Linker>
+bool lib::double_linked_list<T, Linker>::iterator::operator==( iterator const other ) const
+{
+	return m_object == other.m_object;
+}
+
+template<typename T, typename Linker>
+bool lib::double_linked_list<T, Linker>::iterator::operator!=( iterator const other ) const
+{
+	return m_object != other.m_object;
+}
+
+template<typename T, typename Linker>
+T& lib::double_linked_list<T, Linker>::iterator::operator*( ) const
+{
+	return *m_object;
+}
+
+template<typename T, typename Linker>
+T* lib::double_linked_list<T, Linker>::iterator::operator->( ) const
+{
+	return m_object;
+}
+
+
+template<typename T, typename Linker>
+lib::double_linked_list<T, Linker>::const_iterator::const_iterator( T const* const object )
+{
+	m_object = object;
+}
+
+template<typename T, typename Linker>
+typename lib::double_linked_list<T, Linker>::const_iterator& lib::double_linked_list<T, Linker>::const_iterator::operator++( )
+{
+	ASSERT( m_object );
+	m_object = Linker::get_next( m_object );
+	return *this;
+}
+
+template<typename T, typename Linker>
+typename lib::double_linked_list<T, Linker>::const_iterator lib::double_linked_list<T, Linker>::const_iterator::operator++( int )
+{
+	const_iterator const temp = *this;
+
+	ASSERT( m_object );
+	m_object = Linker::get_next( m_object );
+
+	return temp;
+}
+
+template<typename T, typename Linker>
+typename lib::double_linked_list<T, Linker>::const_iterator& lib::double_linked_list<T, Linker>::const_iterator::operator--( )
+{
+	ASSERT( m_object );
+	m_object = Linker::get_prev( m_object );
+	return *this;
+}
+
+template<typename T, typename Linker>
+typename lib::double_linked_list<T, Linker>::const_iterator lib::double_linked_list<T, Linker>::const_iterator::operator--( int )
+{
+	const_iterator const temp = *this;
+
+	ASSERT( m_object );
+	m_object = Linker::get_prev( m_object );
+
+	return temp;
+}
+
+template<typename T, typename Linker>
+bool lib::double_linked_list<T, Linker>::const_iterator::operator==( const_iterator const other ) const
+{
+	return m_object == other.m_object;
+}
+
+template<typename T, typename Linker>
+bool lib::double_linked_list<T, Linker>::const_iterator::operator!=( const_iterator const other ) const
+{
+	return m_object != other.m_object;
+}
+
+template<typename T, typename Linker>
+T const& lib::double_linked_list<T, Linker>::const_iterator::operator*( ) const
+{
+	return *m_object;
+}
+
+template<typename T, typename Linker>
+T const* lib::double_linked_list<T, Linker>::const_iterator::operator->( ) const
+{
+	return m_object;
+}
+
 
 template<typename T, T* (T::*Prev), T* (T::*Next)>
 void lib::intrusive_double_linked_list_linker<T, Prev, Next>::set_prev( T* const object, T* const next )

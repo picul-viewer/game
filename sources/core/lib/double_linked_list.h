@@ -13,8 +13,8 @@ private:
 	typedef list<T, Linker> parent_type;
 
 public:
-	typedef parent_type::iterator iterator;
-	typedef parent_type::const_iterator const_iterator;
+	class iterator;
+	class const_iterator;
 
 	typedef T value_type;
 
@@ -27,8 +27,56 @@ public:
 	void remove( T* const object );
 	using parent_type::clear;
 
-	using parent_type::begin;
-	using parent_type::end;
+	iterator begin( );
+	const_iterator begin( ) const;
+	iterator end( );
+	const_iterator end( ) const;
+
+};
+
+template<typename T, typename Linker>
+class double_linked_list<T, Linker>::iterator : public lib::iterator<bidirectional_iterator_tag, T>
+{
+public:
+	iterator( T* const object );
+
+	iterator& operator++( );
+	iterator operator++( int );
+
+	iterator& operator--( );
+	iterator operator--( int );
+
+	bool operator==( iterator const other ) const;
+	bool operator!=( iterator const other ) const;
+
+	T& operator*( ) const;
+	T* operator->( ) const;
+
+private:
+	T* m_object;
+
+};
+
+template<typename T, typename Linker>
+class double_linked_list<T, Linker>::const_iterator : public lib::iterator<bidirectional_iterator_tag, T const>
+{
+public:
+	const_iterator( T const* const object );
+
+	const_iterator& operator++( );
+	const_iterator operator++( int );
+
+	const_iterator& operator--( );
+	const_iterator operator--( int );
+
+	bool operator==( const_iterator const other ) const;
+	bool operator!=( const_iterator const other ) const;
+
+	T const& operator*( ) const;
+	T const* operator->( ) const;
+
+private:
+	T const* m_object;
 
 };
 
@@ -45,7 +93,7 @@ struct intrusive_double_linked_list_linker
 };
 
 template<typename T, T* (T::*Prev), T* (T::*Next)>
-using intrusive_double_linked_list = list<T, intrusive_double_linked_list_linker<T, Prev, Next>>;
+using intrusive_double_linked_list = double_linked_list<T, intrusive_double_linked_list_linker<T, Prev, Next>>;
 
 } // namespace lib
 
