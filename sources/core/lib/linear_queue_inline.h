@@ -9,8 +9,7 @@ void lib::linear_queue<T>::create( pointer const memory, uptr const size )
 	m_data			= memory;
 	m_size			= size;
 
-	m_push_index	= 0;
-	m_pop_index		= 0;
+	clear			( );
 }
 
 template<typename T>
@@ -31,6 +30,13 @@ void lib::linear_queue<T>::pop( T& value )
 	value = m_data[m_pop_index];
 
 	m_pop_index = ( m_pop_index + 1 ) % m_size;
+}
+
+template<typename T>
+void lib::linear_queue<T>::clear( )
+{
+	m_push_index	= 0;
+	m_pop_index		= 0;
 }
 
 template<typename T>

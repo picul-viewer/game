@@ -9,6 +9,8 @@ void temporal_allocator<PageMaxCount>::create( )
 {
 	m_data									= virtual_allocator( ).reserve( nullptr, page_size * PageMaxCount );
 	
+	virtual_allocator( ).commit				( m_data, page_size );
+
 	for ( u32 i = 0; i < PageMaxCount; ++i )
 		m_pages_occupancy[i]				= 0;
 

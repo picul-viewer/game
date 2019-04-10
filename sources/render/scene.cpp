@@ -42,9 +42,9 @@ void scene::remove_all_static_objects( )
 
 void scene::insert_static_object( object* in_object )
 {
-	in_object->for_each( [this]( render_object* current )
+	in_object->for_each( [this]( render_object& current )
 	{
-		g_resources.get_render_object_allocator( ).execute( current, insert_render_object_helper( ), this );
+		g_resources.get_render_object_allocator( ).execute( &current, insert_render_object_helper( ), this );
 	} );
 }
 

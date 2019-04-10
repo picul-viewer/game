@@ -12,10 +12,12 @@ public:
 	typedef T value_type;
 
 public:
-	void create( pvoid const memory, uptr const size );
+	void create( pointer const memory, uptr const size );
 
 	void push( T const& value );
 	void pop( T& value );
+
+	void clear( );
 
 	T& front( );
 	T const& front( ) const;

@@ -35,7 +35,7 @@ enum
 	Memory_Page_Size = 4096
 };
 
-enum : uptr
+enum : ptr
 {
 	Kb	= 1024LL,
 	Mb	= 1024LL * Kb,

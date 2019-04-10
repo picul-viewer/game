@@ -43,9 +43,9 @@ struct destroy_render_object
 
 void object::destroy( )
 {
-	lib::for_each( m_objects.begin( ), m_objects.end( ), []( render_object* current )
+	lib::for_each( m_objects.begin( ), m_objects.end( ), []( render_object& current )
 	{
-		g_resources.get_render_object_allocator( ).execute( current, destroy_render_object( ) );
+		g_resources.get_render_object_allocator( ).execute( &current, destroy_render_object( ) );
 	} );
 }
 
@@ -60,9 +60,9 @@ struct update_render_object
 
 void object::update( math::float4x3 const& in_transform )
 {
-	lib::for_each( m_objects.begin( ), m_objects.end( ), [in_transform]( render_object* current )
+	lib::for_each( m_objects.begin( ), m_objects.end( ), [in_transform]( render_object& current )
 	{
-		g_resources.get_render_object_allocator( ).execute( current, update_render_object( ), in_transform );
+		g_resources.get_render_object_allocator( ).execute( &current, update_render_object( ), in_transform );
 	} );
 }
 
