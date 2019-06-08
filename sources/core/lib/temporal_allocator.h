@@ -8,7 +8,7 @@ template<u32 PageMaxCount>
 struct temporal_allocator
 {
 public:
-	void create( );
+	void create( pointer const reserved_memory = nullptr );
 	void destroy( );
 	
 	pointer allocate( uptr const size );
@@ -16,9 +16,14 @@ public:
 	
 	pointer data( ) const;
 
+	bool contains_pointer( pointer const p ) const;
+
 private:
 	enum : uptr { page_size = 64 * Kb };
 	
+public:
+	enum : uptr { memory_size = page_size * PageMaxCount };
+
 private:
 	mt_u32 m_pages_occupancy[PageMaxCount];
 	union

@@ -5,9 +5,9 @@
 #include <lib/allocator.h>
 
 template<u32 PageMaxCount>
-void temporal_allocator<PageMaxCount>::create( )
+void temporal_allocator<PageMaxCount>::create( pointer const reserved_memory )
 {
-	m_data									= virtual_allocator( ).reserve( nullptr, page_size * PageMaxCount );
+	m_data									= ( reserved_memory != nullptr ) ? reserved_memory : virtual_allocator( ).reserve( nullptr, memory_size );
 	
 	virtual_allocator( ).commit				( m_data, page_size );
 
@@ -91,7 +91,7 @@ template<u32 PageMaxCount>
 void temporal_allocator<PageMaxCount>::deallocate( pointer const p, uptr const size )
 {
 	ASSERT_CMP								( p, >=, m_data );
-	ASSERT_CMP								( p, <, m_data + page_size * PageMaxCount );
+	ASSERT_CMP								( p, <, m_data + memory_size );
 	ASSERT_CMP								( size, <, page_size );
 
 	u32 const inverse_size					= 0 - (u32)size;
@@ -108,6 +108,12 @@ template<u32 PageMaxCount>
 pointer temporal_allocator<PageMaxCount>::data( ) const
 {
 	return m_data;
+}
+
+template<u32 PageMaxCount>
+bool temporal_allocator<PageMaxCount>::contains_pointer( pointer const p ) const
+{
+	return ( p >= m_data ) && ( p < m_data + memory_size );
 }
 
 #endif // #ifndef GUARD_CORE_TEMPORAL_ALLOCATOR_INLINE_H_INCLUDED
