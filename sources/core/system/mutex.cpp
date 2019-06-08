@@ -12,12 +12,12 @@ void sys::mutex::destroy( )
 	CloseHandle( m_id );
 }
 
-void sys::mutex::wait( u32 const wait_ms )
+void sys::mutex::wait( u32 const wait_ms ) const
 {
 	WaitForSingleObject( m_id, wait_ms );
 }
 
-void sys::mutex::wait_all( u32 const count, mutex* const objects, u32 const wait_ms )
+void sys::mutex::wait_all( u32 const count, mutex const* const objects, u32 const wait_ms )
 {
 	ASSERT( count != 0 );
 
@@ -26,7 +26,7 @@ void sys::mutex::wait_all( u32 const count, mutex* const objects, u32 const wait
 	ASSERT( ( result < WAIT_ABANDONED_0 ) || ( result >= WAIT_ABANDONED_0 + count ) );
 }
 
-u32 sys::mutex::wait_any( u32 const count, mutex* const objects, u32 const wait_ms )
+u32 sys::mutex::wait_any( u32 const count, mutex const* const objects, u32 const wait_ms )
 {
 	ASSERT( count != 0 );
 
@@ -40,7 +40,7 @@ u32 sys::mutex::wait_any( u32 const count, mutex* const objects, u32 const wait_
 	return result - WAIT_OBJECT_0;
 }
 
-void sys::mutex::release( )
+void sys::mutex::release( ) const
 {
 	BOOL const result = ReleaseMutex( m_id );
 }

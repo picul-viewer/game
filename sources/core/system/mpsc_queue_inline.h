@@ -3,37 +3,28 @@
 
 #include <macros.h>
 
-template<typename T, uptr RecordSize>
-void sys::mpsc_queue<T, RecordSize>::create( pointer const data, uptr const size )
+template<typename T>
+void sys::mpsc_queue<T>::create( pointer const memory, uptr const size )
 {
-	static_assert				( sizeof(T) <= RecordSize, "incorrect template parameters" );
+	ASSERT_CMP					( size, <=, 0x100000000 );
+	ASSERT						( ( size & ( size - 1 ) ) == 0 );
 
-	ASSERT_CMP					( size % RecordSize, ==, 0 );
-	ASSERT_CMP					( size / RecordSize, <=, 0xFFFFFFFF );
-
-	u32 const array_size		= (u32)( size / RecordSize );
-	ASSERT						( ( array_size & ( array_size - 1 ) ) == 0 );
-
-	m_data						= data;
-	m_index_mask				= array_size - 1;
+	m_data						= memory;
+	m_index_mask				= (u32)( size - 1 );
 
 	m_pre_push_index			= 0;
 	m_push_index				= 0;
 	m_pop_index					= 0;
 
 	m_current_size				= 0;
-
-	m_empty_event.create		( false, false );
 }
 
-template<typename T, uptr RecordSize>
-void sys::mpsc_queue<T, RecordSize>::destroy( )
-{
-	m_empty_event.destroy		( );
-}
+template<typename T>
+void sys::mpsc_queue<T>::destroy( )
+{ }
 
-template<typename T, uptr RecordSize>
-void sys::mpsc_queue<T, RecordSize>::push( value_type const& value )
+template<typename T>
+bool sys::mpsc_queue<T>::push( value_type const& value )
 {
 	u32 const new_push_index	= interlocked_inc( m_pre_push_index );
 	u32 const target_index		= new_push_index - 1;
@@ -46,14 +37,12 @@ void sys::mpsc_queue<T, RecordSize>::push( value_type const& value )
 	
 	store_fence					( );
 
-	if ( interlocked_inc( m_current_size ) == 0 )
-	{
-		m_empty_event.set		( );
-	}
+	u32 const current_size		= interlocked_inc( m_current_size );
+	return current_size <= 1;
 }
 
-template<typename T, uptr RecordSize>
-void sys::mpsc_queue<T, RecordSize>::push( value_type const* const values, u32 const count )
+template<typename T>
+bool sys::mpsc_queue<T>::push( value_type const* const values, u32 const count )
 {
 	u32 const new_push_index	= interlocked_add( m_pre_push_index, count );
 	u32 const target_index		= new_push_index - count;
@@ -67,18 +56,17 @@ void sys::mpsc_queue<T, RecordSize>::push( value_type const* const values, u32 c
 
 	store_fence					( );
 
-	if ( interlocked_add( m_current_size, count ) == count - 1 )
-	{
-		m_empty_event.set		( );
-	}
+	u32 const current_size		= interlocked_add( m_current_size, count );
+	return current_size <= count;
 }
 
-template<typename T, uptr RecordSize>
-void sys::mpsc_queue<T, RecordSize>::pop( value_type& value )
+template<typename T>
+bool sys::mpsc_queue<T>::pop( value_type& value )
 {
 	if ( interlocked_exchange_add( m_current_size, (u32)-1 ) == 0 )
 	{
-		m_empty_event.wait		( );
+		interlocked_inc			( m_current_size );
+		return false;
 	}
 	
 	u32 const pop_index			= m_pop_index;
@@ -87,10 +75,12 @@ void sys::mpsc_queue<T, RecordSize>::pop( value_type& value )
 	value						= m_data[pop_index & m_index_mask];
 
 	m_pop_index					= new_pop_index;
+
+	return true;
 }
 
-template<typename T, uptr RecordSize>
-pointer sys::mpsc_queue<T, RecordSize>::data( ) const
+template<typename T>
+pointer sys::mpsc_queue<T>::data( ) const
 {
 	return m_data;
 }

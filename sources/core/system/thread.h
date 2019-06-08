@@ -28,6 +28,8 @@ public:
 
 	inline pvoid get_handle( ) const { return m_id; }
 
+	static u32 hardware_concurrency( );
+
 	template<void( *Functor )( void* )>
 	static unsigned long __stdcall func_helper( void* const arg )
 	{

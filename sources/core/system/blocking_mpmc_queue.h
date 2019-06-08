@@ -1,14 +1,15 @@
-#ifndef GUARD_CORE_MPMC_QUEUE_H_INLCUDED
-#define GUARD_CORE_MPMC_QUEUE_H_INLCUDED
+#ifndef GUARD_CORE_BLOCKING_MPMC_QUEUE_H_INLCUDED
+#define GUARD_CORE_BLOCKING_MPMC_QUEUE_H_INLCUDED
 
 #include <types.h>
 #include "interlocked.h"
+#include "system_event.h"
 
 namespace sys {
 
 // Multiple producers, multiple consumers.
 template<typename T>
-class mpmc_queue
+class blocking_mpmc_queue
 {
 public:
 	typedef T value_type;
@@ -17,9 +18,9 @@ public:
 	void create( pointer const memory, uptr const size );
 	void destroy( );
 
-	bool push( value_type const& value );
-	bool push( value_type const* const values, u32 const count );
-	bool pop( value_type& value );
+	void push( value_type const& value );
+	void push( value_type const* const values, u32 const count );
+	void pop( value_type& value );
 	
 	pointer data( ) const;
 
@@ -51,10 +52,11 @@ private:
 	};
 	value_type*			m_data;
 	u32					m_index_mask;
+	system_event		m_empty_event;
 };
 
 } // namespace sys
 
-#include "mpmc_queue_inline.h"
+#include "blocking_mpmc_queue_inline.h"
 
-#endif // #ifndef GUARD_CORE_MPMC_QUEUE_H_INLCUDED
+#endif // #ifndef GUARD_CORE_BLOCKING_MPMC_QUEUE_H_INLCUDED

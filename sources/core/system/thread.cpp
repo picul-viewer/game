@@ -59,3 +59,10 @@ void sys::thread::set_affinity_mask( u64 const mask )
 	DWORD_PTR const result = SetThreadAffinityMask( m_id, mask );
 	ASSERT( result != 0 );
 }
+
+u32 sys::thread::hardware_concurrency( )
+{
+	SYSTEM_INFO sysinfo;
+	GetSystemInfo( &sysinfo );
+	return (u32)sysinfo.dwNumberOfProcessors;
+}

@@ -3,24 +3,23 @@
 
 #include <types.h>
 #include "interlocked.h"
-#include "system_event.h"
 
 namespace sys {
 
 // Multiple producers, single consumer.
-template<typename T, uptr RecordSize = sizeof(T)>
+template<typename T>
 class mpsc_queue
 {
 public:
 	typedef T value_type;
 
 public:
-	void create( pointer const data, uptr const size );
+	void create( pointer const memory, uptr const size );
 	void destroy( );
 
-	void push( value_type const& value );
-	void push( value_type const* const values, u32 const count );
-	void pop( value_type& value );
+	bool push( value_type const& value );
+	bool push( value_type const* const values, u32 const count );
+	bool pop( value_type& value );
 	
 	pointer data( ) const;
 
@@ -47,7 +46,6 @@ private:
 	};
 	value_type*			m_data;
 	u32					m_index_mask;
-	system_event		m_empty_event;
 };
 
 } // namespace sys

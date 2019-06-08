@@ -1,10 +1,10 @@
-#ifndef GUARD_CORE_MPMC_QUEUE_INLINE_H_INLCUDED
-#define GUARD_CORE_MPMC_QUEUE_INLINE_H_INLCUDED
+#ifndef GUARD_CORE_BLOCKING_MPMC_QUEUE_INLINE_H_INLCUDED
+#define GUARD_CORE_BLOCKING_MPMC_QUEUE_INLINE_H_INLCUDED
 
 #include <macros.h>
 
 template<typename T>
-void sys::mpmc_queue<T>::create( pointer const memory, uptr const size )
+void sys::blocking_mpmc_queue<T>::create( pointer const memory, uptr const size )
 {
 	ASSERT_CMP					( size, <=, 0x100000000 );
 	ASSERT						( ( size & ( size - 1 ) ) == 0 );
@@ -18,14 +18,18 @@ void sys::mpmc_queue<T>::create( pointer const memory, uptr const size )
 	m_pop_index					= 0;
 
 	m_current_size				= 0;
+
+	m_empty_event.create		( false, false );
 }
 
 template<typename T>
-void sys::mpmc_queue<T>::destroy( )
-{ }
+void sys::blocking_mpmc_queue<T>::destroy( )
+{
+	m_empty_event.destroy		( );
+}
 
 template<typename T>
-bool sys::mpmc_queue<T>::push( value_type const& value )
+void sys::blocking_mpmc_queue<T>::push( value_type const& value )
 {
 	u32 const new_push_index	= interlocked_inc( m_pre_push_index );
 	u32 const target_index		= new_push_index - 1;
@@ -38,12 +42,14 @@ bool sys::mpmc_queue<T>::push( value_type const& value )
 	
 	store_fence					( );
 
-	u32 const current_size		= interlocked_inc( m_current_size );
-	return current_size <= 1;
+	if ( interlocked_inc( m_current_size ) <= 0 )
+	{
+		m_empty_event.set		( );
+	}
 }
 
 template<typename T>
-bool sys::mpmc_queue<T>::push( value_type const* const values, u32 const count )
+void sys::blocking_mpmc_queue<T>::push( value_type const* const values, u32 const count )
 {
 	u32 const new_push_index	= interlocked_add( m_pre_push_index, count );
 	u32 const target_index		= new_push_index - count;
@@ -57,17 +63,19 @@ bool sys::mpmc_queue<T>::push( value_type const* const values, u32 const count )
 
 	store_fence					( );
 
-	u32 const current_size		= interlocked_add( m_current_size, count );
-	return current_size <= count;
+	if ( interlocked_add( m_current_size, count ) < count )
+	{
+		m_empty_event.set		( );
+	}
 }
 
 template<typename T>
-bool sys::mpmc_queue<T>::pop( value_type& value )
+void sys::blocking_mpmc_queue<T>::pop( value_type& value )
 {
-	if ( interlocked_dec( m_current_size ) < 0 )
+	while ( interlocked_dec( m_current_size ) < 0 )
 	{
+		m_empty_event.wait		( );
 		interlocked_inc			( m_current_size );
-		return false;
 	}
 	
 	u32 const new_pop_index		= interlocked_inc( m_pre_pop_index );
@@ -78,14 +86,12 @@ bool sys::mpmc_queue<T>::pop( value_type& value )
 	SPIN_LOCK					( m_pop_index != target_index );
 	
 	m_pop_index					= new_pop_index;
-
-	return true;
 }
 
 template<typename T>
-pointer sys::mpmc_queue<T>::data( ) const
+pointer sys::blocking_mpmc_queue<T>::data( ) const
 {
 	return m_data;
 }
 
-#endif // #ifndef GUARD_CORE_MPMC_QUEUE_INLINE_H_INLCUDED
+#endif // #ifndef GUARD_CORE_BLOCKING_MPMC_QUEUE_INLINE_H_INLCUDED

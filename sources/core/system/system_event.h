@@ -11,13 +11,13 @@ public:
 	void create( bool const initial_state = true, bool const use_manual_reset = true );
 	void destroy( );
 
-	void set( );
-	void reset( );
+	void set( ) const;
+	void reset( ) const;
 
-	void wait( u32 const wait_ms = time::infinite );
+	void wait( u32 const wait_ms = time::infinite ) const;
 
-	static void wait_all( u32 const count, system_event* const objects, u32 const wait_ms = time::infinite );
-	static u32 wait_any( u32 const count, system_event* const objects, u32 const wait_ms = time::infinite );
+	static void wait_all( u32 const count, system_event const* const objects, u32 const wait_ms = time::infinite );
+	static u32 wait_any( u32 const count, system_event const* const objects, u32 const wait_ms = time::infinite );
 
 	inline pvoid get_handle( ) const { return m_id; }
 

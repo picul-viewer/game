@@ -11,12 +11,12 @@ public:
 	void create( bool const own_mutex = false );
 	void destroy( );
 
-	void wait( u32 const wait_ms = time::infinite );
+	void wait( u32 const wait_ms = time::infinite ) const;
 
-	static void wait_all( u32 const count, mutex* const objects, u32 const wait_ms = time::infinite );
-	static u32 wait_any( u32 const count, mutex* const objects, u32 const wait_ms = time::infinite );
+	static void wait_all( u32 const count, mutex const* const objects, u32 const wait_ms = time::infinite );
+	static u32 wait_any( u32 const count, mutex const* const objects, u32 const wait_ms = time::infinite );
 
-	void release( );
+	void release( ) const;
 
 	inline pvoid get_handle( ) const { return m_id; }
 

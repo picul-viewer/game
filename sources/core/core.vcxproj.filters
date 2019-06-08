@@ -157,6 +157,12 @@
     <Filter Include="system\threads\sync\system_event">
       <UniqueIdentifier>{7b694da7-b212-44b9-bf03-fa58d3c0f6bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="system\threads\sync\critical_section">
+      <UniqueIdentifier>{4774dea4-806c-4eb5-a4d2-ba6b83f256a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\threads\structs\mt_pool">
+      <UniqueIdentifier>{8af09c44-faad-4593-81b0-a9cda00a3ed0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -241,12 +247,6 @@
     </ClInclude>
     <ClInclude Include="system\interlocked.h">
       <Filter>system\threads\sync\interlocked</Filter>
-    </ClInclude>
-    <ClInclude Include="system\spsc_queue.h">
-      <Filter>system\threads\structs\spsc_queue</Filter>
-    </ClInclude>
-    <ClInclude Include="system\spsc_queue_inline.h">
-      <Filter>system\threads\structs\spsc_queue</Filter>
     </ClInclude>
     <ClInclude Include="system\thread.h">
       <Filter>system\threads\thread</Filter>
@@ -335,12 +335,6 @@
     <ClInclude Include="lib\reader.h">
       <Filter>lib\rw\binary\reader</Filter>
     </ClInclude>
-    <ClInclude Include="system\mpsc_queue.h">
-      <Filter>system\threads\structs\mpsc_queue</Filter>
-    </ClInclude>
-    <ClInclude Include="system\mpsc_queue_inline.h">
-      <Filter>system\threads\structs\mpsc_queue</Filter>
-    </ClInclude>
     <ClInclude Include="lib\temporal_allocator.h">
       <Filter>lib\memory\allocators\temporal</Filter>
     </ClInclude>
@@ -358,12 +352,6 @@
     </ClInclude>
     <ClInclude Include="lib\dynamic_heap.h">
       <Filter>lib\memory\allocators\heap</Filter>
-    </ClInclude>
-    <ClInclude Include="system\mpmc_queue.h">
-      <Filter>system\threads\structs\mpmc_queue</Filter>
-    </ClInclude>
-    <ClInclude Include="system\mpmc_queue_inline.h">
-      <Filter>system\threads\structs\mpmc_queue</Filter>
     </ClInclude>
     <ClInclude Include="lib\dynamic_array.h">
       <Filter>lib\array\dynamic_array</Filter>
@@ -400,6 +388,45 @@
     </ClInclude>
     <ClInclude Include="system\system_event.h">
       <Filter>system\threads\sync\system_event</Filter>
+    </ClInclude>
+    <ClInclude Include="system\critical_section.h">
+      <Filter>system\threads\sync\critical_section</Filter>
+    </ClInclude>
+    <ClInclude Include="system\blocking_mpmc_queue.h">
+      <Filter>system\threads\structs\mpmc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\blocking_mpmc_queue_inline.h">
+      <Filter>system\threads\structs\mpmc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\blocking_mpsc_queue.h">
+      <Filter>system\threads\structs\mpsc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\blocking_mpsc_queue_inline.h">
+      <Filter>system\threads\structs\mpsc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\blocking_spsc_queue.h">
+      <Filter>system\threads\structs\spsc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\blocking_spsc_queue_inline.h">
+      <Filter>system\threads\structs\spsc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\mpmc_queue.h">
+      <Filter>system\threads\structs\mpmc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\mpmc_queue_inline.h">
+      <Filter>system\threads\structs\mpmc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\mpsc_queue.h">
+      <Filter>system\threads\structs\mpsc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\mpsc_queue_inline.h">
+      <Filter>system\threads\structs\mpsc_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="system\mt_pool.h">
+      <Filter>system\threads\structs\mt_pool</Filter>
+    </ClInclude>
+    <ClInclude Include="system\mt_pool_inline.h">
+      <Filter>system\threads\structs\mt_pool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -487,6 +514,9 @@
     </ClCompile>
     <ClCompile Include="system\system_event.cpp">
       <Filter>system\threads\sync\system_event</Filter>
+    </ClCompile>
+    <ClCompile Include="system\critical_section.cpp">
+      <Filter>system\threads\sync\critical_section</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
