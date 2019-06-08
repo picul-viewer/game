@@ -19,18 +19,6 @@
     <Filter Include="resources">
       <UniqueIdentifier>{1fa0bfb6-f341-4118-b13f-00ce83fdabdc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\resource_containers">
-      <UniqueIdentifier>{40a171a6-506d-47c1-9447-dc9c1bfdb8e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\resource_containers\resource_pool">
-      <UniqueIdentifier>{d1680f5c-cbc9-4938-9eb0-c5c7a20b0294}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\resource_containers\dynamic_resource_pool">
-      <UniqueIdentifier>{e96acbde-7af1-417f-837d-1205ff0ec787}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\resource_containers\dynamic_resource_linear_set">
-      <UniqueIdentifier>{a76e721a-8253-4a91-84d8-19ec9ebf0678}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\resource_cook">
       <UniqueIdentifier>{eedce478-693f-420a-bf5a-4f79c0cce535}</UniqueIdentifier>
     </Filter>
@@ -68,24 +56,6 @@
     </ClInclude>
     <ClInclude Include="api_inline.h">
       <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="dynamic_resource_pool.h">
-      <Filter>resources\resource_containers\dynamic_resource_pool</Filter>
-    </ClInclude>
-    <ClInclude Include="dynamic_resource_pool_inline.h">
-      <Filter>resources\resource_containers\dynamic_resource_pool</Filter>
-    </ClInclude>
-    <ClInclude Include="dynamic_resource_linear_set.h">
-      <Filter>resources\resource_containers\dynamic_resource_linear_set</Filter>
-    </ClInclude>
-    <ClInclude Include="dynamic_resource_linear_set_inline.h">
-      <Filter>resources\resource_containers\dynamic_resource_linear_set</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_pool_inline.h">
-      <Filter>resources\resource_containers\resource_pool</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_pool.h">
-      <Filter>resources\resource_containers\resource_pool</Filter>
     </ClInclude>
     <ClInclude Include="resource_cook.h">
       <Filter>resources\resource_cook</Filter>

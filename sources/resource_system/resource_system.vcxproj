@@ -96,16 +96,10 @@
   <ItemGroup>
     <ClInclude Include="api.h" />
     <ClInclude Include="api_inline.h" />
-    <ClInclude Include="dynamic_resource_linear_set.h" />
-    <ClInclude Include="dynamic_resource_linear_set_inline.h" />
-    <ClInclude Include="dynamic_resource_pool.h" />
-    <ClInclude Include="dynamic_resource_pool_inline.h" />
     <ClInclude Include="raw_data.h" />
     <ClInclude Include="queried_resources.h" />
     <ClInclude Include="queried_resources_inline.h" />
     <ClInclude Include="resource_cook.h" />
-    <ClInclude Include="resource_pool.h" />
-    <ClInclude Include="resource_pool_inline.h" />
     <ClInclude Include="resource_ptr.h" />
     <ClInclude Include="resource_ptr_inline.h" />
     <ClInclude Include="resource_system.h" />
