@@ -1,7 +1,5 @@
 #include "resource_cook.h"
-#include "queried_resources.h"
 #include "resource_system.h"
-#include <utils/resource_types.h>
 
 namespace resource_system {
 
