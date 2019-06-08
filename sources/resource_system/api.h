@@ -2,19 +2,34 @@
 #define GUARD_RESOURCE_SYSTEM_API_H_INCLUDED
 
 #include <types.h>
-#include "request_ptr.h"
 #include "resource_system_types.h"
 
 namespace resource_system {
 
-void create( u32 const in_worker_thread_count );
+class resource_cook;
+
+void create( u32 const in_thread_count );
+
+void stop( );
 void destroy( );
 
-void process_request( request_ptr& in_request, query_callback const& in_callback, pointer const in_callback_data, uptr const in_callback_data_size );
-void process_request_from_file( pcstr const in_file_path, query_callback const& in_callback, pointer const in_callback_data, uptr const in_callback_data_size );
-void query_file( pcstr const in_file_path, query_callback const& in_callback, pointer const in_callback_data, uptr const in_callback_data_size );
-void query_request( pcstr const in_file_path, query_callback const& in_callback, pointer const in_callback_data, uptr const in_callback_data_size );
+template<typename ResourceType>
+void register_resource_type( );
+
+void query_resources(
+	resource_cook* const* const in_cooks,
+	u32 const in_cook_count,
+	user_query_callback const& in_callback,
+	pointer const in_callback_data,
+	uptr const in_callback_data_size
+);
+
+void busy_thread_job( u32 const in_thread_index, u64 const in_time_limit );
+void free_thread_job( u32 const in_helper_thread_index );
+void helper_thread_job( u32 const in_helper_thread_index );
 
 } // namespace resource_system
+
+#include "api_inline.h"
 
 #endif // #ifndef GUARD_RESOURCE_SYSTEM_API_H_INCLUDED

@@ -3,8 +3,6 @@
 
 #include <types.h>
 #include "resource_system_types.h"
-#include "file_ptr.h"
-#include "request_ptr.h"
 #include "resource_ptr.h"
 
 namespace resource_system {
@@ -12,21 +10,21 @@ namespace resource_system {
 class queried_resources
 {
 public:
-	queried_resources( ) = delete;
+	queried_resources( );
 
 	queried_resources( queried_resources const& ) = delete;
 	queried_resources& operator=( queried_resources const& ) = delete;
-	queried_resources( queried_resources&& ) = delete;
-	queried_resources& operator=( queried_resources&& ) = delete;
+
+	queried_resources( queried_resources&& in_other );
+	queried_resources& operator=( queried_resources&& in_other );
 
 	~queried_resources( );
 
-	file_ptr&& get_file( );
-	
-	request_ptr&& get_request( );
-
 	template<typename ResourceType>
-	resource_ptr<ResourceType>&& get_resource( );
+	resource_ptr<ResourceType> get_resource( );
+
+	uptr index( ) const;
+	uptr count( ) const;
 
 private:
 	friend class resource_system;

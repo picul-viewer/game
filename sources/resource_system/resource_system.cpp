@@ -1,303 +1,309 @@
 #include "resource_system.h"
 #include <lib/allocator.h>
-#include <lib/strings.h>
 #include <math/math_common.h>
-#include <system/file.h>
-#include "callback_allocator.h"
-#include "file_ptr.h"
+#include <system/interlocked.h>
+#include <system/timer.h>
 #include "queried_resources.h"
-#include "query_data.h"
+#include "resource_cook.h"
 #include "resource_type_registry.h"
-#include "request_builder.h"
 
 namespace resource_system {
 
-void resource_system::create( u32 const in_worker_thread_count )
+struct resource_system::query_data
 {
+	resource_cook* cook;
+	union
 	{
-		uptr const fs_queue_size = 64 * Kb;
-		uptr const manager_queue_size = 64 * Kb;
-		uptr const worker_queue_size = 128 * Kb;
+		struct
+		{
+			cook_functor functor;
+			u32 thread_index;
+		};
+		struct
+		{
+			user_query_callback callback;
+			pointer data;
+			uptr data_size;
+		};
+	};
+	u32 results_count;
+	mt_u32 pending_count;
 
-		uptr const size = fs_queue_size + manager_queue_size + worker_queue_size;
+#pragma warning (push)
+#pragma warning (disable:4200)
+	query_result results[0];
+#pragma warning (pop)
 
-		pointer const data = virtual_allocator( ).allocate( size );
+	static uptr calculate_size( u32 const in_results_count );
+	uptr size( ) const;
+};
 
-		pointer const fs_queue_data = data;
-		pointer const manager_queue_data = fs_queue_data + fs_queue_size;
-		pointer const worker_queue_data = manager_queue_data + manager_queue_size;
+uptr resource_system::query_data::calculate_size( u32 const in_results_count )
+{
+	return sizeof(query_data) + sizeof(query_result) * in_results_count;
+}
 
-		m_fs_queue.create		( fs_queue_data, fs_queue_size );
-		m_manager_queue.create	( manager_queue_data, manager_queue_size );
-		m_worker_queue.create	( worker_queue_data, worker_queue_size );
+uptr resource_system::query_data::size( ) const
+{
+	return calculate_size( results_count );
+}
+
+
+void resource_system::create( u32 const in_thread_count )
+{
+	m_thread_count = math::min( in_thread_count, (u32)resource_system_thread_count );
+	m_helper_thread_count = m_thread_count - resource_system_helper_threads_first;
+
+	{
+		uptr const queue_size = 2 * 1024;
+		uptr const helper_queue_size = 32 * 1024;
+
+		uptr const queue_memory_size = queue_size * sizeof(query_data*);
+		uptr const helper_queue_memory_size = helper_queue_size * sizeof(query_data*);
+
+		uptr const memory_size = queue_memory_size * m_thread_count + helper_queue_memory_size;
+
+		pointer const memory = virtual_allocator( ).allocate( memory_size );
+
+		pointer p = memory;
+
+		for ( u32 i = 0; i < m_thread_count; ++i )
+		{
+			m_queues[i].create( p, queue_memory_size );
+			p += queue_memory_size;
+		}
+
+		m_helper_queue.create( p, helper_queue_memory_size );
 	}
 	
+	m_temp_allocator.create( );
 	
-	m_fs_thread.create( &thread::method_helper<resource_system, &resource_system::fs_thread>, 512 * Kb, this );
+	u32 const event_count = m_thread_count - resource_system_free_threads_first;
+	for ( u32 i = 0; i < event_count; ++i )
+		m_thread_events[i].create( );
+}
 
-	m_manager_thread.create( &thread::method_helper<resource_system, &resource_system::manager_thread>, 512 * Kb, this );
+void resource_system::stop( )
+{
+	m_keep_processing = false;
 
-	ASSERT_CMP( in_worker_thread_count, <=, max_worker_thread_count );
-
-	m_worker_count = in_worker_thread_count;
-	for ( u32 i = 0; i < in_worker_thread_count; ++i )
-	{
-		m_worker_threads[i].create( &thread::method_helper<resource_system, &resource_system::worker_thread>, 1 * Mb, this );
-		m_worker_threads[i].advise_processor_index( i );
-	}
+	u32 const event_count = m_thread_count - resource_system_free_threads_first;
+	for ( u32 i = 0; i < event_count; ++i )
+		m_thread_events[i].release( );
 }
 
 void resource_system::destroy( )
 {
-	m_worker_threads->destroy( time::infinite, m_worker_count );
-	m_manager_thread.destroy( time::infinite );
-	m_fs_thread.destroy( time::infinite );
+	u32 const event_count = m_thread_count - resource_system_free_threads_first;
+	for ( u32 i = 0; i < event_count; ++i )
+		m_thread_events[i].release( );
 
-	m_fs_queue.destroy( );
-	m_manager_queue.destroy( );
-	m_worker_queue.destroy( );
+	m_temp_allocator.destroy( );
 
-	virtual_allocator( ).deallocate( m_fs_queue.data( ) );
+	pointer const queue_memory = m_queues[0].data( );
+
+	for ( u32 i = 0; i < m_thread_count; ++i )
+		m_queues[i].destroy( );
+	m_helper_queue.destroy( );
+
+	virtual_allocator( ).deallocate( queue_memory );
 }
 
-void resource_system::fs_thread( )
+void resource_system::process_task( query_data* const data )
 {
-	while ( true )
-	{
-		query_data* data;
-		m_fs_queue.pop( data );
-		
-		ASSERT( data->is_fs_query( ) );
+	ASSERT( m_temp_allocator.contains_pointer( data ) );
+	ASSERT_CMP( data->pending_count, ==, 0 );
 
-		u32 const dependent_queries_count = data->dependent_queries_count;
-		u32* const dependent_queries = data->dependent_queries( );
+	queried_resources resources( data->results, data->results_count );
 
-		ASSERT( strings::length( data->cook_data( ) ) > 0 );
-
-		query_result const result =
-			( data->type == resource_type_request ) ?
-			request_ptr::load( data->cook_data( ), dependent_queries_count ) :
-			file_ptr::load( data->cook_data( ), dependent_queries_count );
-
-		query_result* const result_slot = (pointer)data + data->index;
-		*result_slot = result;
-		
-		for ( u32 *i = dependent_queries, *e = dependent_queries + dependent_queries_count; i != e; ++i )
-		{
-			query_data* const dependent_query_data = (pointer)data + *i;
-
-			if ( interlocked_dec( dependent_query_data->waiting_factor ) == 0 )
-			{
-				push_query( dependent_query_data );
-			}
-		}
-	}
-}
-
-bool resource_system::manage_resource( query_data* const in_data )
-{
-	auto const manager_functor = g_resource_type_registry[in_data->type].m_manager;
-
-	ASSERT( manager_functor != nullptr );
-
-	resource_instance_id instance_id = 0;
-	bool const resource_exists = manager_functor( in_data->cook_data( ), instance_id );
-
-	query_result* const result_slot = (pointer)in_data + in_data->index;
-	*result_slot = instance_id;
-
-	if ( resource_exists )
-		return true;
-
-	u32 const requested_queries_count = in_data->requested_queries_count;
-	u32 const* const requested_queries_offsets = in_data->requested_queries( );
-
-	in_data->waiting_factor = (u32)requested_queries_count;
-	u32 last_waiting_factor = (u32)requested_queries_count;
-
-	for ( u32 i = 0; i < requested_queries_count; ++i )
-	{
-		query_data* const requested_data = (query_data*)( (pointer)in_data + requested_queries_offsets[i] );
-
-		bool const ready = manage_resource( requested_data );
-
-		if ( ready )
-			last_waiting_factor = interlocked_dec( in_data->waiting_factor );
-	}
-
-	if ( last_waiting_factor == 0 )
-		push_query( in_data );
-
-	return false;
-}
-
-void resource_system::manager_thread( )
-{
-	while ( true )
-	{
-		query_data* data;
-		m_manager_queue.pop( data );
-
-		ASSERT( data->type == finish_request_type );
-
-		bool const resource_exists = manage_resource( data );
-
-		if ( resource_exists )
-		{
-			static uptr const max_requested_queries_count = 1024;
-			query_result requested_queries[max_requested_queries_count];
-
-			u32 const requested_queries_count = data->requested_queries_count;
-			u32 const* const requested_queries_offsets = data->requested_queries( );
-
-			ASSERT_CMP( requested_queries_count, <, max_requested_queries_count );
-			for ( u32 i = 0; i < requested_queries_count; ++i )
-			{
-				query_data const* const query = (pointer)data + requested_queries_offsets[i];
-				requested_queries[i] = *(query_result*)( (pointer)query + query->index );
-			}
-
-			query_callback_id& callback_id = data->callback_id( );
-			if ( callback_id != 0xFFFFFFFF )
-				g_callback_allocator.invoke_callback( callback_id, queried_resources( requested_queries, requested_queries_count ) );
-
-			request_header* const header = (pointer)data - data->index;
-			request_ptr::release_by_pointer( header );
-		}
-	}
-}
-
-void resource_system::worker_thread( )
-{
-	static uptr const max_requested_queries_count = 1024;
-	query_result requested_queries[max_requested_queries_count];
-
-	while ( true )
-	{
-		query_data* data;
-		m_worker_queue.pop( data );
-
-		ASSERT_CMP( data->waiting_factor, ==, 0 );
-
-		u32 const requested_queries_count = data->requested_queries_count;
-		u32 const* const requested_queries_offsets = data->requested_queries( );
-
-		ASSERT_CMP( requested_queries_count, <, max_requested_queries_count );
-		for ( u32 i = 0; i < requested_queries_count; ++i )
-		{
-			query_data const* const query = (pointer)data + requested_queries_offsets[i];
-			requested_queries[i] = *(query_result*)( (pointer)query + query->index );
-		}
-
-		if ( data->type != finish_request_type )
-		{
-			query_result const result = g_resource_type_registry[data->type].m_creator( data->cook_data( ), queried_resources( requested_queries, requested_queries_count ) );
-		
-			query_result* const result_slot = (pointer)data + data->index;
-			*result_slot = result;
-		
-			u32 const dependent_queries_count = data->dependent_queries_count;
-			u32* const dependent_queries = data->dependent_queries( );
-
-			for ( u32 *i = dependent_queries, *e = dependent_queries + dependent_queries_count; i != e; ++i )
-			{
-				query_data* const dependent_query_data = (pointer)data + *i;
-
-				if ( interlocked_dec( dependent_query_data->waiting_factor ) == 0 )
-				{
-					push_query( dependent_query_data );
-				}
-			}
-		}
-		else
-		{
-			query_callback_id& callback_id = data->callback_id( );
-			if ( callback_id != 0xFFFFFFFF )
-				g_callback_allocator.invoke_callback( callback_id, queried_resources( requested_queries, requested_queries_count ) );
-
-			request_header* const header = (pointer)data - data->index;
-			request_ptr::release_by_pointer( header );
-		}
-	}
-}
-
-void resource_system::push_query( query_data* const in_query )
-{
-	if ( in_query->is_fs_query( ) )
-		m_fs_queue.push( in_query );
+	if ( data->cook )
+		data->functor( data->cook, resources );
 	else
-		m_worker_queue.push( in_query );
+	{
+		ASSERT( data->results_count != 0 );
+		data->callback( resources, data->data, data->data_size );
+	}
+
+	uptr const data_size = data->size( );
+	m_temp_allocator.deallocate( data, data_size );
 }
 
-void resource_system::manage_query( query_data* const in_query )
+void resource_system::busy_thread_job( u32 const in_thread_index, u64 const in_time_limit )
 {
-	ASSERT( in_query->type == finish_request_type );
-	m_manager_queue.push( in_query );
+	ASSERT_CMP( in_thread_index, <, resource_system_free_threads_first );
+
+	u32 const queue_index = in_thread_index;
+
+	u64 current_tick;
+
+	do
+	{
+		query_data* data;
+		bool const pop_successful = m_queues[queue_index].pop( data );
+
+		if ( !pop_successful )
+			break;
+
+		process_task( data );
+
+		current_tick = sys::tick( );
+	}
+	while ( current_tick < in_time_limit );
 }
 
-void resource_system::process_request( request_ptr& in_request, query_callback_id const in_callback_id )
+void resource_system::free_thread_job( u32 const in_thread_index )
 {
-	in_request.submit( in_callback_id );
+	ASSERT_CMP( in_thread_index, >=, resource_system_free_threads_first );
+	ASSERT_CMP( in_thread_index, <, resource_system_helper_threads_first );
+
+	u32 const queue_index = in_thread_index;
+	u32 const event_index = in_thread_index - resource_system_free_threads_first;
+
+	while ( m_keep_processing )
+	{
+		query_data* data;
+		bool const pop_successful = m_queues[queue_index].pop( data );
+
+		if ( pop_successful )
+			process_task( data );
+		else
+			m_thread_events[event_index].enter( );
+	}
 }
 
-static void submit_request_func( queried_resources& in_queried, pointer const in_data )
+void resource_system::helper_thread_job( u32 const in_thread_index )
 {
-	request_ptr request = std::move( in_queried.get_request( ) );
-	query_callback_id const callback_id = *(query_callback_id*)in_data;
-	g_resource_system.process_request( request, callback_id );
+	ASSERT_CMP( in_thread_index, >=, resource_system_helper_threads_first );
+	ASSERT_CMP( in_thread_index, <, resource_system_helper_threads_first + m_helper_thread_count );
+
+	u32 const queue_index = in_thread_index;
+	u32 const event_index = in_thread_index - resource_system_free_threads_first;
+
+	while ( m_keep_processing )
+	{
+		query_data* data;
+		bool pop_successful;
+		goto loop_start;
+
+		do
+		{
+			process_task( data );
+		loop_start:
+			pop_successful = m_queues[queue_index].pop( data );
+		}
+		while ( pop_successful );
+		
+		pop_successful = m_helper_queue.pop( data );
+
+		if ( pop_successful )
+			process_task( data );
+		else
+			m_thread_events[event_index].enter( );
+	}
 }
 
-void resource_system::process_request_from_file( pcstr const in_file_path, query_callback_id const in_callback_id )
+void resource_system::query_resources(
+	resource_cook* const* const in_cooks,
+	u32 const in_cook_count,
+	user_query_callback const& in_callback,
+	pointer const in_callback_data,
+	uptr const in_callback_data_size
+)
 {
-	request_builder builder;
+	ASSERT( in_cooks != nullptr );
+	ASSERT( in_cook_count != 0 );
 
-	uptr const size = strings::length( in_file_path ) + 1;
+	uptr const query_data_size = query_data::calculate_size( in_cook_count );
+	query_data* const data = m_temp_allocator.allocate( query_data_size );
 
-	request_cook_data* const cook_data = stack_allocate( size );
-	strings::copy_n( cook_data->file_path, in_file_path, size );
+	data->cook = nullptr;
+	data->callback = in_callback;
+	data->data = in_callback_data;
+	data->data_size = in_callback_data_size;
+	data->results_count = in_cook_count;
+	data->pending_count = in_cook_count;
 
-	query<request_cook_data>& query = builder.create_query( cook_data );
-	builder.query_resource( query );
-
-	request_ptr request = std::move( builder.compile( ) );
-
-	query_callback_id const callback_id = g_callback_allocator.register_callback( submit_request_func, &in_callback_id, sizeof(query_callback_id) );
-
-	process_request( request, callback_id );
+	push_cook_queries( in_cooks, in_cook_count, data );
 }
 
-void resource_system::query_file( pcstr const in_file_path, query_callback_id const in_callback_id )
+void resource_system::query_child_resources(
+	resource_cook* const* const in_requested_cooks,
+	u32 const in_requested_cook_count,
+	resource_cook* const in_parent_cook,
+	cook_functor const& in_functor,
+	u32 const in_functor_thread_index
+)
 {
-	request_builder builder;
+	ASSERT( in_requested_cooks != nullptr );
+	ASSERT( in_requested_cook_count != 0 );
+	ASSERT( in_parent_cook != nullptr );
 
-	uptr const size = strings::length( in_file_path ) + 1;
+	uptr const query_data_size = query_data::calculate_size( in_requested_cook_count );
+	query_data* const data = m_temp_allocator.allocate( query_data_size );
 
-	file_cook_data* const cook_data = stack_allocate( size );
-	strings::copy_n( cook_data->file_path, in_file_path, size );
+	data->cook = in_parent_cook;
+	data->functor = in_functor;
+	data->thread_index = in_functor_thread_index;
+	data->results_count = in_requested_cook_count;
+	data->pending_count = in_requested_cook_count;
 
-	query<file_cook_data>& query = builder.create_query( cook_data );
-	builder.query_resource( query );
-
-	request_ptr request = std::move( builder.compile( ) );
-
-	process_request( request, in_callback_id );
+	push_cook_queries( in_requested_cooks, in_requested_cook_count, data );
 }
 
-void resource_system::query_request( pcstr const in_file_path, query_callback_id const in_callback_id )
+void resource_system::push_cook_queries(
+	resource_cook* const* const in_cooks,
+	u32 const in_cook_count,
+	query_data* const in_query_data
+)
 {
-	request_builder builder;
+	ASSERT( in_cooks != nullptr );
+	ASSERT( in_cook_count != 0 );
+	ASSERT( in_query_data != nullptr );
 
-	uptr const size = strings::length( in_file_path ) + 1;
+	u32 const query_data_offset = (u32)( (pointer)in_query_data - m_temp_allocator.data( ) );
 
-	request_cook_data* const cook_data = stack_allocate( size );
-	strings::copy_n( cook_data->file_path, in_file_path, size );
+	for ( u32 i = 0; i < in_cook_count; ++i )
+	{
+		resource_cook* const cook = in_cooks[i];
 
-	query<request_cook_data>& query = builder.create_query( cook_data );
-	builder.query_resource( query );
+		cook->parent_query( ) = query_data_offset;
+		cook->result_index( ) = i;
 
-	request_ptr request = std::move( builder.compile( ) );
+		uptr const query_data_size = query_data::calculate_size( 0 );
+		query_data* const data = m_temp_allocator.allocate( query_data_size );
 
-	process_request( request, in_callback_id );
+		auto const& registry_data = g_resource_type_registry[cook->type( )];
+
+		data->cook = cook;
+		data->functor = registry_data.executor;
+		data->thread_index = registry_data.executor_thread_index;
+		data->results_count = 0;
+		data->pending_count = 0;
+
+		push_query_data( data );
+	}
+}
+
+void resource_system::push_query_data( query_data* const in_query_data )
+{
+	u32 const thread_index = in_query_data->cook ? in_query_data->thread_index : m_thread_count;
+	ASSERT_CMP( thread_index, <=, m_thread_count );
+
+	if ( thread_index == m_thread_count )
+		m_helper_queue.push( in_query_data );
+	else
+		m_queues[thread_index].push( in_query_data );
+}
+
+void resource_system::finish_cook( resource_cook* const in_cook, query_result const in_result )
+{
+	query_data* const data = m_temp_allocator.data( ) + in_cook->parent_query( );
+	ASSERT( m_temp_allocator.contains_pointer( data ) );
+
+	data->results[in_cook->result_index( )] = in_result;
+
+	if ( interlocked_dec( data->pending_count ) == 0 )
+		push_query_data( data );
 }
 
 resource_system g_resource_system;

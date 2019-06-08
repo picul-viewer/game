@@ -1,5 +1,5 @@
-#ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_POOL_H_INCLUDED
-#define GUARD_RESOURCE_SYSTEM_RESOURCE_POOL_H_INCLUDED
+#ifndef GUARD_RESOURCE_SYSTEM_DYNAMIC_RESOURCE_POOL_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_DYNAMIC_RESOURCE_POOL_H_INCLUDED
 
 #include <types.h>
 #include <system/mt_pool.h>
@@ -9,11 +9,11 @@ namespace resource_system {
 
 typedef u32 resource_handle;
 
-template<typename Resource, uptr MemorySize>
-class resource_pool
+template<typename Resource, uptr MemorySize, uptr PageSize>
+class dynamic_resource_pool
 {
 public:
-	void create( pointer const in_allocated_memory = nullptr );
+	void create( pointer const in_reserved_memory = nullptr );
 	void destroy( );
 
 	Resource* allocate( );
@@ -25,12 +25,12 @@ public:
 	bool contains_pointer( pointer const in_ptr ) const;
 
 private:
-	sys::mt_pool<Resource, MemorySize> m_pool;
+	sys::mt_dynamic_pool<Resource, MemorySize, PageSize> m_pool;
 
 };
 
 } // namespace resource_system
 
-#include "resource_pool_inline.h"
+#include "dynamic_resource_pool_inline.h"
 
-#endif // #ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_POOL_H_INCLUDED
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_DYNAMIC_RESOURCE_POOL_H_INCLUDED

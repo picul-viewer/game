@@ -95,39 +95,38 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="api.h" />
-    <ClInclude Include="callback_allocator.h" />
-    <ClInclude Include="file_ptr.h" />
+    <ClInclude Include="api_inline.h" />
+    <ClInclude Include="dynamic_resource_linear_set.h" />
+    <ClInclude Include="dynamic_resource_linear_set_inline.h" />
+    <ClInclude Include="dynamic_resource_pool.h" />
+    <ClInclude Include="dynamic_resource_pool_inline.h" />
+    <ClInclude Include="raw_data.h" />
     <ClInclude Include="queried_resources.h" />
     <ClInclude Include="queried_resources_inline.h" />
-    <ClInclude Include="request_ptr.h" />
-    <ClInclude Include="query_data.h" />
-    <ClInclude Include="request_builder.h" />
-    <ClInclude Include="request_builder_inline.h" />
+    <ClInclude Include="resource_cook.h" />
     <ClInclude Include="resource_pool.h" />
     <ClInclude Include="resource_pool_inline.h" />
     <ClInclude Include="resource_ptr.h" />
     <ClInclude Include="resource_ptr_inline.h" />
     <ClInclude Include="resource_system.h" />
     <ClInclude Include="resource_system_types.h" />
-    <ClInclude Include="resource_types.h" />
     <ClInclude Include="resource_type_registry.h" />
     <ClInclude Include="resource_type_registry_inline.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="api.cpp" />
-    <ClCompile Include="callback_allocator.cpp" />
-    <ClCompile Include="file_ptr.cpp" />
+    <ClCompile Include="raw_data.cpp" />
     <ClCompile Include="queried_resources.cpp" />
-    <ClCompile Include="request_ptr.cpp" />
-    <ClCompile Include="query_data.cpp" />
-    <ClCompile Include="request_builder.cpp" />
+    <ClCompile Include="resource_cook.cpp" />
     <ClCompile Include="resource_system.cpp" />
-    <ClCompile Include="resource_types.cpp" />
     <ClCompile Include="resource_type_registry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">
       <Project>{b7376639-83bd-4434-a00a-7a2551608722}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\utils\utils.vcxproj">
+      <Project>{78c80b93-cb8e-43bc-84c3-9f8b1e23a842}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

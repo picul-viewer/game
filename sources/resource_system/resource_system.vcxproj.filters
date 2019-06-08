@@ -1,64 +1,49 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="resource_pool">
-      <UniqueIdentifier>{40a171a6-506d-47c1-9447-dc9c1bfdb8e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="request_builder">
-      <UniqueIdentifier>{b84b9df1-8263-4c01-8c1e-9c0562bf82f7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="queried_resources">
       <UniqueIdentifier>{58096ac1-98a8-44a1-abe2-8e80c0ee5d49}</UniqueIdentifier>
     </Filter>
     <Filter Include="queried_resources\resource_ptr">
       <UniqueIdentifier>{69c458da-3223-4478-b03d-e56dbbdc925e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="queried_resources\file_ptr">
-      <UniqueIdentifier>{3eedde39-8a9d-47a7-b985-41daf5d748d7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="queried_resources\request_ptr">
-      <UniqueIdentifier>{21d88169-e768-4ed6-98d0-43cefa1e3c14}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resource_sytem">
       <UniqueIdentifier>{b61cf63f-82f6-4f22-9b3e-ce536c0ea649}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resource_sytem\callback_allocator">
-      <UniqueIdentifier>{12207b68-d97c-47a5-b823-75cf621b24ba}</UniqueIdentifier>
     </Filter>
     <Filter Include="resource_sytem\resource_type_registry">
       <UniqueIdentifier>{5a5288cb-b041-49c8-adf9-10c45f0fb543}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resource_sytem\query_data">
+    <Filter Include="api">
+      <UniqueIdentifier>{ecb27fd6-b421-4450-8ca0-6d38b2d8970b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{1fa0bfb6-f341-4118-b13f-00ce83fdabdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\resource_containers">
+      <UniqueIdentifier>{40a171a6-506d-47c1-9447-dc9c1bfdb8e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\resource_containers\resource_pool">
+      <UniqueIdentifier>{d1680f5c-cbc9-4938-9eb0-c5c7a20b0294}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\resource_containers\dynamic_resource_pool">
+      <UniqueIdentifier>{e96acbde-7af1-417f-837d-1205ff0ec787}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\resource_containers\dynamic_resource_linear_set">
+      <UniqueIdentifier>{a76e721a-8253-4a91-84d8-19ec9ebf0678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\resource_cook">
       <UniqueIdentifier>{eedce478-693f-420a-bf5a-4f79c0cce535}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resource_sytem\resource_type_registry\resource_types">
-      <UniqueIdentifier>{6b2d57c0-8357-41d6-909c-2ac991900838}</UniqueIdentifier>
+    <Filter Include="resources\raw_data">
+      <UniqueIdentifier>{8e0660b9-7fab-4337-a694-434eda9fa94a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="query_data.h">
-      <Filter>resource_sytem\query_data</Filter>
-    </ClInclude>
     <ClInclude Include="resource_type_registry.h">
       <Filter>resource_sytem\resource_type_registry</Filter>
     </ClInclude>
     <ClInclude Include="resource_type_registry_inline.h">
       <Filter>resource_sytem\resource_type_registry</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_pool.h">
-      <Filter>resource_pool</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_pool_inline.h">
-      <Filter>resource_pool</Filter>
-    </ClInclude>
-    <ClInclude Include="request_builder.h">
-      <Filter>request_builder</Filter>
-    </ClInclude>
-    <ClInclude Include="request_builder_inline.h">
-      <Filter>request_builder</Filter>
-    </ClInclude>
-    <ClInclude Include="file_ptr.h">
-      <Filter>queried_resources\file_ptr</Filter>
     </ClInclude>
     <ClInclude Include="resource_ptr.h">
       <Filter>queried_resources\resource_ptr</Filter>
@@ -72,51 +57,61 @@
     <ClInclude Include="queried_resources_inline.h">
       <Filter>queried_resources</Filter>
     </ClInclude>
-    <ClInclude Include="request_ptr.h">
-      <Filter>queried_resources\request_ptr</Filter>
-    </ClInclude>
     <ClInclude Include="resource_system.h">
       <Filter>resource_sytem</Filter>
-    </ClInclude>
-    <ClInclude Include="callback_allocator.h">
-      <Filter>resource_sytem\callback_allocator</Filter>
     </ClInclude>
     <ClInclude Include="resource_system_types.h">
       <Filter>resource_sytem</Filter>
     </ClInclude>
-    <ClInclude Include="resource_types.h">
-      <Filter>resource_sytem\resource_type_registry\resource_types</Filter>
+    <ClInclude Include="api.h">
+      <Filter>api</Filter>
     </ClInclude>
-    <ClInclude Include="api.h" />
+    <ClInclude Include="api_inline.h">
+      <Filter>api</Filter>
+    </ClInclude>
+    <ClInclude Include="dynamic_resource_pool.h">
+      <Filter>resources\resource_containers\dynamic_resource_pool</Filter>
+    </ClInclude>
+    <ClInclude Include="dynamic_resource_pool_inline.h">
+      <Filter>resources\resource_containers\dynamic_resource_pool</Filter>
+    </ClInclude>
+    <ClInclude Include="dynamic_resource_linear_set.h">
+      <Filter>resources\resource_containers\dynamic_resource_linear_set</Filter>
+    </ClInclude>
+    <ClInclude Include="dynamic_resource_linear_set_inline.h">
+      <Filter>resources\resource_containers\dynamic_resource_linear_set</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_pool_inline.h">
+      <Filter>resources\resource_containers\resource_pool</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_pool.h">
+      <Filter>resources\resource_containers\resource_pool</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_cook.h">
+      <Filter>resources\resource_cook</Filter>
+    </ClInclude>
+    <ClInclude Include="raw_data.h">
+      <Filter>resources\raw_data</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="query_data.cpp">
-      <Filter>resource_sytem\query_data</Filter>
-    </ClCompile>
     <ClCompile Include="resource_type_registry.cpp">
       <Filter>resource_sytem\resource_type_registry</Filter>
-    </ClCompile>
-    <ClCompile Include="request_builder.cpp">
-      <Filter>request_builder</Filter>
-    </ClCompile>
-    <ClCompile Include="file_ptr.cpp">
-      <Filter>queried_resources\file_ptr</Filter>
     </ClCompile>
     <ClCompile Include="queried_resources.cpp">
       <Filter>queried_resources</Filter>
     </ClCompile>
-    <ClCompile Include="request_ptr.cpp">
-      <Filter>queried_resources\request_ptr</Filter>
-    </ClCompile>
     <ClCompile Include="resource_system.cpp">
       <Filter>resource_sytem</Filter>
     </ClCompile>
-    <ClCompile Include="callback_allocator.cpp">
-      <Filter>resource_sytem\callback_allocator</Filter>
+    <ClCompile Include="api.cpp">
+      <Filter>api</Filter>
     </ClCompile>
-    <ClCompile Include="resource_types.cpp">
-      <Filter>resource_sytem\resource_type_registry\resource_types</Filter>
+    <ClCompile Include="resource_cook.cpp">
+      <Filter>resources\resource_cook</Filter>
     </ClCompile>
-    <ClCompile Include="api.cpp" />
+    <ClCompile Include="raw_data.cpp">
+      <Filter>resources\raw_data</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

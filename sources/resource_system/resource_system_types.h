@@ -5,16 +5,12 @@
 
 namespace resource_system {
 
-typedef u32 resource_type;
-typedef u32 resource_instance_id;
-typedef u64 resource_id;
-
-typedef u64 query_result;
+typedef pvoid query_result;
 
 class queried_resources;
 
-typedef u32 query_callback_id;
-typedef void( *query_callback )( queried_resources&, pointer const );
+typedef void( *user_query_callback )( queried_resources&, pointer const, uptr const );
+typedef void( *cook_functor )( pointer const, queried_resources& );
 
 } // namespace resource_system
 

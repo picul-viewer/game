@@ -2,57 +2,81 @@
 #define GUARD_RESOURCE_SYSTEM_RESOURCE_SYSTEM_H_INCLUDED
 
 #include <types.h>
-#include <lib/buffer_array.h>
-#include <lib/function.h>
 #include <lib/temporal_allocator.h>
-#include <system/thread.h>
+#include <system/critical_section.h>
 #include <system/mpsc_queue.h>
 #include <system/mpmc_queue.h>
+#include <utils/resource_system_threads.h>
 
 #include "resource_system_types.h"
-#include "request_ptr.h"
 
 namespace resource_system {
 
-struct query_data;
+class resource_cook;
 
 class resource_system
 {
 public:
-	void create( u32 const in_worker_thread_count );
+	void create( u32 const in_thread_count );
+
+	void stop( );
 	void destroy( );
 	
-	void process_request( request_ptr& in_request, query_callback_id const in_callback_id );
-	void process_request_from_file( pcstr const in_file_path, query_callback_id const in_callback_id );
-	void query_file( pcstr const in_file_path, query_callback_id const in_callback_id );
-	void query_request( pcstr const in_file_path, query_callback_id const in_callback_id );
+	void query_resources(
+		resource_cook* const* const in_cooks,
+		u32 const in_cook_count,
+		user_query_callback const& in_callback,
+		pointer const in_callback_data,
+		uptr const in_callback_data_size
+	);
+
+	void busy_thread_job( u32 const in_thread_index, u64 const in_time_limit );
+	void free_thread_job( u32 const in_helper_thread_index );
+	void helper_thread_job( u32 const in_helper_thread_index );
 
 private:
-	enum { max_worker_thread_count = 16 };
+	enum : uptr {
+		resource_system_event_count = resource_system_thread_count - resource_system_free_threads_first
+	};
 
 private:
-	bool manage_resource( query_data* const in_data );
-
-	void fs_thread( );
-	void manager_thread( );
-	void worker_thread( );
-
-	void push_query( query_data* const in_query );
+	struct query_data;
 
 private:
-	friend class request_ptr;
-	void manage_query( query_data* const in_query );
+	friend class resource_cook;
+
+	void query_child_resources(
+		resource_cook* const* const in_requested_cooks,
+		u32 const in_requested_cook_count,
+		resource_cook* const in_parent_cook,
+		cook_functor const& in_functor,
+		u32 const in_functor_thread_index
+	);
+
+	void finish_cook( resource_cook* const in_cook, query_result const in_result );
 
 private:
-	mpsc_queue<query_data*> m_fs_queue;
-	mpsc_queue<query_data*> m_manager_queue;
-	mpmc_queue<query_data*> m_worker_queue;
+	void process_task( query_data* const data );
 
-	thread m_fs_thread;
-	thread m_manager_thread;
-	thread m_worker_threads[max_worker_thread_count];
+	void push_cook_queries(
+		resource_cook* const* const in_cooks,
+		u32 const in_cook_count,
+		query_data* const in_query_data
+	);
 
-	u32 m_worker_count;
+	void push_query_data( query_data* const in_query_data );
+
+private:
+	sys::mpsc_queue<query_data*> m_queues[resource_system_thread_count];
+	sys::mpmc_queue<query_data*> m_helper_queue;
+	sys::critical_section m_thread_events[resource_system_event_count];
+
+	temporal_allocator<64> m_temp_allocator;
+
+	u32 m_thread_count;
+	u32 m_helper_thread_count;
+
+	bool volatile m_keep_processing;
 };
 
 extern resource_system g_resource_system;

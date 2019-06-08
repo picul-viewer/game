@@ -88,8 +88,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="resource_system_threads.h" />
     <ClInclude Include="fly_camera.h" />
     <ClInclude Include="resources_path.h" />
+    <ClInclude Include="resource_types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="fly_camera.cpp" />
