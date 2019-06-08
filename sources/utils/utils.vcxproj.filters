@@ -7,9 +7,6 @@
     <Filter Include="fly_camera">
       <UniqueIdentifier>{4a042354-9611-4955-bb20-e7e29d1155f7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resource_system">
-      <UniqueIdentifier>{4769ecdf-e9c1-438c-a03c-0b044a7f5f51}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resources_path.h">
@@ -18,12 +15,8 @@
     <ClInclude Include="fly_camera.h">
       <Filter>fly_camera</Filter>
     </ClInclude>
-    <ClInclude Include="resource_system_threads.h">
-      <Filter>resource_system</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_types.h">
-      <Filter>resource_system</Filter>
-    </ClInclude>
+    <ClInclude Include="resource_types.h" />
+    <ClInclude Include="engine_threads.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="resources_path.cpp">

@@ -6,7 +6,7 @@
 #include <system/critical_section.h>
 #include <system/mpsc_queue.h>
 #include <system/mpmc_queue.h>
-#include <utils/resource_system_threads.h>
+#include <utils/engine_threads.h>
 
 #include "resource_system_types.h"
 
@@ -36,7 +36,7 @@ public:
 
 private:
 	enum : uptr {
-		resource_system_event_count = resource_system_thread_count - resource_system_free_threads_first
+		event_max_count = engine_thread_count - engine_free_threads_first
 	};
 
 private:
@@ -67,9 +67,9 @@ private:
 	void push_query_data( query_data* const in_query_data );
 
 private:
-	sys::mpsc_queue<query_data*> m_queues[resource_system_thread_count];
+	sys::mpsc_queue<query_data*> m_queues[engine_thread_count];
 	sys::mpmc_queue<query_data*> m_helper_queue;
-	sys::critical_section m_thread_events[resource_system_event_count];
+	sys::critical_section m_thread_events[event_max_count];
 
 	temporal_allocator<64> m_temp_allocator;
 

@@ -5,7 +5,7 @@
 #include "resource_cook.h"
 #include "resource_ptr.h"
 #include <system/interlocked.h>
-#include <utils/resource_system_threads.h>
+#include <utils/engine_threads.h>
 #include <utils/resource_types.h>
 
 namespace resource_system {
@@ -56,7 +56,7 @@ public:
 	enum : u32 {
 		cook_resource_type = resource_type_raw_data,
 
-		create_resource_thread_index = resource_system_thread_fs
+		create_resource_thread_index = engine_thread_fs
 	};
 
 private:

@@ -51,8 +51,8 @@ uptr resource_system::query_data::size( ) const
 
 void resource_system::create( u32 const in_thread_count )
 {
-	m_thread_count = math::min( in_thread_count, (u32)resource_system_thread_count );
-	m_helper_thread_count = m_thread_count - resource_system_helper_threads_first;
+	m_thread_count = math::min( in_thread_count, (u32)engine_thread_count );
+	m_helper_thread_count = m_thread_count - engine_helper_threads_first;
 
 	{
 		uptr const queue_size = 2 * 1024;
@@ -78,7 +78,7 @@ void resource_system::create( u32 const in_thread_count )
 	
 	m_temp_allocator.create( );
 	
-	u32 const event_count = m_thread_count - resource_system_free_threads_first;
+	u32 const event_count = m_thread_count - engine_free_threads_first;
 	for ( u32 i = 0; i < event_count; ++i )
 		m_thread_events[i].create( );
 }
@@ -87,14 +87,14 @@ void resource_system::stop( )
 {
 	m_keep_processing = false;
 
-	u32 const event_count = m_thread_count - resource_system_free_threads_first;
+	u32 const event_count = m_thread_count - engine_free_threads_first;
 	for ( u32 i = 0; i < event_count; ++i )
 		m_thread_events[i].release( );
 }
 
 void resource_system::destroy( )
 {
-	u32 const event_count = m_thread_count - resource_system_free_threads_first;
+	u32 const event_count = m_thread_count - engine_free_threads_first;
 	for ( u32 i = 0; i < event_count; ++i )
 		m_thread_events[i].release( );
 
@@ -130,7 +130,7 @@ void resource_system::process_task( query_data* const data )
 
 void resource_system::busy_thread_job( u32 const in_thread_index, u64 const in_time_limit )
 {
-	ASSERT_CMP( in_thread_index, <, resource_system_free_threads_first );
+	ASSERT_CMP( in_thread_index, <, engine_free_threads_first );
 
 	u32 const queue_index = in_thread_index;
 
@@ -153,11 +153,11 @@ void resource_system::busy_thread_job( u32 const in_thread_index, u64 const in_t
 
 void resource_system::free_thread_job( u32 const in_thread_index )
 {
-	ASSERT_CMP( in_thread_index, >=, resource_system_free_threads_first );
-	ASSERT_CMP( in_thread_index, <, resource_system_helper_threads_first );
+	ASSERT_CMP( in_thread_index, >=, engine_free_threads_first );
+	ASSERT_CMP( in_thread_index, <, engine_helper_threads_first );
 
 	u32 const queue_index = in_thread_index;
-	u32 const event_index = in_thread_index - resource_system_free_threads_first;
+	u32 const event_index = in_thread_index - engine_free_threads_first;
 
 	while ( m_keep_processing )
 	{
@@ -173,11 +173,11 @@ void resource_system::free_thread_job( u32 const in_thread_index )
 
 void resource_system::helper_thread_job( u32 const in_thread_index )
 {
-	ASSERT_CMP( in_thread_index, >=, resource_system_helper_threads_first );
-	ASSERT_CMP( in_thread_index, <, resource_system_helper_threads_first + m_helper_thread_count );
+	ASSERT_CMP( in_thread_index, >=, engine_helper_threads_first );
+	ASSERT_CMP( in_thread_index, <, engine_helper_threads_first + m_helper_thread_count );
 
 	u32 const queue_index = in_thread_index;
-	u32 const event_index = in_thread_index - resource_system_free_threads_first;
+	u32 const event_index = in_thread_index - engine_free_threads_first;
 
 	while ( m_keep_processing )
 	{
