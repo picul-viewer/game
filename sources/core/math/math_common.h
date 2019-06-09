@@ -18,17 +18,29 @@ inline T max( T a, T b )
 	return ( a > b ) ? a : b;
 }
 
+template<typename T>
+inline T clamp( T v, T l, T r )
+{
+	return max( min( v, r ), l );
+}
+
 // For vectors
 template<template<typename> typename V, typename T>
 inline V<T> min( V<T> const& a, V<T> const& b )
 {
-	return V<T>( min( a.vx, b.vx ), ( a.vy < b.vy ) ? a.vy : b.vy );
+	return V<T>( min( a.vx, b.vx ), min( a.vy, b.vy ) );
 }
 
 template<template<typename> typename V, typename T>
 inline V<T> max( V<T> const& a, V<T> const& b )
 {
-	return V<T>( max( a.vx, b.vx ), ( a.vy > b.vy ) ? a.vy : b.vy );
+	return V<T>( max( a.vx, b.vx ), max( a.vy, b.vy ) );
+}
+
+template<template<typename> typename V, typename T>
+inline V<T> clamp( V<T> const& v, V<T> const& l, V<T> const& r )
+{
+	return V<T>( clamp( v.vx, l.vx, r.vx ), clamp( v.vy, l.vy, r.vy ) );
 }
 
 inline float modf( float n, float* integral )
