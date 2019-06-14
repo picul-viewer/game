@@ -14,10 +14,10 @@ public:
 	void set( ) const;
 	void reset( ) const;
 
-	void wait( u32 const wait_ms = time::infinite ) const;
+	void wait( u32 const wait_ms = wait_infinite ) const;
 
-	static void wait_all( u32 const count, system_event const* const objects, u32 const wait_ms = time::infinite );
-	static u32 wait_any( u32 const count, system_event const* const objects, u32 const wait_ms = time::infinite );
+	static void wait_all( u32 const count, system_event const* const objects, u32 const wait_ms = wait_infinite );
+	static u32 wait_any( u32 const count, system_event const* const objects, u32 const wait_ms = wait_infinite );
 
 	inline pvoid get_handle( ) const { return m_id; }
 

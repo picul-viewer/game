@@ -14,9 +14,11 @@ public:
 	typedef unsigned long ( __stdcall *thread_func_type )( void* );
 
 	void create( thread_func_type const func, u32 const stack_size, pvoid const arg );
-	void destroy( u32 const wait_ms = time::infinite );
+	void destroy( u32 const wait_ms = wait_infinite );
 
-	static void destroy( u32 const count, thread* const threads, u32 const wait_ms = time::infinite );
+	static void destroy( u32 const count, thread* const threads, u32 const wait_ms = wait_infinite );
+
+	static thread get_current( );
 
 	void suspend( );
 	void resume( );

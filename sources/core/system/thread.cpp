@@ -25,6 +25,13 @@ void sys::thread::destroy( u32 const count, thread* const threads, u32 const wai
 		CloseHandle( threads[i].m_id );
 }
 
+sys::thread sys::thread::get_current( )
+{
+	thread result;
+	result.m_id = GetCurrentThread( );
+	return result;
+}
+
 void sys::thread::suspend( )
 {
 	DWORD const result = SuspendThread( m_id );

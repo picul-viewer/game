@@ -42,9 +42,9 @@ enum : ptr
 	Gb	= 1024LL * Mb
 };
 
-enum time : u32
+enum : u32
 {
-	infinite = 0xFFFFFFFF
+	wait_infinite = 0xFFFFFFFF
 };
 
 

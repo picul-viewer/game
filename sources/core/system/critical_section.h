@@ -16,6 +16,11 @@ public:
 
 	void release( ) const;
 
+	bool is_locked( ) const;
+
+private:
+	friend class conditional_variable;
+
 private:
 	enum : uptr { data_size = 40 };
 
