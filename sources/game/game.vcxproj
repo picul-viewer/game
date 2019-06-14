@@ -104,9 +104,6 @@
     <ProjectReference Include="..\engine\engine.vcxproj">
       <Project>{33fa037a-4bd7-4033-bcfc-f030f5ab47a9}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\fs\fs.vcxproj">
-      <Project>{665de970-5f56-461f-887a-7a83f9295de7}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\render\render.vcxproj">
       <Project>{58b676b2-5b1b-49e9-a2e4-0b71c90af057}</Project>
     </ProjectReference>
