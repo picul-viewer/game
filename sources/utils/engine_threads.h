@@ -33,9 +33,11 @@ enum engine_threads : u32
 	engine_helper_thread_14,
 	engine_helper_thread_15,
 
-	// Different engine threads.
+	engine_thread_count,
 
-	engine_thread_count
+	engine_busy_threads_count = engine_free_threads_first - engine_busy_threads_first,
+	engine_free_threads_count = engine_helper_threads_first - engine_free_threads_first,
+	engine_helper_threads_count = engine_thread_count - engine_helper_threads_first
 };
 
 #endif // #ifndef GUARD_UTILS_ENGINE_THREADS_H_INCLUDED

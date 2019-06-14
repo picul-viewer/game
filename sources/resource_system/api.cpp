@@ -9,6 +9,11 @@ void resource_system::create( u32 const in_thread_count )
 	register_resource_type<raw_data>( );
 }
 
+void resource_system::stop( )
+{
+	g_resource_system.stop( );
+}
+
 void resource_system::destroy( )
 {
 	g_resource_system.destroy( );
@@ -31,7 +36,7 @@ void resource_system::query_resources(
 	);
 }
 
-void resource_system::busy_thread_job( u32 const in_thread_index, u64 const in_time_limit )
+void resource_system::busy_thread_job( u32 const in_thread_index, sys::time const in_time_limit )
 {
 	g_resource_system.busy_thread_job( in_thread_index, in_time_limit );
 }

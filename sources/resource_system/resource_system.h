@@ -3,9 +3,11 @@
 
 #include <types.h>
 #include <lib/temporal_allocator.h>
+#include <system/conditional_variable.h>
 #include <system/critical_section.h>
 #include <system/mpsc_queue.h>
 #include <system/mpmc_queue.h>
+#include <system/time.h>
 #include <utils/engine_threads.h>
 
 #include "resource_system_types.h"
@@ -30,13 +32,18 @@ public:
 		uptr const in_callback_data_size
 	);
 
-	void busy_thread_job( u32 const in_thread_index, u64 const in_time_limit );
+	void busy_thread_job( u32 const in_thread_index, sys::time const in_time_limit );
 	void free_thread_job( u32 const in_helper_thread_index );
 	void helper_thread_job( u32 const in_helper_thread_index );
 
 private:
-	enum : uptr {
-		event_max_count = engine_thread_count - engine_free_threads_first
+	enum : u32 {
+		cs_max_count = engine_thread_count - engine_free_threads_first,
+		cv_max_count = engine_free_threads_count + 1,
+
+		ignore_thread_count = 1,
+		ignore_thread_mask =
+			( 1 << engine_thread_window )
 	};
 
 private:
@@ -69,7 +76,8 @@ private:
 private:
 	sys::mpsc_queue<query_data*> m_queues[engine_thread_count];
 	sys::mpmc_queue<query_data*> m_helper_queue;
-	sys::critical_section m_thread_events[event_max_count];
+	sys::critical_section m_cs[cs_max_count];
+	sys::conditional_variable m_cv[cv_max_count];
 
 	temporal_allocator<64> m_temp_allocator;
 

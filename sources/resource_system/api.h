@@ -2,6 +2,7 @@
 #define GUARD_RESOURCE_SYSTEM_API_H_INCLUDED
 
 #include <types.h>
+#include <system/time.h>
 #include "resource_system_types.h"
 
 namespace resource_system {
@@ -24,7 +25,7 @@ void query_resources(
 	uptr const in_callback_data_size
 );
 
-void busy_thread_job( u32 const in_thread_index, u64 const in_time_limit );
+void busy_thread_job( u32 const in_thread_index, sys::time const in_time_limit );
 void free_thread_job( u32 const in_helper_thread_index );
 void helper_thread_job( u32 const in_helper_thread_index );
 

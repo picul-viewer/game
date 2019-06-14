@@ -47,6 +47,7 @@ private:
 class raw_data_cook : public resource_cook
 {
 public:
+	raw_data_cook( );
 	raw_data_cook( pcstr const in_path );
 
 	void create_resource( );

@@ -31,10 +31,15 @@ u32 raw_data::size( ) const
 }
 
 
-raw_data_cook::raw_data_cook( pcstr const in_path ) :
-	resource_cook( resource_type_raw_data ),
-	m_path( in_path )
+raw_data_cook::raw_data_cook( ) :
+	resource_cook( resource_type_raw_data )
 { }
+
+raw_data_cook::raw_data_cook( pcstr const in_path ) :
+	raw_data_cook( )
+{
+	m_path = in_path;
+}
 
 void raw_data_cook::create_resource( )
 {
