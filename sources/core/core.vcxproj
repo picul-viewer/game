@@ -155,6 +155,7 @@
     <ClInclude Include="math\octree_inline.h" />
     <ClInclude Include="math\quaternion.h" />
     <ClInclude Include="math\vector.h" />
+    <ClInclude Include="system\conditional_variable.h" />
     <ClInclude Include="system\critical_section.h" />
     <ClInclude Include="system\file.h" />
     <ClInclude Include="system\file_iterator.h" />
@@ -179,7 +180,7 @@
     <ClInclude Include="system\system_event.h" />
     <ClInclude Include="system\window_input.h" />
     <ClInclude Include="system\path.h" />
-    <ClInclude Include="system\timer.h" />
+    <ClInclude Include="system\time.h" />
     <ClInclude Include="system\window.h" />
     <ClInclude Include="system\window_input_state.h" />
     <ClInclude Include="types.h" />
@@ -201,6 +202,7 @@
     <ClCompile Include="macros.cpp" />
     <ClCompile Include="math\aabb.cpp" />
     <ClCompile Include="math\frustum.cpp" />
+    <ClCompile Include="system\conditional_variable.cpp" />
     <ClCompile Include="system\critical_section.cpp" />
     <ClCompile Include="system\file.cpp" />
     <ClCompile Include="system\file_iterator.cpp" />
@@ -212,7 +214,7 @@
     <ClCompile Include="system\system_event.cpp" />
     <ClCompile Include="system\window_input.cpp" />
     <ClCompile Include="system\path.cpp" />
-    <ClCompile Include="system\timer.cpp" />
+    <ClCompile Include="system\time.cpp" />
     <ClCompile Include="system\window.cpp" />
     <ClCompile Include="system\window_input_state.cpp" />
   </ItemGroup>

@@ -170,7 +170,7 @@ void world::on_console_command( pcstr const str )
 
 void world::update( )
 {
-	float const elapsed_time = m_ticker.tick( );
+	float const elapsed_time = (float)m_ticker.tick( );
 	m_camera.update( elapsed_time );
 
 	if ( !m_console_visible )

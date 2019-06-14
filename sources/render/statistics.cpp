@@ -80,7 +80,7 @@ void statistics::destroy( )
 void statistics::begin_frame( )
 {
 	// Update previous frame time.
-	float const frame_time = m_ticker.tick( );
+	float const frame_time = (float)m_ticker.tick( );
 	uptr const previous_frame_index = ( m_frame_index - 1 + max_frames ) % max_frames;
 	m_frames[previous_frame_index].m_frame_time = frame_time * 1000.0f;
 
@@ -253,7 +253,7 @@ statistics::frame::frame( )
 
 statistics::frame::~frame( )
 {
-	float const time = m_timer.get_elapsed_time( );
+	float const time = (float)m_timer.elapsed( );
 	g_statistics.end_frame( time );
 }
 

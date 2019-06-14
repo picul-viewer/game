@@ -10,9 +10,6 @@
     <Filter Include="system\window">
       <UniqueIdentifier>{0d31a339-4328-4bff-850c-d156dfdee4e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="system\timer">
-      <UniqueIdentifier>{6c8255af-79d7-4870-a685-48db5f83c6fc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lib">
       <UniqueIdentifier>{39fdb027-407f-4fc2-b8e2-0b3d835e11ca}</UniqueIdentifier>
     </Filter>
@@ -163,6 +160,12 @@
     <Filter Include="system\threads\structs\mt_pool">
       <UniqueIdentifier>{8af09c44-faad-4593-81b0-a9cda00a3ed0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="system\threads\sync\conditional_variable">
+      <UniqueIdentifier>{ebeaa810-71ab-4725-bffd-d61d1cea8aa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\time">
+      <UniqueIdentifier>{6c8255af-79d7-4870-a685-48db5f83c6fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -184,9 +187,6 @@
     </ClInclude>
     <ClInclude Include="math\math_common.h">
       <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="system\timer.h">
-      <Filter>system\timer</Filter>
     </ClInclude>
     <ClInclude Include="system\window.h">
       <Filter>system\window</Filter>
@@ -428,11 +428,14 @@
     <ClInclude Include="system\mt_pool_inline.h">
       <Filter>system\threads\structs\mt_pool</Filter>
     </ClInclude>
+    <ClInclude Include="system\conditional_variable.h">
+      <Filter>system\threads\sync\conditional_variable</Filter>
+    </ClInclude>
+    <ClInclude Include="system\time.h">
+      <Filter>system\time</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="system\timer.cpp">
-      <Filter>system\timer</Filter>
-    </ClCompile>
     <ClCompile Include="lib\hash.cpp">
       <Filter>lib\map</Filter>
     </ClCompile>
@@ -517,6 +520,12 @@
     </ClCompile>
     <ClCompile Include="system\critical_section.cpp">
       <Filter>system\threads\sync\critical_section</Filter>
+    </ClCompile>
+    <ClCompile Include="system\conditional_variable.cpp">
+      <Filter>system\threads\sync\conditional_variable</Filter>
+    </ClCompile>
+    <ClCompile Include="system\time.cpp">
+      <Filter>system\time</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

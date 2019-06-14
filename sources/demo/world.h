@@ -7,7 +7,7 @@
 #include <engine/scene.h>
 #include <engine/object.h>
 
-#include <system/timer.h>
+#include <system/time.h>
 #include <system/window_input_state.h>
 
 #include <ui/console.h>
@@ -37,7 +37,7 @@ private:
 	engine::object m_cubes;
 	utils::fly_camera m_camera;
 	ui::console m_console;
-	sys::float_ticker m_ticker;
+	sys::ticker m_ticker;
 	bool m_console_visible;
 
 };

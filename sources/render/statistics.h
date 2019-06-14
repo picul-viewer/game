@@ -3,7 +3,7 @@
 
 #include <types.h>
 #include "dx_include.h"
-#include <system/timer.h>
+#include <system/time.h>
 
 namespace render {
 
@@ -26,7 +26,7 @@ public:
 		frame( );
 		~frame( );
 	private:
-		sys::float_timer m_timer;
+		sys::timer m_timer;
 	};
 
 	struct debug_event
@@ -92,7 +92,7 @@ protected:
 	uptr m_frame_index;
 	u32 m_event_index;
 
-	sys::float_ticker m_ticker;
+	sys::ticker m_ticker;
 
 };
 

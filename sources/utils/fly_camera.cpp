@@ -1,5 +1,4 @@
 #include "fly_camera.h"
-#include <system/timer.h>
 #include <math/math_3d.h>
 #include <system/window_input_state.h>
 
