@@ -4,10 +4,12 @@
 #include <types.h>
 #include <math/vector.h>
 
+#include <system/interlocked.h>
+#include <system/system_event.h>
+#include <system/thread.h>
 #include <system/window.h>
 
-#include <system/thread.h>
-#include <system/system_event.h>
+#include <utils/engine_threads.h>
 
 #include "scene.h"
 #include "object.h"
@@ -17,7 +19,7 @@ namespace engine {
 class world
 {
 public:
-	void run( math::u32x2 in_window_dimensions );
+	void run( math::u32x2 const in_window_dimensions );
 	void exit( );
 
 	scene* create_scene( ) const;
@@ -37,44 +39,25 @@ private:
 
 	void window_thread( );
 	void main_thread( );
+	void fs_thread( );
+	void helper_thread( );
 
 	void create( );
 	void destroy( );
 
 private:
-	enum threads
-	{
-		thread_window = 0,
-
-		thread_count
-	};
-
-	enum events
-	{
-		event_window = 0,
-
-		event_main,
-		
-		event_count
-	};
-
-	enum {
-		system_event_count = event_count - 1
-	};
-
-private:
 	sys::window m_window;
 
-	sys::thread m_threads[thread_count];
+	sys::thread m_threads[engine_thread_count];
 	
-	sys::system_event m_alive_events[event_count];
-	sys::system_event m_exit_events[event_count];
+	sys::system_event m_alive_events[engine_busy_threads_count];
+	sys::system_event m_exit_events[engine_busy_threads_count];
 
 	math::u32x2 m_window_dimensions;
+	u32 m_thread_count;
+	mt_u32 m_helper_count;
 	bool m_is_active;
 
-	volatile u32 m_systems_alive;
-	volatile u32 m_systems_running;
 	volatile bool m_alive;
 
 };

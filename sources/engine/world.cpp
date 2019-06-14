@@ -1,11 +1,15 @@
 #include "world.h"
-#include <macros.h>
-
 #include <Windows.h>
 
+#include <macros.h>
+#include <math/math_common.h>
+
+#include <resource_system/api.h>
+
+#include <system/interlocked.h>
+#include <system/time.h>
 #include <system/window.h>
 #include <system/window_input.h>
-#include <system/interlocked.h>
 
 #include "resources.h"
 
@@ -89,100 +93,145 @@ void world::window_input( )
 	game::world_interface::window_input( );
 }
 
-void world::window_thread( )
-{
-	sys::g_window_input.create( );
-	m_window.create( "game", m_window_dimensions, false, &helper::window_procedure );
-	m_alive_events[event_window].set( );
-
-	// Waiting for all systems to create.
-	sys::system_event::wait_all( event_count, m_alive_events );
-
-	m_window.run( );
-	exit( );
-
-	// Reset owned alive event.
-	m_alive_events[event_window].reset( );
-	
-	// Exit from window.
-	m_exit_events[event_window].set( );
-	
-	// Waiting for all engine systems to stop.
-	sys::system_event::wait_all( event_count, m_exit_events );
-
-	// Waiting for render to destroy.
-	m_alive_events[event_main].wait( );
-
-	m_window.destroy( );
-	sys::g_window_input.destroy( );
-	m_alive_events[event_window].set( );
-}
-
 void world::main_thread( )
 {
 	// Waiting for window to create.
-	sys::system_event::wait_all( system_event_count, m_alive_events );
+	m_alive_events[engine_thread_window].wait( );
 
 	ASSERT( ( m_window_dimensions.x < 0x10000 ) && ( m_window_dimensions.y < 0x10000 ) );
 	render::g_world.create( (HWND)m_window.get_hwnd( ), m_window_dimensions, true );
 
 	game::world_interface::create( );
 
-	m_alive_events[event_main].set( );
+	m_alive_events[engine_thread_main].set( );
+
+	sys::time const max_frame_time = 1.0 / 60.0;
+	sys::time last_tick = sys::time::now( );
 
 	while ( m_alive )
 	{
 		game::world_interface::update( );
 		render::g_world.update( );
+
+		resource_system::busy_thread_job( engine_thread_main, last_tick + max_frame_time );
+		last_tick = sys::time::now( );
 	}
 	
 	// Reset owned alive event.
-	m_alive_events[event_main].reset( );
+	m_alive_events[engine_thread_main].reset( );
 	
 	// Exit from main.
-	m_exit_events[event_main].set( );
+	m_exit_events[engine_thread_main].set( );
 
-	// Waiting for window to stop.
-	sys::system_event::wait_all( event_count, m_exit_events );
+	// Waiting for all engine systems to stop.
+	sys::system_event::wait_all( engine_busy_threads_count, m_exit_events );
 
 	game::world_interface::destroy( );
 	render::g_world.destroy( );
 
-	m_alive_events[event_main].set( );
+	m_alive_events[engine_thread_main].set( );
+}
+
+void world::window_thread( )
+{
+	sys::g_window_input.create( );
+	m_window.create( "game", m_window_dimensions, false, &helper::window_procedure );
+	m_alive_events[engine_thread_window].set( );
+
+	// Waiting for all systems to create.
+	sys::system_event::wait_all( engine_busy_threads_count, m_alive_events );
+
+	m_window.run( );
+	exit( );
+
+	// Reset owned alive event.
+	m_alive_events[engine_thread_window].reset( );
+	
+	// Exit from window.
+	m_exit_events[engine_thread_window].set( );
+	
+	// Waiting for all engine systems to stop.
+	sys::system_event::wait_all( engine_busy_threads_count, m_exit_events );
+
+	// Waiting for render to destroy.
+	m_alive_events[engine_thread_main].wait( );
+
+	m_window.destroy( );
+	sys::g_window_input.destroy( );
+	m_alive_events[engine_thread_window].set( );
+}
+
+void world::fs_thread( )
+{
+	resource_system::free_thread_job( engine_thread_fs );
+}
+
+void world::helper_thread( )
+{
+	u32 const index = engine_helper_threads_first + interlocked_exchange_add( m_helper_count, 1 );
+
+	resource_system::helper_thread_job( index );
 }
 
 void world::create( )
 {
-	static_assert( event_main == event_count - 1, "revisit synchronization code" );
-
 	// Engine is running.
 	m_alive = true;
 
 	g_resources.create( );
 
-	for ( u32 i = 0; i < event_count; ++i )
+	for ( u32 i = 0; i < engine_busy_threads_count; ++i )
 	{
 		m_alive_events[i].create( false, true );
 		m_exit_events[i].create( false, true );
 	}
 
-	m_threads[thread_window].create( sys::thread::method_helper<world, &world::window_thread>, 1 * Mb, this );
+	u32 const cpu_cores = sys::thread::hardware_concurrency( );
+	u32 const helper_threads_count = math::clamp( cpu_cores - engine_helper_threads_first, 1u, (u32)engine_helper_threads_count );
+	m_thread_count = engine_helper_threads_first + helper_threads_count;
+
+	resource_system::create( m_thread_count );
+
+	u32 processor_index = 0;
+
+	m_threads[engine_thread_main] = sys::thread::get_current( );
+	m_threads[engine_thread_main].set_priority( 17 );
+	m_threads[engine_thread_main].force_processor_index( processor_index++ % cpu_cores );
+
+	m_threads[engine_thread_window].create( sys::thread::method_helper<world, &world::window_thread>, 4 * Mb, this );
+	m_threads[engine_thread_window].set_priority( 17 );
+	m_threads[engine_thread_window].force_processor_index( processor_index++ % cpu_cores );
+
+	m_threads[engine_thread_fs].create( sys::thread::method_helper<world, &world::fs_thread>, 4 * Mb, this );
+	m_threads[engine_thread_fs].set_priority( 17 );
+	m_threads[engine_thread_fs].force_processor_index( processor_index++ % cpu_cores );
+
+	for ( u32 i = 0; i < helper_threads_count; ++i )
+	{
+		m_threads[engine_helper_threads_first + i].create( sys::thread::method_helper<world, &world::helper_thread>, 4 * Mb, this );
+		m_threads[engine_helper_threads_first + i].set_priority( 13 );
+		m_threads[engine_helper_threads_first + i].force_processor_index( processor_index++ % cpu_cores );
+	}
 }
 
 void world::destroy( )
 {
-	sys::thread::destroy( thread_count, m_threads );
+	resource_system::stop( );
 
-	for ( u32 i = 0; i < event_count; ++i )
+	sys::thread::destroy( m_thread_count - 1, m_threads + 1 );
+
+	for ( u32 i = 0; i < engine_busy_threads_count; ++i )
 	{
 		m_alive_events[i].destroy( );
 		m_exit_events[i].destroy( );
 	}
 	
+	resource_system::destroy( );
+
 	g_resources.destroy( );
 }
 
-void world::run( math::u32x2 in_window_dimensions )
+void world::run( math::u32x2 const in_window_dimensions )
 {
 	m_window_dimensions = in_window_dimensions;
 

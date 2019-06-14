@@ -106,6 +106,9 @@
     <ProjectReference Include="..\render\render.vcxproj">
       <Project>{58b676b2-5b1b-49e9-a2e4-0b71c90af057}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\resource_system\resource_system.vcxproj">
+      <Project>{7f2ce0ea-d253-4eea-baf1-5e8ae2934a61}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\ui\ui.vcxproj">
       <Project>{63198bd7-c43f-4037-af08-6ac2f2c206bc}</Project>
     </ProjectReference>
