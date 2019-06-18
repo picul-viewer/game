@@ -4,17 +4,11 @@
 #include <macros.h>
 
 template<uptr ElemSize, uptr PageSize>
-void pool<ElemSize, PageSize>::create( )
-{
-	create( virtual_allocator( ).commit( nullptr, page_size ) );
-}
-
-template<uptr ElemSize, uptr PageSize>
-void pool<ElemSize, PageSize>::create( pointer memory )
+void pool<ElemSize, PageSize>::create( pointer const in_committed_memory )
 {
 	static_assert( ElemSize >= sizeof(pointer), "too small element size" );
 	static_assert( ElemSize <= page_size, "too big element size" );
-	m_data = memory;
+	m_data = in_committed_memory ? in_committed_memory : virtual_allocator( ).commit( nullptr, memory_size );
 	clear( );
 }
 
@@ -91,17 +85,11 @@ void pool<ElemSize, PageSize>::deallocate( pointer p )
 
 
 template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-void dynamic_pool<ElemSize, PageSize, PageMaxCount>::create( )
-{
-	create( virtual_allocator( ).reserve( nullptr, page_size * PageMaxCount ) );
-}
-
-template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
-void dynamic_pool<ElemSize, PageSize, PageMaxCount>::create( pointer memory )
+void dynamic_pool<ElemSize, PageSize, PageMaxCount>::create( pointer const in_reserved_memory )
 {
 	static_assert( ElemSize >= sizeof(pointer), "too small element size" );
-	static_assert( ElemSize <= page_size * PageMaxCount, "too big element size" );
-	m_data = memory;
+	static_assert( ElemSize <= memory_size, "too big element size" );
+	m_data = in_reserved_memory ? in_reserved_memory : virtual_allocator( ).reserve( nullptr, memory_size );
 	clear( );
 }
 
@@ -158,7 +146,7 @@ pointer dynamic_pool<ElemSize, PageSize, PageMaxCount>::allocate( uptr size )
 		if ( m_last_pointer + size > m_page_pointer + page_size )
 		{
 			m_page_pointer				+= page_size;
-			ASSERT_CMP					( m_page_pointer, <, m_data + page_size * PageMaxCount );
+			ASSERT_CMP					( m_page_pointer, <, m_data + memory_size );
 			virtual_allocator( ).commit	( m_page_pointer, page_size );
 		}
 

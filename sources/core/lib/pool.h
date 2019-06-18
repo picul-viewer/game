@@ -9,7 +9,7 @@ template<uptr ElemSize, uptr PageSize>
 struct pool
 {
 public:
-	void create( );
+	void create( pointer const in_committed_memory = nullptr );
 	void destroy( );
 
 	pointer data( ) const;
@@ -21,11 +21,13 @@ public:
 	pointer allocate( uptr size );
 	void deallocate( pointer p );
 
+public:
+	enum : uptr {
+		page_size = virtual_allocator::memory_size_helper<PageSize>::value,
+		memory_size = page_size
+	};
+
 protected:
-	enum : uptr { page_size = virtual_allocator::memory_size_helper<PageSize>::value };
-
-	void create( pointer memory );
-
 	pointer	m_data;
 	pointer	m_push_pointer;
 	pointer	m_last_pointer;
@@ -35,7 +37,7 @@ template<uptr ElemSize, uptr PageSize, uptr PageMaxCount>
 struct dynamic_pool
 {
 public:
-	void create( );
+	void create( pointer const in_reserved_memory = nullptr );
 	void destroy( );
 
 	pointer data( ) const;
@@ -47,11 +49,13 @@ public:
 	pointer allocate( uptr size );
 	void deallocate( pointer p );
 
+public:
+	enum : uptr {
+		page_size = virtual_allocator::memory_size_helper<PageSize>::value,
+		memory_size = page_size * PageMaxCount
+	};
+
 protected:
-	enum : uptr { page_size = virtual_allocator::memory_size_helper<PageSize>::value };
-
-	void create( pointer memory );
-
 	pointer	m_data;
 	pointer m_page_pointer;
 	pointer	m_push_pointer;
