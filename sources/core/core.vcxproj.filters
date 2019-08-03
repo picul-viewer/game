@@ -166,6 +166,15 @@
     <Filter Include="system\time">
       <UniqueIdentifier>{6c8255af-79d7-4870-a685-48db5f83c6fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\map\hash">
+      <UniqueIdentifier>{9e1f0f8e-2b70-4eeb-ab09-fcd3506b707d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\map\hash_map">
+      <UniqueIdentifier>{1a7d0613-156f-4494-a1a5-49a3404f9faa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\map\linear_set">
+      <UniqueIdentifier>{a9dbcf29-28bf-4d75-a768-d76752b24ab3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -190,15 +199,6 @@
     </ClInclude>
     <ClInclude Include="system\window.h">
       <Filter>system\window</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\hash.h">
-      <Filter>lib\map</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\hash_map.h">
-      <Filter>lib\map</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\hash_map_inline.h">
-      <Filter>lib\map</Filter>
     </ClInclude>
     <ClInclude Include="lib\memory.h">
       <Filter>lib\memory</Filter>
@@ -253,12 +253,6 @@
     </ClInclude>
     <ClInclude Include="math\aabb.h">
       <Filter>math\collision\aabb</Filter>
-    </ClInclude>
-    <ClInclude Include="math\bvh.h">
-      <Filter>math\collision\bvh</Filter>
-    </ClInclude>
-    <ClInclude Include="math\bvh_inline.h">
-      <Filter>math\collision\bvh</Filter>
     </ClInclude>
     <ClInclude Include="math\frustum.h">
       <Filter>math\collision\frustum</Filter>
@@ -434,11 +428,29 @@
     <ClInclude Include="system\time.h">
       <Filter>system\time</Filter>
     </ClInclude>
+    <ClInclude Include="lib\hash.h">
+      <Filter>lib\map\hash</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\hash_map_inline.h">
+      <Filter>lib\map\hash_map</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\hash_map.h">
+      <Filter>lib\map\hash_map</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\linear_set_inline.h">
+      <Filter>lib\map\linear_set</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\linear_set.h">
+      <Filter>lib\map\linear_set</Filter>
+    </ClInclude>
+    <ClInclude Include="math\bvh.h">
+      <Filter>math\collision\bvh</Filter>
+    </ClInclude>
+    <ClInclude Include="math\bvh_inline.h">
+      <Filter>math\collision\bvh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lib\hash.cpp">
-      <Filter>lib\map</Filter>
-    </ClCompile>
     <ClCompile Include="lib\alloc_string.cpp">
       <Filter>lib\string</Filter>
     </ClCompile>
@@ -526,6 +538,9 @@
     </ClCompile>
     <ClCompile Include="system\time.cpp">
       <Filter>system\time</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\hash.cpp">
+      <Filter>lib\map\hash</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
