@@ -54,13 +54,13 @@ struct type_count;
 template<>
 struct type_count<>
 {
-	static const uptr value = 0;
+	enum { value = 0 };
 };
 
 template<typename T, typename ... TList>
 struct type_count<T, TList ...>
 {
-	static const uptr value = 1 + type_count<TList ...>::value;
+	enum { value = 1 + type_count<TList ...>::value };
 };
 
 
@@ -122,6 +122,16 @@ struct pointer
 
 private:
 	pvoid data;
+
+};
+
+class non_copyable
+{
+public:
+	non_copyable( non_copyable const& ) = delete;
+	non_copyable& operator=( non_copyable const& ) = delete;
+	non_copyable( non_copyable&& ) = delete;
+	non_copyable& operator=( non_copyable&& ) = delete;
 
 };
 
