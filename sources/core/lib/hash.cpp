@@ -2,7 +2,7 @@
 
 #include <nmmintrin.h>
 
-u16 const lib::hash16::table[256] = {
+const u16 hash16_table[256] = {
 	0, 49345, 49537, 320, 4992, 960, 640, 49729, 50689, 1728, 1920, 51009, 1280, 50625, 50305, 1088,
 	52225, 3264, 3456, 52545, 3840, 53185, 52865, 3648, 2560, 51905, 52097, 2880, 51457, 2496, 2176, 51265,
 	55297, 6336, 6528, 55617, 6912, 56257, 55937, 6720, 7680, 57025, 57217, 8000, 56577, 7616, 7296, 56385,
@@ -20,47 +20,48 @@ u16 const lib::hash16::table[256] = {
 	19584, 35905, 17408, 33985, 34177, 17728, 34561, 18368, 18048, 34369, 33281, 17088, 17280, 33601, 16640, 33217, 32897, 16448
 };
 
-u16 lib::hash16::operator( )( pcvoid data, uptr size, u16 initial_value )
+u16 lib::hash16( pcvoid const data, uptr const size, u16 const initial_value )
 {
 	u16 result = initial_value;
 
 	pcbyte i = (pcbyte)data;
+	uptr s = size;
 
-	while ( size-- )
-		result = ( result >> 8 ) ^ table[ ( result & 0xFF ) ^ *( i++ ) ];
+	while ( s-- )
+		result = ( result >> 8 ) ^ hash16_table[ ( result & 0xFF ) ^ *( i++ ) ];
 
 	return result;
 }
 
-u32 lib::hash32::operator( )( pcvoid data, uptr size, u32 initial_value )
+u32 lib::hash32( pcvoid const data, uptr const size, u32 const initial_value )
 {
 	u32 result = initial_value;
 
 	uptr length_u64 = size / sizeof(u64);
-	uptr left = size - length_u64 * sizeof(u64);
+	uptr const left = size - length_u64 * sizeof(u64);
 
 	pcbyte i = (pcbyte)data;
 
 	while ( length_u64-- )
 	{
-		result = (u32)_mm_crc32_u64( result, *i );
+		result = (u32)_mm_crc32_u64( *(u64*)i, result );
 		i += sizeof(u64);
 	}
 
 	if ( left & sizeof(u32) )
 	{
-		result = _mm_crc32_u32( result, *i );
+		result = _mm_crc32_u32( *(u32*)i, result );
 		i += sizeof(u32);
 	}
 	
 	if ( left & sizeof(u16) )
 	{
-		result = _mm_crc32_u16( result, *i );
+		result = _mm_crc32_u16( *(u16*)i, result );
 		i += sizeof(u16);
 	}
 
 	if ( left & sizeof(u8) )
-		result = _mm_crc32_u8( result, *i );
+		result = _mm_crc32_u8( *(u8*)i, result );
 
 	return result;
 }

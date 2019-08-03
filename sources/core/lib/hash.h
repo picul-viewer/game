@@ -5,24 +5,14 @@
 
 namespace lib {
 
-struct hash16
+u16 hash16( pcvoid const data, uptr const size, u16 const initial_value = 0xFFFF );
+u32 hash32( pcvoid const data, uptr const size, u32 const initial_value = 0xFFFFFFFF );
+
+template<typename T>
+u32 hash( T const& value )
 {
-protected:
-	static u16 const table[256];
-
-public:
-	typedef u16 value_type;
-
-	u16 operator( )( pcvoid data, uptr size, u16 initial_value = 0xFFFF );
-};
-
-struct hash32
-{
-public:
-	typedef u32 value_type;
-
-	u32 operator( )( pcvoid data, uptr size, u32 initial_value = 0xFFFFFFFF );
-};
+	return hash32( &value, sizeof(T) );
+}
 
 } // namespace lib
 

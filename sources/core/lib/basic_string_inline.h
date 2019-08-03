@@ -17,7 +17,7 @@ u32 i_const_string<StringClass>::hash( ) const
 	StringClass const* this_casted = static_cast<StringClass const*>( this );
 	ASSERT( this_casted->c_str( ) );
 
-	return lib::hash32( )( this_casted->c_str( ), this_casted->length( ) );
+	return lib::hash32( this_casted->c_str( ), this_casted->length( ) );
 }
 
 template<typename StringClass>
