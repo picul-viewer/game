@@ -38,3 +38,13 @@ void linear_allocator::shrink( uptr const shrink_size )
 	ASSERT_CMP				( (uptr)( m_last_pointer - m_data ), >=, shrink_size );
 	m_last_pointer			-= shrink_size;
 }
+
+uptr linear_allocator::index_of( pointer const p ) const
+{
+	ASSERT_CMP( p, >=, m_data );
+	ASSERT_CMP( p, <=, m_last_pointer );
+
+	uptr const result = p - m_data;
+
+	return result;
+}

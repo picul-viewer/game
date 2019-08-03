@@ -18,6 +18,8 @@ public:
 
 	void shrink( uptr const shrink_size );
 
+	uptr index_of( pointer const p ) const;
+
 protected:
 	pointer	m_data;
 	pointer	m_data_end;
@@ -39,6 +41,8 @@ public:
 	pointer allocate( uptr size );
 	
 	void shrink( uptr const shrink_size );
+
+	uptr index_of( pointer const p ) const;
 
 protected:
 	enum : uptr { page_size = virtual_allocator::memory_size_helper<PageSize>::value };

@@ -58,4 +58,15 @@ void dynamic_linear_allocator<PageSize, PageMaxCount>::shrink( uptr const shrink
 	m_last_pointer			-= shrink_size;
 }
 
+template<uptr PageSize, uptr PageMaxCount>
+uptr dynamic_linear_allocator<PageSize, PageMaxCount>::index_of( pointer const p ) const
+{
+	ASSERT_CMP( p, >=, m_data );
+	ASSERT_CMP( p, <=, m_last_pointer );
+
+	uptr const result = p - m_data;
+
+	return result;
+}
+
 #endif // #ifndef GUARD_CORE_LINEAR_ALLOCATOR_INLINE_H_INCLUDED
