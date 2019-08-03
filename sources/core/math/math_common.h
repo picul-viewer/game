@@ -201,13 +201,13 @@ inline T lerp( T l, T r, F t )
 }
 
 template<typename T, typename U>
-inline T align_down( T const value, U const alignment )
+inline constexpr T align_down( T const value, U const alignment )
 {
 	return value - value % alignment;
 }
 
 template<typename T, typename U>
-inline T align_up( T const value, U const alignment )
+inline constexpr T align_up( T const value, U const alignment )
 {
 	return align_down( value + alignment - 1, alignment );
 }
