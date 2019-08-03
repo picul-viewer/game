@@ -7,10 +7,10 @@
 namespace resource_system {
 
 template<typename ResourceType>
-resource_ptr<ResourceType> queried_resources::get_resource( )
+typename ResourceType::handle_type queried_resources::get_resource( )
 {
 	ASSERT( m_index < m_count );
-	return lib::move( resource_ptr<ResourceType>( m_results[m_index++] ) );
+	return lib::move( typename ResourceType::handle_type( m_results[m_index++] ) );
 }
 
 } // namespace resource_system

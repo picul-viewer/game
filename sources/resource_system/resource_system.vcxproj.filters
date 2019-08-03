@@ -1,49 +1,46 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="queried_resources">
-      <UniqueIdentifier>{58096ac1-98a8-44a1-abe2-8e80c0ee5d49}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="queried_resources\resource_ptr">
-      <UniqueIdentifier>{69c458da-3223-4478-b03d-e56dbbdc925e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resource_sytem">
       <UniqueIdentifier>{b61cf63f-82f6-4f22-9b3e-ce536c0ea649}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resource_sytem\resource_type_registry">
-      <UniqueIdentifier>{5a5288cb-b041-49c8-adf9-10c45f0fb543}</UniqueIdentifier>
     </Filter>
     <Filter Include="api">
       <UniqueIdentifier>{ecb27fd6-b421-4450-8ca0-6d38b2d8970b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources">
-      <UniqueIdentifier>{1fa0bfb6-f341-4118-b13f-00ce83fdabdc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\resource_cook">
+    <Filter Include="resource_sytem\resource_cook">
       <UniqueIdentifier>{eedce478-693f-420a-bf5a-4f79c0cce535}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\raw_data">
+    <Filter Include="resource_sytem\queried_resources">
+      <UniqueIdentifier>{58096ac1-98a8-44a1-abe2-8e80c0ee5d49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{1fa0bfb6-f341-4118-b13f-00ce83fdabdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource\raw_data">
       <UniqueIdentifier>{8e0660b9-7fab-4337-a694-434eda9fa94a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource\shared_resource">
+      <UniqueIdentifier>{9f1d1b7b-b05f-4c02-9f2f-3dea6031e2ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource\shared_resource\shared_resource_cook">
+      <UniqueIdentifier>{105ac93c-4ac5-4b72-830e-d0b53a48c46b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource\shared_resource\shared_resource_ptr">
+      <UniqueIdentifier>{69c458da-3223-4478-b03d-e56dbbdc925e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource\default_resource">
+      <UniqueIdentifier>{9834a19a-7f56-46f8-8f9b-629ae32fdb1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource\default_resource\default_resource_ptr">
+      <UniqueIdentifier>{a17af3b1-c12a-49fd-b9a3-341b01a6400d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource_type_registry.h">
-      <Filter>resource_sytem\resource_type_registry</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_type_registry_inline.h">
-      <Filter>resource_sytem\resource_type_registry</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_ptr.h">
-      <Filter>queried_resources\resource_ptr</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_ptr_inline.h">
-      <Filter>queried_resources\resource_ptr</Filter>
-    </ClInclude>
     <ClInclude Include="queried_resources.h">
-      <Filter>queried_resources</Filter>
+      <Filter>resource_sytem\queried_resources</Filter>
     </ClInclude>
     <ClInclude Include="queried_resources_inline.h">
-      <Filter>queried_resources</Filter>
+      <Filter>resource_sytem\queried_resources</Filter>
     </ClInclude>
     <ClInclude Include="resource_system.h">
       <Filter>resource_sytem</Filter>
@@ -58,18 +55,54 @@
       <Filter>api</Filter>
     </ClInclude>
     <ClInclude Include="resource_cook.h">
-      <Filter>resources\resource_cook</Filter>
+      <Filter>resource_sytem\resource_cook</Filter>
     </ClInclude>
     <ClInclude Include="raw_data.h">
-      <Filter>resources\raw_data</Filter>
+      <Filter>resource\raw_data</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_handle.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="shared_resource.h">
+      <Filter>resource\shared_resource</Filter>
+    </ClInclude>
+    <ClInclude Include="shared_resource_cook.h">
+      <Filter>resource\shared_resource\shared_resource_cook</Filter>
+    </ClInclude>
+    <ClInclude Include="shared_resource_cook_inline.h">
+      <Filter>resource\shared_resource\shared_resource_cook</Filter>
+    </ClInclude>
+    <ClInclude Include="default_resource.h">
+      <Filter>resource\default_resource</Filter>
+    </ClInclude>
+    <ClInclude Include="default_resource_cook.h">
+      <Filter>resource\default_resource</Filter>
+    </ClInclude>
+    <ClInclude Include="shared_resource_types.h">
+      <Filter>resource\shared_resource</Filter>
+    </ClInclude>
+    <ClInclude Include="shared_resource_ptr.h">
+      <Filter>resource\shared_resource\shared_resource_ptr</Filter>
+    </ClInclude>
+    <ClInclude Include="shared_resource_ptr_inline.h">
+      <Filter>resource\shared_resource\shared_resource_ptr</Filter>
+    </ClInclude>
+    <ClInclude Include="default_resource_ptr.h">
+      <Filter>resource\default_resource\default_resource_ptr</Filter>
+    </ClInclude>
+    <ClInclude Include="default_resource_ptr_inline.h">
+      <Filter>resource\default_resource\default_resource_ptr</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="shared_resource_container_inline.h">
+      <Filter>resource\shared_resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="resource_type_registry.cpp">
-      <Filter>resource_sytem\resource_type_registry</Filter>
-    </ClCompile>
     <ClCompile Include="queried_resources.cpp">
-      <Filter>queried_resources</Filter>
+      <Filter>resource_sytem\queried_resources</Filter>
     </ClCompile>
     <ClCompile Include="resource_system.cpp">
       <Filter>resource_sytem</Filter>
@@ -78,10 +111,16 @@
       <Filter>api</Filter>
     </ClCompile>
     <ClCompile Include="resource_cook.cpp">
-      <Filter>resources\resource_cook</Filter>
+      <Filter>resource_sytem\resource_cook</Filter>
     </ClCompile>
     <ClCompile Include="raw_data.cpp">
-      <Filter>resources\raw_data</Filter>
+      <Filter>resource\raw_data</Filter>
+    </ClCompile>
+    <ClCompile Include="shared_resource_inline.h">
+      <Filter>resource\shared_resource</Filter>
+    </ClCompile>
+    <ClCompile Include="resource.cpp">
+      <Filter>resource</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

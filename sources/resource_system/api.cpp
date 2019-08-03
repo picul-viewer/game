@@ -5,8 +5,6 @@
 void resource_system::create( u32 const in_thread_count )
 {
 	g_resource_system.create( in_thread_count );
-
-	register_resource_type<raw_data>( );
 }
 
 void resource_system::stop( )
@@ -19,17 +17,17 @@ void resource_system::destroy( )
 	g_resource_system.destroy( );
 }
 
-void resource_system::query_resources(
-	resource_cook* const* const in_cooks,
-	u32 const in_cook_count,
-	user_query_callback const& in_callback,
+void resource_system::create_resources(
+	query_info const* const in_queries,
+	u32 const in_query_count,
+	user_callback const& in_callback,
 	pointer const in_callback_data,
 	uptr const in_callback_data_size
 )
 {
-	g_resource_system.query_resources(
-		in_cooks,
-		in_cook_count,
+	g_resource_system.create_resources(
+		in_queries,
+		in_query_count,
 		in_callback,
 		in_callback_data,
 		in_callback_data_size

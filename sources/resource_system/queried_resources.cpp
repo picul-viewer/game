@@ -9,7 +9,7 @@ queried_resources::queried_resources( ) :
 	m_count( 0 )
 { }
 
-queried_resources::queried_resources( query_result* const in_results, u32 const in_results_count ) :
+queried_resources::queried_resources( pvoid* const in_results, u32 const in_results_count ) :
 	m_results( in_results ),
 	m_index( 0 ),
 	m_count( in_results_count )

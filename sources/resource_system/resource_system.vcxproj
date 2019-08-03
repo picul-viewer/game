@@ -96,24 +96,34 @@
   <ItemGroup>
     <ClInclude Include="api.h" />
     <ClInclude Include="api_inline.h" />
+    <ClInclude Include="default_resource.h" />
+    <ClInclude Include="default_resource_cook.h" />
+    <ClInclude Include="default_resource_ptr.h" />
+    <ClInclude Include="default_resource_ptr_inline.h" />
     <ClInclude Include="raw_data.h" />
     <ClInclude Include="queried_resources.h" />
     <ClInclude Include="queried_resources_inline.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="resource_cook.h" />
-    <ClInclude Include="resource_ptr.h" />
-    <ClInclude Include="resource_ptr_inline.h" />
+    <ClInclude Include="resource_handle.h" />
+    <ClInclude Include="shared_resource_container_inline.h" />
+    <ClInclude Include="shared_resource_ptr.h" />
+    <ClInclude Include="shared_resource_ptr_inline.h" />
     <ClInclude Include="resource_system.h" />
     <ClInclude Include="resource_system_types.h" />
-    <ClInclude Include="resource_type_registry.h" />
-    <ClInclude Include="resource_type_registry_inline.h" />
+    <ClInclude Include="shared_resource.h" />
+    <ClInclude Include="shared_resource_cook.h" />
+    <ClInclude Include="shared_resource_cook_inline.h" />
+    <ClInclude Include="shared_resource_types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="api.cpp" />
+    <ClCompile Include="resource.cpp" />
     <ClCompile Include="raw_data.cpp" />
     <ClCompile Include="queried_resources.cpp" />
     <ClCompile Include="resource_cook.cpp" />
     <ClCompile Include="resource_system.cpp" />
-    <ClCompile Include="resource_type_registry.cpp" />
+    <ClCompile Include="shared_resource_inline.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">

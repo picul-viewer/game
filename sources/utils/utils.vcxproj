@@ -95,7 +95,6 @@
     <ClInclude Include="fly_camera.h" />
     <ClInclude Include="parse.h" />
     <ClInclude Include="resources_path.h" />
-    <ClInclude Include="resource_types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cmd_args.cpp" />

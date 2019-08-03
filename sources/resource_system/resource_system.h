@@ -16,6 +16,8 @@ namespace resource_system {
 
 class resource_cook;
 
+typedef pvoid query_result;
+
 class resource_system
 {
 public:
@@ -24,12 +26,16 @@ public:
 	void stop( );
 	void destroy( );
 	
-	void query_resources(
-		resource_cook* const* const in_cooks,
-		u32 const in_cook_count,
-		user_query_callback const& in_callback,
+	void create_resources(
+		query_info const* const in_queries,
+		u32 const in_query_count,
+		user_callback const& in_callback,
 		pointer const in_callback_data,
 		uptr const in_callback_data_size
+	);
+
+	void destroy_resource(
+		query_info const& in_query
 	);
 
 	void busy_thread_job( u32 const in_thread_index, sys::time const in_time_limit );
@@ -51,13 +57,19 @@ private:
 
 private:
 	friend class resource_cook;
+	friend class resource;
 
-	void query_child_resources(
-		resource_cook* const* const in_requested_cooks,
-		u32 const in_requested_cook_count,
-		resource_cook* const in_parent_cook,
-		cook_functor const& in_functor,
-		u32 const in_functor_thread_index
+	void create_child_resources(
+		query_info const* const in_queries,
+		u32 const in_query_count,
+		query_info const& in_callback_info
+	);
+
+	void execute_tasks(
+		resource_cook* const in_cook,
+		cook_task_info const* const in_tasks,
+		u32 const in_task_count,
+		cook_task_info const& in_callback
 	);
 
 	void finish_cook( resource_cook* const in_cook, query_result const in_result );
@@ -66,8 +78,8 @@ private:
 	void process_task( query_data* const data );
 
 	void push_cook_queries(
-		resource_cook* const* const in_cooks,
-		u32 const in_cook_count,
+		query_info const* const in_queries,
+		u32 const in_query_count,
 		query_data* const in_query_data
 	);
 

@@ -1,0 +1,18 @@
+#ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_RESOURCE_H_INCLUDED
+
+#include <types.h>
+#include "resource_system_types.h"
+
+namespace resource_system {
+
+class resource
+{
+protected:
+	void delete_resource( query_info const& in_info );
+
+};
+
+} // namespace resource_system
+
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_H_INCLUDED

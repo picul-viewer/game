@@ -14,15 +14,20 @@ void create( u32 const in_thread_count );
 void stop( );
 void destroy( );
 
-template<typename ResourceType>
-void register_resource_type( );
-
-void query_resources(
-	resource_cook* const* const in_cooks,
-	u32 const in_cook_count,
-	user_query_callback const& in_callback,
+void create_resources(
+	query_info const* const in_queries,
+	u32 const in_query_count,
+	user_callback const& in_callback,
 	pointer const in_callback_data,
 	uptr const in_callback_data_size
+);
+
+template<typename ... Cooks>
+void create_resources(
+	user_callback const& in_callback,
+	pointer const in_callback_data,
+	uptr const in_callback_data_size,
+	Cooks* ... in_cooks
 );
 
 void busy_thread_job( u32 const in_thread_index, sys::time const in_time_limit );

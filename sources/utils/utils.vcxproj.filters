@@ -27,7 +27,6 @@
     <ClInclude Include="fly_camera.h">
       <Filter>fly_camera</Filter>
     </ClInclude>
-    <ClInclude Include="resource_types.h" />
     <ClInclude Include="engine_threads.h" />
     <ClInclude Include="cmd_args.h">
       <Filter>parsing\cmd_args</Filter>

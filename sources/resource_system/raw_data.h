@@ -2,40 +2,65 @@
 #define GUARD_RESOURCE_SYSTEM_RAW_DATA_H_INCLUDED
 
 #include <types.h>
-#include "resource_cook.h"
-#include "resource_ptr.h"
 #include <system/interlocked.h>
 #include <utils/engine_threads.h>
-#include <utils/resource_types.h>
+#include "default_resource.h"
+#include "default_resource_cook.h"
+#include "resource_handle.h"
 
 namespace resource_system {
 
-class raw_data
+DECLARE_DEFAULT_RESOURCE_HANDLE( raw_data, raw_data* )
+
+class raw_data_cook : public default_resource_cook<raw_data, raw_data_cook>
+{
+public:
+	enum : u32 {
+		create_thread_index = engine_thread_fs,
+	};
+
+public:
+	static raw_data_cook* create( pcstr const in_path );
+	static void destroy( pointer const in_cook );
+
+	void create_resource( );
+
+private:
+#pragma warning (push)
+#pragma warning (disable:4200)
+	char m_path[0];
+#pragma warning (pop)
+
+};
+
+class raw_data : public default_resource<raw_data>
 {
 public:
 	friend class raw_data_cook;
-	typedef raw_data_cook cook_type;
+
+	typedef raw_data_handle handle_type;
 
 public:
-	raw_data( raw_data const& ) = delete;
-	raw_data& operator=( raw_data const& ) = delete;
-	raw_data( raw_data&& ) = delete;
-	raw_data& operator=( raw_data&& ) = delete;
+	enum : u32 {
+		destroy_thread_index = engine_thread_count
+	};
 
-	~raw_data( ) = default;
+	// Override "delete_resource" to delete resource in place and avoid resource system overhead.
+	void delete_resource( );
 
-	u32 add_ref( );
-	u32 release( );
+public:
+	static raw_data* from_handle( raw_data_handle const& in_handle );
+	static raw_data_handle to_handle( raw_data* const in_resource );
+	static raw_data* to_handle_value( raw_data* const in_resource );
 
 	pointer data( ) const;
-	u32 size( ) const;
+	uptr size( ) const;
 
 private:
 	raw_data( ) = default;
 
 private:
-	mt_u32 m_ref_count;
-	u32 m_size;
+	uptr m_size;
 
 #pragma warning (push)
 #pragma warning (disable:4200)
@@ -44,29 +69,11 @@ private:
 
 };
 
-class raw_data_cook : public resource_cook
-{
-public:
-	raw_data_cook( );
-	raw_data_cook( pcstr const in_path );
-
-	void create_resource( );
-	
-	static void destroy_resource( raw_data* const in_resource );
-
-	enum : u32 {
-		cook_resource_type = resource_type_raw_data,
-
-		create_resource_thread_index = engine_thread_fs
-	};
-
-private:
-	pcstr m_path;
-
-};
-
-typedef resource_ptr<raw_data> raw_data_ptr;
-
 } // namespace resource_system
+
+using resource_system::raw_data;
+using resource_system::raw_data_cook;
+using resource_system::raw_data_handle;
+using raw_data_ptr = raw_data::ptr;
 
 #endif // #ifndef GUARD_RESOURCE_SYSTEM_RAW_DATA_H_INCLUDED
