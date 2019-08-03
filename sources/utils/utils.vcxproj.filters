@@ -7,6 +7,18 @@
     <Filter Include="fly_camera">
       <UniqueIdentifier>{4a042354-9611-4955-bb20-e7e29d1155f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="parsing">
+      <UniqueIdentifier>{d4f1ea83-d548-4cff-b26c-5fd67df4fad8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="parsing\cmd_args">
+      <UniqueIdentifier>{0a8ff88e-1d33-42ab-9b7a-6c21908b460d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="parsing\parse">
+      <UniqueIdentifier>{77ac5e07-feac-4b08-bfb9-01658cf3b3d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="parsing\config">
+      <UniqueIdentifier>{354ee5cb-d2e8-4b88-8853-455f1b4b32a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resources_path.h">
@@ -17,6 +29,18 @@
     </ClInclude>
     <ClInclude Include="resource_types.h" />
     <ClInclude Include="engine_threads.h" />
+    <ClInclude Include="cmd_args.h">
+      <Filter>parsing\cmd_args</Filter>
+    </ClInclude>
+    <ClInclude Include="cmd_args_inline.h">
+      <Filter>parsing\cmd_args</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>parsing\config</Filter>
+    </ClInclude>
+    <ClInclude Include="parse.h">
+      <Filter>parsing\parse</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="resources_path.cpp">
@@ -24,6 +48,15 @@
     </ClCompile>
     <ClCompile Include="fly_camera.cpp">
       <Filter>fly_camera</Filter>
+    </ClCompile>
+    <ClCompile Include="cmd_args.cpp">
+      <Filter>parsing\cmd_args</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>parsing\config</Filter>
+    </ClCompile>
+    <ClCompile Include="parse.cpp">
+      <Filter>parsing\parse</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

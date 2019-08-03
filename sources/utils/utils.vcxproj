@@ -88,13 +88,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="cmd_args.h" />
+    <ClInclude Include="cmd_args_inline.h" />
+    <ClInclude Include="config.h" />
     <ClInclude Include="engine_threads.h" />
     <ClInclude Include="fly_camera.h" />
+    <ClInclude Include="parse.h" />
     <ClInclude Include="resources_path.h" />
     <ClInclude Include="resource_types.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cmd_args.cpp" />
+    <ClCompile Include="config.cpp" />
     <ClCompile Include="fly_camera.cpp" />
+    <ClCompile Include="parse.cpp" />
     <ClCompile Include="resources_path.cpp" />
   </ItemGroup>
   <ItemGroup>
