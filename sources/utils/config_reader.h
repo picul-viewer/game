@@ -1,25 +1,13 @@
-#ifndef GUARD_UTILS_CONFIG_H_INCLUDED
-#define GUARD_UTILS_CONFIG_H_INCLUDED
+#ifndef GUARD_UTILS_CONFIG_READER_H_INCLUDED
+#define GUARD_UTILS_CONFIG_READER_H_INCLUDED
 
 #include <types.h>
 #include <lib/linear_allocator.h>
+#include "config_common.h"
 
 namespace utils {
 
-enum config_node_type
-{
-	config_node_type_bool = 0,
-	config_node_type_int,
-	config_node_type_float,
-	config_node_type_string,
-	config_node_type_vector,
-	config_node_type_list,
-	config_node_type_object,
-
-	config_node_type_count
-};
-
-class config_node
+class config_reader_node
 {
 public:
 	bool valid( ) const;
@@ -30,22 +18,24 @@ public:
 	double	as_float	( ) const;
 	pcstr	as_string	( ) const;
 
-	config_node operator( )( uptr const index ) const;
+	uptr size( ) const;
 
-	config_node operator[]( uptr const index ) const;
+	config_reader_node operator( )( uptr const index ) const;
 
-	config_node operator[]( pcstr const key ) const;
+	config_reader_node operator[]( uptr const index ) const;
+
+	config_reader_node operator[]( pcstr const key ) const;
 
 private:
-	friend class config;
+	friend class config_reader;
 	friend struct node_info;
 
-	config_node( config const& config, node_info const& info );
+	config_reader_node( config_reader const& config, node_info const& info );
 
 	node_info& invalid( ) const;
 
 private:
-	config const& m_config;
+	config_reader const& m_config;
 	node_info const& m_info;
 
 };
@@ -58,12 +48,12 @@ struct config_error_info
 	u32 line_position;
 };
 
-class config
+class config_reader
 {
 public:
-	config( ) = default;
+	config_reader( ) = default;
 
-	config( pvoid const memory, uptr const memory_size );
+	config_reader( pvoid const memory, uptr const memory_size );
 	void create( pvoid const memory, uptr const memory_size );
 
 	bool parse( pcstr const s );
@@ -73,10 +63,10 @@ public:
 
 	void log_error( pcstr const config_name ) const;
 
-	config_node root( ) const;
+	config_reader_node root( ) const;
 
 private:
-	friend class config_node;
+	friend class config_reader_node;
 
 	pointer arena( ) const;
 
@@ -100,4 +90,4 @@ private:
 
 } // namespace utils
 
-#endif // #ifndef GUARD_UTILS_CONFIG_H_INCLUDED
+#endif // #ifndef GUARD_UTILS_CONFIG_READER_H_INCLUDED

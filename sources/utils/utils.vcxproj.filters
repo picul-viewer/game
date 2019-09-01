@@ -16,8 +16,14 @@
     <Filter Include="parsing\parse">
       <UniqueIdentifier>{77ac5e07-feac-4b08-bfb9-01658cf3b3d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="parsing\config">
+    <Filter Include="config">
+      <UniqueIdentifier>{eaabfbd8-0210-445b-a87f-368874df2d18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config\config_reader">
       <UniqueIdentifier>{354ee5cb-d2e8-4b88-8853-455f1b4b32a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config\config_builder">
+      <UniqueIdentifier>{53c6bfe8-e3ea-4104-9d83-5fbca87b27c0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -34,11 +40,17 @@
     <ClInclude Include="cmd_args_inline.h">
       <Filter>parsing\cmd_args</Filter>
     </ClInclude>
-    <ClInclude Include="config.h">
-      <Filter>parsing\config</Filter>
-    </ClInclude>
     <ClInclude Include="parse.h">
       <Filter>parsing\parse</Filter>
+    </ClInclude>
+    <ClInclude Include="config_builder.h">
+      <Filter>config\config_builder</Filter>
+    </ClInclude>
+    <ClInclude Include="config_reader.h">
+      <Filter>config\config_reader</Filter>
+    </ClInclude>
+    <ClInclude Include="config_common.h">
+      <Filter>config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -51,11 +63,14 @@
     <ClCompile Include="cmd_args.cpp">
       <Filter>parsing\cmd_args</Filter>
     </ClCompile>
-    <ClCompile Include="config.cpp">
-      <Filter>parsing\config</Filter>
-    </ClCompile>
     <ClCompile Include="parse.cpp">
       <Filter>parsing\parse</Filter>
+    </ClCompile>
+    <ClCompile Include="config_reader.cpp">
+      <Filter>config\config_reader</Filter>
+    </ClCompile>
+    <ClCompile Include="config_builder.cpp">
+      <Filter>config\config_builder</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-#include "config.h"
+#include "config_reader.h"
 #include <macros.h>
 #include <lib/algorithms.h>
 #include <lib/hash.h>
@@ -92,47 +92,59 @@ struct object_property_info
 #pragma warning (pop)
 };
 
-config_node::config_node( config const& config, node_info const& info ) :
-	m_config( config ),
+config_reader_node::config_reader_node( config_reader const& config_reader, node_info const& info ) :
+	m_config( config_reader ),
 	m_info( info )
 { }
 
-bool config_node::valid( ) const
+bool config_reader_node::valid( ) const
 {
 	return &m_info != &invalid( );
 }
 
-config_node_type config_node::type( ) const
+config_node_type config_reader_node::type( ) const
 {
 	return m_info.m_type;
 }
 
-bool config_node::as_bool( ) const		
+bool config_reader_node::as_bool( ) const		
 {
+	ASSERT( valid( ) );
 	ASSERT_CMP( type( ), ==, config_node_type_bool );
 	return m_info.m_bool;
 }
 
-s64 config_node::as_int( ) const		
+s64 config_reader_node::as_int( ) const		
 {
+	ASSERT( valid( ) );
 	ASSERT_CMP( type( ), ==, config_node_type_int );
 	return m_info.m_int;
 }
 
-double config_node::as_float( ) const	
+double config_reader_node::as_float( ) const	
 {
+	ASSERT( valid( ) );
 	ASSERT_CMP( type( ), ==, config_node_type_float );
 	return m_info.m_float;
 }
 
-pcstr config_node::as_string( ) const	
+pcstr config_reader_node::as_string( ) const	
 {
+	ASSERT( valid( ) );
 	ASSERT_CMP( type( ), ==, config_node_type_string );
 	return (pcstr)( m_config.arena( ) + m_info.m_str.begin );
 }
 
-config_node config_node::operator( )( uptr const index ) const
+uptr config_reader_node::size( ) const	
 {
+	ASSERT( valid( ) );
+	ASSERT( ( type( ) == config_node_type_vector ) || ( type( ) == config_node_type_list ) );
+	return m_info.m_vector_list.count;
+}
+
+config_reader_node config_reader_node::operator( )( uptr const index ) const
+{
+	ASSERT( valid( ) );
 	ASSERT_CMP( type( ), ==, config_node_type_vector );
 	ASSERT_CMP( index, <, m_info.m_vector_list.count );
 
@@ -140,11 +152,12 @@ config_node config_node::operator( )( uptr const index ) const
 	u32 const offset = offsets[index];
 
 	node_info& child_node = *(node_info*)( m_config.arena( ) + offset );
-	return config_node( m_config, child_node );
+	return config_reader_node( m_config, child_node );
 }
 
-config_node config_node::operator[]( uptr const index ) const
+config_reader_node config_reader_node::operator[]( uptr const index ) const
 {
+	ASSERT( valid( ) );
 	ASSERT_CMP( type( ), ==, config_node_type_list );
 	ASSERT_CMP( index, <, m_info.m_vector_list.count );
 
@@ -152,11 +165,12 @@ config_node config_node::operator[]( uptr const index ) const
 	u32 const offset = offsets[index];
 
 	node_info& child_node = *(node_info*)( m_config.arena( ) + offset );
-	return config_node( m_config, child_node );
+	return config_reader_node( m_config, child_node );
 }
 
-config_node config_node::operator[]( pcstr const key ) const
+config_reader_node config_reader_node::operator[]( pcstr const key ) const
 {
+	ASSERT( valid( ) );
 	ASSERT_CMP( type( ), ==, config_node_type_object );
 
 	uptr const length = strings::length( key );
@@ -179,50 +193,50 @@ config_node config_node::operator[]( pcstr const key ) const
 			continue;
 
 		node_info& prop_value = *(node_info*)( m_config.arena( ) + prop.m_value );
-		return config_node( m_config, prop_value );
+		return config_reader_node( m_config, prop_value );
 	}
 
-	return config_node( m_config, invalid( ) );
+	return config_reader_node( m_config, invalid( ) );
 }
 
-node_info& config_node::invalid( ) const
+node_info& config_reader_node::invalid( ) const
 {
 	// This can be invalid, because everything should be aligned by sizeof(u64).
 	return *(node_info*)( m_config.arena( ) + 1 );
 }
 
 
-config::config( pvoid const memory, uptr const memory_size )
+config_reader::config_reader( pvoid const memory, uptr const memory_size )
 {
 	create( memory, memory_size );
 }
 
-void config::create( pvoid const memory, uptr const memory_size )
+void config_reader::create( pvoid const memory, uptr const memory_size )
 {
 	m_allocator.create( memory, memory_size );
 }
 
-config_node config::root( ) const
+config_reader_node config_reader::root( ) const
 {
-	return config_node( *this, *(node_info*)arena( ) );
+	return config_reader_node( *this, *(node_info*)arena( ) );
 }
 
-pointer config::arena( ) const
+pointer config_reader::arena( ) const
 {
 	return m_allocator.data( );
 }
 
-pcstr config::source( ) const
+pcstr config_reader::source( ) const
 {
 	return m_source;
 }
 
-config_error_info const& config::error_info( ) const
+config_error_info const& config_reader::error_info( ) const
 {
 	return m_error;
 }
 
-bool config::parse( pcstr const s )
+bool config_reader::parse( pcstr const s )
 {
 	m_allocator.clear( );
 	m_source = s;
@@ -312,7 +326,7 @@ bool config::parse( pcstr const s )
 	return true;
 }
 
-bool config::parse_entity( pcstr& str, u32& value )
+bool config_reader::parse_entity( pcstr& str, u32& value )
 {
 	switch ( *str )
 	{
@@ -327,7 +341,7 @@ bool config::parse_entity( pcstr& str, u32& value )
 	}
 }
 
-bool config::parse_scalar( pcstr& str, u32& value )
+bool config_reader::parse_scalar( pcstr& str, u32& value )
 {
 	switch ( *str )
 	{
@@ -415,7 +429,7 @@ bool config::parse_scalar( pcstr& str, u32& value )
 	return false;
 }
 
-bool config::parse_vector( pcstr& str, u32& value )
+bool config_reader::parse_vector( pcstr& str, u32& value )
 {
 	u32 const max_vector_elements = 1024;
 
@@ -462,7 +476,7 @@ bool config::parse_vector( pcstr& str, u32& value )
 	return true;
 }
 
-bool config::parse_list( pcstr& str, u32& value )
+bool config_reader::parse_list( pcstr& str, u32& value )
 {
 	u32 const max_list_elements = 1024;
 
@@ -522,7 +536,7 @@ bool config::parse_list( pcstr& str, u32& value )
 	return true;
 }
 
-bool config::parse_object( pcstr& str, u32& value )
+bool config_reader::parse_object( pcstr& str, u32& value )
 {
 	u32 const max_object_elements = 1024;
 
@@ -608,7 +622,7 @@ bool config::parse_object( pcstr& str, u32& value )
 	return true;
 }
 
-bool config::build_hash_table( pcstr const str, u32 const* const object_props, u32 const* const object_prop_hashes, u32 const prop_count, u32& value, u32& table_size )
+bool config_reader::build_hash_table( pcstr const str, u32 const* const object_props, u32 const* const object_prop_hashes, u32 const prop_count, u32& value, u32& table_size )
 {
 	table_size = math::align_up( prop_count, 8 );
 
@@ -673,7 +687,7 @@ bool config::build_hash_table( pcstr const str, u32 const* const object_props, u
 	return true;
 }
 
-void config::error( pcstr const str, pcstr const message )
+void config_reader::error( pcstr const str, pcstr const message )
 {
 	m_error.position = str - m_source;
 	m_error.message = message;
@@ -693,15 +707,15 @@ void config::error( pcstr const str, pcstr const message )
 	}
 }
 
-void config::log_error( pcstr const config_name ) const
+void config_reader::log_error( pcstr const config_name ) const
 {
 	if ( m_error.message == nullptr )
 		return;
 
 	if ( config_name )
-		LOG( "Error found when parsing config '%s':\n", config_name );
+		LOG( "Error found when parsing config_reader '%s':\n", config_name );
 	else
-		LOG( "Error found when parsing config:\n" );
+		LOG( "Error found when parsing config_reader:\n" );
 
 	LOG( "\tline %d, column %d: %s\n", m_error.line_index, m_error.line_position, m_error.message );
 }
