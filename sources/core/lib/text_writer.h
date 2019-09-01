@@ -16,7 +16,7 @@ public:
 
 	template<typename T>
 	void write( T const& value );
-	void write_str( pstr const data );
+	void write_str( pcstr const data );
 	template<typename ... Args>
 	void write_mask( pcstr const mask, Args const& ... args );
 	

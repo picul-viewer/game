@@ -17,6 +17,7 @@ public:
 	static time from_s( u64 const v );
 
 	static time now( );
+	static time forever( );
 
 	u64 ns( ) const;
 	u64 us( ) const;

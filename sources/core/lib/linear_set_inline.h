@@ -11,9 +11,6 @@ namespace lib {
 template<typename T, u32 TableSize>
 void linear_set<T, TableSize>::create( pointer const in_allocated_memory )
 {
-	static_assert( key_table_memory_size % Memory_Page_Size == 0, "invalid table size" );
-	static_assert( value_table_memory_size % Memory_Page_Size == 0, "invalid table size" );
-
 	pointer const memory =
 		( in_allocated_memory == nullptr ) ?
 		virtual_allocator( ).allocate( memory_size ) :

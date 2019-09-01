@@ -22,6 +22,7 @@ public:
 	bool pop( value_type& value );
 	
 	pointer data( ) const;
+	bool empty( ) const;
 
 private:
 	union

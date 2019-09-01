@@ -11,7 +11,7 @@ void lib::text_writer::create( pointer const data, uptr const size )
 	m_end		= data + size;
 }
 
-void lib::text_writer::write_str( pstr const data )
+void lib::text_writer::write_str( pcstr const data )
 {
 	m_pointer += snprintf( m_pointer, m_end - m_pointer, data );
 }

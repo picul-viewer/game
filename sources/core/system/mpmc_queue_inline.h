@@ -88,4 +88,10 @@ pointer sys::mpmc_queue<T>::data( ) const
 	return m_data;
 }
 
+template<typename T>
+bool sys::mpmc_queue<T>::empty( ) const
+{
+	return m_push_index == m_pop_index;
+}
+
 #endif // #ifndef GUARD_CORE_MPMC_QUEUE_INLINE_H_INLCUDED

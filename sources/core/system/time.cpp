@@ -52,6 +52,11 @@ time time::now( )
 	return time( td.current_time( ) );
 }
 
+time time::forever( )
+{
+	return time( 1.0e+308 );
+}
+
 u64 time::ns( ) const
 {
 	return (u64)( m_time * 1e9 );
