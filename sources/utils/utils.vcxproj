@@ -102,6 +102,7 @@
     <ClCompile Include="cmd_args.cpp" />
     <ClCompile Include="config_builder.cpp" />
     <ClCompile Include="config_reader.cpp" />
+    <ClCompile Include="engine_threads.cpp" />
     <ClCompile Include="fly_camera.cpp" />
     <ClCompile Include="parse.cpp" />
     <ClCompile Include="resources_path.cpp" />

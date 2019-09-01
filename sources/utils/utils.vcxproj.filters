@@ -25,6 +25,9 @@
     <Filter Include="config\config_builder">
       <UniqueIdentifier>{53c6bfe8-e3ea-4104-9d83-5fbca87b27c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine_threads">
+      <UniqueIdentifier>{be082814-ed16-4dfc-bc75-7aa3ae448388}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resources_path.h">
@@ -33,7 +36,6 @@
     <ClInclude Include="fly_camera.h">
       <Filter>fly_camera</Filter>
     </ClInclude>
-    <ClInclude Include="engine_threads.h" />
     <ClInclude Include="cmd_args.h">
       <Filter>parsing\cmd_args</Filter>
     </ClInclude>
@@ -51,6 +53,9 @@
     </ClInclude>
     <ClInclude Include="config_common.h">
       <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_threads.h">
+      <Filter>engine_threads</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +76,9 @@
     </ClCompile>
     <ClCompile Include="config_builder.cpp">
       <Filter>config\config_builder</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_threads.cpp">
+      <Filter>engine_threads</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
