@@ -2,46 +2,34 @@
 #include <lib/allocator.h>
 #include <math/math_common.h>
 #include <system/interlocked.h>
-#include "queried_resources.h"
-#include "resource_cook.h"
 
 namespace resource_system {
 
-struct resource_system::query_data
+struct resource_system::task_data
 {
-	pointer caller;
-	union
-	{
-		struct
-		{
-			cook_functor functor;
-			u32 thread_index;
-		};
-		struct
-		{
-			user_callback callback;
-			pointer data;
-			uptr data_size;
-		};
-	};
+	task_functor functor;
+	pointer user_data;
+	task_data* parent;
+	u32 parent_index;
+	u32 thread_index;
 	u32 results_count;
 	mt_u32 pending_count;
 
 #pragma warning (push)
 #pragma warning (disable:4200)
-	query_result results[0];
+	pvoid results[0];
 #pragma warning (pop)
 
 	static uptr calculate_size( u32 const in_results_count );
 	uptr size( ) const;
 };
 
-uptr resource_system::query_data::calculate_size( u32 const in_results_count )
+uptr resource_system::task_data::calculate_size( u32 const in_results_count )
 {
-	return sizeof(query_data) + sizeof(query_result) * in_results_count;
+	return sizeof(task_data) + sizeof(pvoid) * in_results_count;
 }
 
-uptr resource_system::query_data::size( ) const
+uptr resource_system::task_data::size( ) const
 {
 	return calculate_size( results_count );
 }
@@ -56,8 +44,8 @@ void resource_system::create( u32 const in_thread_count )
 		uptr const queue_size = 2 * 1024;
 		uptr const helper_queue_size = 32 * 1024;
 
-		uptr const queue_memory_size = queue_size * sizeof(query_data*);
-		uptr const helper_queue_memory_size = helper_queue_size * sizeof(query_data*);
+		uptr const queue_memory_size = queue_size * sizeof(task_data*);
+		uptr const helper_queue_memory_size = helper_queue_size * sizeof(task_data*);
 
 		uptr const memory_size = queue_memory_size * ( m_thread_count - ignore_thread_count ) + helper_queue_memory_size;
 
@@ -76,7 +64,7 @@ void resource_system::create( u32 const in_thread_count )
 	}
 
 	m_temp_allocator.create( );
-	
+
 	u32 const cs_count = m_thread_count - engine_free_threads_first;
 	for ( u32 i = 0; i < cs_count; ++i )
 		m_cs[i].create( );
@@ -84,13 +72,34 @@ void resource_system::create( u32 const in_thread_count )
 	for ( u32 i = 0; i < cv_max_count; ++i )
 		m_cv[i].create( );
 
+	for ( u32 i = 0; i < engine_thread_count; ++i )
+		m_thread_local_data[i].current_task_data = nullptr;
+
 	m_keep_processing = true;
+}
+
+bool resource_system::has_tasks( ) const
+{
+	bool is_empty = true;
+
+	for ( u32 i = 0; i < m_thread_count; ++i )
+		is_empty = is_empty && m_queues[i].empty( );
+	is_empty = is_empty && m_helper_queue.empty( );
+
+	for ( u32 i = 0; i < m_thread_count - engine_free_threads_first; ++i )
+		is_empty = is_empty && m_cs[i].is_locked( );
+
+	return !is_empty;
 }
 
 void resource_system::stop( )
 {
+	ASSERT_CMP( utils::thread_index( ), ==, engine_thread_main );
+
+	while ( has_tasks( ) )
+		busy_thread_job( sys::time::forever( ) );
+
 	m_keep_processing = false;
-	full_fence( );
 
 	for ( u32 i = 0; i < engine_free_threads_count; ++i )
 		m_cv[i].wake( );
@@ -117,67 +126,73 @@ void resource_system::destroy( )
 	virtual_allocator( ).deallocate( queue_memory );
 }
 
-void resource_system::process_task( query_data* const data )
+void resource_system::process_task( u32 const thread_index, task_data* const data )
 {
 	ASSERT( m_temp_allocator.contains_pointer( data ) );
 	ASSERT_CMP( data->pending_count, ==, 0 );
 
-	queried_resources resources( data->results, data->results_count );
+	ASSERT( m_thread_local_data[thread_index].current_task_data == nullptr );
+	m_thread_local_data[thread_index].current_task_data = data;
 
-	if ( data->caller )
-		data->functor( data->caller, resources );
-	else
+	data->functor( data->results, data->results_count, data->user_data );
+
+	if ( data->parent )
 	{
-		ASSERT( data->results_count != 0 );
-		data->callback( resources, data->data, data->data_size );
+		if ( interlocked_dec( data->parent->pending_count ) == 0 )
+			push_task( data->parent );
 	}
+
+	m_thread_local_data[thread_index].current_task_data = nullptr;
 
 	uptr const data_size = data->size( );
 	m_temp_allocator.deallocate( data, data_size );
 }
 
-void resource_system::busy_thread_job( u32 const in_thread_index, sys::time const in_time_limit )
+void resource_system::busy_thread_job( sys::time const in_time_limit )
 {
-	ASSERT_CMP( in_thread_index, <, engine_free_threads_first );
+	u32 const thread_index = utils::thread_index( );
 
-	ASSERT( ( ( 1 << in_thread_index ) & ignore_thread_mask ) == 0 );
+	ASSERT_CMP( thread_index, <, engine_free_threads_first );
+	ASSERT( ( ( 1 << thread_index ) & ignore_thread_mask ) == 0 );
 
-	u32 const queue_index = in_thread_index;
+	u32 const queue_index = thread_index;
 
 	sys::time current;
 
 	do
 	{
-		query_data* data;
+		task_data* data;
 		bool const pop_successful = m_queues[queue_index].pop( data );
 
 		if ( !pop_successful )
 			break;
 
-		process_task( data );
+		process_task( thread_index, data );
 
 		current = sys::time::now( );
 	}
 	while ( current < in_time_limit );
 }
 
-void resource_system::free_thread_job( u32 const in_thread_index )
+void resource_system::free_thread_job( )
 {
-	ASSERT_CMP( in_thread_index, >=, engine_free_threads_first );
-	ASSERT_CMP( in_thread_index, <, engine_helper_threads_first );
+	u32 const thread_index = utils::thread_index( );
 
-	ASSERT( ( ( 1 << in_thread_index ) & ignore_thread_mask ) == 0 );
+	ASSERT_CMP( thread_index, >=, engine_free_threads_first );
+	ASSERT_CMP( thread_index, <, engine_helper_threads_first );
 
-	u32 const queue_index = in_thread_index;
-	u32 const event_index = in_thread_index - engine_free_threads_first;
+	ASSERT( ( ( 1 << thread_index ) & ignore_thread_mask ) == 0 );
+
+	u32 const queue_index = thread_index;
+	u32 const event_index = thread_index - engine_free_threads_first;
 
 	while ( m_keep_processing )
 	{
-		query_data* data;
+		task_data* data;
 		bool const pop_successful = m_queues[queue_index].pop( data );
 
 		if ( pop_successful )
-			process_task( data );
+			process_task( thread_index, data );
 		else
 		{
 			m_cs[event_index].enter( );
@@ -187,26 +202,28 @@ void resource_system::free_thread_job( u32 const in_thread_index )
 	}
 }
 
-void resource_system::helper_thread_job( u32 const in_thread_index )
+void resource_system::helper_thread_job( )
 {
-	ASSERT_CMP( in_thread_index, >=, engine_helper_threads_first );
-	ASSERT_CMP( in_thread_index, <, engine_helper_threads_first + m_helper_thread_count );
+	u32 const thread_index = utils::thread_index( );
 
-	ASSERT( ( ( 1 << in_thread_index ) & ignore_thread_mask ) == 0 );
+	ASSERT_CMP( thread_index, >=, engine_helper_threads_first );
+	ASSERT_CMP( thread_index, <, engine_helper_threads_first + m_helper_thread_count );
 
-	u32 const queue_index = in_thread_index;
-	u32 const cs_index = in_thread_index - engine_free_threads_first;
+	ASSERT( ( ( 1 << thread_index ) & ignore_thread_mask ) == 0 );
+
+	u32 const queue_index = thread_index;
+	u32 const cs_index = thread_index - engine_free_threads_first;
 	u32 const cv_index = engine_free_threads_count;
 
 	while ( m_keep_processing )
 	{
-		query_data* data;
+		task_data* data;
 		bool pop_successful;
 		goto loop_start;
 
 		do
 		{
-			process_task( data );
+			process_task( thread_index, data );
 		loop_start:
 			pop_successful = m_queues[queue_index].pop( data );
 		}
@@ -215,7 +232,7 @@ void resource_system::helper_thread_job( u32 const in_thread_index )
 		pop_successful = m_helper_queue.pop( data );
 
 		if ( pop_successful )
-			process_task( data );
+			process_task( thread_index, data );
 		else
 		{
 			m_cs[cs_index].enter( );
@@ -225,145 +242,120 @@ void resource_system::helper_thread_job( u32 const in_thread_index )
 	}
 }
 
-void resource_system::create_resources(
-	query_info const* const in_queries,
-	u32 const in_query_count,
-	user_callback const& in_callback,
-	pointer const in_callback_data,
-	uptr const in_callback_data_size
+void resource_system::create_tasks(
+	task_info const* const in_parent,
+	task_info const* const in_children,
+	u32 const in_children_count,
+	bool in_collect_children_results
 )
 {
-	ASSERT( in_queries != nullptr );
-	ASSERT( in_query_count != 0 );
+	ASSERT( in_children != nullptr );
+	ASSERT( in_children_count != 0 );
 
-	uptr const query_data_size = query_data::calculate_size( in_query_count );
-	query_data* const data = m_temp_allocator.allocate( query_data_size );
+	ASSERT( in_parent || !in_collect_children_results );
 
-	data->caller = nullptr;
-	data->callback = in_callback;
-	data->data = in_callback_data;
-	data->data_size = in_callback_data_size;
-	data->results_count = in_query_count;
-	data->pending_count = in_query_count;
+	task_data* parent_data = nullptr;
 
-	push_cook_queries( in_queries, in_query_count, data );
-}
-
-void resource_system::destroy_resource(
-	query_info const& in_query
-)
-{
-	uptr const query_data_size = query_data::calculate_size( 0 );
-	query_data* const data = m_temp_allocator.allocate( query_data_size );
-
-	data->caller = in_query.this_ptr;
-	data->functor = in_query.task.functor;
-	data->thread_index = in_query.task.thread_index;
-	data->results_count = 0;
-	data->pending_count = 0;
-
-	push_query_data( data );
-}
-
-void resource_system::create_child_resources(
-	query_info const* const in_queries,
-	u32 const in_query_count,
-	query_info const& in_callback_info
-)
-{
-	ASSERT( in_queries != nullptr );
-	ASSERT( in_query_count != 0 );
-
-	uptr const query_data_size = query_data::calculate_size( in_query_count );
-	query_data* const data = m_temp_allocator.allocate( query_data_size );
-
-	data->caller = in_callback_info.this_ptr;
-	data->functor = in_callback_info.task.functor;
-	data->thread_index = in_callback_info.task.thread_index;
-	data->results_count = in_query_count;
-	data->pending_count = in_query_count;
-
-	push_cook_queries( in_queries, in_query_count, data );
-}
-
-void resource_system::execute_tasks(
-	resource_cook* const in_cook,
-	cook_task_info const* const in_tasks,
-	u32 const in_task_count,
-	cook_task_info const& in_callback
-)
-{
-	ASSERT( in_tasks != nullptr );
-	ASSERT( in_task_count != 0 );
-	ASSERT( in_cook != nullptr );
-
-	uptr const query_data_size = query_data::calculate_size( in_task_count );
-	query_data* const data = m_temp_allocator.allocate( query_data_size );
-
-	data->caller = in_cook;
-	data->functor = in_callback.functor;
-	data->thread_index = in_callback.thread_index;
-	data->results_count = in_task_count;
-	data->pending_count = in_task_count;
-
-	u32 const query_data_offset = (u32)( (pointer)data - m_temp_allocator.data( ) );
-
-	for ( u32 i = 0; i < in_task_count; ++i )
+	if ( in_parent != nullptr )
 	{
-		uptr const current_query_data_size = query_data::calculate_size( 0 );
-		query_data* const current_data = m_temp_allocator.allocate( current_query_data_size );
+		u32 const children_count = in_collect_children_results ? in_children_count : 0;
 
-		current_data->caller = in_cook;
-		current_data->functor = in_tasks[i].functor;
-		current_data->thread_index = in_tasks[i].thread_index;
-		current_data->results_count = 0;
-		current_data->pending_count = 0;
+		uptr const parent_data_size = task_data::calculate_size( children_count );
+		parent_data = m_temp_allocator.allocate( parent_data_size );
 
-		push_query_data( current_data );
+		parent_data->functor = in_parent->functor;
+		parent_data->user_data = in_parent->user_data;
+		parent_data->parent = nullptr;
+		parent_data->parent_index = -1;
+		parent_data->thread_index = in_parent->thread_index;
+		parent_data->results_count = children_count;
+		parent_data->pending_count = in_children_count;
 	}
-}
 
-void resource_system::push_cook_queries(
-	query_info const* const in_queries,
-	u32 const in_query_count,
-	query_data* const in_query_data
-)
-{
-	ASSERT( in_queries != nullptr );
-	ASSERT( in_query_count != 0 );
-	ASSERT( in_query_data != nullptr );
-
-	u32 const query_data_offset = (u32)( (pointer)in_query_data - m_temp_allocator.data( ) );
-
-	for ( u32 i = 0; i < in_query_count; ++i )
+	for ( u32 i = 0; i < in_children_count; ++i )
 	{
-		query_info const& info = in_queries[i];
-		resource_cook* const cook = info.this_ptr;
+		task_data* const data = m_temp_allocator.allocate( task_data::calculate_size( 0 ) );
 
-		cook->parent_query( ) = query_data_offset;
-		cook->result_index( ) = i;
-
-		uptr const query_data_size = query_data::calculate_size( 0 );
-		query_data* const data = m_temp_allocator.allocate( query_data_size );
-
-		data->caller = cook;
-		data->functor = info.task.functor;
-		data->thread_index = info.task.thread_index;
+		data->functor = in_children[i].functor;
+		data->user_data = in_children[i].user_data;
+		data->parent = parent_data;
+		data->parent_index = in_collect_children_results ? i : -1;
+		data->thread_index = in_children[i].thread_index;
 		data->results_count = 0;
 		data->pending_count = 0;
 
-		push_query_data( data );
+		push_task( data );
 	}
 }
 
-void resource_system::push_query_data( query_data* const in_query_data )
+void resource_system::create_subtasks(
+	task_info const* const in_parent,
+	task_info const* const in_children,
+	u32 const in_children_count,
+	bool in_collect_children_results
+)
 {
-	u32 const thread_index = in_query_data->caller ? in_query_data->thread_index : engine_thread_count;
+	ASSERT( in_children != nullptr );
+	ASSERT( in_children_count != 0 );
+
+	ASSERT( in_parent || !in_collect_children_results );
+
+	u32 const thread_index = utils::thread_index( );
+	ASSERT_CMP( thread_index, !=, engine_thread_count );
+	task_data* const current_data = m_thread_local_data[thread_index].current_task_data;
+
+	ASSERT( current_data );
+
+	task_data* parent_data = current_data->parent;
+
+	if ( in_parent )
+	{
+		u32 const children_count = in_collect_children_results ? in_children_count : 0;
+
+		uptr const parent_data_size = task_data::calculate_size( children_count );
+		parent_data = m_temp_allocator.allocate( parent_data_size );
+
+		parent_data->functor = in_parent->functor;
+		parent_data->user_data = in_parent->user_data;
+		parent_data->parent = current_data->parent;
+		parent_data->parent_index = current_data->parent_index;
+		parent_data->thread_index = in_parent->thread_index;
+		parent_data->results_count = children_count;
+		parent_data->pending_count = in_children_count;
+	}
+
+	if ( current_data->parent )
+	{
+		if ( in_parent )
+			interlocked_inc( current_data->parent->pending_count );
+		else
+			interlocked_add( current_data->parent->pending_count, in_children_count );
+	}
+
+	for ( u32 i = 0; i < in_children_count; ++i )
+	{
+		task_data* const data = m_temp_allocator.allocate( task_data::calculate_size( 0 ) );
+
+		data->functor = in_children[i].functor;
+		data->user_data = in_children[i].user_data;
+		data->parent = parent_data;
+		data->parent_index = in_collect_children_results ? i : -1;
+		data->thread_index = in_children[i].thread_index;
+		data->results_count = 0;
+		data->pending_count = 0;
+
+		push_task( data );
+	}
+}
+
+void resource_system::push_task( task_data* const in_task_data )
+{
+	u32 const thread_index = in_task_data->thread_index;
 	ASSERT_CMP( thread_index, <=, engine_thread_count );
 
 	if ( thread_index == engine_thread_count )
 	{
-		m_helper_queue.push( in_query_data );
+		m_helper_queue.push( in_task_data );
 		
 		m_cv[engine_free_threads_count].wake_all( );
 	}
@@ -372,7 +364,7 @@ void resource_system::push_query_data( query_data* const in_query_data )
 		ASSERT_CMP( thread_index, <, m_thread_count );
 		ASSERT( ( ( 1 << thread_index ) & ignore_thread_mask ) == 0 );
 
-		m_queues[thread_index].push( in_query_data );
+		m_queues[thread_index].push( in_task_data );
 
 		s32 const event_index = thread_index - engine_free_threads_first;
 		if ( event_index >= 0 )
@@ -380,18 +372,51 @@ void resource_system::push_query_data( query_data* const in_query_data )
 	}
 }
 
-void resource_system::finish_cook( resource_cook* const in_cook, query_result const in_result )
+void resource_system::set_current_task_result(
+	pvoid const in_result
+)
 {
-	query_data* const data = m_temp_allocator.data( ) + in_cook->parent_query( );
-	ASSERT( m_temp_allocator.contains_pointer( data ) );
+	u32 const thread_index = utils::thread_index( );
+	ASSERT_CMP( thread_index, !=, engine_thread_count );
+	task_data* const current_data = m_thread_local_data[thread_index].current_task_data;
 
-	data->results[in_cook->result_index( )] = in_result;
+	ASSERT( current_data );
 
-	if ( interlocked_dec( data->pending_count ) == 0 )
-		push_query_data( data );
+	task_data* const parent_data = current_data->parent;
+	ASSERT( parent_data );
+	ASSERT( current_data->parent_index != -1 );
 
-	query_functor const destroyer = in_cook->m_destroyer;
-	destroyer( in_cook );
+	parent_data->results[current_data->parent_index] = in_result;
+}
+
+void resource_system::set_task_result(
+	u32 const in_task_data_offset,
+	u32 const in_result_index,
+	pvoid const in_result
+)
+{
+	task_data* const task_data = m_temp_allocator.data( ) + in_task_data_offset;
+	ASSERT( m_temp_allocator.contains_pointer( task_data ) );
+
+	ASSERT( in_result_index != -1 );
+
+	task_data->results[in_result_index] = in_result;
+}
+
+void resource_system::get_current_result_data( u32& in_parent_data_offset, u32& in_result_index ) const
+{
+	u32 const thread_index = utils::thread_index( );
+	ASSERT_CMP( thread_index, !=, engine_thread_count );
+	task_data* const current_data = m_thread_local_data[thread_index].current_task_data;
+
+	ASSERT( current_data );
+
+	pointer const parent_data = current_data->parent;
+	ASSERT( parent_data );
+	ASSERT( current_data->parent_index != -1 );
+
+	in_parent_data_offset = (u32)( parent_data - m_temp_allocator.data( ) );
+	in_result_index = current_data->parent_index;
 }
 
 resource_system g_resource_system;

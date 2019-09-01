@@ -19,8 +19,8 @@ public:
 
 	~queried_resources( );
 
-	template<typename ResourceType>
-	typename ResourceType::handle_type get_resource( );
+	template<typename ResourceDescriptor>
+	typename ResourceDescriptor get_resource( );
 
 	uptr index( ) const;
 	uptr count( ) const;

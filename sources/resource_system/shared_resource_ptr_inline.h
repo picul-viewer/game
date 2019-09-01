@@ -6,13 +6,13 @@
 namespace resource_system {
 
 template<typename ResourceType>
-shared_resource_ptr<ResourceType>::shared_resource_ptr( pvoid const in_query_result ) :
-	m_resource( (ResourceType*)in_query_result )
+shared_resource_ptr<ResourceType>::shared_resource_ptr( pvoid const in_ptr ) :
+	m_resource( (ResourceType*)in_ptr )
 { }
 
 template<typename ResourceType>
 shared_resource_ptr<ResourceType>::shared_resource_ptr( resource_handle_type&& in_handle ) :
-	m_resource( ResourceType::from_handle( in_handle ) )
+	m_resource( ( in_handle == resource_handle_type::invalid ) ? nullptr : ResourceType::from_handle( in_handle ) )
 {
 	in_handle.m_id = resource_handle_type::invalid;
 }
@@ -73,17 +73,15 @@ shared_resource_ptr<ResourceType>::operator ResourceType*( ) const
 }
 
 template<typename ResourceType>
-typename shared_resource_ptr<ResourceType>::resource_handle_type shared_resource_ptr<ResourceType>::handle( )
-{
-	auto handle = Resource::to_handle( m_resource );
-	m_resouce = nullptr;
-	return lib::move( handle );
-}
-
-template<typename ResourceType>
 ResourceType* shared_resource_ptr<ResourceType>::operator->( ) const
 {
 	return m_resource;
+}
+
+template<typename ResourceType>
+void shared_resource_ptr<ResourceType>::reset( )
+{
+	m_resource = nullptr;
 }
 
 } // namespace resource_system

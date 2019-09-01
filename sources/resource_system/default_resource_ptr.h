@@ -9,12 +9,7 @@ template<typename ResourceType>
 class default_resource_ptr
 {
 public:
-	typedef typename ResourceType::handle_type resource_handle_type;
-
-public:
 	default_resource_ptr( ) = default;
-	
-	default_resource_ptr( resource_handle_type&& in_handle );
 
 	default_resource_ptr( default_resource_ptr const& ) = delete;
 	default_resource_ptr& operator=( default_resource_ptr const& ) = delete;
@@ -27,13 +22,13 @@ public:
 	ResourceType* get( ) const;
 	operator ResourceType*( ) const;
 
-	resource_handle_type handle( );
-
 	ResourceType* operator->( ) const;
+
+	void reset( );
 
 private:
 	friend class queried_resources;
-	default_resource_ptr( pvoid const in_query_result );
+	default_resource_ptr( pvoid const in_ptr );
 
 private:
 	ResourceType* m_resource = nullptr;

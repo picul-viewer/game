@@ -21,6 +21,8 @@ check_resource_exists(
 	void ( ResourceCook::*in_callback )( Resource* const )
 )
 {
+	get_result_links( m_parent_task_offset, m_result_index );
+
 	Resource* resource;
 	bool const resource_exists = Resource::container( ).get( m_id, this, resource );
 
@@ -41,7 +43,7 @@ check_resource_exists(
 template<typename Resource, typename ResourceCook>
 void
 shared_resource_cook<Resource, ResourceCook>::
-finish( pvoid const in_result )
+finish( Resource* const in_result )
 {
 	( (Resource*)in_result )->finish_creation( m_id, m_initial_ref_count );
 
@@ -71,10 +73,10 @@ void
 shared_resource_cook<Resource, ResourceCook>::
 finish_impl( pvoid const in_result )
 {
-	default_resource_cook<Resource, ResourceCook>::finish( in_result );
-
 	if ( m_next_subscriber )
 		m_next_subscriber->finish_impl( in_result );
+
+	finish_cook( in_result, m_parent_task_offset, m_result_index );
 }
 
 } // namespace resource_system

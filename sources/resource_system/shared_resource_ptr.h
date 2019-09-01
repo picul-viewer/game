@@ -27,13 +27,13 @@ public:
 	ResourceType* get( ) const;
 	operator ResourceType*( ) const;
 
-	resource_handle_type handle( );
-
 	ResourceType* operator->( ) const;
+
+	void reset( );
 
 private:
 	friend class queried_resources;
-	shared_resource_ptr( pvoid const in_query_result );
+	shared_resource_ptr( pvoid const in_ptr );
 
 private:
 	ResourceType* m_resource = nullptr;

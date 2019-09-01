@@ -9,7 +9,8 @@ namespace resource_system {
 class resource
 {
 protected:
-	void delete_resource( query_info const& in_info );
+	void destroy( task_info const& in_info );
+	void destroy_sync( task_info const& in_info );
 
 };
 

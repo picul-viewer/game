@@ -99,6 +99,12 @@
     <ClInclude Include="shared_resource_container_inline.h">
       <Filter>resource\shared_resource</Filter>
     </ClInclude>
+    <ClInclude Include="shared_resource_inline.h">
+      <Filter>resource\shared_resource</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_system_utils.h">
+      <Filter>resource_sytem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="queried_resources.cpp">
@@ -115,9 +121,6 @@
     </ClCompile>
     <ClCompile Include="raw_data.cpp">
       <Filter>resource\raw_data</Filter>
-    </ClCompile>
-    <ClCompile Include="shared_resource_inline.h">
-      <Filter>resource\shared_resource</Filter>
     </ClCompile>
     <ClCompile Include="resource.cpp">
       <Filter>resource</Filter>

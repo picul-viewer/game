@@ -7,17 +7,15 @@
 namespace resource_system {
 
 template<typename Resource, typename ResourceHandle, u32 TableSize>
-void shared_resource_container<Resource, ResourceHandle, TableSize>::create( pointer const in_reserved_memory )
+void shared_resource_container<Resource, ResourceHandle, TableSize>::create( pointer const in_memory )
 {
 	pointer const memory =
-		( in_reserved_memory == nullptr ) ?
+		( in_memory == nullptr ) ?
 		virtual_allocator( ).allocate( memory_size ) :
-		in_reserved_memory;
+		in_memory;
 
-	virtual_allocator( ).commit( in_reserved_memory, table_memory_size );
-
-	m_set.create( in_reserved_memory );
-	m_allocator.create( in_reserved_memory + table_memory_size );
+	m_set.create( memory );
+	m_allocator.create( memory + table_memory_size, allocator_memory_size );
 }
 
 template<typename Resource, typename ResourceHandle, u32 TableSize>
@@ -41,7 +39,7 @@ get( shared_resource_id const in_id, CookType* const in_cook, Resource*& out_res
 		lib::hash( in_id ),
 		[this, in_id, in_cook, &found_is_not_ready]( entry_type const entry )
 		{
-			Resource& resource = m_allocator[entry - 1];
+			Resource& resource = *(Resource*)m_allocator[entry - 1];
 
 			// Lock resource and get pointer to cook.
 			CookType* const cook = resource.lock_cook_ptr( );
@@ -81,7 +79,8 @@ get( shared_resource_id const in_id, CookType* const in_cook, Resource*& out_res
 		},
 		[this, in_cook]( )
 		{
-			Resource* const resource = m_allocator.allocate( sizeof(Resource) );
+			Resource* const resource = m_allocator.allocate( );
+			new ( resource ) Resource( );
 			resource->init( in_cook );
 			return (entry_type)( m_allocator.index_of( resource ) + 1 );
 		},
@@ -107,7 +106,7 @@ Resource*
 shared_resource_container<Resource, ResourceHandle, TableSize>::
 from_handle( entry_type const in_handle )
 {
-	return (Resource*)&m_allocator[in_handle];
+	return m_allocator[in_handle];
 }
 
 template<typename Resource, typename ResourceHandle, u32 TableSize>

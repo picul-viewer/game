@@ -6,11 +6,11 @@
 
 namespace resource_system {
 
-template<typename ResourceType>
-typename ResourceType::handle_type queried_resources::get_resource( )
+template<typename ResourceDescriptor>
+typename ResourceDescriptor queried_resources::get_resource( )
 {
 	ASSERT( m_index < m_count );
-	return lib::move( typename ResourceType::handle_type( m_results[m_index++] ) );
+	return lib::move( typename ResourceDescriptor( m_results[m_index++] ) );
 }
 
 } // namespace resource_system

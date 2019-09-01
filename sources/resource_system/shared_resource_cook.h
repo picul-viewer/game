@@ -18,7 +18,7 @@ protected:
 		void ( ResourceCook::*in_callback )( Resource* const )
 	);
 
-	void finish( pvoid const in_result );
+	void finish( Resource* const in_result );
 
 private:
 	template<typename ContainerResource, typename ContainerResourceHandle, u32 ContainerTableSize>
@@ -31,12 +31,16 @@ private:
 	void add_subscriber( this_type* const in_cook );
 
 private:
+	using resource_cook::finish_cook;
+
 	void finish_impl( pvoid const in_result );
 
 private:
 	this_type* m_next_subscriber;
 	shared_resource_id m_id;
 	u32 m_initial_ref_count;
+	u32 m_parent_task_offset;
+	u32 m_result_index;
 
 };
 

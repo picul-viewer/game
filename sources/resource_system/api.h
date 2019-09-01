@@ -3,11 +3,11 @@
 
 #include <types.h>
 #include <system/time.h>
+#include <utils/engine_threads.h>
+#include "queried_resources.h"
 #include "resource_system_types.h"
 
 namespace resource_system {
-
-class resource_cook;
 
 void create( u32 const in_thread_count );
 
@@ -15,24 +15,46 @@ void stop( );
 void destroy( );
 
 void create_resources(
-	query_info const* const in_queries,
-	u32 const in_query_count,
-	user_callback const& in_callback,
-	pointer const in_callback_data,
-	uptr const in_callback_data_size
+	task_info const* const in_tasks,
+	u32 const in_task_count,
+	task_info const& in_callback
 );
 
 template<typename ... Cooks>
 void create_resources(
-	user_callback const& in_callback,
-	pointer const in_callback_data,
-	uptr const in_callback_data_size,
+	task_info const& in_callback,
 	Cooks* ... in_cooks
 );
 
-void busy_thread_job( u32 const in_thread_index, sys::time const in_time_limit );
-void free_thread_job( u32 const in_helper_thread_index );
-void helper_thread_job( u32 const in_helper_thread_index );
+void destroy_resources(
+	task_info const* const in_tasks,
+	u32 const in_task_count,
+	task_info const& in_callback
+);
+
+template<typename ... Resources>
+void destroy_resources(
+	task_info const& in_callback,
+	Resources* ... in_resources
+);
+
+void busy_thread_job( sys::time const in_time_limit );
+void free_thread_job( );
+void helper_thread_job( );
+
+task_info null_callback( );
+
+template<void ( *Callback )( queried_resources&, pointer const )>
+task_info user_callback_task( pointer const in_user_data, u32 const in_thread_index = engine_thread_count );
+
+template<typename ThisType, void ( ThisType::*Callback )( queried_resources& )>
+task_info user_callback_task( pointer const in_this_ptr, u32 const in_thread_index = engine_thread_count );
+
+template<void ( *Callback )( pointer const )>
+task_info user_callback_task( pointer const in_user_data, u32 const in_thread_index = engine_thread_count );
+
+template<typename ThisType, void ( ThisType::*Callback )( )>
+task_info user_callback_task( pointer const in_this_ptr, u32 const in_thread_index = engine_thread_count );
 
 } // namespace resource_system
 

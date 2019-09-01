@@ -4,24 +4,84 @@
 #include <lib/allocator.h>
 #include "resource_cook.h"
 
-namespace resource_system {
-
 template<typename ... Cooks>
-void create_resources(
-	user_callback const& in_callback,
-	pointer const in_callback_data,
-	uptr const in_callback_data_size,
+void resource_system::create_resources(
+	task_info const& in_callback,
 	Cooks* ... in_cooks
 )
 {
 	u32 const count = type_count<Cooks ...>::value;
-	query_info* const queries = stack_allocate( count * sizeof(query_info) );
+	task_info* const tasks = stack_allocate( count * sizeof(task_info) );
 
-	fill_query_info( queries, in_cooks ... );
+	gather_task_info( gather_create_resource_task_info( ), tasks, in_cooks ... );
 
-	create_resources( queries, count, in_callback, in_callback_data, in_callback_data_size );
+	create_resources( tasks, count, in_callback );
 }
 
-} // namespace resource_system
+template<typename ... Resources>
+void resource_system::destroy_resources(
+	task_info const& in_callback,
+	Resources* ... in_resources
+)
+{
+	u32 const count = type_count<Resources ...>::value;
+	task_info* const tasks = stack_allocate( count * sizeof(task_info) );
+
+	gather_task_info( gather_destroy_resource_task_info( ), tasks, in_resources ... );
+
+	destroy_resources( tasks, count, in_callback );
+}
+
+template<void ( *Callback )( queried_resources&, pointer const )>
+task_info resource_system::user_callback_task( pointer const in_user_data, u32 const in_thread_index )
+{
+	task_info info;
+	info.functor = []( pvoid* const in_resources, u32 const in_resource_count, pointer const in_user_data )
+	{
+		Callback( queried_resources( in_resources, in_resource_count ), in_user_data );
+	};
+	info.user_data = in_user_data;
+	info.thread_index = in_thread_index;
+	return info;
+}
+
+template<typename ThisType, void ( ThisType::*Callback )( queried_resources& )>
+task_info resource_system::user_callback_task( pointer const in_this_ptr, u32 const in_thread_index )
+{
+	task_info info;
+	info.functor = []( pvoid* const in_resources, u32 const in_resource_count, pointer const in_user_data )
+	{
+		( ( (ThisType*)in_user_data )->*Callback )( queried_resources( in_resources, in_resource_count ) );
+	};
+	info.user_data = in_this_ptr;
+	info.thread_index = in_thread_index;
+	return info;
+}
+
+template<void ( *Callback )( pointer const )>
+task_info resource_system::user_callback_task( pointer const in_user_data, u32 const in_thread_index )
+{
+	task_info info;
+	info.functor = []( pvoid* const, u32 const, pointer const in_user_data )
+	{
+		Callback( in_user_data );
+	};
+	info.user_data = in_user_data;
+	info.thread_index = in_thread_index;
+	return info;
+}
+
+template<typename ThisType, void ( ThisType::*Callback )( )>
+task_info resource_system::user_callback_task( pointer const in_this_ptr, u32 const in_thread_index )
+{
+	task_info info;
+	info.functor = []( pvoid* const, u32 const, pointer const in_user_data )
+	{
+		( ( (ThisType*)in_user_data )->*Callback )( );
+	};
+	info.user_data = in_this_ptr;
+	info.thread_index = in_thread_index;
+	return info;
+}
 
 #endif // #ifndef GUARD_RESOURCE_SYSTEM_API_INLINE_H_INCLUDED

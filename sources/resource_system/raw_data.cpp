@@ -7,27 +7,9 @@
 
 namespace resource_system {
 
-DEFINE_DEFAULT_RESOURCE_HANDLE( raw_data, raw_data*, nullptr )
-
-
-void raw_data::delete_resource( )
+void raw_data::destroy( )
 {
 	std_allocator( ).deallocate( this );
-}
-
-raw_data* raw_data::from_handle( raw_data_handle const& in_handle )
-{
-	return in_handle;
-}
-
-raw_data_handle raw_data::to_handle( raw_data* const in_resource )
-{
-	return in_resource;
-}
-
-raw_data* raw_data::to_handle_value( raw_data* const in_resource )
-{
-	return in_resource;
 }
 
 pointer raw_data::data( ) const
@@ -45,7 +27,7 @@ raw_data_cook* raw_data_cook::create( pcstr const in_path )
 {
 	uptr const size = strings::length( in_path ) + 1;
 
-	raw_data_cook* const result = std_allocator( ).allocate( size );
+	raw_data_cook* const result = std_allocator( ).allocate( sizeof(raw_data_cook) + size );
 	result->init( );
 	strings::copy_n( result->m_path, in_path, size );
 

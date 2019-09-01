@@ -6,16 +6,9 @@
 namespace resource_system {
 
 template<typename ResourceType>
-default_resource_ptr<ResourceType>::default_resource_ptr( pvoid const in_query_result ) :
-	m_resource( (ResourceType*)in_query_result )
+default_resource_ptr<ResourceType>::default_resource_ptr( pvoid const in_ptr ) :
+	m_resource( (ResourceType*)in_ptr )
 { }
-
-template<typename ResourceType>
-default_resource_ptr<ResourceType>::default_resource_ptr( resource_handle_type&& in_handle ) :
-	m_resource( ResourceType::from_handle( in_handle ) )
-{
-	in_handle.m_id = resource_handle_type::invalid;
-}
 
 template<typename ResourceType>
 default_resource_ptr<ResourceType>::default_resource_ptr( default_resource_ptr<ResourceType>&& in_other )
@@ -36,7 +29,7 @@ default_resource_ptr<ResourceType>::~default_resource_ptr( )
 {
 	if ( m_resource )
 	{
-		m_resource->delete_resource( );
+		m_resource->destroy( );
 	}
 }
 
@@ -53,17 +46,15 @@ default_resource_ptr<ResourceType>::operator ResourceType*( ) const
 }
 
 template<typename ResourceType>
-typename default_resource_ptr<ResourceType>::resource_handle_type default_resource_ptr<ResourceType>::handle( )
-{
-	auto handle = Resource::to_handle( m_resource );
-	m_resouce = nullptr;
-	return lib::move( handle );
-}
-
-template<typename ResourceType>
 ResourceType* default_resource_ptr<ResourceType>::operator->( ) const
 {
 	return m_resource;
+}
+
+template<typename ResourceType>
+void default_resource_ptr<ResourceType>::reset( )
+{
+	m_resource = nullptr;
 }
 
 } // namespace resource_system

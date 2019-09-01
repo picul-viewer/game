@@ -14,33 +14,41 @@
 
 namespace resource_system {
 
-class resource_cook;
-
-typedef pvoid query_result;
-
 class resource_system
 {
 public:
 	void create( u32 const in_thread_count );
+	void destroy( );
 
 	void stop( );
-	void destroy( );
-	
-	void create_resources(
-		query_info const* const in_queries,
-		u32 const in_query_count,
-		user_callback const& in_callback,
-		pointer const in_callback_data,
-		uptr const in_callback_data_size
+
+	void create_tasks(
+		task_info const* const in_parent,
+		task_info const* const in_children,
+		u32 const in_children_count,
+		bool in_collect_children_results
 	);
 
-	void destroy_resource(
-		query_info const& in_query
+	void create_subtasks(
+		task_info const* const in_parent,
+		task_info const* const in_children,
+		u32 const in_children_count,
+		bool in_collect_children_results
 	);
 
-	void busy_thread_job( u32 const in_thread_index, sys::time const in_time_limit );
-	void free_thread_job( u32 const in_helper_thread_index );
-	void helper_thread_job( u32 const in_helper_thread_index );
+	void set_current_task_result(
+		pvoid const in_result
+	);
+
+	void set_task_result(
+		u32 const in_task_data_offset,
+		u32 const in_result_index,
+		pvoid const in_result
+	);
+
+	void busy_thread_job( sys::time const in_time_limit );
+	void free_thread_job( );
+	void helper_thread_job( );
 
 private:
 	enum : u32 {
@@ -53,41 +61,37 @@ private:
 	};
 
 private:
-	struct query_data;
+	struct task_data;
+
+private:
+	bool has_tasks( ) const;
+
+	void process_task( u32 const thread_index, task_data* const data );
+
+	void push_task( task_data* const in_task_data );
 
 private:
 	friend class resource_cook;
-	friend class resource;
 
-	void create_child_resources(
-		query_info const* const in_queries,
-		u32 const in_query_count,
-		query_info const& in_callback_info
-	);
-
-	void execute_tasks(
-		resource_cook* const in_cook,
-		cook_task_info const* const in_tasks,
-		u32 const in_task_count,
-		cook_task_info const& in_callback
-	);
-
-	void finish_cook( resource_cook* const in_cook, query_result const in_result );
+	void get_current_result_data( u32& in_parent_data_offset, u32& in_result_index ) const;
 
 private:
-	void process_task( query_data* const data );
-
-	void push_cook_queries(
-		query_info const* const in_queries,
-		u32 const in_query_count,
-		query_data* const in_query_data
-	);
-
-	void push_query_data( query_data* const in_query_data );
+	struct thread_local_data
+	{
+		union
+		{
+			u8 align_helper[Cache_Line];
+			struct
+			{
+				task_data* current_task_data;
+			};
+		};
+	};
 
 private:
-	sys::mpsc_queue<query_data*> m_queues[engine_thread_count];
-	sys::mpmc_queue<query_data*> m_helper_queue;
+	thread_local_data m_thread_local_data[engine_thread_count];
+	sys::mpsc_queue<task_data*> m_queues[engine_thread_count];
+	sys::mpmc_queue<task_data*> m_helper_queue;
 	sys::critical_section m_cs[cs_max_count];
 	sys::conditional_variable m_cv[cv_max_count];
 

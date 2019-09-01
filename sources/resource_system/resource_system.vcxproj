@@ -106,7 +106,9 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="resource_cook.h" />
     <ClInclude Include="resource_handle.h" />
+    <ClInclude Include="resource_system_utils.h" />
     <ClInclude Include="shared_resource_container_inline.h" />
+    <ClInclude Include="shared_resource_inline.h" />
     <ClInclude Include="shared_resource_ptr.h" />
     <ClInclude Include="shared_resource_ptr_inline.h" />
     <ClInclude Include="resource_system.h" />
@@ -123,7 +125,6 @@
     <ClCompile Include="queried_resources.cpp" />
     <ClCompile Include="resource_cook.cpp" />
     <ClCompile Include="resource_system.cpp" />
-    <ClCompile Include="shared_resource_inline.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">

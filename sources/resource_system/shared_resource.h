@@ -4,7 +4,7 @@
 #include <types.h>
 
 #include <lib/linear_set.h>
-#include <lib/pool.h>
+#include <lib/pool_allocator.h>
 #include <system/interlocked.h>
 
 #include "default_resource.h"
@@ -20,7 +20,7 @@ public:
 	typedef typename ResourceHandle::value_type entry_type;
 
 public:
-	void create( pointer const in_reserved_memory = nullptr );
+	void create( pointer const in_memory = nullptr );
 	void destroy( );
 
 	template<typename CookType>
@@ -33,12 +33,12 @@ public:
 
 private:
 	typedef lib::linear_set<entry_type, TableSize> table_type;
-	typedef pool<sizeof(Resource), sizeof(Resource) * TableSize> pool_type;
+	typedef lib::pool_allocator<sizeof(Resource)> pool_type;
 
 public:
 	enum : uptr {
 		table_memory_size = table_type::memory_size,
-		allocator_memory_size = pool_type::memory_size,
+		allocator_memory_size = sizeof(Resource) * TableSize,
 
 		memory_size = table_memory_size + allocator_memory_size
 	};
@@ -53,7 +53,7 @@ template<typename Resource, typename ResourceHandle, u32 MaxInstanceCount>
 class shared_resource : public default_resource<Resource>
 {
 public:
-	typedef shared_resource_ptr<Resource> ptr_type;
+	typedef shared_resource_ptr<Resource> ptr;
 	typedef ResourceHandle handle_type;
 
 public:
@@ -74,7 +74,7 @@ private:
 public:
 	typedef typename ResourceHandle::value_type handle_value_type;
 
-	static Resource* from_handle( ResourceHandle const in_handle );
+	static Resource* from_handle( ResourceHandle const& in_handle );
 	static ResourceHandle to_handle( Resource* const in_resource );
 	static handle_value_type to_handle_value( Resource* const in_resource );
 

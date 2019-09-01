@@ -1,6 +1,7 @@
 #ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_HANDLE_H_INCLUDED
 #define GUARD_RESOURCE_SYSTEM_RESOURCE_HANDLE_H_INCLUDED
 
+#include "default_resource_ptr.h"
 #include "shared_resource_ptr.h"
 
 #define DECLARE_DEFAULT_RESOURCE_HANDLE( Resource, IdType )								\
@@ -18,8 +19,10 @@ public:																					\
 	Resource##_handle( );																\
 	~Resource##_handle( );																\
 																						\
+	Resource##_handle( IdType const in_id );											\
+																						\
 	Resource##_handle( Resource##_handle const& in_handle ) = delete;					\
-	Resource##_handle& operator=( Resource##_handle const& in_handle ) = default;		\
+	Resource##_handle& operator=( Resource##_handle const& in_handle ) = delete;		\
 																						\
 	Resource##_handle( Resource##_handle&& in_handle );									\
 	Resource##_handle& operator=( Resource##_handle&& in_handle );						\
@@ -32,7 +35,6 @@ private:																				\
 	friend class ::resource_system::queried_resources;									\
 																						\
 	Resource##_handle( pvoid const in_ptr );											\
-	Resource##_handle( IdType const in_id );											\
 																						\
 private:																				\
 	IdType m_id;																		\
@@ -95,6 +97,8 @@ public:																					\
 	Resource##_handle( );																\
 	~Resource##_handle( );																\
 																						\
+	Resource##_handle( IdType const in_id );											\
+																						\
 	Resource##_handle( Resource##_handle const& in_handle );							\
 	Resource##_handle& operator=( Resource##_handle const& in_handle );					\
 																						\
@@ -115,7 +119,6 @@ private:																				\
 	friend class ::resource_system::queried_resources;									\
 																						\
 	Resource##_handle( pvoid const in_ptr );											\
-	Resource##_handle( IdType const in_id );											\
 																						\
 private:																				\
 	IdType m_id;																		\

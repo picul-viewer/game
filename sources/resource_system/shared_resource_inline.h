@@ -1,7 +1,14 @@
+#ifndef GUARD_RESOURCE_SYSTEM_SHARED_RESOURCE_INLINE_H_INCLUDED
+#define GUARD_RESOURCE_SYSTEM_SHARED_RESOURCE_INLINE_H_INCLUDED
+
 #include "shared_resource.h"
 #include <macros.h>
 
 namespace resource_system {
+
+template<typename Resource, typename ResourceHandle, u32 MaxInstanceCount>
+typename shared_resource<Resource, ResourceHandle, MaxInstanceCount>::container_type
+	shared_resource<Resource, ResourceHandle, MaxInstanceCount>::s_container;
 
 template<typename Resource, typename ResourceHandle, u32 MaxInstanceCount>
 u32 shared_resource<Resource, ResourceHandle, MaxInstanceCount>::add_ref( )
@@ -15,7 +22,7 @@ u32 shared_resource<Resource, ResourceHandle, MaxInstanceCount>::release( )
 	u32 const ref_count = interlocked_dec( m_ref_count );
 
 	if ( ref_count == 0 )
-		delete_resource( );
+		destroy( );
 
 	return ref_count;
 }
@@ -39,7 +46,7 @@ typename shared_resource<Resource, ResourceHandle, MaxInstanceCount>::container_
 }
 
 template<typename Resource, typename ResourceHandle, u32 MaxInstanceCount>
-Resource* shared_resource<Resource, ResourceHandle, MaxInstanceCount>::from_handle( ResourceHandle const in_handle )
+Resource* shared_resource<Resource, ResourceHandle, MaxInstanceCount>::from_handle( ResourceHandle const& in_handle )
 {
 	return s_container.from_handle( in_handle );
 }
@@ -103,3 +110,5 @@ void shared_resource<Resource, ResourceHandle, MaxInstanceCount>::finish_creatio
 }
 
 } // namespace resource_system
+
+#endif // #ifndef GUARD_RESOURCE_SYSTEM_SHARED_RESOURCE_INLINE_H_INCLUDED
