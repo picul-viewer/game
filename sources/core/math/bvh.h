@@ -3,54 +3,94 @@
 
 #include <types.h>
 #include <lib/buffer_array.h>
+#include <lib/pool_allocator.h>
+#include <lib/reader.h>
+#include <lib/writer.h>
 #include "aabb.h"
 #include "frustum.h"
 
 namespace math {
 
-template<typename T>
-class static_bvh
+class bvh
 {
 public:
-	template<typename NodeAllocator>
-	void create( NodeAllocator& node_allocator, T** const objects, uptr const objects_size );
+	typedef u16 node_handle;
+	typedef u32 object_handle;
+
+	enum { node_data_size = 32 };
+
+public:
+	void create( pointer const memory, uptr const memory_size );
 	void destroy( );
 	
+	void build( aabb const* const aabbs, object_handle const* const handles, uptr const count );
+	void serialize( lib::writer& w );
+	void deserialize( lib::reader& r, object_handle const* const handles );
+
+	node_handle insert( object_handle const object, aabb const& object_aabb );
+	void remove( node_handle const handle );
+	void move( node_handle const handle, aabb const& node_aabb );
+
+	void clear( );
+
 	template<typename Callback>
 	void for_each( Callback const& callback ) const;
-	template<typename FrustumType, typename Callback>
-	void query_visibility( FrustumType const& frustum, Callback const& callback ) const;
 
-protected:
-	struct node
+	template<typename Callback>
+	void frustum_test( frustum const& f, Callback const& callback ) const;
+
+private:
+	mem_align(16)
+	struct node_data
 	{
-		aabb_aligned box;
+		float3 aabb_min;
 		union
 		{
-			node* left;
-			T* object;
+			struct
+			{
+				node_handle left;
+				node_handle right;
+			};
+			object_handle obj;
 		};
-		node* right;
+		float3 aabb_max;
+		node_handle parent;
+		u16 leaf_flag;
 	};
-	
-	template<typename NodeAllocator>
-	node* build( NodeAllocator& node_allocator, T** const first, uptr const count, aabb_aligned* const aabbs, u32 const sorting );
-	
+
+	static const node_handle invalid = -1;
+
+private:
+	void insert_impl( node_data* const node );
+	void remove_impl( node_handle const handle );
+
+	node_handle build_impl(
+		node_data** const nodes,
+		node_data** const nodes_memory_0,
+		node_data** const nodes_memory_1,
+		aabb* const aabb_memory,
+		uptr const count,
+		u32 const sorting_component
+	);
+
+	uptr divide_by_sah(
+		node_data** const nodes,
+		aabb* const aabbs,
+		uptr const count,
+		float& sah_sum
+	);
+
 	template<typename Callback>
-	void for_each_impl( node* const n, Callback const& callback ) const;
+	void for_each_impl( Callback const& callback, node_data* const node ) const;
+
 	template<typename Callback>
-	void query_visibility_impl_inside( node* const n, Callback const& callback ) const;
-	template<typename FrustumType, typename Callback>
-	void query_visibility_impl( node* const n, FrustumType const& frustum, Callback const& callback ) const;
+	void frustum_test_impl( frustum const& f, Callback const& callback, node_data* const node ) const;
 
-	void destroy_impl( node* n );
+	void refit_node( node_data& node ) const;
 
-	node* m_root;
-};
-
-struct static_bvh_node_size
-{
-	static const uptr value = sizeof(aabb_aligned) + 2 * sizeof(pointer);
+private:
+	lib::pool_allocator<sizeof(node_data)> m_allocator;
+	node_handle m_root;
 };
 
 } // namespace math
