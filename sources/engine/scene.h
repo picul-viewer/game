@@ -3,28 +3,36 @@
 
 #include <types.h>
 
-namespace render { class scene; }
+#include <resource_system/default_resource.h>
+#include <utils/engine_threads.h>
+
+#include <render/scene.h>
 
 namespace engine {
 
 class object;
 
-class scene
+class scene : public default_resource<scene>
 {
 public:
-	void create( bool in_create_render );
-	void destroy( );
+	friend class scene_cook;
 
-	void remove_all_static_objects( );
-	void insert_static_object( object* in_object );
-	void build_static_scene( );
+public:
+	enum : u32 {
+		destroy_thread_index = engine_thread_count
+	};
 
-	void make_current( ) const;
+	static void destroy_resource( scene* const in_resource );
 
-	inline render::scene* get_render( ) { return m_render; }
+public:
+	void insert( object* const in_object );
+	void remove( object* const in_object );
+	void move( object* const in_object );
 
-protected:
-	render::scene* m_render;
+	inline render::scene& render_scene( ) { return m_render; }
+
+private:
+	render::scene m_render;
 
 };
 

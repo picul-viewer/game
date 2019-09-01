@@ -81,15 +81,10 @@ void stage_ui::execute( )
 	{
 		ui_batch::batch_data const& data	= batch_data[i];
 
-		texture_handle const current_tex	= data.texture;
-		if ( current_tex != texture_handle::invalid )
-			current_tex->bind_ps			( 0 );
-		else
-		{
-			texture null_tex;
-			null_tex.set					( nullptr );
-			null_tex.bind_ps				( 0 );
-		}
+		texture::ptr current_texture		= data.texture;
+		if ( current_texture != nullptr )
+			current_texture->bind_ps		( 0 );
+		current_texture.reset				( );
 
 		g_api.get_context( )->DrawIndexed	( data.vertex_count / 4 * 6, 0, data.vertex_start_index );
 	}

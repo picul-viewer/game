@@ -69,7 +69,7 @@ void stage_forward_default::execute( )
 
 		render_object_mesh const* object	= g_renderer.m_render_meshes[i];
 
-		math::sse::matrix world				= math::sse::matrix( object->get_transform( ) );
+		math::sse::matrix world				= math::sse::matrix( math::float4x4( object->get_transform( ) ) );
 
 		math::sse::matrix const& view_proj	= g_renderer.m_render_camera.get_view_projection( );
 

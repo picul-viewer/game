@@ -5,28 +5,33 @@
 #include <math/matrix.h>
 #include <lib/list.h>
 #include <lib/reader.h>
+#include <resource_system/default_resource.h>
+#include <utils/engine_threads.h>
 
 #include "render_object.h"
 
 namespace render {
 
-class object
+class object : public default_resource<object>
 {
 public:
-	void create( lib::reader& in_reader );
-	void destroy( );
-	
+	friend class object_cook;
+
+public:
+	enum : u32 {
+		destroy_thread_index = engine_helper_thread_0
+	};
+
+	static void destroy_resource( object* const in_resource );
+
+public:
+	inline render_object* data( ) const { return m_objects; }
+
 	void update( math::float4x3 const& in_transform );
 
-	template<typename Pred>
-	inline void for_each( Pred const& functor )
-	{
-		lib::for_each( m_objects.begin( ), m_objects.end( ), functor );
-	}
+private:
+	render_object* m_objects;
 
-protected:
-	typedef lib::intrusive_list<render_object, &render_object::m_next> render_object_list;
-	render_object_list	m_objects;
 };
 
 } // namespace render

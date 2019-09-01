@@ -15,6 +15,8 @@
 
 #include <render/world.h>
 
+#include <ui/font.h>
+
 namespace engine {
 
 struct world::helper
@@ -95,6 +97,11 @@ void world::window_input( )
 
 void world::main_thread( )
 {
+	utils::set_thread_index( engine_thread_main );
+
+	// TODO: do this appropriately.
+	ui::font::container( ).create( nullptr );
+
 	// Waiting for window to create.
 	m_alive_events[engine_thread_window].wait( );
 
@@ -113,7 +120,7 @@ void world::main_thread( )
 		game::world_interface::update( );
 		render::g_world.update( );
 
-		resource_system::busy_thread_job( engine_thread_main, last_tick + max_frame_time );
+		resource_system::busy_thread_job( last_tick + max_frame_time );
 		last_tick = sys::time::now( );
 	}
 	
@@ -129,11 +136,15 @@ void world::main_thread( )
 	game::world_interface::destroy( );
 	render::g_world.destroy( );
 
+	ui::font::container( ).destroy( );
+
 	m_alive_events[engine_thread_main].set( );
 }
 
 void world::window_thread( )
 {
+	utils::set_thread_index( engine_thread_window );
+
 	sys::g_window_input.create( );
 	m_window.create( "game", m_window_dimensions, false, &helper::window_procedure );
 	m_alive_events[engine_thread_window].set( );
@@ -163,14 +174,17 @@ void world::window_thread( )
 
 void world::fs_thread( )
 {
-	resource_system::free_thread_job( engine_thread_fs );
+	utils::set_thread_index( engine_thread_fs );
+
+	resource_system::free_thread_job( );
 }
 
 void world::helper_thread( )
 {
-	u32 const index = engine_helper_threads_first + interlocked_exchange_add( m_helper_count, 1 );
+	u32 const thread_index = engine_helper_threads_first + interlocked_exchange_add( m_helper_count, 1 );
+	utils::set_thread_index( thread_index );
 
-	resource_system::helper_thread_job( index );
+	resource_system::helper_thread_job( );
 }
 
 void world::create( )
@@ -249,22 +263,9 @@ void world::exit( )
 	m_window.exit( );
 }
 
-scene* world::create_scene( ) const
+void world::set_current_scene( scene* const in_scene ) const
 {
-	scene* new_scene = g_resources.get_scene_pool( ).allocate( sizeof(scene) );
-	new_scene->create( true );
-	return new_scene;
-}
-
-void world::set_current_scene( scene* in_scene ) const
-{
-	in_scene->make_current( );
-}
-
-void world::destroy_scene( scene* in_scene ) const
-{
-	in_scene->destroy( );
-	g_resources.get_scene_pool( ).deallocate( in_scene );
+	render::g_world.set_current_scene( &in_scene->render_scene( ) );
 }
 
 world g_world;

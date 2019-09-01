@@ -1,36 +1,26 @@
 #include "object.h"
+#include "resource_system/api.h"
 
-#include <render/object.h>
-#include <render/world.h>
+#include "resources.h"
 
 namespace engine {
 
-void object::create( lib::reader& in_reader )
+void object::destroy_resource( object* const in_resource )
 {
-	ASSERT( in_reader.is_valid( ) );
-
-	bool const create_render = in_reader.read<bool>( );
-		
-	if ( create_render )
-	{
-		m_render = render::g_world.create_object( );
-		m_render->create( in_reader );
-	}
+	resource_system::destroy_resources(
+		resource_system::user_callback_task<on_subsystems_destroyed>( in_resource ),
+		&in_resource->m_render
+	);
 }
 
-void object::destroy( )
+void object::on_subsystems_destroyed( pointer const in_resource )
 {
-	if ( m_render )
-	{
-		m_render->destroy( );
-		render::g_world.destroy_object( m_render );
-	}
+	g_resources.get_object_allocator( ).deallocate( in_resource );
 }
 
 void object::update( math::float4x3 const& in_transform )
 {
-	if ( m_render )
-		m_render->update( in_transform );
+	m_render.update( in_transform );
 }
 
 } // namespace engine

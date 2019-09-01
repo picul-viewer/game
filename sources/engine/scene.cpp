@@ -1,52 +1,26 @@
 #include "scene.h"
-
-#include <render/world.h>
-#include <render/scene.h>
-
-#include "object.h"
+#include "resource_system/api.h"
 
 namespace engine {
 
-void scene::create( bool in_create_render )
+void scene::destroy_resource( scene* const in_resource )
 {
-	if ( in_create_render )
-	{
-		m_render = render::g_world.create_scene( );
-		m_render->create( );
-	}
+	resource_system::destroy_resources( resource_system::null_callback( ), &in_resource->m_render );
 }
 
-void scene::destroy( )
+void scene::insert( object* const in_object )
 {
-	if ( m_render )
-	{
-		m_render->destroy( );
-		render::g_world.destroy_scene( m_render );
-	}
+
 }
 
-void scene::remove_all_static_objects( )
+void scene::remove( object* const in_object )
 {
-	if ( m_render )
-		m_render->remove_all_static_objects( );
+
 }
 
-void scene::insert_static_object( object* in_object )
+void scene::move( object* const in_object )
 {
-	if ( m_render )
-		m_render->insert_static_object( in_object->get_render( ) );
-}
 
-void scene::build_static_scene( )
-{
-	if ( m_render )
-		m_render->build_static_scene( );
-}
-
-void scene::make_current( ) const
-{
-	if ( m_render )
-		render::g_world.set_current_scene( m_render );
 }
 
 } // namespace engine

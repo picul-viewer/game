@@ -1,6 +1,7 @@
 #ifndef GUARD_RENDER_STAGE_STATISTICS_H_INCLUDED
 #define GUARD_RENDER_STAGE_STATISTICS_H_INCLUDED
 
+#include <resource_system/queried_resources.h>
 #include <ui/font.h>
 
 namespace render {
@@ -13,8 +14,13 @@ public:
 
 	void execute( );
 
-protected:
-	ui::font m_font;
+	inline void set_font( ui::font::ptr const& in_font ) { m_font = in_font; }
+
+private:
+	void on_font_loaded( queried_resources& in_resources );
+
+private:
+	ui::font::ptr m_font;
 
 };
 

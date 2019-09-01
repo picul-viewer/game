@@ -46,9 +46,6 @@
     <Filter Include="resources\utils">
       <UniqueIdentifier>{5ec71823-04a8-4e89-b6aa-64b0a9660b0f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\utils\mesh_data">
-      <UniqueIdentifier>{eaa926bc-c319-407c-85c3-cc487ec72bf3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\utils\pipeline_state_pool">
       <UniqueIdentifier>{2b9e7b2e-7c22-4145-af95-d3014cc8af04}</UniqueIdentifier>
     </Filter>
@@ -61,35 +58,14 @@
     <Filter Include="resources\utils\shaders\shader_container">
       <UniqueIdentifier>{5bced0eb-8110-44cf-9da9-09b8eb2b6102}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\utils\resource_pool">
-      <UniqueIdentifier>{536c8528-fad1-4329-9683-932d1c8b41ea}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\utils\input_layout">
       <UniqueIdentifier>{ed10ca64-0681-428c-89ce-096aef007663}</UniqueIdentifier>
     </Filter>
     <Filter Include="common">
       <UniqueIdentifier>{a67a58ed-2ce1-46bb-a342-7cf608ed4f76}</UniqueIdentifier>
     </Filter>
-    <Filter Include="common\scene">
-      <UniqueIdentifier>{719d7485-28d0-4d4a-93f7-53d6da82a78b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="common\world">
       <UniqueIdentifier>{e6fd8471-77ab-4b34-81c3-519471ce2ddf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="common\object">
-      <UniqueIdentifier>{f010f546-653c-4858-b531-7208da401f2a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="objects">
-      <UniqueIdentifier>{526509c8-6a01-49ee-89c8-d91b57821df3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="objects\direct_light">
-      <UniqueIdentifier>{c2a3f8e8-c5fa-46ed-8170-7e6411a8b77e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="objects\mesh">
-      <UniqueIdentifier>{7d72011f-3a23-40b6-8736-f7009806af6b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="objects\point_light">
-      <UniqueIdentifier>{5609ff8c-ca3e-4c8a-94b3-aa23e4158c6a}</UniqueIdentifier>
     </Filter>
     <Filter Include="renderer\stages\stage_forward_default">
       <UniqueIdentifier>{8f691ff8-d8d6-4e11-8fdb-5fa94c529027}</UniqueIdentifier>
@@ -100,29 +76,8 @@
     <Filter Include="renderer\utils\camera">
       <UniqueIdentifier>{14fef490-01c9-4cc3-abcf-8e4f3cab34f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\utils\resource_path_registry">
-      <UniqueIdentifier>{9208cba1-aecb-426c-8f61-1b86a3a67ba0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\cached_resources">
-      <UniqueIdentifier>{8a9c3af5-6811-4560-9474-0667fede5ade}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\cached_resources\mesh">
-      <UniqueIdentifier>{4e227022-127a-43c4-ac56-aa129687dece}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\cached_resources\models">
-      <UniqueIdentifier>{603cb7ff-9713-4322-857b-78e8f21e0031}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\cached_resources\models\mesh">
-      <UniqueIdentifier>{613d9a55-9122-48ac-8045-77d5b423bb92}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\cached_resources\texture">
-      <UniqueIdentifier>{cb4972b5-da99-462e-beb8-06f068e53dd3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="dx\api">
       <UniqueIdentifier>{46484c15-51a2-4ab6-9977-1442fc94a676}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="common\ui_batch">
-      <UniqueIdentifier>{53a4a161-f8fc-4cad-8226-54141297fd41}</UniqueIdentifier>
     </Filter>
     <Filter Include="renderer\stages\stage_ui">
       <UniqueIdentifier>{dc0a786e-e0ff-453e-86ec-3d177e1e4f5d}</UniqueIdentifier>
@@ -135,6 +90,69 @@
     </Filter>
     <Filter Include="renderer\stages\stage_visibility">
       <UniqueIdentifier>{a855374d-631d-4694-9ce3-a56b9ff4b358}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\ui_batch">
+      <UniqueIdentifier>{53a4a161-f8fc-4cad-8226-54141297fd41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes">
+      <UniqueIdentifier>{8a9c3af5-6811-4560-9474-0667fede5ade}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\scene">
+      <UniqueIdentifier>{719d7485-28d0-4d4a-93f7-53d6da82a78b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\scene\cook">
+      <UniqueIdentifier>{2c5e96b5-d3dd-438f-b43b-6185364ee120}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\object">
+      <UniqueIdentifier>{f010f546-653c-4858-b531-7208da401f2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\object\render_objects">
+      <UniqueIdentifier>{526509c8-6a01-49ee-89c8-d91b57821df3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\object\render_objects\direct_light">
+      <UniqueIdentifier>{c2a3f8e8-c5fa-46ed-8170-7e6411a8b77e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\object\render_objects\mesh">
+      <UniqueIdentifier>{7d72011f-3a23-40b6-8736-f7009806af6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\object\render_objects\point_light">
+      <UniqueIdentifier>{5609ff8c-ca3e-4c8a-94b3-aa23e4158c6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\object\cook">
+      <UniqueIdentifier>{3e47a8eb-79cc-46b1-9e14-b7115e12de63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\dx">
+      <UniqueIdentifier>{97159f5b-69b4-4320-aa36-8bd5dd785f7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\dx\mesh">
+      <UniqueIdentifier>{4e227022-127a-43c4-ac56-aa129687dece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\dx\mesh\cook">
+      <UniqueIdentifier>{d14116db-025f-450e-a88a-9e33ae3d5fef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\dx\mesh\cook\default_mesh_data">
+      <UniqueIdentifier>{eaa926bc-c319-407c-85c3-cc487ec72bf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\dx\texture">
+      <UniqueIdentifier>{cb4972b5-da99-462e-beb8-06f068e53dd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\dx\texture\dds_loader">
+      <UniqueIdentifier>{afd07b3e-f2e4-4738-9a86-03edb70d639f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\dx\texture\cook">
+      <UniqueIdentifier>{236b8d99-e61c-417d-b511-64ba743eabad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\models">
+      <UniqueIdentifier>{603cb7ff-9713-4322-857b-78e8f21e0031}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\models\mesh">
+      <UniqueIdentifier>{613d9a55-9122-48ac-8045-77d5b423bb92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\classes\models\mesh\cook">
+      <UniqueIdentifier>{6fd64af7-837f-4645-898c-8c7dcd35903f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\compilation">
+      <UniqueIdentifier>{cdb3e09a-da27-4cd2-bde8-0ae37acd97e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -162,11 +180,8 @@
     <ClCompile Include="renderer.cpp">
       <Filter>renderer</Filter>
     </ClCompile>
-    <ClCompile Include="render_object_mesh.cpp">
-      <Filter>objects\mesh</Filter>
-    </ClCompile>
     <ClCompile Include="mesh.cpp">
-      <Filter>resources\cached_resources\mesh</Filter>
+      <Filter>resources\classes\dx\mesh</Filter>
     </ClCompile>
     <ClCompile Include="constant_buffer.cpp">
       <Filter>dx\buffers</Filter>
@@ -175,7 +190,7 @@
       <Filter>resources\utils\pipeline_state_pool</Filter>
     </ClCompile>
     <ClCompile Include="texture.cpp">
-      <Filter>resources\cached_resources\texture</Filter>
+      <Filter>resources\classes\dx\texture</Filter>
     </ClCompile>
     <ClCompile Include="texture1d.cpp">
       <Filter>dx\textures</Filter>
@@ -189,17 +204,14 @@
     <ClCompile Include="resource_views.cpp">
       <Filter>dx\resource_views</Filter>
     </ClCompile>
-    <ClCompile Include="render_model_mesh.cpp">
-      <Filter>resources\cached_resources\models\mesh</Filter>
-    </ClCompile>
     <ClCompile Include="world.cpp">
       <Filter>common\world</Filter>
     </ClCompile>
     <ClCompile Include="object.cpp">
-      <Filter>common\object</Filter>
+      <Filter>resources\classes\object</Filter>
     </ClCompile>
     <ClCompile Include="scene.cpp">
-      <Filter>common\scene</Filter>
+      <Filter>resources\classes\scene</Filter>
     </ClCompile>
     <ClCompile Include="render_object_allocator.cpp">
       <Filter>resources\utils\render_object_allocator</Filter>
@@ -215,9 +227,6 @@
     </ClCompile>
     <ClCompile Include="camera.cpp">
       <Filter>renderer\utils\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="resource_path_registry.cpp">
-      <Filter>resources\utils\resource_path_registry</Filter>
     </ClCompile>
     <ClCompile Include="api.cpp">
       <Filter>dx\api</Filter>
@@ -243,6 +252,36 @@
     <ClCompile Include="stage_visibility.cpp">
       <Filter>renderer\stages\stage_visibility</Filter>
     </ClCompile>
+    <ClCompile Include="dds_loader.cpp">
+      <Filter>resources\classes\dx\texture\dds_loader</Filter>
+    </ClCompile>
+    <ClCompile Include="texture_cook.cpp">
+      <Filter>resources\classes\dx\texture\cook</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_cook.cpp">
+      <Filter>resources\classes\dx\mesh\cook</Filter>
+    </ClCompile>
+    <ClCompile Include="model_mesh_cook.cpp">
+      <Filter>resources\classes\models\mesh\cook</Filter>
+    </ClCompile>
+    <ClCompile Include="model_mesh.cpp">
+      <Filter>resources\classes\models\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="render_object_mesh.cpp">
+      <Filter>resources\classes\object\render_objects\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="handles.cpp">
+      <Filter>resources\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="object_cook.cpp">
+      <Filter>resources\classes\object\cook</Filter>
+    </ClCompile>
+    <ClCompile Include="scene_cook.cpp">
+      <Filter>resources\classes\scene\cook</Filter>
+    </ClCompile>
+    <ClCompile Include="resource_compilation.cpp">
+      <Filter>resources\compilation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.h">
@@ -260,12 +299,6 @@
     <ClInclude Include="pipeline_state.h">
       <Filter>dx\pipeline_states</Filter>
     </ClInclude>
-    <ClInclude Include="resource_pool.h">
-      <Filter>resources\utils\resource_pool</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_pool_inline.h">
-      <Filter>resources\utils\resource_pool</Filter>
-    </ClInclude>
     <ClInclude Include="effect.h">
       <Filter>renderer\utils\effect</Filter>
     </ClInclude>
@@ -275,14 +308,11 @@
     <ClInclude Include="renderer.h">
       <Filter>renderer</Filter>
     </ClInclude>
-    <ClInclude Include="render_object_mesh.h">
-      <Filter>objects\mesh</Filter>
-    </ClInclude>
     <ClInclude Include="render_object.h">
-      <Filter>objects</Filter>
+      <Filter>resources\classes\object\render_objects</Filter>
     </ClInclude>
     <ClInclude Include="mesh.h">
-      <Filter>resources\cached_resources\mesh</Filter>
+      <Filter>resources\classes\dx\mesh</Filter>
     </ClInclude>
     <ClInclude Include="constant_buffer.h">
       <Filter>dx\buffers</Filter>
@@ -303,7 +333,7 @@
       <Filter>resources\utils\render_object_allocator</Filter>
     </ClInclude>
     <ClInclude Include="texture.h">
-      <Filter>resources\cached_resources\texture</Filter>
+      <Filter>resources\classes\dx\texture</Filter>
     </ClInclude>
     <ClInclude Include="texture1d.h">
       <Filter>dx\textures</Filter>
@@ -317,11 +347,8 @@
     <ClInclude Include="resource_views.h">
       <Filter>dx\resource_views</Filter>
     </ClInclude>
-    <ClInclude Include="mesh_quad.h">
-      <Filter>resources\utils\mesh_data</Filter>
-    </ClInclude>
     <ClInclude Include="mesh_box.h">
-      <Filter>resources\utils\mesh_data</Filter>
+      <Filter>resources\classes\dx\mesh\cook\default_mesh_data</Filter>
     </ClInclude>
     <ClInclude Include="shader_container.h">
       <Filter>resources\utils\shaders\shader_container</Filter>
@@ -338,12 +365,6 @@
     <ClInclude Include="shader_containers.h">
       <Filter>resources\utils\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="render_model_mesh.h">
-      <Filter>resources\cached_resources\models\mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="constant_buffers_constants.h">
-      <Filter>resources</Filter>
-    </ClInclude>
     <ClInclude Include="dx_include.h">
       <Filter>dx</Filter>
     </ClInclude>
@@ -351,10 +372,10 @@
       <Filter>common\world</Filter>
     </ClInclude>
     <ClInclude Include="object.h">
-      <Filter>common\object</Filter>
+      <Filter>resources\classes\object</Filter>
     </ClInclude>
     <ClInclude Include="scene.h">
-      <Filter>common\scene</Filter>
+      <Filter>resources\classes\scene</Filter>
     </ClInclude>
     <ClInclude Include="resources.h">
       <Filter>resources</Filter>
@@ -370,9 +391,6 @@
     </ClInclude>
     <ClInclude Include="camera.h">
       <Filter>renderer\utils\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_path_registry.h">
-      <Filter>resources\utils\resource_path_registry</Filter>
     </ClInclude>
     <ClInclude Include="api.h">
       <Filter>dx\api</Filter>
@@ -398,14 +416,44 @@
     <ClInclude Include="stage_visibility.h">
       <Filter>renderer\stages\stage_visibility</Filter>
     </ClInclude>
-    <ClInclude Include="resource_handle.h">
-      <Filter>resources\cached_resources</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_ids.h">
-      <Filter>resources\cached_resources</Filter>
-    </ClInclude>
     <ClInclude Include="parameters_type.h">
       <Filter>parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="dds_loader.h">
+      <Filter>resources\classes\dx\texture\dds_loader</Filter>
+    </ClInclude>
+    <ClInclude Include="texture_cook.h">
+      <Filter>resources\classes\dx\texture\cook</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_cook.h">
+      <Filter>resources\classes\dx\mesh\cook</Filter>
+    </ClInclude>
+    <ClInclude Include="model_mesh_cook.h">
+      <Filter>resources\classes\models\mesh\cook</Filter>
+    </ClInclude>
+    <ClInclude Include="model_mesh.h">
+      <Filter>resources\classes\models\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_quad.h">
+      <Filter>resources\classes\dx\mesh\cook\default_mesh_data</Filter>
+    </ClInclude>
+    <ClInclude Include="render_object_mesh.h">
+      <Filter>resources\classes\object\render_objects\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="handles.h">
+      <Filter>resources\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="object_cook.h">
+      <Filter>resources\classes\object\cook</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_cook.h">
+      <Filter>resources\classes\scene\cook</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_compilation.h">
+      <Filter>resources\compilation</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_buffers_constants.h">
+      <Filter>resources\utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

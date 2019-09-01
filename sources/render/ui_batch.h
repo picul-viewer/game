@@ -6,7 +6,7 @@
 
 #include <lib/dynamic_array.h>
 
-#include "resource_ids.h"
+#include "handles.h"
 
 namespace render {
 
@@ -19,7 +19,7 @@ private:
 		math::u16x4 corners_texcoord;
 		math::half4 mult_color;
 		math::half4 add_color;
-		texture_id texture;
+		texture_handle::value_type texture;
 	};
 
 	struct gpu_vertex_data
@@ -35,7 +35,7 @@ public:
 	{
 		u32 vertex_start_index;
 		u32 vertex_count;
-		texture_id texture;
+		texture_handle::value_type texture;
 	};
 
 	enum {
@@ -49,7 +49,7 @@ public:
 
 	void add_quad(
 		math::u16x4 const in_corners_position, math::u16x4 const in_corners_texcoord,
-		math::half4 const& in_mult_color, math::half4 const& in_add_color, texture_id const in_texture );
+		math::half4 const& in_mult_color, math::half4 const& in_add_color, texture_handle const in_texture );
 
 	void add_color_quad( math::u16x4 const in_corners_position, math::half4 const& in_color );
 

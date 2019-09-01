@@ -13,6 +13,9 @@
     <Filter Include="console">
       <UniqueIdentifier>{8f948314-e340-4c40-8d46-1d439ca0b769}</UniqueIdentifier>
     </Filter>
+    <Filter Include="utils\font\cook">
+      <UniqueIdentifier>{744cdb3c-c1f5-4860-b320-074bca1233ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="font.h">
@@ -27,6 +30,9 @@
     <ClInclude Include="console_inline.h">
       <Filter>console</Filter>
     </ClInclude>
+    <ClInclude Include="font_cook.h">
+      <Filter>utils\font\cook</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="font.cpp">
@@ -37,6 +43,9 @@
     </ClCompile>
     <ClCompile Include="console.cpp">
       <Filter>console</Filter>
+    </ClCompile>
+    <ClCompile Include="font_cook.cpp">
+      <Filter>utils\font\cook</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

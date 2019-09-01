@@ -5,20 +5,30 @@
 #include <lib/reader.h>
 #include <lib/fixed_array.h>
 #include <math/vector.h>
-#include <render/resource_ids.h>
+#include <render/handles.h>
+#include <resource_system/shared_resource.h>
+#include <resource_system/resource_handle.h>
+#include <utils/engine_threads.h>
 
-namespace render {
-class ui_batch;
-} // namespace render
+namespace render { class ui_batch; }
 
 namespace ui {
 
-class font
+DECLARE_SHARED_RESOURCE_HANDLE( font, u8 )
+
+class font : public shared_resource<font, font_handle, 16>
 {
 public:
-	void create( lib::reader& in_reader );
-	void destroy( );
+	friend class font_cook;
 
+public:
+	enum : u32 {
+		destroy_thread_index = engine_thread_count
+	};
+
+	static void destroy_resource( font* const in_resource );
+
+public:
 	inline u8 get_font_size( ) const { return m_char_height; }
 
 	u8 get_char_width( char const in_char ) const;
@@ -38,7 +48,7 @@ private:
 
 	lib::fixed_array<u8, max_char_count> m_chars_width;
 	math::u16x2 m_texture_dimensions;
-	render::texture_id m_texture;
+	render::texture_handle m_texture;
 	u8 m_chars_in_row;
 	u8 m_chars_in_column;
 	u8 m_char_height;

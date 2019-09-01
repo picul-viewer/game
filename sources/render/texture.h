@@ -3,40 +3,39 @@
 
 #include <types.h>
 
-#include <lib/reader.h>
-#include <lib/weak_string.h>
+#include <resource_system/shared_resource.h>
 #include "resource_views.h"
-#include "resource_handle.h"
+#include "texture_cook.h"
+#include "handles.h"
 
 namespace render {
 
-template<typename Resource>
-class resource_pool;
-
-class texture : public shader_resource_view
+class texture : public shared_resource<texture, texture_handle, 4096>
 {
 public:
-	void create( lib::reader& in_reader );
+	friend class texture_cook;
 
-	u32 add_ref( ) const;
-	u32 release( ) const;
-	
 public:
-	static texture* from_handle( texture_id const in_id );
-	static texture_id to_handle( texture* const in_texture );
+	enum : u32 {
+		destroy_thread_index = engine_thread_main
+	};
+
+	static void destroy_resource( texture* const in_resource );
+
+public:
+	inline ID3D11ShaderResourceView* const& get( ) const { return m_view.get( ); }
+
+	inline void bind_vs( u32 const in_slot, u32 const in_count = 1 ) const { m_view.bind_vs( in_slot, in_count ); }
+	inline void bind_ps( u32 const in_slot, u32 const in_count = 1 ) const { m_view.bind_ps( in_slot, in_count ); }
+	inline void bind_gs( u32 const in_slot, u32 const in_count = 1 ) const { m_view.bind_gs( in_slot, in_count ); }
+	inline void bind_hs( u32 const in_slot, u32 const in_count = 1 ) const { m_view.bind_hs( in_slot, in_count ); }
+	inline void bind_ds( u32 const in_slot, u32 const in_count = 1 ) const { m_view.bind_ds( in_slot, in_count ); }
+	inline void bind_cs( u32 const in_slot, u32 const in_count = 1 ) const { m_view.bind_cs( in_slot, in_count ); }
 
 private:
-	friend class resource_pool<texture>;
-
-	void set_registry_pointer( pointer const in_pointer );
-	pointer get_registry_pointer( ) const;
-
-private:
-	pointer m_registry_pointer;
+	shader_resource_view m_view;
 
 };
-
-DEFINE_HANDLE( texture );
 
 } // namespace render
 

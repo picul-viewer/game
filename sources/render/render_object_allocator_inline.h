@@ -3,32 +3,19 @@
 
 namespace render {
 
-template<typename T>
-T* render_object_allocator::allocate( )
+template<typename Callback>
+void render_object_allocator::for_each( render_object* const in_objects, Callback const& in_callback )
 {
-	return m_allocator.allocate<T>( );
-}
+	render_object* obj = in_objects;
 
-template<typename T>
-void render_object_allocator::deallocate( T* in_object )
-{
-	m_allocator.deallocate( in_object );
-}
+	while ( obj != nullptr )
+	{
+		ASSERT( m_mesh_allocator.contains( obj ) );
 
-template<typename Callback, typename ... Args>
-void render_object_allocator::execute( render_object* in_object, Callback const& in_functor, Args ... in_args )
-{
-	switch ( m_allocator.get_object_type( in_object ) )
-	{
-	case 0:
-	{
-		// mesh
-		render_object_mesh* obj = (render_object_mesh*)in_object;
-		in_functor( obj, in_args ... );
-		break;
-	}
-	default:
-		UNREACHABLE_CODE
+		render_object_mesh* const arg = (render_object_mesh*)obj;
+		in_callback( arg );
+
+		obj = obj->m_next;
 	}
 }
 

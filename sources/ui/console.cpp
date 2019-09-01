@@ -7,17 +7,9 @@
 
 namespace ui {
 
-void console::create( pcstr const in_font_path, u8 const in_visible_lines )
+void console::create( ui::font::ptr in_font )
 {
-	sys::file f;
-	f.create( in_font_path, sys::file::open_read );
-	ASSERT( f.is_valid( ) );
-	uptr const size = f.size( );
-	pvoid const data = stack_allocate( size );
-	f.read( data, size );
-	f.destroy( );
-
-	m_font.create( lib::reader( data, size ) );
+	m_font = in_font;
 
 	m_text_edit.create( m_text_edit_memory, text_edit_memory_size );
 
@@ -28,7 +20,7 @@ void console::create( pcstr const in_font_path, u8 const in_visible_lines )
 	m_callback = nullptr;
 	m_border_size = 0;
 	m_last_line_index = 0;
-	m_font_size = m_font.get_font_size( );
+	m_font_size = m_font->get_font_size( );
 	m_scroll_speed_in_lines = 1;
 }
 
@@ -44,7 +36,7 @@ void console::set_default_colors( )
 
 void console::destroy( )
 {
-	m_font.destroy( );
+	m_font->release( );
 	m_text.destroy( );
 	m_text_edit.destroy( );
 	m_next_line_indices.destroy( );
@@ -114,8 +106,8 @@ void console::render( render::ui_batch& in_batch ) const
 	uptr const selection_start = m_text_edit.get_selection_start( );
 	ptr const selection_length = m_text_edit.get_selection_length( );
 
-	u16 const selection_start_width = m_font.get_string_width( edit_text, selection_start );
-	u16 const selection_length_width = m_font.get_string_width( edit_text, selection_start + selection_length );
+	u16 const selection_start_width = m_font->get_string_width( edit_text, selection_start );
+	u16 const selection_length_width = m_font->get_string_width( edit_text, selection_start + selection_length );
 
 	u16 const selection_left = math::min( selection_start_width, selection_length_width );
 	u16 const selection_right = math::max( selection_start_width, selection_length_width );
@@ -147,12 +139,12 @@ void console::render( render::ui_batch& in_batch ) const
 			pcstr const text = m_text.data( ) + index_start;
 			uptr const length = index_end - index_start;
 
-			m_font.render_string( text, length, m_text_position + math::u16x2( 0, text_offset ), m_font_size, m_text_color, in_batch );
+			m_font->render_string( text, length, m_text_position + math::u16x2( 0, text_offset ), m_font_size, m_text_color, in_batch );
 			text_offset -= m_font_size;
 		}
 	}
 
-	m_font.render_string( edit_text, edit_length, m_edit_text_position, m_font_size, m_edit_text_color, in_batch );
+	m_font->render_string( edit_text, edit_length, m_edit_text_position, m_font_size, m_edit_text_color, in_batch );
 
 	in_batch.next_level( );
 }

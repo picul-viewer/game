@@ -17,7 +17,7 @@ public:
 	typedef void( *callback_type )( pcstr );
 
 public:
-	void create( pcstr const in_font_path, u8 const in_visible_lines );
+	void create( ui::font::ptr in_font );
 	void destroy( );
 	
 	void on_char( u32 const in_key );
@@ -36,12 +36,12 @@ public:
 	inline void set_selection_color			( math::half4 const& in_value ) { m_selection_color			= in_value; }
 	inline void set_cursor_color			( math::half4 const& in_value ) { m_cursor_color			= in_value; }
 
-	inline void set_font_size				( u8 const in_value ) { m_font_size				= in_value ? in_value : m_font.get_font_size( ); }
+	inline void set_font_size				( u8 const in_value ) { m_font_size = in_value ? in_value : m_font->get_font_size( ); }
 
 	inline void set_callback				( callback_type const& in_value ) { m_callback = in_value; }
 
 		   void set_corners_position		( math::u16x4 const in_value );
-	inline void set_border_size				( u16 const in_value ) { m_border_size	= in_value; }
+	inline void set_border_size				( u16 const in_value ) { m_border_size = in_value; }
 
 	inline void set_scroll_speed_in_lines	( u8 const in_value ) { m_scroll_speed_in_lines = in_value; }
 
@@ -69,7 +69,7 @@ private:
 	dynamic_linear_allocator<Memory_Page_Size, 1024> m_text;
 	lib::dynamic_array<u32> m_next_line_indices;
 
-	font m_font;
+	font::ptr m_font;
 
 	callback_type m_callback;
 	

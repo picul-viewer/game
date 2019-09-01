@@ -89,14 +89,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="object.h" />
+    <ClInclude Include="object_cook.h" />
     <ClInclude Include="resources.h" />
     <ClInclude Include="scene.h" />
+    <ClInclude Include="scene_cook.h" />
     <ClInclude Include="world.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="object.cpp" />
+    <ClCompile Include="object_cook.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="scene.cpp" />
+    <ClCompile Include="scene_cook.cpp" />
     <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>

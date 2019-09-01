@@ -1,5 +1,9 @@
 #include "world.h"
+#include <engine/scene_cook.h>
+#include <engine/object_cook.h>
+#include <ui/font_cook.h>
 #include <engine/world.h>
+
 #include <render/world.h>
 
 #include <lib/allocator.h>
@@ -17,142 +21,117 @@
 #include <macros.h>
 #include <Windows.h>
 
+#include <resource_system/api.h>
+#include <resource_system/queried_resources.h>
+#include <resource_system/raw_data.h>
+
 namespace game {
 
-const u32 box_index_count = 36;
-
-const u16 box_indices[box_index_count] = {
-	 0,  1,  3,  0,  3,  2,
-	 4,  5,  7,  4,  7,  6,
-	 8,  9, 11,  8, 11, 10,
-	12, 13, 15, 12, 15, 14,
-	16, 17, 19, 16, 19, 18,
-	20, 21, 23, 20, 23, 22
-};
-
-const float box_vertices[] = {
-	-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f,
-	 1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f,
-	-1.0f,  1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f,
-	 1.0f,  1.0f, -1.0f, 1.0f, 1.0f, 0.0f, 0.0f, -1.0f,
-	 
-	-1.0f, -1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,  1.0f,
-	 1.0f, -1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f,  1.0f,
-	-1.0f,  1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f,  1.0f,
-	 1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 0.0f, 0.0f,  1.0f,
-	 
-	-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f,
-	 1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f,
-	-1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f,
-	 1.0f, -1.0f,  1.0f, 1.0f, 1.0f, 0.0f, -1.0f, 0.0f,
-	 
-	-1.0f,  1.0f, -1.0f, 0.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-	 1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-	-1.0f,  1.0f,  1.0f, 0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-	 1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-	 
-	-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-	-1.0f,  1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-	-1.0f, -1.0f,  1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-	-1.0f,  1.0f,  1.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-	 
-	 1.0f, -1.0f, -1.0f, 0.0f, 0.0f,  1.0f, 0.0f, 0.0f,
-	 1.0f,  1.0f, -1.0f, 1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
-	 1.0f, -1.0f,  1.0f, 0.0f, 1.0f,  1.0f, 0.0f, 0.0f,
-	 1.0f,  1.0f,  1.0f, 1.0f, 1.0f,  1.0f, 0.0f, 0.0f
-};
+char scene_cook_data[256];
+char object_cook_data[1 * Mb];
 
 void world::create( )
 {
-	m_scene = engine::g_world.create_scene( );
+	m_ready = false;
+
+	uptr scene_cook_size;
+	uptr object_cook_size;
 
 	{
-		float const dimensions = 9.0f;
+		// Empty scene.
+		lib::writer w( scene_cook_data, 256 );
 
-		lib::dynamic_writer w;
-		w.create( );
+		u32* const render_size = w.ptr( );
+		w += sizeof(u32);
+		pointer const render_data = w.ptr( );
 
-		// Create render object.
-		w.write( true );
+		w.write<u32>( 0 );
+		w.write<u32>( 0 );
 
-		// One render object.
-		w.write<u16>( 1000 );
+		*render_size = (u32)w.size( render_data );
 
-		for ( float x = -dimensions; x <= dimensions; x += 2.0f )
-		for ( float y = -dimensions; y <= dimensions; y += 2.0f )
-		for ( float z = -dimensions; z <= dimensions; z += 2.0f )
+		scene_cook_size = w.size( scene_cook_data );
+	}
+
+	{
+		u32 const grid_size = 10;
+
+		// Box object.
+		lib::writer w( object_cook_data, 1 * Mb );
+
+		u32* const render_size = w.ptr( );
+		w += sizeof(u32);
+		pointer const render_data = w.ptr( );
+
+		w.write<u16>( grid_size * grid_size * grid_size );
+
+		for ( u32 i = 0; i < grid_size; ++i )
+		for ( u32 j = 0; j < grid_size; ++j )
+		for ( u32 k = 0; k < grid_size; ++k )
 		{
-			// Mesh render object.
+			float const dimension = grid_size * 2.0f + ( grid_size - 1 ) * 0.5f;
+
 			w.write<u8>( 0 );
+			w.write_str( "configs/box.render_model_mesh" );
 
-			// Provide render model config.
-			w.write<bool>( true );
-
-			// Render model AABB min/max.'
-			w.write<math::float3>( math::float3( -1.0f, -1.0f, -1.0f ) );
-			w.write<math::float3>( math::float3(  1.0f,  1.0f,  1.0f ) );
-
-			// Read mesh from this config.
-			w.write<u8>( 2 );
-
-			// Index data, here just indices count.
-			w.write<u32>( box_index_count );
-
-			// Indices.
-			w.write_data( box_indices, sizeof(box_indices) );
-
-			// Vertex buffer size.
-			w.write<u32>( sizeof(box_vertices) );
-
-			// Vertices.
-			w.write_data( box_vertices, sizeof(box_vertices) );
-
-			// Texture paths.
-			w.write<u8>( 1 );
-			w.write<pcstr>( GET_RESOURCE_PATH( "textures\\diffuse.dds" ) );
-			w.write<u8>( 1 );
-			w.write<pcstr>( GET_RESOURCE_PATH( "textures\\specular.dds" ) );
-
-			// Mesh object transform.
 			w.write<math::float4x3>(
 				math::float4x3(
-					math::combine_transforms(
-						math::matrix_scale( math::float3( 0.6f, 0.6f, 0.6f ) ),
-						math::matrix_translation( math::float3( x, y, z ) )
-					)
+					math::float4( 1.0f, 0.0f, 0.0f, i * 2.5f + 1.0f - dimension * 0.5f ),
+					math::float4( 0.0f, 1.0f, 0.0f, j * 2.5f + 1.0f - dimension * 0.5f ),
+					math::float4( 0.0f, 0.0f, 1.0f, k * 2.5f + 1.0f - dimension * 0.5f )
 				)
 			);
 		}
 
-		m_cubes.create( lib::reader( w.data( ), w.size( ) ) );
-		
-		mem_align(16) math::float4x3 world = math::float4x3( math::float4( 1.0f, 0.0f, 0.0f, 0.0f ),
-															 math::float4( 0.0f, 1.0f, 0.0f, 0.0f ),
-															 math::float4( 0.0f, 0.0f, 1.0f, 0.0f ) );
-		m_cubes.update( world );
-		
-		w.destroy( );
+		*render_size = (u32)w.size( render_data );
+
+		object_cook_size = w.size( object_cook_data );
 	}
 
-	m_scene->create( true );
-	m_scene->insert_static_object( &m_cubes );
-	m_scene->build_static_scene( );
+	task_info queries[64];
+	u32 query_index = 0;
+
+	ui::font_cook* const font_cook = ui::font_cook::create( GET_RESOURCE_PATH( "configs\\fonts\\console.cfg" ) );
+	font_cook->fill_task_info( queries[query_index++] );
+
+	engine::scene_cook* const scene_cook = engine::scene_cook::create( lib::reader( scene_cook_data, scene_cook_size ) );
+	scene_cook->fill_task_info( queries[query_index++] );
+
+	engine::object_cook* const object_cook = engine::object_cook::create( lib::reader( object_cook_data, object_cook_size ) );
+	object_cook->fill_task_info( queries[query_index++] );
+
+	resource_system::create_resources(
+		queries, query_index,
+		resource_system::user_callback_task<world, &world::on_resources_ready>( this )
+	);
+}
+
+void world::on_resources_ready( queried_resources& resources )
+{
+	m_console_font = resources.get_resource<ui::font::ptr>( );
+
+	m_scene = resources.get_resource<engine::scene::ptr>( );
+	
+	m_object = resources.get_resource<engine::object::ptr>( );
 
 	render::g_world.get_parameters( ).camera.fov = math::degree_to_radian( 60.0f );
 
+	m_object->render_object( ).update( math::float4x3::identity( ) );
+	m_scene->render_scene( ).insert( m_object->render_object( ).data( ) );
 	engine::g_world.set_current_scene( m_scene );
 
 	m_camera.create( math::float3( 0.0f ), math::float2( 0.0f ), math::float3( 2.0f, 5.0f, 15.0f ), 0.002f );
 
 	initialize_console( );
+
+	m_ready = true;
 }
 
 void world::initialize_console( )
 {
 	m_console_visible = false;
 
-	pcstr const font_path = GET_RESOURCE_PATH( "configs\\fonts\\console.cfg" );
-	m_console.create( font_path, 16 );
+	m_console.create( m_console_font );
 
 	m_console.set_default_colors( );
 	
@@ -170,6 +149,9 @@ void world::on_console_command( pcstr const str )
 
 void world::update( )
 {
+	if ( !m_ready )
+		return;
+
 	float const elapsed_time = (float)m_ticker.tick( );
 	m_camera.update( elapsed_time );
 
@@ -186,7 +168,8 @@ void world::update( )
 void world::destroy( )
 {
 	m_console.destroy( );
-	m_cubes.destroy( );
+	m_console_font->release( );
+	m_object->destroy( );
 	m_scene->destroy( );
 }
 

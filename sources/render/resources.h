@@ -6,21 +6,14 @@
 #include "resource_views.h"
 #include "render_targets.h"
 
-#include "texture.h"
-#include "resource_pool.h"
 #include "pipeline_state_pool.h"
 
 #include "sampler.h"
-#include "mesh.h"
 #include "constant_buffer.h"
 
 #include "render_object_allocator.h"
 
 #include "shader_containers.h"
-
-#include "render_model_mesh.h"
-
-#include "resource_path_registry.h"
 
 #include "scene.h"
 #include "object.h"
@@ -53,15 +46,6 @@ public:
 		default_sampler_type_count
 	};
 
-	enum default_mesh_type
-	{
-		default_mesh_type_box = 0,
-		//default_mesh_type_sphere,
-		default_mesh_type_quad,
-		
-		default_mesh_type_count
-	};
-
 	enum default_constant_buffer_type
 	{
 		default_constant_buffer_type_per_frame = 0,
@@ -69,14 +53,6 @@ public:
 		
 		default_constant_buffer_type_count
 	};
-	
-	typedef resource_pool<mesh> mesh_pool;
-	typedef resource_pool<texture> texture_pool;
-	typedef resource_pool<render_model_mesh> render_model_mesh_pool;
-
-	typedef pool<sizeof(scene), Memory_Page_Size> scene_pool;
-	
-	typedef dynamic_pool<sizeof(object), Memory_Page_Size, 256> object_pool;
 
 public:
 	void create( );
@@ -88,7 +64,6 @@ public:
 	inline pipeline_state_pool& get_pipeline_state_pool( ) { return m_pipeline_state_pool; }
 
 	sampler& get_default_sampler( u32 in_index );
-	mesh& get_default_mesh( u32 in_index );
 	constant_buffer& get_default_constant_buffer( u32 in_index );
 
 	inline render_object_allocator& get_render_object_allocator( ) { return m_render_object_allocator; }
@@ -100,16 +75,8 @@ public:
 	inline domain_shader_container&		get_domain_shader_container( ) { return m_domain_shader_container; }
 	inline compute_shader_container&	get_compute_shader_container( ) { return m_compute_shader_container; }
 	
-	inline mesh_pool& get_mesh_pool( ) { return m_mesh_pool; }
-	inline texture_pool& get_texture_pool( ) { return m_texture_pool; }
-	inline render_model_mesh_pool& get_render_model_mesh_pool( ) { return m_render_model_mesh_pool; }
-
 	inline vertex_buffer& get_ui_vertex_buffer( ) { return m_ui_vertex_buffer; }
 	inline index_buffer& get_ui_index_buffer( ) { return m_ui_index_buffer; }
-
-	inline scene_pool& get_scene_pool( ) { return m_scene_pool; }
-
-	inline object_pool& get_object_pool( ) { return m_object_pool; }
 
 	inline ui_batch& get_ui_batch( ) { return m_ui_batch; }
 
@@ -121,9 +88,6 @@ public:
 protected:
 	void create_default_samplers( );
 	void destroy_default_samplers( );
-
-	void create_default_meshes( );
-	void destroy_default_meshes( );
 
 	void create_default_constant_buffers( );
 	void destroy_default_constant_buffers( );
@@ -141,7 +105,6 @@ protected:
 	pipeline_state_pool			m_pipeline_state_pool;
 
 	sampler						m_default_samplers[default_sampler_type_count];
-	mesh						m_default_meshes[default_mesh_type_count];
 	constant_buffer				m_default_constant_buffers[default_constant_buffer_type_count];
 
 	render_object_allocator		m_render_object_allocator;
@@ -153,17 +116,8 @@ protected:
 	domain_shader_container		m_domain_shader_container;
 	compute_shader_container	m_compute_shader_container;
 
-	resource_path_registry		m_resource_path_registry;
-
-	mesh_pool					m_mesh_pool;
-	texture_pool				m_texture_pool;
-	render_model_mesh_pool		m_render_model_mesh_pool;
-
 	vertex_buffer				m_ui_vertex_buffer;
 	index_buffer				m_ui_index_buffer;
-
-	scene_pool					m_scene_pool;
-	object_pool					m_object_pool;
 
 	ui_batch					m_ui_batch;
 };

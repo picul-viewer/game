@@ -35,39 +35,9 @@ parameters& world::get_parameters( ) const
 	return g_parameters_manager.get_parameters_for_modification( );
 }
 
-scene* world::create_scene( ) const
-{
-	return g_resources.get_scene_pool( ).allocate( sizeof(scene) );
-}
-
 void world::set_current_scene( scene* in_scene ) const
 {
 	g_renderer.set_scene( in_scene );
-}
-
-void world::destroy_scene( scene* in_scene ) const
-{
-	g_resources.get_scene_pool( ).deallocate( in_scene );
-}
-
-object* world::create_object( ) const
-{
-	return g_resources.get_object_pool( ).allocate( sizeof(object) );
-}
-
-void world::destroy_object( object* in_object ) const
-{
-	g_resources.get_object_pool( ).deallocate( in_object );
-}
-
-texture_id world::create_texture( pcstr in_path ) const
-{
-	return texture_handle( g_resources.get_texture_pool( ).load_resource( in_path ) );
-}
-
-void world::destroy_texture( texture_id const in_id ) const
-{
-	g_resources.get_texture_pool( ).free_resource( texture_handle( in_id ) );
 }
 
 ui_batch& world::get_ui_batch( ) const

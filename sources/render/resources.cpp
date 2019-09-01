@@ -2,6 +2,10 @@
 
 #include <utils/resources_path.h>
 
+#include "mesh.h"
+#include "texture.h"
+#include "model_mesh.h"
+
 #include "api.h"
 #include "parameters.h"
 
@@ -29,24 +33,17 @@ void resources::create( )
 	);
 
 	create_default_samplers( );
-	create_default_meshes( );
 	create_default_constant_buffers( );
 
 	create_shaders( );
 
 	m_render_object_allocator.create( );
 
-	enum { resource_path_registry_table_length = 512 };
-	m_resource_path_registry.create( resource_path_registry_table_length, virtual_allocator( ), std_allocator( ) );
-
-	m_mesh_pool.create( m_resource_path_registry );
-	m_texture_pool.create( m_resource_path_registry );
-	m_render_model_mesh_pool.create( m_resource_path_registry );
+	mesh::container( ).create( nullptr );
+	texture::container( ).create( nullptr );
+	model_mesh::container( ).create( nullptr );
 
 	create_ui_buffers( );
-
-	m_scene_pool.create( );
-	m_object_pool.create( );
 
 	m_ui_batch.create( );
 }
@@ -59,23 +56,17 @@ void resources::destroy( )
 	m_depth_buffer.destroy( );
 	
 	destroy_default_samplers( );
-	destroy_default_meshes( );
 	destroy_default_constant_buffers( );
 	
 	destroy_shaders( );
 
 	m_render_object_allocator.destroy( );
 
-	m_resource_path_registry.destroy( virtual_allocator( ) );
-
-	m_mesh_pool.destroy( );
-	m_texture_pool.destroy( );
-	m_render_model_mesh_pool.destroy( );
+	mesh::container( ).destroy( );
+	texture::container( ).destroy( );
+	model_mesh::container( ).destroy( );
 	
 	destroy_ui_buffers( );
-
-	m_scene_pool.destroy( );
-	m_object_pool.destroy( );
 
 	m_ui_batch.destroy( );
 }
@@ -118,47 +109,6 @@ void resources::create_default_samplers( )
 	}
 
 	ASSERT_CMP( sampler_index, ==, default_sampler_type_count );
-}
-
-void resources::create_default_meshes( )
-{
-	const u32 stride = sizeof(math::float3);
-
-	u32 mesh_index = 0;
-	
-	// Box
-	{
-		buffer::cook vertex_cook;
-		vertex_cook.set_vertex_buffer( sizeof(box::vertices) );
-		m_default_meshes[mesh_index].create_vertex_buffer( 0, vertex_cook, box::vertices, stride );
-
-		buffer::cook index_cook;
-		index_cook.set_index_buffer( sizeof(box::indices) );
-		m_default_meshes[mesh_index].create_index_buffer( index_cook, box::indices, DXGI_FORMAT_R16_UINT );
-
-		m_default_meshes[mesh_index].set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-		m_default_meshes[mesh_index].set_dimensions( box::index_count );
-
-		++mesh_index;
-	}
-
-	// Quad
-	{
-		buffer::cook vertex_cook;
-		vertex_cook.set_vertex_buffer( sizeof(quad::vertices) );
-		m_default_meshes[mesh_index].create_vertex_buffer( 0, vertex_cook, quad::vertices, stride );
-
-		buffer::cook index_cook;
-		index_cook.set_index_buffer( sizeof(quad::indices) );
-		m_default_meshes[mesh_index].create_index_buffer( index_cook, quad::indices, DXGI_FORMAT_R16_UINT );
-
-		m_default_meshes[mesh_index].set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-		m_default_meshes[mesh_index].set_dimensions( quad::index_count );
-
-		++mesh_index;
-	}
-
-	ASSERT_CMP( mesh_index, ==, default_mesh_type_count );
 }
 
 void resources::create_default_constant_buffers( )
@@ -245,12 +195,6 @@ void resources::destroy_default_samplers( )
 		m_default_samplers[i].destroy( );
 }
 
-void resources::destroy_default_meshes( )
-{
-	for ( u32 i = 0; i < default_mesh_type_count; ++i )
-		m_default_meshes[i].destroy( );
-}
-
 void resources::destroy_default_constant_buffers( )
 {
 	for ( u32 i = 0; i < default_constant_buffer_type_count; ++i )
@@ -277,12 +221,6 @@ sampler& resources::get_default_sampler( u32 in_index )
 {
 	ASSERT_CMP( in_index, <, default_sampler_type_count );
 	return m_default_samplers[in_index];
-}
-
-mesh& resources::get_default_mesh( u32 in_index )
-{
-	ASSERT_CMP( in_index, <, default_mesh_type_count );
-	return m_default_meshes[in_index];
 }
 
 constant_buffer& resources::get_default_constant_buffer( u32 in_index )

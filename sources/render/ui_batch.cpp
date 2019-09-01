@@ -21,7 +21,7 @@ void ui_batch::destroy( )
 
 void ui_batch::add_quad(
 	math::u16x4 const in_corners_position, math::u16x4 const in_corners_texcoord,
-	math::half4 const& in_mult_color, math::half4 const& in_add_color, texture_id const in_texture )
+	math::half4 const& in_mult_color, math::half4 const& in_add_color, texture_handle const in_texture )
 {
 	ui_quad_data& data = m_temporal_memory.emplace_back( );
 
@@ -37,6 +37,8 @@ void ui_batch::add_color_quad( math::u16x4 const in_corners_position, math::half
 	ui_quad_data& data = m_temporal_memory.emplace_back( );
 
 	data.corners_position	= in_corners_position;
+	data.corners_texcoord	= math::u16x4( 0, 0, 0, 0 );
+	data.mult_color			= math::half4( 0.0f, 0.0f, 0.0f, 0.0f );
 	data.add_color			= in_color;
 	data.texture			= texture_handle::invalid;
 }

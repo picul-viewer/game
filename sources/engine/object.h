@@ -4,26 +4,38 @@
 #include <types.h>
 #include <math/matrix.h>
 #include <lib/reader.h>
+#include <resource_system/default_resource.h>
+#include <utils/engine_threads.h>
 
-namespace render { class object; }
+#include <render/object.h>
 
 namespace engine {
 
-class object
+class object : public default_resource<object>
 {
 public:
-	void create( lib::reader& in_reader );
-	void destroy( );
+	friend class object_cook;
 
+public:
+	enum : u32 {
+		destroy_thread_index = engine_thread_count
+	};
+
+	static void destroy_resource( object* const in_resource );
+
+public:
 	void update( math::float4x3 const& in_transform );
 
-	inline render::object* get_render( ) { return m_render; }
+	inline render::object& render_object( ) { return m_render; }
 
-protected:
+private:
+	static void on_subsystems_destroyed( pointer const in_resource );
+
+private:
 	// Aligned by 64 bytes
 	math::float4x3			m_transform;
 
-	render::object*			m_render;
+	render::object			m_render;
 
 	//physics::game_object	m_physic;
 	// Or something to handle physics...

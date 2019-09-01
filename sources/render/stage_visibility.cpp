@@ -1,5 +1,6 @@
 #include "stage_visibility.h"
 #include "renderer.h"
+#include "resources.h"
 #include "scene.h"
 
 #include <math/frustum.h>
@@ -15,16 +16,25 @@ void stage_visibility::destroy( )
 void stage_visibility::execute( )
 {
 	// Process scene objects.
-	auto const& static_render_object_mesh_container = g_renderer.m_scene->get_static_render_objects_mesh_container( );
+	auto const& static_mesh_container = g_renderer.m_scene->static_mesh_container( );
+	auto const& dynamic_mesh_container = g_renderer.m_scene->dynamic_mesh_container( );
 	
 	// Initialize render data.
-	math::frustum_aligned frustum;
+	math::frustum frustum;
 	frustum.set_from_matrix( g_renderer.m_render_camera.get_view_projection( ) );
 	
 	g_renderer.m_render_meshes.clear( );
-	static_render_object_mesh_container.query_visibility( frustum, []( render_object_mesh* in_object )
+
+	static_mesh_container.frustum_test( frustum, []( math::bvh::object_handle const in_handle )
 	{
-		g_renderer.m_render_meshes.push_back( in_object );
+		render_object_mesh* const object = g_resources.get_render_object_allocator( ).mesh_allocator( )[in_handle];
+		g_renderer.m_render_meshes.push_back( object );
+	} );
+
+	dynamic_mesh_container.frustum_test( frustum, []( math::bvh::object_handle const in_handle )
+	{
+		render_object_mesh* const object = g_resources.get_render_object_allocator( ).mesh_allocator( )[in_handle];
+		g_renderer.m_render_meshes.push_back( object );
 	} );
 }
 

@@ -22,9 +22,7 @@ public:
 	void run( math::u32x2 const in_window_dimensions );
 	void exit( );
 
-	scene* create_scene( ) const;
-	void set_current_scene( scene* in_scene ) const;
-	void destroy_scene( scene* in_scene ) const;
+	void set_current_scene( scene* const in_scene ) const;
 	
 	inline math::u32x2 get_window_dimensions( ) const { return m_window_dimensions; }
 	inline bool is_active( ) const { return m_is_active; }

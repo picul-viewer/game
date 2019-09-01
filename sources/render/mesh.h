@@ -3,44 +3,42 @@
 
 #include <types.h>
 #include "dx_include.h"
-
 #include <lib/reader.h>
-#include <lib/weak_string.h>
+#include <resource_system/shared_resource.h>
 #include "buffer.h"
-#include "resource_handle.h"
+#include "mesh_cook.h"
+#include "handles.h"
 
 namespace render {
 
-template<typename Resource>
-class resource_pool;
-
-class mesh
+class mesh : public shared_resource<mesh, mesh_handle, 4096>
 {
 public:
+	friend class mesh_cook;
+
+public:
+	enum : u32 {
+		destroy_thread_index = engine_thread_main
+	};
+
+	static void destroy_resource( mesh* const in_resource );
+
+public:
 	enum { max_vertex_buffers_count = 4 };
-	
-	void create( lib::reader& in_reader );
 
-	u32 add_ref( ) const;
-	u32 release( ) const;
-	
-	void destroy( );
-
+private:
 	buffer const& get_vertex_buffer( u32 in_index ) const;
 	buffer const& get_index_buffer( ) const;
 	DXGI_FORMAT get_index_format( ) const;
 	D3D11_PRIMITIVE_TOPOLOGY get_primitive_topology( ) const;
 	u32 get_index_count( ) const;
 	
+public:
 	void bind( ) const;
 	
 	void draw( ) const;
 	void draw( u32 in_index_count ) const;
 	void draw_instanced( u32 in_instance_count ) const;
-	
-public:
-	static mesh* from_handle( mesh_id const in_id );
-	static mesh_id to_handle( mesh* const in_mesh );
 
 private:
 	friend class resources;
@@ -52,25 +50,13 @@ private:
 	void set_dimensions( u32 in_index_count );
 
 private:
-	friend class resource_pool<mesh>;
-
-	void set_registry_pointer( pointer in_pointer );
-	pointer get_registry_pointer( ) const;
-
-private:
-	friend struct mesh_creator;
-
 	buffer						m_vertex_buffers[max_vertex_buffers_count];
 	buffer						m_index_buffer;
 	u32							m_vertex_strides[max_vertex_buffers_count];
 	DXGI_FORMAT					m_index_format;
 	D3D11_PRIMITIVE_TOPOLOGY	m_primitive_topology;
 	u32							m_index_count;
-
-	pointer						m_registry_pointer;
 };
-
-DEFINE_HANDLE( mesh );
 
 } // namespace render
 

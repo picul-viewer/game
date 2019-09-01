@@ -3,55 +3,93 @@
 #include "parameters.h"
 #include "resources.h"
 
+#include "object.h"
+
 namespace render {
 
-void scene::create( )
+void scene::destroy_resource( scene* const in_resource )
 {
-	m_bvh_node_allocator.create( );
-
-	m_static_objects_memory = virtual_allocator( ).allocate( static_objects_memory_size );
-
-	m_static_render_objects_mesh_array.create( m_static_objects_memory + (uptr)static_render_objects_mesh_memory_ptr, static_render_objects_mesh_count );
-	//m_static_render_objects_light_array.set	( m_static_objects_memory + static_render_objects_light_memory_ptr, static_render_objects_light_count );
-}
-
-void scene::destroy( )
-{
-	m_static_render_objects_mesh_container.destroy( );
-	//m_static_render_objects_light_container.destroy( );
-
-	virtual_allocator( ).deallocate( m_static_objects_memory );
-	
-	m_static_render_objects_mesh_container.destroy( );
-
-	m_bvh_node_allocator.destroy( );
-}
-
-struct scene::insert_render_object_helper
-{
-	void operator( )( render_object_mesh* in_object, scene* in_scene ) const
+	in_resource->m_dynamic_mesh_container.for_each( []( math::bvh::object_handle const in_handle )
 	{
-		in_scene->m_static_render_objects_mesh_array.push_back( in_object );
+		render_object_mesh* const obj = g_resources.get_render_object_allocator( ).mesh_allocator( )[in_handle];
+		obj->destroy( );
+		g_resources.get_render_object_allocator( ).mesh_allocator( ).deallocate( obj );
+	} );
+
+	in_resource->m_static_mesh_container.for_each( []( math::bvh::object_handle const in_handle )
+	{
+		render_object_mesh* const obj = g_resources.get_render_object_allocator( ).mesh_allocator( )[in_handle];
+		obj->destroy( );
+		g_resources.get_render_object_allocator( ).mesh_allocator( ).deallocate( obj );
+	} );
+
+	virtual_allocator( ).deallocate( in_resource->m_memory );
+}
+
+struct helper
+{
+
+struct functor_insert
+{
+	scene* scene_ptr;
+
+	template<typename T>
+	void operator( )( T* in_object ) const;
+
+	template<>
+	void operator( )( render_object_mesh* const in_object ) const
+	{
+		math::bvh::object_handle const object_handle =
+			(math::bvh::object_handle)g_resources.get_render_object_allocator( ).mesh_allocator( ).index_of( in_object );
+		math::bvh::node_handle const node_handle =
+			scene_ptr->m_dynamic_mesh_container.insert( object_handle, in_object->get_aabb( ).get_box( ) );
+		in_object->set_node_handle( node_handle );
 	}
 };
 
-void scene::remove_all_static_objects( )
+struct functor_remove
 {
-	m_static_render_objects_mesh_array.clear( );
-}
+	scene* scene_ptr;
 
-void scene::insert_static_object( object* in_object )
-{
-	in_object->for_each( [this]( render_object& current )
+	template<typename T>
+	void operator( )( T* in_object ) const;
+
+	template<>
+	void operator( )( render_object_mesh* const in_object ) const
 	{
-		g_resources.get_render_object_allocator( ).execute( &current, insert_render_object_helper( ), this );
-	} );
+		scene_ptr->m_dynamic_mesh_container.remove( in_object->get_node_handle( ) );
+	}
+};
+
+struct functor_move
+{
+	scene* scene_ptr;
+
+	template<typename T>
+	void operator( )( T* in_object ) const;
+
+	template<>
+	void operator( )( render_object_mesh* const in_object ) const
+	{
+		scene_ptr->m_dynamic_mesh_container.move( in_object->get_node_handle( ), in_object->get_aabb( ).get_box( ) );
+	}
+};
+
+};
+
+void scene::insert( render_object* const in_objects )
+{
+	g_resources.get_render_object_allocator( ).for_each( in_objects, helper::functor_insert{ this } );
 }
 
-void scene::build_static_scene( )
+void scene::remove( render_object* const in_objects )
 {
-	m_static_render_objects_mesh_container.destroy( );
-	m_static_render_objects_mesh_container.create( m_bvh_node_allocator, m_static_render_objects_mesh_array.data( ), m_static_render_objects_mesh_array.size( ) );
+	g_resources.get_render_object_allocator( ).for_each( in_objects, helper::functor_remove{ this } );
+}
+
+void scene::move( render_object* const in_objects )
+{
+	g_resources.get_render_object_allocator( ).for_each( in_objects, helper::functor_move{ this } );
 }
 
 } // namespace render

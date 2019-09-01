@@ -2,7 +2,6 @@
 
 #include "api.h"
 #include "input_layout.h"
-#include "resources.h"
 
 #include <macros.h>
 #include <lib/weak_string.h>
@@ -10,69 +9,15 @@
 
 #include <system/file.h>
 
-namespace render
+namespace render {
+
+void mesh::destroy_resource( mesh* const in_resource )
 {
+	for ( u32 i = 0; i < mesh::max_vertex_buffers_count; ++i )
+		in_resource->m_vertex_buffers[i].destroy( );
+	in_resource->m_index_buffer.destroy( );
 
-void mesh::create( lib::reader& in_reader )
-{
-	ASSERT( in_reader.is_valid( ) );
-
-	u32 const index_data				= in_reader.read<u32>( );
-	
-	// 29 LSBs - indices count
-	m_index_count						= index_data & 0x1FFFFFFF;
-	// Index format is coded by 29st bit in index count
-	m_index_format						= ( index_data & 0x20000000 ) ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT;
-
-	u32 const indices_size				= m_index_count * format_get_bits_per_pixel( m_index_format ) / 8;
-	buffer::cook cook;
-	cook.set_index_buffer				( indices_size );
-	m_index_buffer.create				( cook, in_reader.read_data( indices_size ) );
-
-	m_primitive_topology				= D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
-	static const vertex_type vertex_formats[] = {
-		vertex_type::vertex_type_mesh,
-	};
-
-	// Vertex type can be uncoded by 2 MSBs
-	u32 const vertex_format_id			= index_data >> 30;
-	ASSERT_CMP							( vertex_format_id, <, ARRAYSIZE( vertex_formats ) );
-	vertex_type const vertex			= vertex_formats[vertex_format_id];
-	u32 const buffers_count				= get_vertex_type_buffers_count( vertex );
-
-	for ( u32 i = 0; i < buffers_count; ++i )
-	{
-		m_vertex_strides[i]				= get_vertex_type_size( i, vertex );
-
-		u32 const vertices_size			= in_reader.read<u32>( );
-		buffer::cook cook;
-		cook.set_vertex_buffer			( vertices_size );
-		m_vertex_buffers[i].create		( cook, in_reader.read_data( vertices_size ) );
-	}
-}
-
-u32 mesh::add_ref( ) const
-{
-	for ( u32 i = 0; i < max_vertex_buffers_count; ++i )
-		if ( m_vertex_buffers[i].get( ) )
-			m_vertex_buffers[i].add_ref( );
-	return m_index_buffer.add_ref( );
-}
-
-u32 mesh::release( ) const
-{
-	for ( u32 i = 0; i < max_vertex_buffers_count; ++i )
-		if ( m_vertex_buffers[i].get( ) )
-			m_vertex_buffers[i].release( );
-	return m_index_buffer.release( );
-}
-
-void mesh::destroy( )
-{
-	for ( u32 i = 0; i < max_vertex_buffers_count; ++i )
-		m_vertex_buffers[i].destroy( );
-	m_index_buffer.destroy( );
+	container( ).remove( in_resource );
 }
 
 buffer const& mesh::get_vertex_buffer( u32 in_index ) const
@@ -159,26 +104,6 @@ void mesh::set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY in_primitive_topolog
 void mesh::set_dimensions( u32 in_index_count )
 {
 	m_index_count		= in_index_count;
-}
-
-mesh* mesh::from_handle( mesh_id const in_id )
-{
-	return g_resources.get_mesh_pool( )[in_id];
-}
-
-mesh_id mesh::to_handle( mesh* const in_mesh )
-{
-	return (mesh_id)g_resources.get_mesh_pool( ).index_of( in_mesh );
-}
-
-void mesh::set_registry_pointer( pointer in_pointer )
-{
-	m_registry_pointer = in_pointer;
-}
-
-pointer mesh::get_registry_pointer( ) const
-{
-	return m_registry_pointer;
 }
 
 } // namespace render

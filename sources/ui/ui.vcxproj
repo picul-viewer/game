@@ -91,16 +91,21 @@
     <ClInclude Include="console.h" />
     <ClInclude Include="console_inline.h" />
     <ClInclude Include="font.h" />
+    <ClInclude Include="font_cook.h" />
     <ClInclude Include="text_edit_controller.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="console.cpp" />
     <ClCompile Include="font.cpp" />
+    <ClCompile Include="font_cook.cpp" />
     <ClCompile Include="text_edit_controller.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">
       <Project>{b7376639-83bd-4434-a00a-7a2551608722}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\resource_system\resource_system.vcxproj">
+      <Project>{7f2ce0ea-d253-4eea-baf1-5e8ae2934a61}</Project>
     </ProjectReference>
     <ProjectReference Include="..\utils\utils.vcxproj">
       <Project>{78c80b93-cb8e-43bc-84c3-9f8b1e23a842}</Project>

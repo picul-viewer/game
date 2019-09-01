@@ -32,13 +32,17 @@ private:
 	void initialize_console( );
 	static void on_console_command( pcstr const str );
 
+	void on_resources_ready( queried_resources& resources );
+
 private:
-	engine::scene* m_scene;
-	engine::object m_cubes;
+	engine::scene::ptr m_scene;
+	engine::object::ptr m_object;
 	utils::fly_camera m_camera;
 	ui::console m_console;
 	sys::ticker m_ticker;
+	ui::font::ptr m_console_font;
 	bool m_console_visible;
+	bool m_ready;
 
 };
 
