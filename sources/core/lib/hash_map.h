@@ -2,7 +2,7 @@
 #define GUARD_CORE_HASH_MAP_H_INCLUDED
 
 #include <types.h>
-#include "pool.h"
+#include "pool_allocator.h"
 #include "hash.h"
 
 namespace lib {
