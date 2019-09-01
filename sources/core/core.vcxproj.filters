@@ -278,15 +278,6 @@
     <ClInclude Include="lib\allocator_inline.h">
       <Filter>lib\memory\allocators\allocator</Filter>
     </ClInclude>
-    <ClInclude Include="lib\pool.h">
-      <Filter>lib\memory\allocators\pool</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\pool_inline.h">
-      <Filter>lib\memory\allocators\pool</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\poolset.h">
-      <Filter>lib\memory\allocators\pool</Filter>
-    </ClInclude>
     <ClInclude Include="system\file_iterator.h">
       <Filter>system\fs\file_iterator</Filter>
     </ClInclude>
@@ -443,10 +434,19 @@
     <ClInclude Include="lib\linear_set.h">
       <Filter>lib\map\linear_set</Filter>
     </ClInclude>
-    <ClInclude Include="math\bvh.h">
-      <Filter>math\collision\bvh</Filter>
+    <ClInclude Include="lib\pool_allocator.h">
+      <Filter>lib\memory\allocators\pool</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\pool_allocator_inline.h">
+      <Filter>lib\memory\allocators\pool</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\pool_array_allocator.h">
+      <Filter>lib\memory\allocators\pool</Filter>
     </ClInclude>
     <ClInclude Include="math\bvh_inline.h">
+      <Filter>math\collision\bvh</Filter>
+    </ClInclude>
+    <ClInclude Include="math\bvh.h">
       <Filter>math\collision\bvh</Filter>
     </ClInclude>
   </ItemGroup>
@@ -541,6 +541,9 @@
     </ClCompile>
     <ClCompile Include="lib\hash.cpp">
       <Filter>lib\map\hash</Filter>
+    </ClCompile>
+    <ClCompile Include="math\bvh.cpp">
+      <Filter>math\collision\bvh</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

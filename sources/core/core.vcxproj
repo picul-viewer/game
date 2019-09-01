@@ -126,9 +126,9 @@
     <ClInclude Include="lib\linear_allocator_inline.h" />
     <ClInclude Include="lib\memory.h" />
     <ClInclude Include="lib\memory_block.h" />
-    <ClInclude Include="lib\pool.h" />
-    <ClInclude Include="lib\poolset.h" />
-    <ClInclude Include="lib\pool_inline.h" />
+    <ClInclude Include="lib\pool_allocator.h" />
+    <ClInclude Include="lib\pool_array_allocator.h" />
+    <ClInclude Include="lib\pool_allocator_inline.h" />
     <ClInclude Include="lib\linear_queue.h" />
     <ClInclude Include="lib\linear_queue_inline.h" />
     <ClInclude Include="lib\reader.h" />
@@ -203,6 +203,7 @@
     <ClCompile Include="lib\writer.cpp" />
     <ClCompile Include="macros.cpp" />
     <ClCompile Include="math\aabb.cpp" />
+    <ClCompile Include="math\bvh.cpp" />
     <ClCompile Include="math\frustum.cpp" />
     <ClCompile Include="system\conditional_variable.cpp" />
     <ClCompile Include="system\critical_section.cpp" />
