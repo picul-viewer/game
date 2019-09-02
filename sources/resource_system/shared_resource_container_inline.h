@@ -97,7 +97,16 @@ void
 shared_resource_container<Resource, ResourceHandle, TableSize>::
 remove( Resource* const in_resource )
 {
-	m_set.remove( to_handle( in_resource ) );
+	entry_type const entry = to_handle( in_resource ) + 1;
+
+	m_set.remove_if(
+		lib::hash( in_resource->id( ) ),
+		[&entry]( entry_type const& v )
+		{
+			return v == entry;
+		}
+	);
+
 	m_allocator.deallocate( in_resource );
 }
 

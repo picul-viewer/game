@@ -201,7 +201,17 @@ T* linear_set<T, TableSize>::insert( T const value )
 template<typename T, u32 TableSize>
 void linear_set<T, TableSize>::remove( T const value )
 {
-	u32 const start_index = hash( value ) % TableSize;
+	remove_if( hash( value ), [&value]( T const& v )
+	{
+		return v == value;
+	} );
+}
+
+template<typename T, u32 TableSize>
+template<typename Functor>
+void linear_set<T, TableSize>::remove_if( u32 const hash, Functor const& f )
+{
+	u32 const start_index = hash % TableSize;
 	u32 index = start_index;
 
 	u8 current_key;
@@ -216,7 +226,7 @@ void linear_set<T, TableSize>::remove( T const value )
 		{
 			T const current_value = m_value_table[index];
 
-			if ( value == current_value )
+			if ( f( current_value ) )
 				break;
 		}
 
