@@ -3,10 +3,9 @@
 
 #include <types.h>
 #include <lib/temporal_allocator.h>
-#include <system/conditional_variable.h>
-#include <system/critical_section.h>
 #include <system/mpsc_queue.h>
 #include <system/mpmc_queue.h>
+#include <system/system_event.h>
 #include <system/time.h>
 #include <utils/engine_threads.h>
 
@@ -46,15 +45,14 @@ public:
 		pvoid const in_result
 	);
 
-	void busy_thread_job( sys::time const in_time_limit );
-	void free_thread_job( );
-	void helper_thread_job( );
+	void process_busy( sys::time const in_time_limit );
+	void process_free( );
+	void process_helper( );
+
+	void break_thread( u32 const in_thread_index );
 
 private:
 	enum : u32 {
-		cs_max_count = engine_thread_count - engine_free_threads_first,
-		cv_max_count = engine_free_threads_count + 1,
-
 		ignore_thread_count = 1,
 		ignore_thread_mask =
 			( 1 << engine_thread_window )
@@ -92,15 +90,12 @@ private:
 	thread_local_data m_thread_local_data[engine_thread_count];
 	sys::mpsc_queue<task_data*> m_queues[engine_thread_count];
 	sys::mpmc_queue<task_data*> m_helper_queue;
-	sys::critical_section m_cs[cs_max_count];
-	sys::conditional_variable m_cv[cv_max_count];
+	sys::system_event m_events[engine_thread_count + 1];
+	bool volatile m_keep_process[engine_thread_count];
 
 	temporal_allocator<64> m_temp_allocator;
 
 	u32 m_thread_count;
-	u32 m_helper_thread_count;
-
-	bool volatile m_keep_processing;
 };
 
 extern resource_system g_resource_system;

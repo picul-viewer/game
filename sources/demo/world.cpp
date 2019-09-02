@@ -124,6 +124,7 @@ void world::on_resources_ready( queried_resources& resources )
 
 	initialize_console( );
 
+	engine::g_world.set_game_ready( );
 	m_ready = true;
 }
 
@@ -149,8 +150,7 @@ void world::on_console_command( pcstr const str )
 
 void world::update( )
 {
-	if ( !m_ready )
-		return;
+	ASSERT( m_ready );
 
 	float const elapsed_time = (float)m_ticker.tick( );
 	m_camera.update( elapsed_time );
@@ -169,8 +169,16 @@ void world::destroy( )
 {
 	m_console.destroy( );
 	m_console_font->release( );
-	m_object->destroy( );
-	m_scene->destroy( );
+
+	resource_system::destroy_resources(
+		resource_system::user_callback_task<world, &world::on_resources_destroyed>( this ),
+		m_object.get( ), m_scene.get( )
+	);
+}
+
+void world::on_resources_destroyed( )
+{
+	engine::g_world.set_game_ready( );
 }
 
 void world::window_resize( math::u32x2 const& new_dimensions )

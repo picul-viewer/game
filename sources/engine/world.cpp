@@ -95,6 +95,12 @@ void world::window_input( )
 	game::world_interface::window_input( );
 }
 
+void world::set_game_ready( )
+{
+	// Everytime it's just about waking the main thread.
+	resource_system::break_thread( engine_thread_main );
+}
+
 void world::main_thread( )
 {
 	utils::set_thread_index( engine_thread_main );
@@ -103,14 +109,18 @@ void world::main_thread( )
 	ui::font::container( ).create( nullptr );
 
 	// Waiting for window to create.
-	m_alive_events[engine_thread_window].wait( );
+	resource_system::process_free( );
 
 	ASSERT( ( m_window_dimensions.x < 0x10000 ) && ( m_window_dimensions.y < 0x10000 ) );
 	render::g_world.create( (HWND)m_window.get_hwnd( ), m_window_dimensions, true );
 
+	// NOTE: render create/destroy are simultaneous for now, so do not wait.
+	// Change it when needed.
+
 	game::world_interface::create( );
 
-	m_alive_events[engine_thread_main].set( );
+	// Waiting for game to create.
+	resource_system::process_free( );
 
 	sys::time const max_frame_time = 1.0 / 60.0;
 	sys::time last_tick = sys::time::now( );
@@ -120,13 +130,10 @@ void world::main_thread( )
 		game::world_interface::update( );
 		render::g_world.update( );
 
-		resource_system::busy_thread_job( last_tick + max_frame_time );
+		resource_system::process_busy( last_tick + max_frame_time );
 		last_tick = sys::time::now( );
 	}
-	
-	// Reset owned alive event.
-	m_alive_events[engine_thread_main].reset( );
-	
+
 	// Exit from main.
 	m_exit_events[engine_thread_main].set( );
 
@@ -134,11 +141,16 @@ void world::main_thread( )
 	sys::system_event::wait_all( engine_busy_threads_count, m_exit_events );
 
 	game::world_interface::destroy( );
+
+	// Waiting for game to destroy.
+	resource_system::process_free( );
+
 	render::g_world.destroy( );
 
-	ui::font::container( ).destroy( );
+	// NOTE: render create/destroy are simultaneous for now, so do not wait.
+	// Change it when needed.
 
-	m_alive_events[engine_thread_main].set( );
+	ui::font::container( ).destroy( );
 }
 
 void world::window_thread( )
@@ -147,17 +159,13 @@ void world::window_thread( )
 
 	sys::g_window_input.create( );
 	m_window.create( "game", m_window_dimensions, false, &helper::window_procedure );
-	m_alive_events[engine_thread_window].set( );
 
-	// Waiting for all systems to create.
-	sys::system_event::wait_all( engine_busy_threads_count, m_alive_events );
+	// Wake main thread.
+	resource_system::break_thread( engine_thread_main );
 
 	m_window.run( );
 	exit( );
 
-	// Reset owned alive event.
-	m_alive_events[engine_thread_window].reset( );
-	
 	// Exit from window.
 	m_exit_events[engine_thread_window].set( );
 	
@@ -165,18 +173,17 @@ void world::window_thread( )
 	sys::system_event::wait_all( engine_busy_threads_count, m_exit_events );
 
 	// Waiting for render to destroy.
-	m_alive_events[engine_thread_main].wait( );
+	resource_system::process_free( );
 
 	m_window.destroy( );
 	sys::g_window_input.destroy( );
-	m_alive_events[engine_thread_window].set( );
 }
 
 void world::fs_thread( )
 {
 	utils::set_thread_index( engine_thread_fs );
 
-	resource_system::free_thread_job( );
+	resource_system::process_free( );
 }
 
 void world::helper_thread( )
@@ -184,7 +191,7 @@ void world::helper_thread( )
 	u32 const thread_index = engine_helper_threads_first + interlocked_exchange_add( m_helper_count, 1 );
 	utils::set_thread_index( thread_index );
 
-	resource_system::helper_thread_job( );
+	resource_system::process_helper( );
 }
 
 void world::create( )
@@ -195,10 +202,7 @@ void world::create( )
 	g_resources.create( );
 
 	for ( u32 i = 0; i < engine_busy_threads_count; ++i )
-	{
-		m_alive_events[i].create( false, true );
 		m_exit_events[i].create( false, true );
-	}
 
 	u32 const cpu_cores = sys::thread::hardware_concurrency( );
 	u32 const helper_threads_count = math::clamp( cpu_cores - engine_helper_threads_first, 1u, (u32)engine_helper_threads_count );
@@ -235,10 +239,7 @@ void world::destroy( )
 	sys::thread::destroy( m_thread_count - 1, m_threads + 1 );
 
 	for ( u32 i = 0; i < engine_busy_threads_count; ++i )
-	{
-		m_alive_events[i].destroy( );
 		m_exit_events[i].destroy( );
-	}
 	
 	resource_system::destroy( );
 

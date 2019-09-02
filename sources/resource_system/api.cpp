@@ -45,19 +45,24 @@ void resource_system::destroy_resources(
 	);
 }
 
-void resource_system::busy_thread_job( sys::time const in_time_limit )
+void resource_system::process_busy( sys::time const in_time_limit )
 {
-	g_resource_system.busy_thread_job( in_time_limit );
+	g_resource_system.process_busy( in_time_limit );
 }
 
-void resource_system::free_thread_job( )
+void resource_system::process_free( )
 {
-	g_resource_system.free_thread_job( );
+	g_resource_system.process_free( );
 }
 
-void resource_system::helper_thread_job( )
+void resource_system::process_helper( )
 {
-	g_resource_system.helper_thread_job( );
+	g_resource_system.process_helper( );
+}
+
+void resource_system::break_thread( u32 const in_thread_index )
+{
+	g_resource_system.break_thread( in_thread_index );
 }
 
 task_info resource_system::null_callback( )

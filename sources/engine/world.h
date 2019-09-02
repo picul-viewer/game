@@ -27,6 +27,8 @@ public:
 	inline math::u32x2 get_window_dimensions( ) const { return m_window_dimensions; }
 	inline bool is_active( ) const { return m_is_active; }
 
+	void set_game_ready( );
+
 private:
 	struct helper;
 
@@ -35,8 +37,8 @@ private:
 	void window_char( u32 const key );
 	void window_input( );
 
-	void window_thread( );
 	void main_thread( );
+	void window_thread( );
 	void fs_thread( );
 	void helper_thread( );
 
@@ -47,8 +49,7 @@ private:
 	sys::window m_window;
 
 	sys::thread m_threads[engine_thread_count];
-	
-	sys::system_event m_alive_events[engine_busy_threads_count];
+
 	sys::system_event m_exit_events[engine_busy_threads_count];
 
 	math::u32x2 m_window_dimensions;

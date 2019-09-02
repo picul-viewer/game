@@ -38,7 +38,6 @@ uptr resource_system::task_data::size( ) const
 void resource_system::create( u32 const in_thread_count )
 {
 	m_thread_count = math::min( in_thread_count, (u32)engine_thread_count );
-	m_helper_thread_count = m_thread_count - engine_helper_threads_first;
 
 	{
 		uptr const queue_size = 2 * 1024;
@@ -59,23 +58,23 @@ void resource_system::create( u32 const in_thread_count )
 				m_queues[i].create( p, queue_memory_size );
 				p += queue_memory_size;
 			}
+			else
+				m_queues[i].create( nullptr, 0 );
 
 		m_helper_queue.create( p, helper_queue_memory_size );
 	}
 
 	m_temp_allocator.create( );
 
-	u32 const cs_count = m_thread_count - engine_free_threads_first;
-	for ( u32 i = 0; i < cs_count; ++i )
-		m_cs[i].create( );
+	for ( u32 i = 0; i < m_thread_count; ++i )
+		m_events[i].create( false, false );
+	m_events[engine_thread_count].create( false, false );
 
-	for ( u32 i = 0; i < cv_max_count; ++i )
-		m_cv[i].create( );
+	for ( u32 i = 0; i < m_thread_count; ++i )
+		m_keep_process[i] = true;
 
 	for ( u32 i = 0; i < engine_thread_count; ++i )
 		m_thread_local_data[i].current_task_data = nullptr;
-
-	m_keep_processing = true;
 }
 
 bool resource_system::has_tasks( ) const
@@ -86,9 +85,6 @@ bool resource_system::has_tasks( ) const
 		is_empty = is_empty && m_queues[i].empty( );
 	is_empty = is_empty && m_helper_queue.empty( );
 
-	for ( u32 i = 0; i < m_thread_count - engine_free_threads_first; ++i )
-		is_empty = is_empty && m_cs[i].is_locked( );
-
 	return !is_empty;
 }
 
@@ -96,24 +92,21 @@ void resource_system::stop( )
 {
 	ASSERT_CMP( utils::thread_index( ), ==, engine_thread_main );
 
-	while ( has_tasks( ) )
-		busy_thread_job( sys::time::forever( ) );
+	do
+	{
+		process_busy( sys::time::forever( ) );
 
-	m_keep_processing = false;
-
-	for ( u32 i = 0; i < engine_free_threads_count; ++i )
-		m_cv[i].wake( );
-	m_cv[engine_free_threads_count].wake_all( );
+		for ( u32 i = 0; i < m_thread_count; ++i )
+			break_thread( i );
+	}
+	while ( has_tasks( ) );
 }
 
 void resource_system::destroy( )
 {
-	u32 const cs_count = m_thread_count - engine_free_threads_first;
-	for ( u32 i = 0; i < cs_count; ++i )
-		m_cs[i].destroy( );
-
-	for ( u32 i = 0; i < cv_max_count; ++i )
-		m_cv[i].destroy( );
+	for ( u32 i = 0; i < m_thread_count; ++i )
+		m_events[i].destroy( );
+	m_events[engine_thread_count].destroy( );
 
 	m_temp_allocator.destroy( );
 
@@ -148,21 +141,19 @@ void resource_system::process_task( u32 const thread_index, task_data* const dat
 	m_temp_allocator.deallocate( data, data_size );
 }
 
-void resource_system::busy_thread_job( sys::time const in_time_limit )
+void resource_system::process_busy( sys::time const in_time_limit )
 {
 	u32 const thread_index = utils::thread_index( );
 
-	ASSERT_CMP( thread_index, <, engine_free_threads_first );
+	ASSERT_CMP( thread_index, <, m_thread_count );
 	ASSERT( ( ( 1 << thread_index ) & ignore_thread_mask ) == 0 );
-
-	u32 const queue_index = thread_index;
 
 	sys::time current;
 
 	do
 	{
 		task_data* data;
-		bool const pop_successful = m_queues[queue_index].pop( data );
+		bool const pop_successful = m_queues[thread_index].pop( data );
 
 		if ( !pop_successful )
 			break;
@@ -174,72 +165,76 @@ void resource_system::busy_thread_job( sys::time const in_time_limit )
 	while ( current < in_time_limit );
 }
 
-void resource_system::free_thread_job( )
+void resource_system::process_free( )
 {
 	u32 const thread_index = utils::thread_index( );
 
-	ASSERT_CMP( thread_index, >=, engine_free_threads_first );
-	ASSERT_CMP( thread_index, <, engine_helper_threads_first );
+	ASSERT_CMP( thread_index, <, m_thread_count );
 
-	ASSERT( ( ( 1 << thread_index ) & ignore_thread_mask ) == 0 );
+	// Can be executed even for non-task threads ( just gives wait semantics ).
+	//ASSERT( ( ( 1 << thread_index ) & ignore_thread_mask ) == 0 );
 
-	u32 const queue_index = thread_index;
-	u32 const event_index = thread_index - engine_free_threads_first;
-
-	while ( m_keep_processing )
+	while ( m_keep_process[thread_index] )
 	{
 		task_data* data;
-		bool const pop_successful = m_queues[queue_index].pop( data );
 
-		if ( pop_successful )
+		if ( m_queues[thread_index].pop( data ) )
 			process_task( thread_index, data );
 		else
-		{
-			m_cs[event_index].enter( );
-			m_cv[event_index].sleep( m_cs[event_index] );
-			m_cs[event_index].release( );
-		}
+			m_events[thread_index].wait( );
 	}
+
+	m_keep_process[thread_index] = true;
 }
 
-void resource_system::helper_thread_job( )
+void resource_system::process_helper( )
 {
 	u32 const thread_index = utils::thread_index( );
 
 	ASSERT_CMP( thread_index, >=, engine_helper_threads_first );
-	ASSERT_CMP( thread_index, <, engine_helper_threads_first + m_helper_thread_count );
-
+	ASSERT_CMP( thread_index, <, m_thread_count );
 	ASSERT( ( ( 1 << thread_index ) & ignore_thread_mask ) == 0 );
 
-	u32 const queue_index = thread_index;
-	u32 const cs_index = thread_index - engine_free_threads_first;
-	u32 const cv_index = engine_free_threads_count;
+	sys::system_event events_to_wait[2] = { m_events[thread_index], m_events[engine_thread_count] };
 
-	while ( m_keep_processing )
+label_outer_loop:
+	while ( m_keep_process[thread_index] )
 	{
 		task_data* data;
-		bool pop_successful;
-		goto loop_start;
 
-		do
+		while ( m_queues[thread_index].pop( data ) )
 		{
 			process_task( thread_index, data );
-		loop_start:
-			pop_successful = m_queues[queue_index].pop( data );
 		}
-		while ( pop_successful );
-		
-		pop_successful = m_helper_queue.pop( data );
 
-		if ( pop_successful )
-			process_task( thread_index, data );
-		else
+		while ( m_keep_process[thread_index] )
 		{
-			m_cs[cs_index].enter( );
-			m_cv[cv_index].sleep( m_cs[cs_index] );
-			m_cs[cs_index].release( );
+			if ( m_helper_queue.pop( data ) )
+				process_task( thread_index, data );
+			else
+			{
+				u32 const index = sys::system_event::wait_any( 2, events_to_wait );
+
+				if ( index == 0 )
+					goto label_outer_loop;
+				else
+				{
+					ASSERT( index == 1 );
+					break;
+				}
+			}
 		}
 	}
+
+	m_keep_process[thread_index] = true;
+}
+
+void resource_system::break_thread( u32 const in_thread_index )
+{
+	ASSERT_CMP( in_thread_index, <, m_thread_count );
+
+	m_keep_process[in_thread_index] = false;
+	m_events[in_thread_index].set( );
 }
 
 void resource_system::create_tasks(
@@ -304,9 +299,7 @@ void resource_system::create_subtasks(
 	ASSERT_CMP( thread_index, !=, engine_thread_count );
 	task_data* const current_data = m_thread_local_data[thread_index].current_task_data;
 
-	ASSERT( current_data );
-
-	task_data* parent_data = current_data->parent;
+	task_data* parent_data = current_data ? current_data->parent : nullptr;
 
 	if ( in_parent )
 	{
@@ -317,14 +310,14 @@ void resource_system::create_subtasks(
 
 		parent_data->functor = in_parent->functor;
 		parent_data->user_data = in_parent->user_data;
-		parent_data->parent = current_data->parent;
-		parent_data->parent_index = current_data->parent_index;
+		parent_data->parent = current_data ? current_data->parent : nullptr;
+		parent_data->parent_index = current_data ? current_data->parent_index : -1;
 		parent_data->thread_index = in_parent->thread_index;
 		parent_data->results_count = children_count;
 		parent_data->pending_count = in_children_count;
 	}
 
-	if ( current_data->parent )
+	if ( current_data && current_data->parent )
 	{
 		if ( in_parent )
 			interlocked_inc( current_data->parent->pending_count );
@@ -357,7 +350,7 @@ void resource_system::push_task( task_data* const in_task_data )
 	{
 		m_helper_queue.push( in_task_data );
 		
-		m_cv[engine_free_threads_count].wake_all( );
+		m_events[engine_thread_count].set( );
 	}
 	else
 	{
@@ -366,9 +359,7 @@ void resource_system::push_task( task_data* const in_task_data )
 
 		m_queues[thread_index].push( in_task_data );
 
-		s32 const event_index = thread_index - engine_free_threads_first;
-		if ( event_index >= 0 )
-			m_cv[event_index].wake( );
+		m_events[thread_index].set( );
 	}
 }
 

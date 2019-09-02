@@ -38,9 +38,11 @@ void destroy_resources(
 	Resources* ... in_resources
 );
 
-void busy_thread_job( sys::time const in_time_limit );
-void free_thread_job( );
-void helper_thread_job( );
+void process_busy( sys::time const in_time_limit );
+void process_free( );
+void process_helper( );
+
+void break_thread( u32 const in_thread_index );
 
 task_info null_callback( );
 

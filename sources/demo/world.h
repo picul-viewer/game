@@ -34,6 +34,8 @@ private:
 
 	void on_resources_ready( queried_resources& resources );
 
+	void on_resources_destroyed( );
+
 private:
 	engine::scene::ptr m_scene;
 	engine::object::ptr m_object;

@@ -1,5 +1,6 @@
 #include "scene.h"
-#include "resource_system/api.h"
+#include "object.h"
+#include <resource_system/api.h>
 
 namespace engine {
 
