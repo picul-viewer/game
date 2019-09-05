@@ -31,12 +31,12 @@ check_resource_exists(
 		// Here there is a little chance, that this code will be executed when 
 		// cook object will be already disposed. In this case immediate exit takes
 		// place, and no load from cook object occur, so this should be totally safe.
-		if ( resource == nullptr )
-			return;
+		if ( resource != nullptr )
+			finish( resource );
 
-		finish( resource );
+		return;
 	}
-
+	
 	( ( (ResourceCook*)this )->*in_callback )( resource );
 }
 
