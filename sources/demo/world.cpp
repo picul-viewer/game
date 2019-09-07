@@ -168,12 +168,17 @@ void world::update( )
 void world::destroy( )
 {
 	m_console.destroy( );
+
 	m_console_font->release( );
+	m_console_font.reset( );
 
 	resource_system::destroy_resources(
 		resource_system::user_callback_task<world, &world::on_resources_destroyed>( this ),
 		m_object.get( ), m_scene.get( )
 	);
+
+	m_object.reset( );
+	m_scene.reset( );
 }
 
 void world::on_resources_destroyed( )

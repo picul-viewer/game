@@ -28,6 +28,9 @@ void stage_statistics::on_font_loaded( queried_resources& in_resources )
 void stage_statistics::destroy( )
 {
 	g_statistics.destroy( );
+
+	m_font->release( );
+	m_font.reset( );
 }
 
 void stage_statistics::execute( )

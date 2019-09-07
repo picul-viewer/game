@@ -37,6 +37,8 @@ void console::set_default_colors( )
 void console::destroy( )
 {
 	m_font->release( );
+	m_font.reset( );
+
 	m_text.destroy( );
 	m_text_edit.destroy( );
 	m_next_line_indices.destroy( );
