@@ -22,7 +22,6 @@
 #include <Windows.h>
 
 #include <resource_system/api.h>
-#include <resource_system/queried_resources.h>
 #include <resource_system/raw_data.h>
 
 namespace game {
@@ -32,8 +31,6 @@ char object_cook_data[1 * Mb];
 
 void world::create( )
 {
-	m_ready = false;
-
 	uptr scene_cook_size;
 	uptr object_cook_size;
 
@@ -116,8 +113,8 @@ void world::on_resources_ready( queried_resources& resources )
 
 	render::g_world.get_parameters( ).camera.fov = math::degree_to_radian( 60.0f );
 
-	m_object->render_object( ).update( math::float4x3::identity( ) );
-	m_scene->render_scene( ).insert( m_object->render_object( ).data( ) );
+	m_object->update( math::float4x3::identity( ) );
+	m_scene->insert( m_object );
 	engine::g_world.set_current_scene( m_scene );
 
 	m_camera.create( math::float3( 0.0f ), math::float2( 0.0f ), math::float3( 2.0f, 5.0f, 15.0f ), 0.002f );
@@ -125,7 +122,6 @@ void world::on_resources_ready( queried_resources& resources )
 	initialize_console( );
 
 	engine::g_world.set_game_ready( );
-	m_ready = true;
 }
 
 void world::initialize_console( )
@@ -150,8 +146,6 @@ void world::on_console_command( pcstr const str )
 
 void world::update( )
 {
-	ASSERT( m_ready );
-
 	float const elapsed_time = (float)m_ticker.tick( );
 	m_camera.update( elapsed_time );
 

@@ -32,6 +32,11 @@ private:
 	static void on_subsystems_destroyed( pointer const in_resource );
 
 private:
+	friend class scene;
+	void set_scene( scene* const in_scene );
+	scene* get_scene( ) const;
+
+private:
 	// Aligned by 64 bytes
 	math::float4x3			m_transform;
 
@@ -41,6 +46,8 @@ private:
 	// Or something to handle physics...
 	
 	// Something to handle sound...
+
+	scene*					m_scene;
 
 public:
 	object*					m_next;

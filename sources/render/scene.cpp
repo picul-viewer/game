@@ -26,7 +26,7 @@ void scene::destroy_resource( scene* const in_resource )
 	virtual_allocator( ).deallocate( in_resource->m_memory );
 }
 
-struct helper
+struct scene::helper
 {
 
 struct functor_insert
@@ -77,19 +77,19 @@ struct functor_move
 
 };
 
-void scene::insert( render_object* const in_objects )
+void scene::insert( object const& in_object )
 {
-	g_resources.get_render_object_allocator( ).for_each( in_objects, helper::functor_insert{ this } );
+	g_resources.get_render_object_allocator( ).for_each( in_object.objects( ), helper::functor_insert{ this } );
 }
 
-void scene::remove( render_object* const in_objects )
+void scene::remove( object const& in_object )
 {
-	g_resources.get_render_object_allocator( ).for_each( in_objects, helper::functor_remove{ this } );
+	g_resources.get_render_object_allocator( ).for_each( in_object.objects( ), helper::functor_remove{ this } );
 }
 
-void scene::move( render_object* const in_objects )
+void scene::move( object const& in_object )
 {
-	g_resources.get_render_object_allocator( ).for_each( in_objects, helper::functor_move{ this } );
+	g_resources.get_render_object_allocator( ).for_each( in_object.objects( ), helper::functor_move{ this } );
 }
 
 } // namespace render

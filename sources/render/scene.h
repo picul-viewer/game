@@ -7,9 +7,10 @@
 #include <math/math_3d.h>
 #include <resource_system/default_resource.h>
 #include <utils/engine_threads.h>
-#include "render_object_mesh.h"
 
 namespace render {
+
+class object;
 
 class scene : public default_resource<scene>
 {
@@ -24,16 +25,16 @@ public:
 	static void destroy_resource( scene* const in_resource );
 
 public:
-	void insert( render_object* const in_objects );
-	void remove( render_object* const in_objects );
-	void move( render_object* const in_objects );
+	void insert( object const& in_object );
+	void remove( object const& in_object );
+	void move( object const& in_object );
 
 	math::bvh const& static_mesh_container( ) const { return m_static_mesh_container; }
 
 	math::bvh const& dynamic_mesh_container( ) const { return m_dynamic_mesh_container; }
 
 private:
-	friend struct helper;
+	struct helper;
 
 private:
 	pointer m_memory;

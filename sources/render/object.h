@@ -25,7 +25,7 @@ public:
 	static void destroy_resource( object* const in_resource );
 
 public:
-	inline render_object* data( ) const { return m_objects; }
+	inline render_object* objects( ) const { return m_objects; }
 
 	void update( math::float4x3 const& in_transform );
 

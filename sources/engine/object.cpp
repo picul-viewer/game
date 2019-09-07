@@ -21,6 +21,19 @@ void object::on_subsystems_destroyed( pointer const in_resource )
 void object::update( math::float4x3 const& in_transform )
 {
 	m_render.update( in_transform );
+
+	if ( m_scene )
+		m_scene->move( this );
+}
+
+void object::set_scene( scene* const in_scene )
+{
+	m_scene = in_scene;
+}
+
+scene* object::get_scene( ) const
+{
+	return m_scene;
 }
 
 } // namespace engine

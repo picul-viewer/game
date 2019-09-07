@@ -7,6 +7,8 @@
 #include <engine/scene.h>
 #include <engine/object.h>
 
+#include <resource_system/queried_resources.h>
+
 #include <system/time.h>
 #include <system/window_input_state.h>
 
@@ -44,7 +46,6 @@ private:
 	sys::ticker m_ticker;
 	ui::font::ptr m_console_font;
 	bool m_console_visible;
-	bool m_ready;
 
 };
 
