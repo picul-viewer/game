@@ -13,4 +13,9 @@ void pause( )
 	_mm_pause( );
 }
 
+void sleep( u32 const milliseconds )
+{
+	Sleep( milliseconds );
+}
+
 } // namespace macros

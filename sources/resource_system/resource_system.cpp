@@ -74,21 +74,34 @@ void resource_system::create( u32 const in_thread_count )
 	m_events[engine_thread_count].create( false, false );
 
 	for ( u32 i = 0; i < m_thread_count; ++i )
+	{
 		m_keep_process[i] = true;
+		m_is_sleeping[i] = false;
+	}
 
 	for ( u32 i = 0; i < engine_thread_count; ++i )
 		m_thread_local_data[i].current_task_data = nullptr;
 }
 
-bool resource_system::has_tasks( ) const
+bool resource_system::queues_empty( ) const
 {
-	bool is_empty = true;
+	bool result = true;
 
 	for ( u32 i = 0; i < m_thread_count; ++i )
-		is_empty = is_empty && m_queues[i].empty( );
-	is_empty = is_empty && m_helper_queue.empty( );
+		result = result && m_queues[i].empty( );
+	result = result && m_helper_queue.empty( );
 
-	return !is_empty;
+	return result;
+}
+
+bool resource_system::all_asleep( ) const
+{
+	bool result = true;
+
+	for ( u32 i = 1; i < m_thread_count; ++i )
+		result = result && m_is_sleeping[i];
+
+	return result;
 }
 
 void resource_system::stop( )
@@ -99,10 +112,13 @@ void resource_system::stop( )
 	{
 		process_busy( sys::time::forever( ) );
 
-		for ( u32 i = 0; i < m_thread_count; ++i )
-			break_thread( i );
+		while ( !all_asleep( ) )
+			macros::sleep( 1 );
 	}
-	while ( has_tasks( ) );
+	while ( !queues_empty( ) );
+
+	for ( u32 i = 1; i < m_thread_count; ++i )
+		break_thread( i );
 }
 
 void resource_system::destroy( )
@@ -186,7 +202,11 @@ void resource_system::process_free( )
 		if ( m_queues[thread_index].pop( data ) )
 			process_task( thread_index, data );
 		else
+		{
+			m_is_sleeping[thread_index] = true;
 			m_events[thread_index].wait( );
+			m_is_sleeping[thread_index] = false;
+		}
 	}
 
 	m_keep_process[thread_index] = true;
@@ -218,7 +238,9 @@ label_outer_loop:
 				process_task( thread_index, data );
 			else
 			{
+				m_is_sleeping[thread_index] = true;
 				u32 const index = sys::system_event::wait_any( 2, events_to_wait );
+				m_is_sleeping[thread_index] = false;
 
 				if ( index == 0 )
 					goto label_outer_loop;

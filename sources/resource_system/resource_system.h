@@ -62,7 +62,8 @@ private:
 	struct task_data;
 
 private:
-	bool has_tasks( ) const;
+	bool queues_empty( ) const;
+	bool all_asleep( ) const;
 
 	void process_task( u32 const thread_index, task_data* const data );
 
@@ -92,6 +93,7 @@ private:
 	sys::mpmc_queue<task_data*> m_helper_queue;
 	sys::system_event m_events[engine_thread_count + 1];
 	bool volatile m_keep_process[engine_thread_count];
+	bool volatile m_is_sleeping[engine_thread_count];
 
 	temporal_allocator<64> m_temp_allocator;
 

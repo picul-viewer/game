@@ -145,6 +145,7 @@ inline __declspec(noreturn) void noreturn_func( ) { }
 namespace macros {
 
 void pause( );
+void sleep( u32 const milliseconds );
 
 }
 
