@@ -12,10 +12,12 @@ void render_object_allocator::for_each( render_object* const in_objects, Callbac
 	{
 		ASSERT( m_mesh_allocator.contains( obj ) );
 
+		render_object* const next = obj->m_next;
+
 		render_object_mesh* const arg = (render_object_mesh*)obj;
 		in_callback( arg );
 
-		obj = obj->m_next;
+		obj = next;
 	}
 }
 
