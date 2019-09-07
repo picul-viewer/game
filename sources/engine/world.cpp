@@ -105,9 +105,6 @@ void world::main_thread( )
 {
 	utils::set_thread_index( engine_thread_main );
 
-	// TODO: do this appropriately.
-	ui::font::container( ).create( nullptr );
-
 	// Waiting for window to create.
 	resource_system::process_free( );
 
@@ -149,8 +146,6 @@ void world::main_thread( )
 
 	// NOTE: render create/destroy are simultaneous for now, so do not wait.
 	// Change it when needed.
-
-	ui::font::container( ).destroy( );
 }
 
 void world::window_thread( )

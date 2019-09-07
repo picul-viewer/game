@@ -39,10 +39,6 @@ void resources::create( )
 
 	m_render_object_allocator.create( );
 
-	mesh::container( ).create( nullptr );
-	texture::container( ).create( nullptr );
-	model_mesh::container( ).create( nullptr );
-
 	create_ui_buffers( );
 
 	m_ui_batch.create( );
@@ -62,10 +58,6 @@ void resources::destroy( )
 
 	m_render_object_allocator.destroy( );
 
-	mesh::container( ).destroy( );
-	texture::container( ).destroy( );
-	model_mesh::container( ).destroy( );
-	
 	destroy_ui_buffers( );
 
 	m_ui_batch.destroy( );

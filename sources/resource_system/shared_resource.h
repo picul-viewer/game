@@ -20,8 +20,7 @@ public:
 	typedef typename ResourceHandle::value_type entry_type;
 
 public:
-	void create( pointer const in_memory = nullptr );
-	void destroy( );
+	shared_resource_container( );
 
 	template<typename CookType>
 	bool get( shared_resource_id const in_id, CookType* const in_cook, Resource*& out_resource );

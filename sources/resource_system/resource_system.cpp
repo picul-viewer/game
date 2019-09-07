@@ -2,6 +2,7 @@
 #include <lib/allocator.h>
 #include <math/math_common.h>
 #include <system/interlocked.h>
+#include "shared_resource_container_allocator.h"
 
 namespace resource_system {
 
@@ -37,6 +38,8 @@ uptr resource_system::task_data::size( ) const
 
 void resource_system::create( u32 const in_thread_count )
 {
+	_internal::s_shared_resource_container_allocator.create_shared_resource_containers( );
+
 	m_thread_count = math::min( in_thread_count, (u32)engine_thread_count );
 
 	{
@@ -117,6 +120,8 @@ void resource_system::destroy( )
 	m_helper_queue.destroy( );
 
 	virtual_allocator( ).deallocate( queue_memory );
+
+	_internal::s_shared_resource_container_allocator.destroy_shared_resource_containers( );
 }
 
 void resource_system::process_task( u32 const thread_index, task_data* const data )

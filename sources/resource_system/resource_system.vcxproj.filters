@@ -34,6 +34,9 @@
     <Filter Include="resource\default_resource\default_resource_ptr">
       <UniqueIdentifier>{a17af3b1-c12a-49fd-b9a3-341b01a6400d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resource\shared_resource\shared_resource_container_allocator">
+      <UniqueIdentifier>{7690e463-d478-4de7-8a50-56c13854f86b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="queried_resources.h">
@@ -105,6 +108,9 @@
     <ClInclude Include="resource_system_utils.h">
       <Filter>resource_sytem</Filter>
     </ClInclude>
+    <ClInclude Include="shared_resource_container_allocator.h">
+      <Filter>resource\shared_resource\shared_resource_container_allocator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="queried_resources.cpp">
@@ -124,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="resource.cpp">
       <Filter>resource</Filter>
+    </ClCompile>
+    <ClCompile Include="shared_resource_container_allocator.cpp">
+      <Filter>resource\shared_resource\shared_resource_container_allocator</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -3,27 +3,17 @@
 
 #include <lib/allocator.h>
 #include <lib/hash.h>
+#include "shared_resource_container_allocator.h"
 
 namespace resource_system {
 
 template<typename Resource, typename ResourceHandle, u32 TableSize>
-void shared_resource_container<Resource, ResourceHandle, TableSize>::create( pointer const in_memory )
+shared_resource_container<Resource, ResourceHandle, TableSize>::shared_resource_container( )
 {
-	pointer const memory =
-		( in_memory == nullptr ) ?
-		virtual_allocator( ).allocate( memory_size ) :
-		in_memory;
+	pointer const memory = _internal::s_shared_resource_container_allocator.allocate_memory_for_container( memory_size );
 
 	m_set.create( memory );
 	m_allocator.create( memory + table_memory_size, allocator_memory_size );
-}
-
-template<typename Resource, typename ResourceHandle, u32 TableSize>
-void
-shared_resource_container<Resource, ResourceHandle, TableSize>::
-destroy( )
-{
-	m_set.destroy( );
 }
 
 template<typename Resource, typename ResourceHandle, u32 TableSize>
