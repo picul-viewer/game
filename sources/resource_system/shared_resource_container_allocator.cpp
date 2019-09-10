@@ -7,10 +7,13 @@ namespace _internal {
 
 pointer shared_resource_container_allocator::allocate_memory_for_container( uptr const in_size )
 {
-	if ( m_memory == nullptr )
+	static bool s_initialized = false;
+
+	if ( !s_initialized )
 	{
 		m_memory = virtual_allocator( ).reserve( nullptr, max_memory_size );
 		m_memory_end = m_memory;
+		s_initialized = true;
 	}
 
 	pointer const result = m_memory_end;
