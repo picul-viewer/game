@@ -64,6 +64,13 @@ struct type_count<T, TList ...>
 };
 
 
+template<typename T, uptr N>
+static inline uptr array_size( T ( & )[N] )
+{
+	return N;
+}
+
+
 struct pointer
 {
 	inline pointer( ) = default;
