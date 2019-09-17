@@ -16,6 +16,20 @@ void resource_system::destroy( )
 	g_resource_system.destroy( );
 }
 
+void resource_system::execute_tasks(
+	task_info const* const in_tasks,
+	u32 const in_task_count,
+	task_info const& in_callback
+)
+{
+	g_resource_system.create_tasks(
+		in_callback.functor ? &in_callback : nullptr,
+		in_tasks,
+		in_task_count,
+		false
+	);
+}
+
 void resource_system::create_resources(
 	task_info const* const in_tasks,
 	u32 const in_task_count,

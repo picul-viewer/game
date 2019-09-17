@@ -14,6 +14,12 @@ void create( u32 const in_thread_count );
 void stop( );
 void destroy( );
 
+void execute_tasks(
+	task_info const* const in_tasks,
+	u32 const in_task_count,
+	task_info const& in_callback
+);
+
 void create_resources(
 	task_info const* const in_tasks,
 	u32 const in_task_count,
