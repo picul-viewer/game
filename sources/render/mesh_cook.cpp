@@ -4,7 +4,7 @@
 #include <lib/hash.h>
 #include <lib/reader.h>
 #include <lib/strings.h>
-#include <resource_system/raw_data.h>
+#include <resources/raw_data.h>
 
 #include "mesh.h"
 #include "input_layout.h"

@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{63198BD7-C43F-4037-AF08-6AC2F2C206BC}</ProjectGuid>
-    <RootNamespace>ui</RootNamespace>
+    <ProjectGuid>{9273CB4E-3EA0-4BEE-80C5-F12A9F22308B}</ProjectGuid>
+    <RootNamespace>resources</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -62,6 +62,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
+    <Lib />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -86,26 +87,19 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="console.h" />
-    <ClInclude Include="console_inline.h" />
-    <ClInclude Include="font.h" />
-    <ClInclude Include="font_cook.h" />
-    <ClInclude Include="text_edit_controller.h" />
+    <ClInclude Include="raw_data.h" />
+    <ClInclude Include="resources_path.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="console.cpp" />
-    <ClCompile Include="font.cpp" />
-    <ClCompile Include="font_cook.cpp" />
-    <ClCompile Include="text_edit_controller.cpp" />
+    <ClCompile Include="raw_data.cpp" />
+    <ClCompile Include="resources_path.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">
       <Project>{b7376639-83bd-4434-a00a-7a2551608722}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\resources\resources.vcxproj">
-      <Project>{9273cb4e-3ea0-4bee-80c5-f12a9f22308b}</Project>
     </ProjectReference>
     <ProjectReference Include="..\resource_system\resource_system.vcxproj">
       <Project>{7f2ce0ea-d253-4eea-baf1-5e8ae2934a61}</Project>

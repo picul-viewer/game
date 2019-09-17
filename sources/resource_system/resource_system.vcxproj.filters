@@ -16,9 +16,6 @@
     <Filter Include="resource">
       <UniqueIdentifier>{1fa0bfb6-f341-4118-b13f-00ce83fdabdc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resource\raw_data">
-      <UniqueIdentifier>{8e0660b9-7fab-4337-a694-434eda9fa94a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resource\shared_resource">
       <UniqueIdentifier>{9f1d1b7b-b05f-4c02-9f2f-3dea6031e2ac}</UniqueIdentifier>
     </Filter>
@@ -59,9 +56,6 @@
     </ClInclude>
     <ClInclude Include="resource_cook.h">
       <Filter>resource_sytem\resource_cook</Filter>
-    </ClInclude>
-    <ClInclude Include="raw_data.h">
-      <Filter>resource\raw_data</Filter>
     </ClInclude>
     <ClInclude Include="resource_handle.h">
       <Filter>resource</Filter>
@@ -124,9 +118,6 @@
     </ClCompile>
     <ClCompile Include="resource_cook.cpp">
       <Filter>resource_sytem\resource_cook</Filter>
-    </ClCompile>
-    <ClCompile Include="raw_data.cpp">
-      <Filter>resource\raw_data</Filter>
     </ClCompile>
     <ClCompile Include="resource.cpp">
       <Filter>resource</Filter>

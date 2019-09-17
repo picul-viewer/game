@@ -1,5 +1,5 @@
 #include "render_object_mesh.h"
-#include <utils/resources_path.h>
+#include <resources/resources_path.h>
 
 #include "model_mesh.h"
 
@@ -8,7 +8,7 @@ namespace render {
 void render_object_mesh::initialize( lib::reader& in_reader, lib::buffer_array<task_info>& in_queries )
 {
 	pcstr const model_path = in_reader.read_str( );
-	model_mesh_cook* const model_cook = model_mesh_cook::create( utils::get_resource_path( model_path ).c_str( ) );
+	model_mesh_cook* const model_cook = model_mesh_cook::create( get_resource_path( model_path ).c_str( ) );
 
 	task_info& model_query = in_queries.emplace_back( );
 	model_cook->fill_task_info( model_query );

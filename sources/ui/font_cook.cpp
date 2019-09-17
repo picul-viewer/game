@@ -2,8 +2,8 @@
 #include "font.h"
 #include <lib/memory.h>
 #include <render/texture_cook.h>
-#include <resource_system/raw_data.h>
-#include <utils/resources_path.h>
+#include <resources/raw_data.h>
+#include <resources/resources_path.h>
 
 namespace ui {
 
@@ -63,7 +63,7 @@ void font_cook::on_file_loaded( queried_resources& in_queried )
 	pvoid const chars_width = r.read_data( m_result->m_char_count );
 	memory::copy( m_result->m_chars_width.data( ), chars_width, sizeof(u8) * m_result->m_char_count );
 
-	render::texture_cook* const texture_cook = render::texture_cook::create( utils::get_resource_path( texture_path ).c_str( ) );
+	render::texture_cook* const texture_cook = render::texture_cook::create( get_resource_path( texture_path ).c_str( ) );
 
 	create_child_resources( callback_task<&font_cook::on_texture_ready>( ), texture_cook );
 }

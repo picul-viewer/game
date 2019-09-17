@@ -4,7 +4,7 @@
 #include <lib/hash.h>
 #include <lib/reader.h>
 #include <lib/strings.h>
-#include <resource_system/raw_data.h>
+#include <resources/raw_data.h>
 
 #include "dds_loader.h"
 #include "texture.h"

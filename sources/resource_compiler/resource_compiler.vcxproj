@@ -117,6 +117,12 @@
     <ProjectReference Include="..\render\render.vcxproj">
       <Project>{58b676b2-5b1b-49e9-a2e4-0b71c90af057}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\resources\resources.vcxproj">
+      <Project>{9273cb4e-3ea0-4bee-80c5-f12a9f22308b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\utils\utils.vcxproj">
+      <Project>{78c80b93-cb8e-43bc-84c3-9f8b1e23a842}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

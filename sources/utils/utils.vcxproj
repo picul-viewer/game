@@ -96,7 +96,6 @@
     <ClInclude Include="engine_threads.h" />
     <ClInclude Include="fly_camera.h" />
     <ClInclude Include="parse.h" />
-    <ClInclude Include="resources_path.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cmd_args.cpp" />
@@ -105,7 +104,6 @@
     <ClCompile Include="engine_threads.cpp" />
     <ClCompile Include="fly_camera.cpp" />
     <ClCompile Include="parse.cpp" />
-    <ClCompile Include="resources_path.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">

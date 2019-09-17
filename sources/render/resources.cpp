@@ -1,6 +1,6 @@
 #include "resources.h"
 
-#include <utils/resources_path.h>
+#include <resources/resources_path.h>
 
 #include "mesh.h"
 #include "texture.h"

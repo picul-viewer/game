@@ -2,8 +2,8 @@
 #include <lib/allocator.h>
 #include <lib/text_reader.h>
 #include <lib/writer.h>
+#include <resources/resources_path.h>
 #include <system/file.h>
-#include <utils/resources_path.h>
 
 namespace resource_compiler {
 

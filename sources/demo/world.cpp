@@ -14,7 +14,7 @@
 #include <system/input.h>
 #include <system/window_input.h>
 
-#include <utils/resources_path.h>
+#include <resources/resources_path.h>
 
 #include <render/ui_batch.h>
 
@@ -22,7 +22,7 @@
 #include <Windows.h>
 
 #include <resource_system/api.h>
-#include <resource_system/raw_data.h>
+#include <resources/raw_data.h>
 
 namespace game {
 

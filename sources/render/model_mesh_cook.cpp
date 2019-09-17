@@ -4,8 +4,8 @@
 #include <lib/hash.h>
 #include <lib/reader.h>
 #include <lib/strings.h>
-#include <resource_system/raw_data.h>
-#include <utils/resources_path.h>
+#include <resources/raw_data.h>
+#include <resources/resources_path.h>
 
 #include "model_mesh.h"
 #include "mesh_cook.h"
@@ -66,21 +66,21 @@ void model_mesh_cook::on_file_loaded( queried_resources& in_queried )
 	// Mesh.
 	{
 		pcstr const path	= r.read_str( );
-		mesh_cook* cook		= mesh_cook::create( utils::get_resource_path( path ).c_str( ) );
+		mesh_cook* cook		= mesh_cook::create( get_resource_path( path ).c_str( ) );
 		cook->fill_task_info( queries[query_count++] );
 	}
 	
 	// Diffuse texture.
 	{
 		pcstr const path	= r.read_str( );
-		texture_cook* cook	= texture_cook::create( utils::get_resource_path( path ).c_str( ) );
+		texture_cook* cook	= texture_cook::create( get_resource_path( path ).c_str( ) );
 		cook->fill_task_info( queries[query_count++] );
 	}
 
 	// Specular texture.
 	{
 		pcstr const path	= r.read_str( );
-		texture_cook* cook	= texture_cook::create( utils::get_resource_path( path ).c_str( ) );
+		texture_cook* cook	= texture_cook::create( get_resource_path( path ).c_str( ) );
 		cook->fill_task_info( queries[query_count++] );
 	}
 

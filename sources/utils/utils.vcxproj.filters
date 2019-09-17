@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="resources_path">
-      <UniqueIdentifier>{f878701a-702e-4771-9b2f-429ff6d6950e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="fly_camera">
       <UniqueIdentifier>{4a042354-9611-4955-bb20-e7e29d1155f7}</UniqueIdentifier>
     </Filter>
@@ -30,9 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resources_path.h">
-      <Filter>resources_path</Filter>
-    </ClInclude>
     <ClInclude Include="fly_camera.h">
       <Filter>fly_camera</Filter>
     </ClInclude>
@@ -59,9 +53,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="resources_path.cpp">
-      <Filter>resources_path</Filter>
-    </ClCompile>
     <ClCompile Include="fly_camera.cpp">
       <Filter>fly_camera</Filter>
     </ClCompile>

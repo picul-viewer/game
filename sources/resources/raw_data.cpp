@@ -1,11 +1,18 @@
 #include "raw_data.h"
 #include <macros.h>
-#include <lib/algorithms.h>
 #include <lib/allocator.h>
 #include <lib/strings.h>
 #include <system/file.h>
 
-namespace resource_system {
+namespace resources {
+
+raw_data* raw_data::create( uptr const size )
+{
+	uptr const allocation_size = sizeof(raw_data) + size;
+	raw_data* const result = std_allocator( ).allocate( allocation_size );
+	result->m_size = size;
+	return result;
+}
 
 void raw_data::destroy( )
 {
@@ -50,19 +57,14 @@ void raw_data_cook::create_resource( )
 		return;
 	}
 
-	uptr const raw_data_size = f.size( );
-	ASSERT_CMP( raw_data_size, <, 0x100000000 );
+	uptr const file_size = f.size( );
+	raw_data* const data = raw_data::create( file_size );
 
-	uptr const size = sizeof(raw_data) + raw_data_size;
-
-	raw_data* const data = std_allocator( ).allocate( size );
-
-	data->m_size = raw_data_size;
-	f.read( data->m_data, raw_data_size );
+	f.read( data->data( ), file_size );
 
 	f.destroy( );
 
 	finish( data );
 }
 
-} // namespace resource_system
+} // namespace resources

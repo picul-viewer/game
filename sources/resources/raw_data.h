@@ -1,14 +1,12 @@
-#ifndef GUARD_RESOURCE_SYSTEM_RAW_DATA_H_INCLUDED
-#define GUARD_RESOURCE_SYSTEM_RAW_DATA_H_INCLUDED
+#ifndef GUARD_RESOURCES_RAW_DATA_H_INCLUDED
+#define GUARD_RESOURCES_RAW_DATA_H_INCLUDED
 
 #include <types.h>
-#include <system/interlocked.h>
+#include <resource_system/default_resource.h>
+#include <resource_system/default_resource_cook.h>
 #include <utils/engine_threads.h>
-#include "default_resource.h"
-#include "default_resource_cook.h"
-#include "resource_handle.h"
 
-namespace resource_system {
+namespace resources {
 
 class raw_data;
 
@@ -37,6 +35,7 @@ class raw_data : public default_resource<raw_data>
 {
 public:
 	friend class raw_data_cook;
+	friend class raw_data_compiler_cook;
 
 public:
 	enum : u32 {
@@ -51,7 +50,7 @@ public:
 	uptr size( ) const;
 
 private:
-	raw_data( ) = default;
+	static raw_data* create( uptr const size );
 
 private:
 	uptr m_size;
@@ -65,7 +64,7 @@ private:
 
 } // namespace resource_system
 
-using resource_system::raw_data;
-using resource_system::raw_data_cook;
+using resources::raw_data;
+using resources::raw_data_cook;
 
-#endif // #ifndef GUARD_RESOURCE_SYSTEM_RAW_DATA_H_INCLUDED
+#endif // #ifndef GUARD_RESOURCES_RAW_DATA_H_INCLUDED

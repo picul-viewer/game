@@ -1,5 +1,5 @@
 #include <macros.h>
-#include <utils/resources_path.h>
+#include <resources/resources_path.h>
 #include "resource_compiler.h"
 
 #define RESOURCES_SOURCES_PATH "..\\..\\resources\\sources"

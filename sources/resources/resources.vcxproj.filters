@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="resources_path">
+      <UniqueIdentifier>{8a89d8b0-2b94-4b08-94d7-f34831526919}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="raw_data">
+      <UniqueIdentifier>{4d138736-7d54-41be-afe7-f95b93c810fc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resources_path.h">
+      <Filter>resources_path</Filter>
+    </ClInclude>
+    <ClInclude Include="raw_data.h">
+      <Filter>raw_data</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="resources_path.cpp">
+      <Filter>resources_path</Filter>
+    </ClCompile>
+    <ClCompile Include="raw_data.cpp">
+      <Filter>raw_data</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

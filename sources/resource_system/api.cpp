@@ -1,6 +1,5 @@
 #include "api.h"
 #include "resource_system.h"
-#include "raw_data.h"
 
 void resource_system::create( u32 const in_thread_count )
 {

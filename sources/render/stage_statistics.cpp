@@ -1,7 +1,7 @@
 #include "stage_statistics.h"
 #include <resource_system/api.h>
+#include <resources/resources_path.h>
 #include <ui/font_cook.h>
-#include <utils/resources_path.h>
 
 #include "resources.h"
 #include "parameters.h"

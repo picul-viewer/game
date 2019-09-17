@@ -1,9 +1,9 @@
 #include "font.h"
 #include <macros.h>
 #include <lib/memory.h>
+#include <lib/strings.h>
 #include <render/ui_batch.h>
 #include <render/world.h>
-#include <utils/resources_path.h>
 
 namespace ui {
 
