@@ -16,6 +16,7 @@ uptr rfind( pcstr str, char c );
 uptr rfind( pcstr str, char c, uptr pos );
 
 int compare( pcstr l, pcstr r );
+int compare_n( pcstr l, pcstr r, uptr size );
 
 bool equal( pcstr l, pcstr r );
 bool less( pcstr l, pcstr r );

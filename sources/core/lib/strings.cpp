@@ -68,6 +68,14 @@ int compare( pcstr l, pcstr r )
 	return strcmp( l, r );
 }
 
+int compare_n( pcstr l, pcstr r, uptr size )
+{
+	ASSERT( l );
+	ASSERT( r );
+
+	return strncmp( l, r, size );
+}
+
 bool equal( pcstr l, pcstr r )
 {
 	return compare( l, r ) == 0;
