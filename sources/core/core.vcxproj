@@ -115,8 +115,6 @@
     <ClInclude Include="lib\fixed_string_inline.h" />
     <ClInclude Include="lib\function.h" />
     <ClInclude Include="lib\hash.h" />
-    <ClInclude Include="lib\hash_map.h" />
-    <ClInclude Include="lib\hash_map_inline.h" />
     <ClInclude Include="lib\linear_set.h" />
     <ClInclude Include="lib\heap.h" />
     <ClInclude Include="lib\linear_set_inline.h" />

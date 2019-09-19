@@ -25,9 +25,6 @@
     <Filter Include="lib\string">
       <UniqueIdentifier>{4be3fcf9-f9e0-498f-b571-c0836a163d53}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\map">
-      <UniqueIdentifier>{025c1471-0106-4c7a-8939-2851d44491be}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lib\queue">
       <UniqueIdentifier>{6f5bcf6d-f7b6-4e8c-b22a-dda65147df45}</UniqueIdentifier>
     </Filter>
@@ -166,13 +163,13 @@
     <Filter Include="system\time">
       <UniqueIdentifier>{6c8255af-79d7-4870-a685-48db5f83c6fc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\map\hash">
+    <Filter Include="lib\hash">
+      <UniqueIdentifier>{025c1471-0106-4c7a-8939-2851d44491be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\hash\hash">
       <UniqueIdentifier>{9e1f0f8e-2b70-4eeb-ab09-fcd3506b707d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\map\hash_map">
-      <UniqueIdentifier>{1a7d0613-156f-4494-a1a5-49a3404f9faa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="lib\map\linear_set">
+    <Filter Include="lib\hash\linear_set">
       <UniqueIdentifier>{a9dbcf29-28bf-4d75-a768-d76752b24ab3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -420,19 +417,13 @@
       <Filter>system\time</Filter>
     </ClInclude>
     <ClInclude Include="lib\hash.h">
-      <Filter>lib\map\hash</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\hash_map_inline.h">
-      <Filter>lib\map\hash_map</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\hash_map.h">
-      <Filter>lib\map\hash_map</Filter>
+      <Filter>lib\hash\hash</Filter>
     </ClInclude>
     <ClInclude Include="lib\linear_set_inline.h">
-      <Filter>lib\map\linear_set</Filter>
+      <Filter>lib\hash\linear_set</Filter>
     </ClInclude>
     <ClInclude Include="lib\linear_set.h">
-      <Filter>lib\map\linear_set</Filter>
+      <Filter>lib\hash\linear_set</Filter>
     </ClInclude>
     <ClInclude Include="lib\pool_allocator.h">
       <Filter>lib\memory\allocators\pool</Filter>
@@ -540,7 +531,7 @@
       <Filter>system\time</Filter>
     </ClCompile>
     <ClCompile Include="lib\hash.cpp">
-      <Filter>lib\map\hash</Filter>
+      <Filter>lib\hash\hash</Filter>
     </ClCompile>
     <ClCompile Include="math\bvh.cpp">
       <Filter>math\collision\bvh</Filter>
