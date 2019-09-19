@@ -13,7 +13,7 @@
 #include <lib/weak_string.h>
 #include <lib/fixed_string.h>
 
-#include <lib/hash_map.h>
+#include <lib/linear_set.h>
 
 #include <system/path.h>
 #include <system/file.h>
@@ -131,17 +131,8 @@ bool operator==( bumpmapped_vertex const& l, bumpmapped_vertex const& r )
 template<typename VertexType>
 static inline bool process_mesh( FbxMesh* const mesh, lib::dynamic_array<VertexType>& vertices, u32*& indices, u32& index_count )
 {
-	typedef lib::hash_map32<VertexType, u32, 16 * Memory_Page_Size, 256> vertices_map_type;
-
-	vertices_map_type::kv_store_pool_type vertices_map_pool;
-	vertices_map_pool.create( );
-
-	enum { vertices_map_table_size = 16384 };
-	pvoid const vertices_map_table = stack_allocate( vertices_map_table_size * sizeof(u32) );
-	fake_allocator vertices_map_table_allocator = fake_allocator( vertices_map_table );
-
-	vertices_map_type vertices_map;
-	vertices_map.create( vertices_map_table_size, vertices_map_table_allocator, vertices_map_pool );
+	lib::linear_set<u32, 256 * 1024> vertices_map;
+	vertices_map.create( );
 
 	u32 current_index = 0;
 
@@ -156,23 +147,26 @@ static inline bool process_mesh( FbxMesh* const mesh, lib::dynamic_array<VertexT
 			VertexType v;
 			v.init( mesh, i, j );
 
-			auto* const kv = vertices_map.find_kv( v );
-			if ( kv != nullptr )
-				indices_data[i * 3 + j]	= kv->value( );
-			else
-			{
-				vertices.emplace_back( ) = v;
-
-				vertices_map.insert( v, current_index );
-
-				indices_data[i * 3 + j]	= current_index;
-				++current_index;
-			}
+			u32* index;
+			vertices_map.find_if_or_insert(
+				lib::hash( v ),
+				[&v, &vertices]( u32 const value )
+				{
+					return vertices[value] == v;
+				},
+				[&v, &vertices]( )
+				{
+					vertices.emplace_back( ) = v;
+					return (u32)( vertices.size( ) - 1 );
+				},
+				index
+			);
+			
+			indices_data[i * 3 + j] = *index;
 		}
 	}
 
-	vertices_map.destroy( vertices_map_table_allocator );
-	vertices_map_pool.destroy( );
+	vertices_map.destroy( );
 
 	indices			= indices_data;
 	index_count		= polygon_count * 3;
