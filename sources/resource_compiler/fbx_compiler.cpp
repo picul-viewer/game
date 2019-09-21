@@ -207,7 +207,8 @@ static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u3
 
 	u32 const total_size = sizeof(u32) + indices_size + sizeof(u32) + vertices_size;
 
-	pointer const file_data = std_allocator( ).allocate( total_size );
+	std_allocator::scoped_memory const file_data_ptr( total_size );
+	pointer const file_data = file_data_ptr;
 	
 	u32 index_data = index_count;
 	index_data |= configure_mask;
@@ -233,7 +234,6 @@ static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u3
 
 	vertices.destroy( );
 	std_allocator( ).deallocate( indices );
-	std_allocator( ).deallocate( file_data );
 }
 
 void fbx_compiler::compile( u64 relevant_date, weak_const_string input_file_name, weak_const_string output_directory )

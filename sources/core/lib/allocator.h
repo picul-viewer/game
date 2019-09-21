@@ -5,15 +5,34 @@
 
 struct std_allocator
 {
-	pointer allocate( uptr size );
-	void deallocate( pointer p );
+	pointer allocate( uptr const size );
+	void deallocate( pointer const p );
+
+	struct scoped_memory
+	{
+	public:
+		scoped_memory( uptr const size );
+		~scoped_memory( );
+
+		operator pointer( ) const;
+
+		template<typename T>
+		operator T*( ) const
+		{
+			return (T*)m_data;
+		}
+
+	private:
+		pvoid m_data;
+
+	};
 };
 
-template<uptr alignment>
+template<uptr Alignment>
 struct aligned_std_allocator
 {
-	inline pointer allocate( uptr size );
-	inline void deallocate( pointer p );
+	inline pointer allocate( uptr const size );
+	inline void deallocate( pointer const p );
 };
 
 static inline uptr get_aligned_size( uptr const size, uptr const page_size )
@@ -29,23 +48,23 @@ struct virtual_allocator
 		static const uptr value = ( MemorySize + ( Memory_Page_Size - 1 ) ) & ( ~( Memory_Page_Size - 1 ) );
 	};
 
-	pointer reserve( pointer p, uptr size );
-	pointer commit( pointer p, uptr size );
-	void decommit( pointer p, uptr size );
-	void release( pointer p );
+	pointer reserve( pointer const p, uptr const size );
+	pointer commit( pointer const p, uptr const size );
+	void decommit( pointer const p, uptr const size );
+	void release( pointer const p );
 
-	pointer allocate( uptr size );
-	void deallocate( pointer p );
+	pointer allocate( uptr const size );
+	void deallocate( pointer const p );
 };
 
 #define stack_allocate( n ) (pointer)_alloca( n )
 
 struct fake_allocator
 {
-	fake_allocator( pointer data );
+	fake_allocator( pointer const data );
 
-	pointer allocate( uptr size );
-	void deallocate( pointer p );
+	pointer allocate( uptr const size );
+	void deallocate( pointer const p );
 
 private:
 	pointer m_data;

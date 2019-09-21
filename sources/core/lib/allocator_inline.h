@@ -3,14 +3,14 @@
 
 #include <malloc.h>
 
-template<uptr alignment>
-pointer aligned_std_allocator<alignment>::allocate( uptr size )
+template<uptr Alignment>
+pointer aligned_std_allocator<Alignment>::allocate( uptr const size )
 {
-	return _aligned_malloc( size, alignment );
+	return _aligned_malloc( size, Alignment );
 }
 
-template<uptr alignment>
-void aligned_std_allocator<alignment>::deallocate( pointer p )
+template<uptr Alignment>
+void aligned_std_allocator<Alignment>::deallocate( pointer const p )
 {
 	_aligned_free( p );
 }
