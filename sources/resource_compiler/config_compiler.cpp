@@ -14,6 +14,9 @@ void config_compiler::create( )
 
 #define CONFIG_TYPES( config_type_instance )		\
 	config_type_instance( font )					\
+	config_type_instance( render_model_mesh )		\
+	config_type_instance( object )					\
+	config_type_instance( scene )					\
 
 
 DECLARE( CONFIG_TYPES )
@@ -26,7 +29,6 @@ void config_compiler::compile( u64 const relevant_date, pcstr const input_file_n
 	little_string file_name = sys::path::get_file_name( input_file_name );
 	sys::path::remove_file_extension( file_name );
 	little_string const config_type = sys::path::get_file_extension( file_name ) + 1;
-	sys::path::remove_file_extension( file_name );
 	sys::path output_path = str512( output_directory );
 	output_path += file_name + ".cfg";
 	
@@ -44,10 +46,13 @@ void config_compiler::compile( u64 const relevant_date, pcstr const input_file_n
 	ASSERT( f.is_valid( ) );
 
 	uptr const size = f.size( );
-	pvoid const data = stack_allocate( size );
+	std_allocator::scoped_memory const data_ptr( size + 1 );
+	pstr const data = data_ptr;
 
 	f.read( data, size );
 	f.destroy( );
+
+	data[size] = '\0';
 
 	bool result = false;
 	bool found_type = false;

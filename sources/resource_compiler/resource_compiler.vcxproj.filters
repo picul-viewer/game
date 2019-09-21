@@ -18,6 +18,9 @@
     <ClCompile Include="config_compiler_types.cpp">
       <Filter>config_compiler</Filter>
     </ClCompile>
+    <ClCompile Include="config_compiler_common.cpp">
+      <Filter>config_compiler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource_compiler.h" />
@@ -34,6 +37,9 @@
       <Filter>config_compiler</Filter>
     </ClInclude>
     <ClInclude Include="config_compiler_macros.h">
+      <Filter>config_compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="config_compiler_common.h">
       <Filter>config_compiler</Filter>
     </ClInclude>
   </ItemGroup>
