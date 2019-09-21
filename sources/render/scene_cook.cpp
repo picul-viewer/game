@@ -53,15 +53,16 @@ void scene_cook::create_resource( )
 		for ( u32 i = 0; i < m_static_mesh_count; ++i )
 		{
 			render_object_mesh* const obj = g_resources.get_render_object_allocator( ).mesh_allocator( ).allocate( );
+			new ( obj ) render_object_mesh( );
 			obj->initialize( m_config, queries );
 			m_static_mesh_handles[i] = (math::bvh::object_handle)g_resources.get_render_object_allocator( ).mesh_allocator( ).index_of( obj );
 		}
 
-		m_result->m_static_mesh_container.create( memory, static_mesh_bvh_memory_size );
+		m_result->m_static_mesh_container.create( ptr, static_mesh_bvh_memory_size );
 		m_result->m_static_mesh_container.deserialize( m_config, m_static_mesh_handles );
 		ptr += static_mesh_bvh_memory_size;
 
-		m_result->m_dynamic_mesh_container.create( memory, dynamic_mesh_bvh_memory_size );
+		m_result->m_dynamic_mesh_container.create( ptr, dynamic_mesh_bvh_memory_size );
 		ptr += dynamic_mesh_bvh_memory_size;
 	}
 
@@ -82,6 +83,7 @@ void scene_cook::on_child_resources_ready( queried_resources& in_queried )
 	{
 		render_object_mesh* const obj = g_resources.get_render_object_allocator( ).mesh_allocator( )[m_static_mesh_handles[i]];
 		obj->set_queried_resources( in_queried );
+		obj->update( math::float4x3::identity( ) );
 	}
 
 	std_allocator( ).deallocate( m_static_mesh_handles );
