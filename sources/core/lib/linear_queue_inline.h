@@ -74,7 +74,7 @@ T const& lib::linear_queue<T>::back( ) const
 template<typename T>
 bool lib::linear_queue<T>::empty( ) const
 {
-	return m_push_index != m_pop_index;
+	return m_push_index == m_pop_index;
 }
 
 #endif // #ifndef GUARD_CORE_LINEAR_QUEUE_INLINE_H_INCLUDED
