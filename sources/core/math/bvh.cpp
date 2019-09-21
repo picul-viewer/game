@@ -200,35 +200,48 @@ void bvh::serialize( lib::writer& w )
 	u16* const node_count_ptr = w.ptr( );
 	w += sizeof(u16);
 
-	lib::linear_queue<node_data*> q;
+	struct queue_element
+	{
+		node_handle node_index;
+		node_handle parent_index;
+	};
+	lib::linear_queue<queue_element> q;
 	uptr const queue_size = 16384;
 	q.create( stack_allocate( queue_size * sizeof(node_data*) ), queue_size );
 
-	q.push( m_allocator[m_root] );
-	u16 node_index = 1;
+	q.push( { m_root, invalid } );
+	u16 nodes_count = 1;
+	u16 current_node = 0;
 
 	do
 	{
-		node_data* n;
-		q.pop( n );
+		queue_element qe;
+		q.pop( qe );
+
+		node_data* const n = m_allocator[qe.node_index];
+
+		w.write<float3>( n->aabb_min );
 
 		if ( n->leaf_flag != 0 )
-			w.write_data( n, sizeof(node_data) );
+			w.write<u32>( n->obj );
 		else
 		{
-			q.push( m_allocator[n->left] );
-			q.push( m_allocator[n->right] );
+			q.push( { n->left, current_node } );
+			q.push( { n->right, current_node } );
 
-			w.write<float3>( n->aabb_min );
-			w.write<u16>( node_index++ );
-			w.write<u16>( node_index++ );
-			w.write<float3>( n->aabb_max );
-			w.write<u32>( node_index++ );
+			w.write<u16>( nodes_count++ );
+			w.write<u16>( nodes_count++ );
 		}
+
+		w.write<float3>( n->aabb_max );
+		w.write<u16>( qe.parent_index );
+		w.write<u16>( n->leaf_flag );
+
+		++current_node;
 	}
 	while ( !q.empty( ) );
 
-	*node_count_ptr = node_index;
+	*node_count_ptr = nodes_count;
 }
 
 void bvh::deserialize( lib::reader& r, object_handle const* const handles )
@@ -249,6 +262,8 @@ void bvh::deserialize( lib::reader& r, object_handle const* const handles )
 		if ( n->leaf_flag != 0 )
 			n->obj = handles[n->obj];
 	}
+
+	m_root = ( node_count != 0 ) ? 0 : invalid;
 }
 
 bvh::node_handle bvh::insert( object_handle const object, aabb const& object_aabb )
