@@ -13,7 +13,7 @@ void stage_statistics::create( )
 {
 	g_statistics.create( );
 
-	ui::font_cook* const font_cook = ui::font_cook::create( GET_RESOURCE_PATH( "configs\\fonts\\console.cfg" ) );
+	ui::font_cook* const font_cook = ui::font_cook::create( GET_RESOURCE_PATH( "configs\\fonts\\console.font.cfg" ) );
 	resource_system::create_resources(
 		resource_system::user_callback_task<stage_statistics, &stage_statistics::on_font_loaded>( this ),
 		font_cook

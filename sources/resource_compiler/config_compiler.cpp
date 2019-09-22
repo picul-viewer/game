@@ -31,6 +31,7 @@ void config_compiler::compile( u64 const relevant_date, pcstr const input_file_n
 	little_string const config_type = sys::path::get_file_extension( file_name ) + 1;
 	sys::path output_path = str512( output_directory );
 	output_path += file_name + ".cfg";
+	sys::path::remove_file_extension( file_name );
 	
 	sys::file_iterator fi;
 	fi.create( output_path.c_str( ) );

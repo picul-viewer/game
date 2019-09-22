@@ -69,7 +69,7 @@ void world::create( )
 			float const dimension = grid_size * 2.0f + ( grid_size - 1 ) * 0.5f;
 
 			w.write<u8>( 0 );
-			w.write_str( "configs/box.render_model_mesh" );
+			w.write_str( "configs/render/box.render_model_mesh.cfg" );
 
 			w.write<math::float4x3>(
 				math::float4x3(
@@ -88,7 +88,7 @@ void world::create( )
 	task_info queries[64];
 	u32 query_index = 0;
 
-	ui::font_cook* const font_cook = ui::font_cook::create( GET_RESOURCE_PATH( "configs\\fonts\\console.cfg" ) );
+	ui::font_cook* const font_cook = ui::font_cook::create( GET_RESOURCE_PATH( "configs\\fonts\\console.font.cfg" ) );
 	font_cook->fill_task_info( queries[query_index++] );
 
 	engine::scene_cook* const scene_cook = engine::scene_cook::create( lib::reader( scene_cook_data, scene_cook_size ) );
