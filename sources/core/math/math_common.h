@@ -177,15 +177,20 @@ public:
 		u32 x = *(u32*)&n;
 		data = ( x == 0 ) ? 0 : ( ( ( x >> 16 ) & 0x8000 ) | ( ( ( ( x & 0x7F800000 ) - 0x38000000) >> 13 ) & 0x7C00 ) | ( ( x >> 13 ) & 0x03FF ) );
 	}
-	
+
 	inline operator float( )
 	{
 		u32 res = ( ( data & 0x8000 ) << 16 ) | ( ( ( data & 0x7C00 ) + 0x1C000 ) << 13 ) | ( ( data & 0x03FF ) << 13 );
 		return *(float*)&res;
 	}
-	
+
 	u16 data;
 };
+
+inline bool operator==( half const l, half const r )
+{
+	return l.data == r.data;
+}
 
 template<typename T>
 inline T smooth_step( T t )

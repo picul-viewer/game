@@ -16,6 +16,8 @@ using std::random_access_iterator_tag;
 
 using std::sort;
 using std::for_each;
+using std::find;
+using std::find_if;
 
 using std::move;
 

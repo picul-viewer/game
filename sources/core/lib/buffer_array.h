@@ -16,6 +16,11 @@ public:
 	void push_back( T const& value );
 	T& emplace_back( );
 
+	void pop_back( );
+
+	T& front( ) const;
+	T& back( ) const;
+
 	void resize( uptr const size );
 	void reserve( uptr const size );
 	void clear( );

@@ -25,6 +25,27 @@ T& lib::buffer_array<T>::emplace_back( )
 }
 
 template<typename T>
+void lib::buffer_array<T>::pop_back( )
+{
+	ASSERT			( m_end != m_begin );
+	--m_end;
+}
+
+template<typename T>
+T& lib::buffer_array<T>::front( ) const
+{
+	ASSERT			( m_end != m_begin );
+	return			*m_begin;
+}
+
+template<typename T>
+T& lib::buffer_array<T>::back( ) const
+{
+	ASSERT			( m_end != m_begin );
+	return			*( m_end - 1 );
+}
+
+template<typename T>
 void lib::buffer_array<T>::resize( uptr const size )
 {
 	T* new_end		= m_begin + size;

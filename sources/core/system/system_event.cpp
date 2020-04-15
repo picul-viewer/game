@@ -43,9 +43,14 @@ u32 sys::system_event::wait_any( u32 const count, system_event const* const obje
 	DWORD const result = WaitForMultipleObjects( count, &objects[0].m_id, FALSE, wait_ms );
 
 	ASSERT( ( result < WAIT_ABANDONED_0 ) || ( result >= WAIT_ABANDONED_0 + count ) );
+	ASSERT( result != WAIT_TIMEOUT );
 
-	if ( result == WAIT_TIMEOUT )
-		return 0xFFFFFFFF;
+#ifdef DEBUG
+	if ( result == (DWORD)-1 )
+	{
+		FATAL_ERROR( "WaitForMultipleObjects failed, error is 0x%08llx", GetLastError( ) );
+	}
+#endif // #ifdef DEBUG
 
 	return result - WAIT_OBJECT_0;
 }

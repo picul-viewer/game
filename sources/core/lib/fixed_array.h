@@ -11,6 +11,7 @@ class fixed_array
 {
 public:
 	typedef T value_type;
+	enum : uptr { array_size = Size };
 
 	fixed_array( ) = default;
 

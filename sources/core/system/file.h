@@ -30,7 +30,7 @@ public:
 	void seek( ptr position, seek_mode mode = seek_from_begin );
 
 	void read( pvoid buffer, uptr size );
-	void write( pvoid buffer, uptr size );
+	void write( pcvoid buffer, uptr size );
 
 	bool is_valid( ) const;
 

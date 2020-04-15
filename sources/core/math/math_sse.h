@@ -49,6 +49,11 @@ struct vector
 	}
 };
 
+static inline vector operator+( vector a, vector b ) { return _mm_add_ps( a.data, b.data ); }
+static inline vector operator-( vector a, vector b ) { return _mm_sub_ps( a.data, b.data ); }
+static inline vector operator*( vector a, vector b ) { return _mm_mul_ps( a.data, b.data ); }
+static inline vector operator/( vector a, vector b ) { return _mm_div_ps( a.data, b.data ); }
+
 struct matrix;
 
 mem_align(16)

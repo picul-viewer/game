@@ -19,6 +19,7 @@ void sys::file::create( pcstr path, open_mode mode )
 		break;
 	case open_write:
 		access_flags	= GENERIC_WRITE;
+		share_flags		= FILE_SHARE_WRITE;
 		creation		= CREATE_ALWAYS;
 		break;
 	default:
@@ -85,7 +86,7 @@ void sys::file::read( pvoid buffer, uptr size )
 	ASSERT_CMP( bytes_read, ==, (DWORD)size );
 }
 
-void sys::file::write( pvoid buffer, uptr size )
+void sys::file::write( pcvoid buffer, uptr size )
 {
 	ASSERT( buffer );
 	ASSERT_CMP( size, <=, 0x7FFFFFFF );
