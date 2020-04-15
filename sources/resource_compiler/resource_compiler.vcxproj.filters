@@ -3,9 +3,6 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="resource_compiler.cpp" />
-    <ClCompile Include="shader_compiler.cpp">
-      <Filter>shader_compiler</Filter>
-    </ClCompile>
     <ClCompile Include="fbx_compiler.cpp">
       <Filter>fbx_compiler</Filter>
     </ClCompile>
@@ -24,9 +21,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource_compiler.h" />
-    <ClInclude Include="shader_compiler.h">
-      <Filter>shader_compiler</Filter>
-    </ClInclude>
     <ClInclude Include="texture_compiler.h">
       <Filter>texture_compiler</Filter>
     </ClInclude>
@@ -44,9 +38,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="shader_compiler">
-      <UniqueIdentifier>{33261bcc-9f3d-4f58-830f-31499f941244}</UniqueIdentifier>
-    </Filter>
     <Filter Include="fbx_compiler">
       <UniqueIdentifier>{60b1dafa-4bd0-45e4-afb2-41b7f267696c}</UniqueIdentifier>
     </Filter>

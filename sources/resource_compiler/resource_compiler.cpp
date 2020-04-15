@@ -10,10 +10,10 @@ namespace resource_compiler {
 
 void resource_compiler::create( )
 {
-	m_shader_compiler_dbg_4_0.create( "4_0", true );
+	/*m_shader_compiler_dbg_4_0.create( "4_0", true );
 	m_shader_compiler_rel_4_0.create( "4_0", false );
 	m_shader_compiler_dbg_5_0.create( "5_0", true );
-	m_shader_compiler_rel_5_0.create( "5_0", false );
+	m_shader_compiler_rel_5_0.create( "5_0", false );*/
 
 	m_fbx_compiler.create( );
 
@@ -28,7 +28,7 @@ void resource_compiler::destroy( )
 	m_fbx_compiler.destroy( );
 }
 
-struct shader_compiler_data
+/*struct shader_compiler_data
 {
 	shader_compiler* compiler;
 	pcstr input_path;
@@ -40,7 +40,7 @@ void shader_compiler_thread_function( void* const param )
 	shader_compiler_data* data = (shader_compiler_data*)param;
 
 	data->compiler->compile( data->input_path, data->output_path );
-}
+}*/
 
 typedef decltype(&resource_compiler::scan) scan_decl;
 
@@ -73,10 +73,10 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 {
 	enum resource_compiler_threads
 	{
-		shader_compiler_debug_4_0 = 0,
+		/*shader_compiler_debug_4_0 = 0,
 		shader_compiler_release_4_0,
 		shader_compiler_debug_5_0,
-		shader_compiler_release_5_0,
+		shader_compiler_release_5_0,*/
 
 		fbx_compiler,
 
@@ -91,7 +91,7 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 
 	u32 thread_index = 0;
 
-	shader_compiler_data shader_thread_data[4];
+	/*shader_compiler_data shader_thread_data[4];
 
 	sys::path shader_input;
 	sys::path shader_output;
@@ -126,7 +126,7 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 			threads[thread_index].create( sys::thread::func_helper<&shader_compiler_thread_function>, 1 * Mb, &shader_thread_data[i] );
 			++thread_index;
 		}
-	}
+	}*/
 
 	scan_execute_data fbx_thread_data;
 	

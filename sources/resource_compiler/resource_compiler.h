@@ -6,7 +6,7 @@
 #include <lib/weak_string.h>
 #include <lib/fixed_string.h>
 
-#include "shader_compiler.h"
+//#include "shader_compiler.h"
 #include "fbx_compiler.h"
 #include "texture_compiler.h"
 #include "config_compiler.h"
@@ -36,10 +36,10 @@ protected:
 	void compile_config( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory );
 
 protected:
-	shader_compiler m_shader_compiler_dbg_4_0;
+	/*shader_compiler m_shader_compiler_dbg_4_0;
 	shader_compiler m_shader_compiler_rel_4_0;
 	shader_compiler m_shader_compiler_dbg_5_0;
-	shader_compiler m_shader_compiler_rel_5_0;
+	shader_compiler m_shader_compiler_rel_5_0;*/
 
 	fbx_compiler m_fbx_compiler;
 

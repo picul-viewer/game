@@ -8,12 +8,14 @@
 #include <math/vector.h>
 
 #include <lib/allocator.h>
-#include <lib/dynamic_array.h>
+#include <lib/buffer_array.h>
 
 #include <lib/weak_string.h>
 #include <lib/fixed_string.h>
 
 #include <lib/linear_set.h>
+
+#include <lib/writer.h>
 
 #include <system/path.h>
 #include <system/file.h>
@@ -59,104 +61,65 @@ static inline ElementType get_element( FbxMesh* const mesh, FbxLayerElementTempl
 	return element->GetDirectArray( ).GetAt( base_index );
 }
 
-static inline u32 convert_uv( FbxVector2 const& uv )
+struct vertex_data_type
 {
-	return (u32)( uv.mData[0] * 65535.0 + 0.5 ) |
-		( (u32)( uv.mData[1] * 65535.0 + 0.5 ) << 16 );
-}
-
-static inline u32 convert_normal( FbxVector4& normal )
-{
-	normal.Normalize( );
-
-	return (u8)( ( normal.mData[0] + 1.0 ) * 127.0 + 0.5 ) |
-		( (u8)( ( normal.mData[1] + 1.0f ) * 127.0 + 0.5 ) << 8 ) |
-		( (u8)( ( normal.mData[2] + 1.0f ) * 127.0 + 0.5 ) << 16 );
-}
-
-mem_align( 4 )
-struct vertex
-{
-	math::float3 pos;
 	math::float2 uv;
-	math::float3 normal;
-
-	void init( FbxMesh* const mesh, u32 const polygon_index, u32 const vertex_index )
-	{
-		FbxVector4 const& pos		= mesh->GetControlPointAt( mesh->GetPolygonVertex( polygon_index, vertex_index ) );
-
-		FbxVector2 const& uv		= get_element( mesh, mesh->GetElementUV( 0 ), polygon_index, vertex_index );
-		FbxVector4 const normal		= get_element( mesh, mesh->GetElementNormal( 0 ), polygon_index, vertex_index );
-
-		this->pos					= math::float3( (float)pos.mData[0], (float)pos.mData[1], (float)pos.mData[2] );
-		this->uv					= math::float2( (float)uv.mData[0], (float)uv.mData[1] );
-		this->normal				= math::float3( (float)normal.mData[0], (float)normal.mData[1], (float)normal.mData[2] );
-	}
+	math::half4 normal;
 };
 
-bool operator==( vertex const& l, vertex const& r )
+math::float3 get_mesh_vertex( FbxMesh* const mesh, u32 const polygon_index, u32 const vertex_index )
+{
+	FbxVector4 const& pos = mesh->GetControlPointAt( mesh->GetPolygonVertex( polygon_index, vertex_index ) );
+	return math::float3( (float)pos.mData[0], (float)pos.mData[1], (float)pos.mData[2] );
+}
+
+vertex_data_type get_mesh_vertex_data( FbxMesh* const mesh, u32 const polygon_index, u32 const vertex_index )
+{
+	vertex_data_type data;
+
+	FbxVector2 const& uv		= get_element( mesh, mesh->GetElementUV( 0 ), polygon_index, vertex_index );
+	FbxVector4 const normal		= get_element( mesh, mesh->GetElementNormal( 0 ), polygon_index, vertex_index );
+
+	data.uv						= math::float2( (float)uv.mData[0], (float)uv.mData[1] );
+	data.normal					= math::half4( (float)normal.mData[0], (float)normal.mData[1], (float)normal.mData[2], 0.0f );
+
+	return data;
+}
+
+bool operator==( vertex_data_type const& l, vertex_data_type const& r )
 {
 	return
-		( l.pos		== r.pos	) &&
 		( l.uv		== r.uv		) &&
 		( l.normal	== r.normal	);
 }
 
-mem_align( 4 )
-struct bumpmapped_vertex : public vertex
+static void process_mesh( FbxMesh* const mesh, lib::buffer_array<math::float3>& vertices, lib::buffer_array<vertex_data_type>& vertices_data, u16*& indices, u32& index_count )
 {
-	math::float3 tangent;
-	math::float3 binormal;
-	
-	void init( FbxMesh* const mesh, u32 const polygon_index, u32 const vertex_index )
-	{
-		vertex::init( mesh, polygon_index, vertex_index );
-
-		FbxVector4 const tangent	= get_element( mesh, mesh->GetElementTangent( 0 ), polygon_index, vertex_index );
-		FbxVector4 const binormal	= get_element( mesh, mesh->GetElementBinormal( 0 ), polygon_index, vertex_index );
-
-		this->tangent				= math::float3( (float)tangent.mData[0], (float)tangent.mData[1], (float)tangent.mData[2] );
-		this->binormal				= math::float3( (float)binormal.mData[0], (float)binormal.mData[1], (float)binormal.mData[2] );
-	}
-};
-
-bool operator==( bumpmapped_vertex const& l, bumpmapped_vertex const& r )
-{
-	return
-		( (vertex)l		== (vertex)r	) &&
-		( l.tangent		== r.tangent	) &&
-		( l.binormal	== r.binormal	);
-}
-
-template<typename VertexType>
-static inline bool process_mesh( FbxMesh* const mesh, lib::dynamic_array<VertexType>& vertices, u32*& indices, u32& index_count )
-{
-	lib::linear_set<u32, 256 * 1024> vertices_map;
+	lib::linear_set<u16, 256 * 1024> vertices_map;
 	vertices_map.create( );
-
-	u32 current_index = 0;
 
 	u32 const polygon_count = mesh->GetPolygonCount( );
 
-	u32* const indices_data = std_allocator( ).allocate( polygon_count * 3 * sizeof(u32) );
+	u16* const indices_data = std_allocator( ).allocate( polygon_count * 3 * sizeof(u16) );
 
 	for ( u32 i = 0; i < polygon_count; ++i )
 	{
 		for ( u32 j = 0; j < 3; ++j )
 		{
-			VertexType v;
-			v.init( mesh, i, j );
+			math::float3 const& vertex = get_mesh_vertex( mesh, i, j );
+			vertex_data_type const& vertex_data = get_mesh_vertex_data( mesh, i, j );
 
-			u32* index;
+			u16* index;
 			vertices_map.find_if_or_insert(
-				lib::hash( v ),
-				[&v, &vertices]( u32 const value )
+				lib::hash( vertex, lib::hash( vertex_data ) ),
+				[&vertex, &vertex_data, &vertices, &vertices_data]( u32 const value )
 				{
-					return vertices[value] == v;
+					return ( vertices[value] == vertex ) && ( vertices_data[value] == vertex_data );
 				},
-				[&v, &vertices]( )
+				[&vertex, &vertex_data, &vertices, &vertices_data]( )
 				{
-					vertices.emplace_back( ) = v;
+					vertices.emplace_back( ) = vertex;
+					vertices_data.emplace_back( ) = vertex_data;
 					return (u32)( vertices.size( ) - 1 );
 				},
 				index
@@ -170,56 +133,40 @@ static inline bool process_mesh( FbxMesh* const mesh, lib::dynamic_array<VertexT
 
 	indices			= indices_data;
 	index_count		= polygon_count * 3;
-	
-	if ( current_index < 65536 )
-	{
-		// use 16-bit indices
-		for ( u32 i = 0; i < polygon_count * 3 / 2; ++i )
-			indices_data[i] = ( indices[i * 2 + 0] & 0x0000FFFF ) | ( indices[i * 2 + 1] << 16 );
-
-		if ( polygon_count & 1 )
-			indices_data[polygon_count * 3 / 2] = indices_data[polygon_count * 3 - 1];
-
-		return true;
-	}
-
-	return false;
 }
 
-template<typename VertexType>
-static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u32 const configure_mask )
+static void write_to_file( FbxMesh* const mesh, sys::path const& path )
 {
-	lib::dynamic_array<VertexType> vertices;
-	vertices.create( nullptr, 32 * Mb );
+	lib::buffer_array<math::float3> vertices;
+	lib::buffer_array<vertex_data_type> vertices_data;
+
+	u32 const max_vertices = 65536;
+	std_allocator::scoped_memory const vertex_memory( max_vertices * ( sizeof(math::float3) + sizeof(vertex_data_type) ) );
+	pbyte const vertices_memory = vertex_memory;
+	pbyte const vertices_data_memory = vertices_memory + max_vertices * sizeof(math::float3);
+
+	vertices.create( vertices_memory, max_vertices );
+	vertices_data.create( vertices_data_memory, max_vertices );
 	
-	u32* indices;
+	u16* indices;
 	u32 index_count;
 
-	bool const use_16bit_indices = process_mesh( mesh, vertices, indices, index_count );
-	if ( index_count >= ( 1u << 29 ) )
-	{
-		LOG( "fbx_compiler: the mesh is too big: \"%s\"\n", path.c_str( ) );
-		return;
-	}
+	process_mesh( mesh, vertices, vertices_data, indices, index_count );
 
-	u32 const indices_size = index_count * ( use_16bit_indices ? sizeof(u16) : sizeof(u32) );
-	u32 const vertices_size = (u32)( vertices.size( ) * sizeof(VertexType) );
+	u32 const vertex_count = (u32)vertices.size( );
 
-	u32 const total_size = sizeof(u32) + indices_size + sizeof(u32) + vertices_size;
+	uptr const total_size = sizeof(u32) * 2 + index_count * sizeof(u16) + vertices.size( ) * ( sizeof(math::float3) + sizeof(vertex_data_type) );
 
 	std_allocator::scoped_memory const file_data_ptr( total_size );
 	pointer const file_data = file_data_ptr;
-	
-	u32 index_data = index_count;
-	index_data |= configure_mask;
 
-	if ( !use_16bit_indices )
-		index_data |= ( 1u << 29 );
+	lib::writer w( file_data, total_size );
 
-	memcpy( file_data, &index_data, sizeof(u32) );
-	memcpy( file_data + sizeof(u32), indices, indices_size );
-	memcpy( file_data + sizeof(u32) + indices_size, &vertices_size, sizeof(u32) );
-	memcpy( file_data + sizeof(u32) + indices_size + sizeof(u32), vertices.data( ), vertices_size );
+	w.write( index_count );
+	w.write( vertex_count );
+	w.write_data( indices, index_count * sizeof(u16) );
+	w.write_data( vertices.data( ), vertices.size( ) * sizeof(math::float3) );
+	w.write_data( vertices_data.data( ), vertices_data.size( ) * sizeof(vertex_data_type) );
 
 	sys::file f;
 	f.create( path.c_str( ), sys::file::open_write );
@@ -232,7 +179,6 @@ static inline void write_to_file( FbxMesh* const mesh, sys::path const& path, u3
 	f.write( file_data, total_size );
 	f.destroy( );
 
-	vertices.destroy( );
 	std_allocator( ).deallocate( indices );
 }
 
@@ -240,17 +186,15 @@ void fbx_compiler::compile( u64 relevant_date, weak_const_string input_file_name
 {
 	little_string file_name = sys::path::get_file_name( input_file_name );
 
-#ifdef DEBUG
 	ASSERT( file_name.copy( file_name.length( ) - 4, 4 ) == ".fbx", "wrong file extension: %s", file_name.copy( file_name.length( ) - 4, 4 ) );
-#endif // #ifdef DEBUG
-	
+
 	sys::path::remove_file_extension( file_name.data( ) );
 
 	file_name.append( ".mesh" );
 
 	sys::path output_path = str512( output_directory );
 	output_path += file_name;
-	
+
 	sys::file_iterator fi;
 	fi.create( output_path.c_str( ) );
 	if ( fi.is_valid( ) )
@@ -289,13 +233,8 @@ void fbx_compiler::compile( u64 relevant_date, weak_const_string input_file_name
 		LOG( "fbx_compiler: bad input file: \"%s\"\n", output_path.c_str( ) );
 		return;
 	}
-	
-	bool const is_bumpmapped = mesh->GetElementTangentCount( ) && mesh->GetElementBinormalCount( );
 
-	if ( is_bumpmapped )
-		write_to_file<bumpmapped_vertex>( mesh, output_path.c_str( ), 0x80000000 );
-	else
-		write_to_file<vertex>( mesh, output_path.c_str( ), 0x00000000 );
+	write_to_file( mesh, output_path.c_str( ) );
 
 	scene->Destroy( );
 

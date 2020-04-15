@@ -142,7 +142,7 @@ bool compile_config_object( pstr const data, uptr const size, pcstr const file_n
 	ASSERT( render_node.valid( ) );
 
 	{
-		u16* const render_object_count = output.ptr( );
+		u16* const mesh_object_count = output.ptr( );
 		output += sizeof(u16);
 
 		u16 count = 0;
@@ -164,7 +164,7 @@ bool compile_config_object( pstr const data, uptr const size, pcstr const file_n
 			}
 		}
 
-		*render_object_count = count;
+		*mesh_object_count = count;
 	}
 
 	*render_size = (u32)output.size( render_output );
