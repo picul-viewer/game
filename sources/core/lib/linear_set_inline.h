@@ -151,9 +151,15 @@ bool linear_set<T, TableSize>::find_if_or_insert( u32 const hash, Functor const&
 template<typename T, u32 TableSize>
 T* linear_set<T, TableSize>::insert( T const value )
 {
+	return insert( hash( value ), value );
+}
+
+template<typename T, u32 TableSize>
+T* linear_set<T, TableSize>::insert( u32 const hash, T const value )
+{
 	u32 const max_distance = ( TableSize < 256 ) ? TableSize : 255;
 
-	u32 const start_index = hash( value ) % TableSize;
+	u32 const start_index = hash % TableSize;
 	u32 index = start_index;
 
 	u8 current_key;

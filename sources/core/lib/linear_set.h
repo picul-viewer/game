@@ -21,6 +21,7 @@ public:
 	bool find_if_or_insert( u32 const hash, Functor const& f, InsertValueGenerator const& value_gen, T*& found_value );
 
 	T* insert( T const value );
+	T* insert( u32 const hash, T const value );
 
 	void remove( T const value );
 	template<typename Functor>
