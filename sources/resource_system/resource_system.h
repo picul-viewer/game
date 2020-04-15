@@ -35,6 +35,16 @@ public:
 		bool in_collect_children_results
 	);
 
+	custom_task_context create_custom_tasks(
+		u32 const in_count,
+		task_info const& in_parent
+	);
+
+	custom_task_context create_custom_subtasks(
+		u32 const in_count,
+		task_info const* const in_parent
+	);
+
 	void set_current_task_result(
 		pvoid const in_result
 	);
@@ -45,11 +55,16 @@ public:
 		pvoid const in_result
 	);
 
-	void process_busy( sys::time const in_time_limit );
-	void process_free( );
-	void process_helper( );
+	void finish_custom_task(
+		custom_task_context const in_context
+	);
 
-	void break_thread( u32 const in_thread_index );
+
+	bool process_task( u32 const in_thread_index );
+	bool process_helper_task( );
+
+	sys::system_event const& queue_event( u32 const in_thread_index ) const;
+	sys::system_event const& helper_queue_event( ) const;
 
 private:
 	enum : u32 {

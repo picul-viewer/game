@@ -100,6 +100,7 @@
     <ClInclude Include="queried_resources_inline.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="resource_cook.h" />
+    <ClInclude Include="resource_creator.h" />
     <ClInclude Include="resource_handle.h" />
     <ClInclude Include="resource_system_utils.h" />
     <ClInclude Include="shared_resource_container_allocator.h" />
@@ -113,12 +114,14 @@
     <ClInclude Include="shared_resource_cook.h" />
     <ClInclude Include="shared_resource_cook_inline.h" />
     <ClInclude Include="shared_resource_types.h" />
+    <ClInclude Include="singleton_resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="api.cpp" />
     <ClCompile Include="resource.cpp" />
     <ClCompile Include="queried_resources.cpp" />
     <ClCompile Include="resource_cook.cpp" />
+    <ClCompile Include="resource_creator.cpp" />
     <ClCompile Include="resource_system.cpp" />
     <ClCompile Include="shared_resource_container_allocator.cpp" />
   </ItemGroup>

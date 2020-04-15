@@ -34,6 +34,12 @@
     <Filter Include="resource\shared_resource\shared_resource_container_allocator">
       <UniqueIdentifier>{7690e463-d478-4de7-8a50-56c13854f86b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resource\singleton_resource">
+      <UniqueIdentifier>{bcda45ec-0907-4c49-bf51-0a63a24c1e6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource_sytem\resource_creator">
+      <UniqueIdentifier>{e9383377-4fee-4c6b-96cf-4e2fd6e54f15}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="queried_resources.h">
@@ -105,6 +111,12 @@
     <ClInclude Include="shared_resource_container_allocator.h">
       <Filter>resource\shared_resource\shared_resource_container_allocator</Filter>
     </ClInclude>
+    <ClInclude Include="singleton_resource.h">
+      <Filter>resource\singleton_resource</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_creator.h">
+      <Filter>resource_sytem\resource_creator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="queried_resources.cpp">
@@ -124,6 +136,9 @@
     </ClCompile>
     <ClCompile Include="shared_resource_container_allocator.cpp">
       <Filter>resource\shared_resource\shared_resource_container_allocator</Filter>
+    </ClCompile>
+    <ClCompile Include="resource_creator.cpp">
+      <Filter>resource_sytem\resource_creator</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

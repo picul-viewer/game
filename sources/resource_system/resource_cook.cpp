@@ -8,25 +8,12 @@ void resource_cook::init( cook_destroyer const in_destroyer )
 	m_destroyer = in_destroyer;
 }
 
-void resource_cook::create_child_resources(
-	task_info const* const in_tasks,
-	u32 const in_task_count,
-	task_info const& in_callback_info
-)
-{
-	g_resource_system.create_subtasks(
-		&in_callback_info,
-		in_tasks,
-		in_task_count,
-		true
-	);
-}
-
 void resource_cook::finish_cook( pvoid const in_result )
 {
 	g_resource_system.set_current_task_result( in_result );
 
-	m_destroyer( this );
+	if ( this )
+		m_destroyer( this );
 }
 
 void resource_cook::finish_cook( pvoid const in_result, u32 const in_task_offset, u32 const in_result_index )

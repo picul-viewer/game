@@ -30,6 +30,22 @@ void resource_system::execute_tasks(
 	);
 }
 
+void resource_system::finish_cusom_task( custom_task_context const in_context )
+{
+	g_resource_system.finish_custom_task( in_context );
+}
+
+custom_task_context resource_system::create_custom_tasks(
+	u32 const in_task_count,
+	task_info const& in_callback
+)
+{
+	return g_resource_system.create_custom_tasks(
+		in_task_count,
+		in_callback
+	);
+}
+
 void resource_system::create_resources(
 	task_info const* const in_tasks,
 	u32 const in_task_count,
@@ -58,24 +74,24 @@ void resource_system::destroy_resources(
 	);
 }
 
-void resource_system::process_busy( sys::time const in_time_limit )
+bool resource_system::process_task( u32 const in_thread_index )
 {
-	g_resource_system.process_busy( in_time_limit );
+	return g_resource_system.process_task( in_thread_index );
 }
 
-void resource_system::process_free( )
+bool resource_system::process_helper_task( )
 {
-	g_resource_system.process_free( );
+	return g_resource_system.process_helper_task( );
 }
 
-void resource_system::process_helper( )
+sys::system_event const& resource_system::queue_event( u32 const in_thread_index )
 {
-	g_resource_system.process_helper( );
+	return g_resource_system.queue_event( in_thread_index );
 }
 
-void resource_system::break_thread( u32 const in_thread_index )
+sys::system_event const& resource_system::helper_queue_event( )
 {
-	g_resource_system.break_thread( in_thread_index );
+	return g_resource_system.helper_queue_event( );
 }
 
 task_info resource_system::null_callback( )

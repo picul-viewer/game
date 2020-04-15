@@ -3,6 +3,7 @@
 #include <math/math_common.h>
 #include <system/interlocked.h>
 #include "shared_resource_container_allocator.h"
+#include <Windows.h>
 
 namespace resource_system {
 
@@ -58,13 +59,16 @@ void resource_system::create( u32 const in_thread_count )
 		for ( u32 i = 0; i < m_thread_count; ++i )
 			if ( ( ( 1 << i ) & ignore_thread_mask ) == 0 )
 			{
-				m_queues[i].create( p, queue_memory_size );
+				m_queues[i].create( p, queue_size );
 				p += queue_memory_size;
 			}
 			else
 				m_queues[i].create( nullptr, 0 );
 
-		m_helper_queue.create( p, helper_queue_memory_size );
+		m_helper_queue.create( p, helper_queue_size );
+		p += helper_queue_memory_size;
+
+		ASSERT( p == memory + memory_size );
 	}
 
 	m_temp_allocator.create( );
@@ -110,15 +114,13 @@ void resource_system::stop( )
 
 	do
 	{
-		process_busy( sys::time::forever( ) );
-
-		while ( !all_asleep( ) )
-			macros::sleep( 1 );
+		while ( process_task( engine_thread_main ) );
+		Sleep( 1 );
 	}
 	while ( !queues_empty( ) );
 
-	for ( u32 i = 1; i < m_thread_count; ++i )
-		break_thread( i );
+	for ( u32 i = 0; i <= engine_thread_count; ++i )
+		m_events[i].set( );
 }
 
 void resource_system::destroy( )
@@ -162,106 +164,38 @@ void resource_system::process_task( u32 const thread_index, task_data* const dat
 	m_temp_allocator.deallocate( data, data_size );
 }
 
-void resource_system::process_busy( sys::time const in_time_limit )
+bool resource_system::process_task( u32 const in_thread_index )
+{
+	task_data* data;
+	bool const pop_successful = m_queues[in_thread_index].pop( data );
+
+	if ( pop_successful )
+		process_task( in_thread_index, data );
+
+	return pop_successful;
+}
+
+bool resource_system::process_helper_task( )
 {
 	u32 const thread_index = utils::thread_index( );
 
-	ASSERT_CMP( thread_index, <, m_thread_count );
-	ASSERT( ( ( 1 << thread_index ) & ignore_thread_mask ) == 0 );
+	task_data* data;
+	bool const pop_successful = m_helper_queue.pop( data );
 
-	sys::time current;
-
-	do
-	{
-		task_data* data;
-		bool const pop_successful = m_queues[thread_index].pop( data );
-
-		if ( !pop_successful )
-			break;
-
+	if ( pop_successful )
 		process_task( thread_index, data );
 
-		current = sys::time::now( );
-	}
-	while ( current < in_time_limit );
+	return pop_successful;
 }
 
-void resource_system::process_free( )
+sys::system_event const& resource_system::queue_event( u32 const in_thread_index ) const
 {
-	u32 const thread_index = utils::thread_index( );
-
-	ASSERT_CMP( thread_index, <, m_thread_count );
-
-	// Can be executed even for non-task threads ( just gives wait semantics ).
-	//ASSERT( ( ( 1 << thread_index ) & ignore_thread_mask ) == 0 );
-
-	while ( m_keep_process[thread_index] )
-	{
-		task_data* data;
-
-		if ( m_queues[thread_index].pop( data ) )
-			process_task( thread_index, data );
-		else
-		{
-			m_is_sleeping[thread_index] = true;
-			m_events[thread_index].wait( );
-			m_is_sleeping[thread_index] = false;
-		}
-	}
-
-	m_keep_process[thread_index] = true;
+	return m_events[in_thread_index];
 }
 
-void resource_system::process_helper( )
+sys::system_event const& resource_system::helper_queue_event( ) const
 {
-	u32 const thread_index = utils::thread_index( );
-
-	ASSERT_CMP( thread_index, >=, engine_helper_threads_first );
-	ASSERT_CMP( thread_index, <, m_thread_count );
-	ASSERT( ( ( 1 << thread_index ) & ignore_thread_mask ) == 0 );
-
-	sys::system_event events_to_wait[2] = { m_events[thread_index], m_events[engine_thread_count] };
-
-label_outer_loop:
-	while ( m_keep_process[thread_index] )
-	{
-		task_data* data;
-
-		while ( m_queues[thread_index].pop( data ) )
-		{
-			process_task( thread_index, data );
-		}
-
-		while ( m_keep_process[thread_index] )
-		{
-			if ( m_helper_queue.pop( data ) )
-				process_task( thread_index, data );
-			else
-			{
-				m_is_sleeping[thread_index] = true;
-				u32 const index = sys::system_event::wait_any( 2, events_to_wait );
-				m_is_sleeping[thread_index] = false;
-
-				if ( index == 0 )
-					goto label_outer_loop;
-				else
-				{
-					ASSERT( index == 1 );
-					break;
-				}
-			}
-		}
-	}
-
-	m_keep_process[thread_index] = true;
-}
-
-void resource_system::break_thread( u32 const in_thread_index )
-{
-	ASSERT_CMP( in_thread_index, <, m_thread_count );
-
-	m_keep_process[in_thread_index] = false;
-	m_events[in_thread_index].set( );
+	return m_events[engine_thread_count];
 }
 
 void resource_system::create_tasks(
@@ -375,19 +309,70 @@ void resource_system::push_task( task_data* const in_task_data )
 
 	if ( thread_index == engine_thread_count )
 	{
-		m_helper_queue.push( in_task_data );
-		
-		m_events[engine_thread_count].set( );
+		if ( m_helper_queue.push( in_task_data ) )
+			m_events[engine_thread_count].set( );
 	}
 	else
 	{
 		ASSERT_CMP( thread_index, <, m_thread_count );
 		ASSERT( ( ( 1 << thread_index ) & ignore_thread_mask ) == 0 );
 
-		m_queues[thread_index].push( in_task_data );
-
-		m_events[thread_index].set( );
+		if ( m_queues[thread_index].push( in_task_data ) )
+			m_events[thread_index].set( );
 	}
+}
+
+custom_task_context resource_system::create_custom_tasks(
+	u32 const in_count,
+	task_info const& in_parent
+)
+{
+	task_data* const parent_data = m_temp_allocator.allocate( task_data::calculate_size( 0 ) );
+
+	parent_data->functor = in_parent.functor;
+	parent_data->user_data = in_parent.user_data;
+	parent_data->parent = nullptr;
+	parent_data->parent_index = -1;
+	parent_data->thread_index = in_parent.thread_index;
+	parent_data->results_count = 0;
+	parent_data->pending_count = in_count;
+
+	return (custom_task_context)parent_data;
+}
+
+custom_task_context resource_system::create_custom_subtasks(
+	u32 const in_count,
+	task_info const* const in_parent
+)
+{
+	u32 const thread_index = utils::thread_index( );
+	ASSERT_CMP( thread_index, !=, engine_thread_count );
+	task_data* const current_data = m_thread_local_data[thread_index].current_task_data;
+
+	task_data* parent_data = current_data ? current_data->parent : nullptr;
+
+	if ( in_parent )
+	{
+		parent_data = m_temp_allocator.allocate( task_data::calculate_size( 0 ) );
+
+		parent_data->functor = in_parent->functor;
+		parent_data->user_data = in_parent->user_data;
+		parent_data->parent = current_data ? current_data->parent : nullptr;
+		parent_data->parent_index = current_data ? current_data->parent_index : -1;
+		parent_data->thread_index = in_parent->thread_index;
+		parent_data->results_count = 0;
+		parent_data->pending_count = in_count;
+	}
+
+	if ( current_data && current_data->parent )
+	{
+		if ( in_parent )
+			interlocked_inc( current_data->parent->pending_count );
+		else
+			interlocked_add( current_data->parent->pending_count, in_count );
+	}
+
+	return (custom_task_context)parent_data;
 }
 
 void resource_system::set_current_task_result(
@@ -419,6 +404,16 @@ void resource_system::set_task_result(
 	ASSERT( in_result_index != -1 );
 
 	task_data->results[in_result_index] = in_result;
+}
+
+void resource_system::finish_custom_task( custom_task_context const in_context )
+{
+	ASSERT( in_context != nullptr );
+
+	task_data* const data = (task_data*)in_context;
+
+	if ( interlocked_dec( data->pending_count ) == 0 )
+		push_task( data );
 }
 
 void resource_system::get_current_result_data( u32& in_parent_data_offset, u32& in_result_index ) const

@@ -2,6 +2,7 @@
 #define GUARD_RESOURCE_SYSTEM_API_H_INCLUDED
 
 #include <types.h>
+#include <system/system_event.h>
 #include <system/time.h>
 #include <utils/engine_threads.h>
 #include "queried_resources.h"
@@ -18,6 +19,15 @@ void execute_tasks(
 	task_info const* const in_tasks,
 	u32 const in_task_count,
 	task_info const& in_callback
+);
+
+custom_task_context create_custom_tasks(
+	u32 const in_task_count,
+	task_info const& in_callback
+);
+
+void finish_cusom_task(
+	custom_task_context const in_context
 );
 
 void create_resources(
@@ -44,11 +54,10 @@ void destroy_resources(
 	Resources* ... in_resources
 );
 
-void process_busy( sys::time const in_time_limit );
-void process_free( );
-void process_helper( );
-
-void break_thread( u32 const in_thread_index );
+bool process_task( u32 const in_thread_index );
+bool process_helper_task( );
+sys::system_event const& queue_event( u32 const in_thread_index );
+sys::system_event const& helper_queue_event( );
 
 task_info null_callback( );
 

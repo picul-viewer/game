@@ -14,8 +14,11 @@ struct task_info
 	u32 thread_index;
 };
 
+typedef pvoid custom_task_context;
+
 } // namespace resource_system
 
 using resource_system::task_info;
+using resource_system::custom_task_context;
 
 #endif // #ifndef GUARD_RESOURCE_SYSTEM_RESOURCE_SYSTEM_TYPES_H_INCLUDED
