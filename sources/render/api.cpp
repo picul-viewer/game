@@ -1,91 +1,56 @@
 #include "api.h"
-#include "parameters.h"
 
 #include <macros.h>
+#include "gpu_uploader.h"
+#include "parameters_manager.h"
+#include "resources.h"
+#include "render.h"
 
-namespace render {
-
-const DXGI_FORMAT api::backbuffer_pixel_format = DXGI_FORMAT_B8G8R8A8_UNORM;
-
-void api::create( )
+void render::create( pvoid const in_hwnd, math::u16x2 const in_resolution, bool const in_is_windowed )
 {
-	UINT create_device_flags = 
-#ifdef RENDER_ALLOW_DEBUG
-		D3D11_CREATE_DEVICE_DEBUG
-#else
-		0
-#endif // #ifdef RENDER_ALLOW_DEBUG
-		;
+	parameters& params = get_parameters( );
 
-	D3D_FEATURE_LEVEL feature_levels[] =
-	{
-		D3D_FEATURE_LEVEL_11_0,
-		D3D_FEATURE_LEVEL_10_1,
-		D3D_FEATURE_LEVEL_10_0,
-		D3D_FEATURE_LEVEL_9_3,
-		D3D_FEATURE_LEVEL_9_2,
-		D3D_FEATURE_LEVEL_9_1
-	};
-	u32 feature_levels_count = ARRAYSIZE( feature_levels );
+	params.hwnd = in_hwnd;
+	params.screen_resolution = in_resolution;
+	params.is_windowed = in_is_windowed;
+	params.draw_statistics = false;
 
-	DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
-	swap_chain_desc.SwapEffect							= DXGI_SWAP_EFFECT_DISCARD;
-	swap_chain_desc.BufferCount							= 1;
-	swap_chain_desc.BufferDesc.Width					= g_parameters.screen_resolution.x;
-	swap_chain_desc.BufferDesc.Height					= g_parameters.screen_resolution.y;
-	swap_chain_desc.BufferDesc.Format					= backbuffer_pixel_format;
-	swap_chain_desc.BufferDesc.RefreshRate.Numerator	= 0;
-	swap_chain_desc.BufferDesc.RefreshRate.Denominator	= 0;
-	swap_chain_desc.BufferUsage							= DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swap_chain_desc.OutputWindow						= (HWND)g_parameters.hwnd;
-	swap_chain_desc.SampleDesc.Count					= 1;
-	swap_chain_desc.SampleDesc.Quality					= 0;
-	swap_chain_desc.Windowed							= (BOOL)g_parameters.is_windowed;
+	g_parameters_manager.update( );
 
-	HRESULT hr = D3D11CreateDeviceAndSwapChain( nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
-		create_device_flags, feature_levels, feature_levels_count, D3D11_SDK_VERSION,
-		&swap_chain_desc, &m_swap_chain, &m_device, &m_feature_level, &m_context );
-
-	if ( hr != S_OK )
-		LOG( "render device and swap chain were not created!\n" );
-
-	m_swap_chain->GetBuffer( 0, __uuidof(ID3D11Texture2D), (void**)&m_backbuffer );
+	g_render.create( );
 }
 
-void api::destroy( )
+void render::destroy( )
 {
-	dx_release( m_backbuffer );
-	dx_release( m_swap_chain );
-	dx_release( m_context );
-	dx_release( m_device );
+	g_render.destroy( );
 }
 
-ID3D11Device* api::get_device( )
+bool render::ready( )
 {
-	return m_device;
+	return g_render.ready( );
 }
 
-IDXGISwapChain* api::get_swap_chain( )
+void render::update( )
 {
-	return m_swap_chain;
+	g_render.update( );
 }
 
-ID3D11DeviceContext* api::get_context( )
+void render::copy_thread_job( u32 const in_thread_index, volatile bool& in_alive_flag )
 {
-	return m_context;
+	g_gpu_uploader.copy_thread_job( in_thread_index, in_alive_flag );
 }
 
-ID3D11Texture2D* api::get_backbuffer( )
+render::parameters& render::get_parameters( )
 {
-	return m_backbuffer;
+	return g_parameters_manager.get_parameters_for_modification( );
 }
 
-D3D_FEATURE_LEVEL api::get_feature_level( )
+void render::set_current_scene( scene* in_scene )
 {
-	return m_feature_level;
+	g_render.set_scene( in_scene );
 }
 
-
-api g_api;
-
-} // namespace render
+render::ui_batch& render::get_ui_batch( )
+{
+	return g_resources.ui_batch( );
+}

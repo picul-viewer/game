@@ -3,125 +3,148 @@
 
 #include <types.h>
 
-#include "resource_views.h"
-#include "render_targets.h"
+#include <math/matrix.h>
 
-#include "pipeline_state_pool.h"
+#include "dx.h"
 
-#include "sampler.h"
-#include "constant_buffer.h"
+#include "gpu_double_pool_allocator.h"
+#include "gpu_heap_allocator.h"
+#include "gpu_pool_allocator.h"
+#include "gpu_uploader.h"
 
-#include "render_object_allocator.h"
+#include "dx_resource.h"
+#include "dx_descriptor_heap.h"
 
-#include "shader_containers.h"
-
-#include "scene.h"
-#include "object.h"
-
+#include "render_allocator.h"
 #include "ui_batch.h"
 
 namespace render {
 
+enum images
+{
+	image_v_buffer_polygon_id = 0,
+
+	image_count
+};
+
+enum image_srvs
+{
+	image_srv_v_buffer_polygon_id = 0,
+	image_srv_depth_buffer,
+
+	image_srv_count
+};
+
+enum image_rtvs
+{
+	image_rtv_v_buffer_polygon_id = 0,
+
+	image_rtv_output_0,
+	image_rtv_output_1,
+
+	image_rtv_count
+};
+
 class resources
 {
 public:
-	enum {
-		max_depth_stencil_states	= 32,
-		max_blend_states			= 16,
-		max_rasterizer_states		= 16
+	enum : u32 {
+		texture_descriptors_count = 256,
+		mesh_objects_count = 1024,
+		transform_count = 16384
 	};
 
-	typedef pipeline_state_pool<
-		max_depth_stencil_states,
-		max_blend_states,
-		max_rasterizer_states
-	> pipeline_state_pool;
-	
-	enum default_sampler_type
-	{
-		default_sampler_type_linear_wrap = 0,
-		default_sampler_type_point_clamp,
-		default_sampler_type_linear_clamp,
-
-		default_sampler_type_count
-	};
-
-	enum default_constant_buffer_type
-	{
-		default_constant_buffer_type_per_frame = 0,
-		default_constant_buffer_type_per_instance,
-		
-		default_constant_buffer_type_count
+	enum : u32 {
+		hlsl_images_space = 8,
+		hlsl_textures_space = 9
 	};
 
 public:
 	void create( );
 	void destroy( );
 	
-	inline render_target_view& get_backbuffer( ) { return m_backbuffer; }
-	inline render_target_depth& get_depth_buffer( ) { return m_depth_buffer; }
 
-	inline pipeline_state_pool& get_pipeline_state_pool( ) { return m_pipeline_state_pool; }
+	u32 create_texture( dx_resource const in_texture, D3D12_SHADER_RESOURCE_VIEW_DESC const& in_srv_desc );
+	void destroy_texture( u32 const in_index );
 
-	sampler& get_default_sampler( u32 in_index );
-	constant_buffer& get_default_constant_buffer( u32 in_index );
+	u32 create_mesh_index_buffer( u32 const in_index_count );
+	u32 create_mesh_vertex_buffer( u32 const in_vertex_count );
 
-	inline render_object_allocator& get_render_object_allocator( ) { return m_render_object_allocator; }
-	
-	inline vertex_shader_container&		get_vertex_shader_container( ) { return m_vertex_shader_container; }
-	inline pixel_shader_container&		get_pixel_shader_container( ) { return m_pixel_shader_container; }
-	inline geometry_shader_container&	get_geometry_shader_container( ) { return m_geometry_shader_container; }
-	inline hull_shader_container&		get_hull_shader_container( ) { return m_hull_shader_container; }
-	inline domain_shader_container&		get_domain_shader_container( ) { return m_domain_shader_container; }
-	inline compute_shader_container&	get_compute_shader_container( ) { return m_compute_shader_container; }
-	
-	inline vertex_buffer& get_ui_vertex_buffer( ) { return m_ui_vertex_buffer; }
-	inline index_buffer& get_ui_index_buffer( ) { return m_ui_index_buffer; }
+	void destroy_mesh_index_buffer( u32 const in_index_offset, u32 const in_index_count );
+	void destroy_mesh_vertex_buffer( u32 const in_vertex_offset, u32 const in_vertex_count );
 
-	inline ui_batch& get_ui_batch( ) { return m_ui_batch; }
+	u32 create_mesh_object( );
+	void destroy_mesh_object( u32 const in_index );
 
-	void bind_default_samplers( ) const;
-	void bind_default_constant_buffers( ) const;
+	u32 create_static_transform( );
+	u32 create_dynamic_transform( );
+	void destroy_transform( u32 const in_handle );
+	void get_transform_init_tasks( u32 const in_handle, math::float4x3& data, lib::buffer_array<gpu_upload_task>& in_tasks );
+	void update_dynamic_transform( u32 const in_handle, math::float4x3 const& data );
+	bool need_dynamic_transforms_update( ) const;
+	void update_dynamic_transforms_task( gpu_upload_task& in_task );
 
-	void bind_default_resources( ) const;
 
-protected:
-	void create_default_samplers( );
-	void destroy_default_samplers( );
+	dx_descriptor_heap const& srv_heap( ) const { return m_srv_heap; }
+	dx_descriptor_heap const& rtv_heap( ) const { return m_rtv_heap; }
+	inline dx_resource const& depth_buffer( ) const { return m_depth_buffer; }
+	inline dx_resource const& index_buffer( ) const { return m_index_buffer; }
+	inline dx_resource const& vertex_buffer( ) const { return m_vertex_buffer; }
+	inline dx_resource const& vertex_data_buffer( ) const { return m_vertex_data_buffer; }
+	inline dx_resource const& mesh_object_buffer( ) const { return m_mesh_object_buffer; }
+	inline dx_resource const& constant_buffer( u32 const in_index ) const { ASSERT_CMP( in_index, <, max_frame_delay ); return m_constant_buffers[in_index]; }
+	inline dx_resource const& transform_buffer( u32 const in_index ) const { ASSERT_CMP( in_index, <, max_frame_delay ); return m_transform_buffer[in_index]; }
 
-	void create_default_constant_buffers( );
-	void destroy_default_constant_buffers( );
+	D3D12_INDEX_BUFFER_VIEW index_buffer_view( ) const;
+	D3D12_VERTEX_BUFFER_VIEW vertex_buffer_view( ) const;
+	D3D12_VERTEX_BUFFER_VIEW vertex_data_buffer_view( ) const;
 
-	void create_shaders( );
-	void destroy_shaders( );
+	dx_resource const& image( u32 const in_index ) const;
+	D3D12_CPU_DESCRIPTOR_HANDLE srv( u32 const in_index ) const;
+	D3D12_CPU_DESCRIPTOR_HANDLE rtv( u32 const in_index ) const;
+	D3D12_CPU_DESCRIPTOR_HANDLE dsv( ) const;
+	D3D12_CPU_DESCRIPTOR_HANDLE read_only_dsv( ) const;
 
-	void create_ui_buffers( );
-	void destroy_ui_buffers( );
+	inline render_allocator& render_allocator( ) { return m_render_allocator; }
+	inline ui_batch& ui_batch( ) { return m_ui_batch; }
 
-protected:
-	render_target_view			m_backbuffer;
-	render_target_depth			m_depth_buffer;
-	
-	pipeline_state_pool			m_pipeline_state_pool;
+private:
+	void create_resources( );
+	void destroy_resources( );
 
-	sampler						m_default_samplers[default_sampler_type_count];
-	constant_buffer				m_default_constant_buffers[default_constant_buffer_type_count];
+	void create_images( );
+	void destroy_images( );
 
-	render_object_allocator		m_render_object_allocator;
+private:
+	gpu_pool_allocator m_texture_descriptor_allocator;
+	gpu_heap_allocator m_mesh_index_allocator;
+	gpu_heap_allocator m_mesh_vertex_allocator;
+	gpu_pool_allocator m_mesh_object_allocator;
+	gpu_double_pool_allocator m_transform_allocator;
+	math::float4x3* m_cpu_transform_data;
+	math::float4x3* m_cpu_transform_data_staging;
 
-	vertex_shader_container		m_vertex_shader_container;
-	pixel_shader_container		m_pixel_shader_container;
-	geometry_shader_container	m_geometry_shader_container;
-	hull_shader_container		m_hull_shader_container;
-	domain_shader_container		m_domain_shader_container;
-	compute_shader_container	m_compute_shader_container;
+	dx_resource m_images[image_count];
+	dx_resource m_depth_buffer;
+	dx_resource m_index_buffer;
+	dx_resource m_vertex_buffer;
+	dx_resource m_vertex_data_buffer;
+	dx_resource m_mesh_object_buffer;
+	dx_resource m_constant_buffers[max_frame_delay];
+	dx_resource m_transform_buffer[max_frame_delay];
+	dx_descriptor_heap m_srv_heap;
+	dx_descriptor_heap m_rtv_heap;
+	dx_descriptor_heap m_dsv_heap;
 
-	vertex_buffer				m_ui_vertex_buffer;
-	index_buffer				m_ui_index_buffer;
+	::render::render_allocator m_render_allocator;
+	::render::ui_batch m_ui_batch;
 
-	ui_batch					m_ui_batch;
+	pvoid m_allocator_memory;
+
+	// Current and previuos
+	math::u32x4 m_transform_update_bounds;
+
 };
-
 
 extern resources g_resources;
 

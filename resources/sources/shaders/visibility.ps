@@ -1,0 +1,9 @@
+void main(
+	in	uint	in_primitive_id	: SV_PrimitiveID,
+	nointerpolation
+	in	uint	in_instance_id	: INSTANCE_ID,
+	out	uint2	out_polygon_id	: SV_Target0
+)
+{
+	out_polygon_id	= uint2( in_instance_id, in_primitive_id );
+}

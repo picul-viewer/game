@@ -4,13 +4,10 @@
 #include <lib/hash.h>
 #include <lib/reader.h>
 #include <lib/strings.h>
-#include <resources/raw_data.h>
 
 #include "mesh.h"
-#include "input_layout.h"
-
-#include "mesh_box.h"
-#include "mesh_quad.h"
+#include "resources.h"
+#include "gpu_structures.h"
 
 namespace render {
 
@@ -44,92 +41,66 @@ void mesh_cook::query_file( mesh* const in_resource_ptr )
 {
 	m_result = in_resource_ptr;
 
-	// Check for some defaut meshes
-	if ( strings::equal( m_path, "box" ) )
-	{
-		u32 const stride = sizeof(math::float3);
-
-		buffer::cook vertex_cook;
-		vertex_cook.set_vertex_buffer( sizeof(box::vertices) );
-		m_result->create_vertex_buffer( 0, vertex_cook, box::vertices, stride );
-
-		buffer::cook index_cook;
-		index_cook.set_index_buffer( sizeof(box::indices) );
-		m_result->create_index_buffer( index_cook, box::indices, DXGI_FORMAT_R16_UINT );
-
-		m_result->set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-		m_result->set_dimensions( box::index_count );
-
-		finish( m_result );
-		return;
-	}
-	
-	if ( strings::equal( m_path, "quad" ) )
-	{
-		u32 const stride = sizeof(math::float3);
-
-		buffer::cook vertex_cook;
-		vertex_cook.set_vertex_buffer( sizeof(quad::vertices) );
-		m_result->create_vertex_buffer( 0, vertex_cook, quad::vertices, stride );
-
-		buffer::cook index_cook;
-		index_cook.set_index_buffer( sizeof(quad::indices) );
-		m_result->create_index_buffer( index_cook, quad::indices, DXGI_FORMAT_R16_UINT );
-
-		m_result->set_primitive_topology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-		m_result->set_dimensions( quad::index_count );
-
-		finish( m_result );
-		return;
-	}
-
 	raw_data_cook* const cook = raw_data_cook::create( m_path );
 
-	create_child_resources( callback_task<&mesh_cook::on_file_loaded>( ), cook );
+	create_child_resources( callback_task<&mesh_cook::on_file_loaded>( engine_helper_thread_0 ), cook );
 }
 
 void mesh_cook::on_file_loaded( queried_resources& in_queried )
 {
-	raw_data::ptr const data = in_queried.get_resource<raw_data::ptr>( );
-	ASSERT( data != nullptr );
+	m_raw_data.reset( );
+	m_raw_data = in_queried.get_resource<raw_data::ptr>( );
+	ASSERT( m_raw_data != nullptr );
 
-	lib::reader r( data->data( ), data->size( ) );
+	lib::reader r( m_raw_data->data( ), m_raw_data->size( ) );
 
+	u32 const index_count = r.read<u32>( );
+	u32 const vertex_count = r.read<u32>( );
 
-	u32 const index_data				= r.read<u32>( );
-	
-	// 29 LSBs - indices count
-	m_result->m_index_count				= index_data & 0x1FFFFFFF;
-	// Index format is coded by 29st bit in index count
-	m_result->m_index_format			= ( index_data & 0x20000000 ) ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT;
+	m_result->m_index_count = index_count;
+	m_result->m_vertex_count = vertex_count;
 
-	u32 const indices_size				= m_result->m_index_count * format_get_bits_per_pixel( m_result->m_index_format ) / 8;
-	buffer::cook cook;
-	cook.set_index_buffer				( indices_size );
-	m_result->m_index_buffer.create		( cook, r.read_data( indices_size ) );
+	u32 const index_buffer_offset = g_resources.create_mesh_index_buffer( index_count );
+	u32 const vertex_buffer_offset = g_resources.create_mesh_vertex_buffer( vertex_count );
 
-	m_result->m_primitive_topology		= D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	m_result->m_index_buffer_offset = index_buffer_offset;
+	m_result->m_vertex_buffer_offset = vertex_buffer_offset;
 
-	static const vertex_type vertex_formats[] = {
-		vertex_type::vertex_type_mesh,
-	};
+	u32 const indices_size = index_count * sizeof(u16);
+	pvoid const indices = r.read_data( indices_size );
 
-	// Vertex type can be uncoded by 2 MSBs
-	u32 const vertex_format_id			= index_data >> 30;
-	ASSERT_CMP							( vertex_format_id, <, ARRAYSIZE( vertex_formats ) );
-	vertex_type const vertex			= vertex_formats[vertex_format_id];
-	u32 const buffers_count				= get_vertex_type_buffers_count( vertex );
+	u32 const vertices_size = vertex_count * sizeof(math::float3);
+	pvoid const vertices = r.read_data( vertices_size );
 
-	for ( u32 i = 0; i < buffers_count; ++i )
-	{
-		m_result->m_vertex_strides[i]	= get_vertex_type_size( i, vertex );
+	u32 const data_size = vertex_count * ( sizeof(gpu::vertex_data) );
+	pvoid const data = r.read_data( data_size );
 
-		u32 const vertices_size			= r.read<u32>( );
-		buffer::cook cook;
-		cook.set_vertex_buffer			( vertices_size );
-		m_result->m_vertex_buffers[i].create( cook, r.read_data( vertices_size ) );
-	}
+	custom_task_context const task_context = create_child_custom_tasks(
+		upload_count,
+		resource_system::user_callback_task<mesh_cook, &mesh_cook::on_gpu_upload_finished>( this )
+	);
 
+	lib::buffer_array<gpu_upload_task> upload_tasks;
+	upload_tasks.create( m_upload_tasks, upload_count, upload_count );
+
+	upload_tasks[0].set_source_data( indices, indices_size );
+	upload_tasks[0].set_buffer_upload( g_resources.index_buffer( ), index_buffer_offset * sizeof(u16) );
+	upload_tasks[0].set_task_context( task_context );
+
+	upload_tasks[1].set_source_data( vertices, vertices_size );
+	upload_tasks[1].set_buffer_upload( g_resources.vertex_buffer( ), vertex_buffer_offset * sizeof(math::float3) );
+	upload_tasks[1].set_task_context( task_context );
+
+	upload_tasks[2].set_source_data( data, data_size );
+	upload_tasks[2].set_buffer_upload( g_resources.vertex_data_buffer( ), vertex_buffer_offset * ( sizeof(gpu::vertex_data) ) );
+	upload_tasks[2].set_task_context( task_context );
+
+	g_gpu_uploader.push_background_tasks( upload_tasks.data( ), upload_count );
+}
+
+void mesh_cook::on_gpu_upload_finished( )
+{
+	m_raw_data.reset( );
 
 	finish( m_result );
 }

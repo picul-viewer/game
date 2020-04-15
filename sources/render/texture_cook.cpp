@@ -4,10 +4,12 @@
 #include <lib/hash.h>
 #include <lib/reader.h>
 #include <lib/strings.h>
-#include <resources/raw_data.h>
+#include <resource_system/api.h>
 
 #include "dds_loader.h"
+#include "gpu_uploader.h"
 #include "texture.h"
+#include "resources.h"
 
 namespace render {
 
@@ -43,19 +45,40 @@ void texture_cook::query_file( texture* const in_resource_ptr )
 
 	raw_data_cook* const cook = raw_data_cook::create( m_path );
 
-	create_child_resources( callback_task<&texture_cook::on_file_loaded>( ), cook );
+	create_child_resources( callback_task<&texture_cook::on_file_loaded>( engine_helper_thread_0 ), cook );
 }
 
 void texture_cook::on_file_loaded( queried_resources& in_queried )
 {
-	raw_data::ptr const data = in_queried.get_resource<raw_data::ptr>( );
-	ASSERT( data != nullptr );
+	m_raw_data.reset( );
+	m_raw_data = in_queried.get_resource<raw_data::ptr>( );
+	ASSERT( m_raw_data != nullptr );
 
-	lib::reader r( data->data( ), data->size( ) );
+	lib::reader r( m_raw_data->data( ), m_raw_data->size( ) );
 
-	ID3D11ShaderResourceView* texture;
-	dds_loader::load( texture, r );
-	m_result->m_view.set( texture );
+	D3D12_SHADER_RESOURCE_VIEW_DESC srv_desc;
+
+	lib::buffer_array<gpu_upload_task> upload_tasks;
+	upload_tasks.create( m_upload_tasks, max_upload_tasks );
+
+	dds_loader::load( r, m_result->m_texture, srv_desc, upload_tasks );
+
+	m_result->m_texture_id = g_resources.create_texture( m_result->m_texture, srv_desc );
+
+	custom_task_context const task_context = create_child_custom_tasks(
+		(u32)upload_tasks.size( ),
+		resource_system::user_callback_task<texture_cook, &texture_cook::on_gpu_upload_finished>( this )
+	);
+
+	for ( u32 i = 0; i < upload_tasks.size( ); ++i )
+		upload_tasks[i].set_task_context( task_context );
+
+	g_gpu_uploader.push_background_tasks( upload_tasks.data( ), (u32)upload_tasks.size( ) );
+}
+
+void texture_cook::on_gpu_upload_finished( )
+{
+	m_raw_data.reset( );
 
 	finish( m_result );
 }

@@ -4,7 +4,7 @@
 #include <ui/font_cook.h>
 #include <engine/world.h>
 
-#include <render/world.h>
+#include <render/api.h>
 
 #include <lib/allocator.h>
 #include <lib/dynamic_writer.h>
@@ -31,6 +31,8 @@ char object_cook_data[1 * Mb];
 
 void world::create( )
 {
+	m_ready = false;
+
 	uptr scene_cook_size;
 	uptr object_cook_size;
 
@@ -68,7 +70,6 @@ void world::create( )
 		{
 			float const dimension = grid_size * 2.0f + ( grid_size - 1 ) * 0.5f;
 
-			w.write<u8>( 0 );
 			w.write_str( "configs/render/box.render_model_mesh.cfg" );
 
 			w.write<math::float4x3>(
@@ -111,7 +112,7 @@ void world::on_resources_ready( queried_resources& resources )
 	
 	m_object = resources.get_resource<engine::object::ptr>( );
 
-	render::g_world.get_parameters( ).camera.fov = math::degree_to_radian( 60.0f );
+	render::get_parameters( ).camera.fov = math::degree_to_radian( 60.0f );
 
 	m_object->update( math::float4x3::identity( ) );
 	m_scene->insert( m_object );
@@ -121,7 +122,9 @@ void world::on_resources_ready( queried_resources& resources )
 
 	initialize_console( );
 
-	engine::g_world.set_game_ready( );
+	m_angle = 0.0f;
+
+	m_ready = true;
 }
 
 void world::initialize_console( )
@@ -149,11 +152,14 @@ void world::update( )
 	float const elapsed_time = (float)m_ticker.tick( );
 	m_camera.update( elapsed_time );
 
+	m_angle += elapsed_time;
+	m_object->update( math::matrix_rotation_x( (float)m_angle ) );
+
 	if ( !m_console_visible )
-		render::g_world.get_parameters( ).camera.view = m_camera.get_view_matrix( );
+		render::get_parameters( ).camera.view = m_camera.get_view_matrix( );
 	else
 	{
-		render::ui_batch& batch = render::g_world.get_ui_batch( );
+		render::ui_batch& batch = render::get_ui_batch( );
 		batch.clear( );
 		m_console.render( batch );
 	}
@@ -161,6 +167,8 @@ void world::update( )
 
 void world::destroy( )
 {
+	m_ready = false;
+
 	m_console.destroy( );
 
 	m_console_font->release( );
@@ -177,7 +185,12 @@ void world::destroy( )
 
 void world::on_resources_destroyed( )
 {
-	engine::g_world.set_game_ready( );
+	m_ready = true;
+}
+
+bool world::ready( )
+{
+	return m_ready;
 }
 
 void world::window_resize( math::u32x2 const& new_dimensions )
@@ -225,7 +238,7 @@ void world::window_input( )
 
 		if ( ( k == key::f9 ) && pressed )
 		{
-			render::g_world.get_parameters( ).draw_statistics = !render::g_world.get_parameters( ).draw_statistics;
+			render::get_parameters( ).draw_statistics = !render::get_parameters( ).draw_statistics;
 		}
 
 		if ( m_console_visible )

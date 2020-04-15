@@ -26,7 +26,7 @@ public:
 public:
 	void update( math::float4x3 const& in_transform );
 
-	inline render::object& render_object( ) { return m_render; }
+	inline render::object& render_object( ) { return *m_render.get( ); }
 
 private:
 	static void on_subsystems_destroyed( pointer const in_resource );
@@ -40,7 +40,7 @@ private:
 	// Aligned by 64 bytes
 	math::float4x3			m_transform;
 
-	render::object			m_render;
+	render::object::ptr		m_render;
 
 	//physics::game_object	m_physic;
 	// Or something to handle physics...

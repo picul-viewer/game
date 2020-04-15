@@ -32,6 +32,15 @@ uptr raw_data::size( ) const
 
 raw_data_cook* raw_data_cook::create( pcstr const in_path )
 {
+#ifdef DEBUG
+	{
+		// Try to open file to catch missing file error.
+		sys::file f;
+		f.create( in_path, sys::file::open_read );
+		f.destroy( );
+	}
+#endif // #ifdef DEBUG
+
 	uptr const size = strings::length( in_path ) + 1;
 
 	raw_data_cook* const result = std_allocator( ).allocate( sizeof(raw_data_cook) + size );

@@ -29,12 +29,11 @@ public:
 
 private:
 	void on_child_resources_ready( queried_resources& in_queried );
+	void on_copy_tasks_finished( );
 
 private:
 	scene* m_result;
 	lib::reader m_config;
-
-	math::bvh::object_handle* m_static_mesh_handles;
 	u32 m_static_mesh_count;
 
 };

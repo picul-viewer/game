@@ -11,6 +11,11 @@ void game::world_interface::update( )
 	game::g_world.update( );
 }
 
+bool game::world_interface::ready( )
+{
+	return game::g_world.ready( );
+}
+
 void game::world_interface::destroy( )
 {
 	game::g_world.destroy( );

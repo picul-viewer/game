@@ -2,35 +2,28 @@
 #define GUARD_RENDER_API_H_INCLUDED
 
 #include <types.h>
-#include "dx_include.h"
+#include <math/vector.h>
+
+#include "parameters_type.h"
+#include "handles.h"
 
 namespace render {
 
-class api
-{
-public:
-	static const DXGI_FORMAT backbuffer_pixel_format;
+class scene;
+class ui_batch;
 
-	void create	( );
-	void destroy( );
+void create( pvoid const in_hwnd, math::u16x2 const in_resolution, bool const in_is_windowed );
+void destroy( );
+bool ready( );
+void update( );
 
-	ID3D11Device*			get_device			( );
-	IDXGISwapChain*			get_swap_chain		( );
-	ID3D11DeviceContext*	get_context			( );
-	ID3D11Texture2D*		get_backbuffer		( );
-	D3D_FEATURE_LEVEL		get_feature_level	( );
-	
-protected:
-	ID3D11Device*			m_device;
-	IDXGISwapChain*			m_swap_chain;
-	ID3D11DeviceContext*	m_context;
-	ID3D11Texture2D*		m_backbuffer;
-	D3D_FEATURE_LEVEL		m_feature_level;
+void copy_thread_job( u32 const in_thread_index, volatile bool& in_alive_flag );
 
-};
+parameters& get_parameters( );
 
+void set_current_scene( scene* in_scene );
 
-extern api g_api;
+ui_batch& get_ui_batch( );
 
 } // namespace render
 

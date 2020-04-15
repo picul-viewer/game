@@ -4,9 +4,15 @@
 #include <types.h>
 #include <system/path.h>
 
+#ifndef RESOURCES_SOURCES_PATH
+#define RESOURCES_SOURCES_PATH "..\\..\\resources\\sources\\"
+#endif // #ifndef RESOURCES_SOURCES_PATH
+
 #ifndef RESOURCES_PATH
 #define RESOURCES_PATH "..\\..\\resources\\build\\"
 #endif // #ifndef RESOURCES_PATH
+
+#define GET_RESOURCE_SOURCE_PATH( path ) RESOURCES_SOURCES_PATH path
 
 #define GET_RESOURCE_PATH( path ) RESOURCES_PATH path
 

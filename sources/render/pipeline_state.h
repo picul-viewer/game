@@ -2,116 +2,55 @@
 #define GUARD_RENDER_PIPELINE_STATE_H_INCLUDED
 
 #include <types.h>
-#include <math/vector.h>
-
-#include "dx_include.h"
+#include <resource_system/default_resource.h>
+#include <resource_system/default_resource_cook.h>
+#include <utils/engine_threads.h>
+#include "dx_pipeline_state.h"
 
 namespace render {
 
-class depth_stencil_state
+class pipeline_state : public default_resource<pipeline_state>
 {
 public:
-	struct cook
-	{
-		void set_depth( bool					in_enable_depth		= false,
-						bool					in_write_depth		= false,
-						D3D11_COMPARISON_FUNC	in_comparison_func	= D3D11_COMPARISON_ALWAYS );
+	friend class pipeline_state;
 
-		void set_stencil( bool					in_enable_stencil					= false,
-						  u8					in_stencil_read_mask				= D3D11_DEFAULT_STENCIL_READ_MASK,
-						  u8					in_stencil_write_mask				= D3D11_DEFAULT_STENCIL_WRITE_MASK,
-						  D3D11_COMPARISON_FUNC	in_front_face_comparison_func		= D3D11_COMPARISON_ALWAYS,
-						  D3D11_STENCIL_OP		in_front_face_stencil_fail_op		= D3D11_STENCIL_OP_KEEP,
-						  D3D11_STENCIL_OP		in_front_face_stencil_depth_fail_op	= D3D11_STENCIL_OP_KEEP,
-						  D3D11_STENCIL_OP		in_front_face_stencil_pass_op		= D3D11_STENCIL_OP_KEEP,
-						  D3D11_COMPARISON_FUNC	in_back_face_comparison_func		= D3D11_COMPARISON_ALWAYS,
-						  D3D11_STENCIL_OP		in_back_face_stencil_fail_op		= D3D11_STENCIL_OP_KEEP,
-						  D3D11_STENCIL_OP		in_back_face_stencil_depth_fail_op	= D3D11_STENCIL_OP_KEEP,
-						  D3D11_STENCIL_OP		in_back_face_stencil_pass_op		= D3D11_STENCIL_OP_KEEP );
-
-		D3D11_DEPTH_STENCIL_DESC desc;
+public:
+	enum : u32 {
+		destroy_thread_index = engine_thread_count
 	};
-	
-	depth_stencil_state( );
 
-	void create( cook const& in_cook );
-	void destroy( );
-	
-	inline void set( ID3D11DepthStencilState* in_state ) { m_depth_stencil_state = in_state; }
-	inline ID3D11DepthStencilState* const& get( ) { return m_depth_stencil_state; }
+	static pipeline_state* create_resource( pipeline_state* const in_ptr, dx_root_signature const& in_rs, dx_pipeline_state const& in_ps );
+	static void destroy_resource( pipeline_state* const in_resource );
 
-	void bind( u8 in_stencil_ref ) const;
+public:
+	inline dx_root_signature const& rs( ) const { return m_rs; }
+	inline dx_pipeline_state const& ps( ) const { return m_ps; }
 
-protected:
-	ID3D11DepthStencilState*	m_depth_stencil_state;
+private:
+	dx_root_signature m_rs;
+	dx_pipeline_state m_ps;
+
 };
 
-class blend_state
+template<typename CookType>
+class simple_pipeline_state_cook : public default_resource_cook<pipeline_state, CookType>
 {
 public:
-	struct cook
+	static CookType* create( CookType* const in_ptr, pipeline_state* const in_resource_ptr )
 	{
-		void set_blend( bool in_enable_alpha_to_coverage = false,
-						bool in_enable_independent_blend = false );
+		in_ptr->init( );
+		in_ptr->m_result = in_resource_ptr;
+		return in_ptr;
+	}
 
-		void set_blend_for_rt( u32				in_render_target_index,
-							   bool				in_enable_blending			= false,
-							   D3D11_BLEND		in_source_blend				= D3D11_BLEND_ONE,
-							   D3D11_BLEND		in_destination_blend		= D3D11_BLEND_ZERO,
-							   D3D11_BLEND_OP	in_blend_op					= D3D11_BLEND_OP_ADD,
-							   D3D11_BLEND		in_source_blend_alpha		= D3D11_BLEND_ONE,
-							   D3D11_BLEND		in_destination_blend_alpha	= D3D11_BLEND_ZERO,
-							   D3D11_BLEND_OP	in_blend_op_alpha			= D3D11_BLEND_OP_ADD,
-							   u8				in_color_write_mask			= D3D11_COLOR_WRITE_ENABLE_ALL );
-
-		D3D11_BLEND_DESC desc;
-	};
-	
-	blend_state( );
-
-	void create( cook const& in_cook );
-	void destroy( );
-	
-	inline void set( ID3D11BlendState* in_state ) { m_blend_state = in_state; }
-	inline ID3D11BlendState* const& get( ) { return m_blend_state; }
-
-	void bind( math::float4 const& in_blend_factor, u32 in_sample_mask ) const;
+	static inline void destroy( pointer const in_cook ) { }
 
 protected:
-	ID3D11BlendState*			m_blend_state;
-};
+	inline pipeline_state* result_ptr( ) const { return (pipeline_state*)m_result; }
 
-class rasterizer_state
-{
-public:
-	struct cook
-	{
-		void set(	D3D11_FILL_MODE	in_fill_mode				= D3D11_FILL_SOLID,
-					D3D11_CULL_MODE	in_cull_mode				= D3D11_CULL_BACK,
-					bool			in_front_counter_clockwise	= false,
-					s32				in_depth_bias				= 0,
-					f32				in_depth_bias_clamp			= 0.0f,
-					f32				in_slope_scaled_depth_bias	= 0.0f,
-					bool			in_depth_clip_enable		= true,
-					bool			in_scissor_enable			= false,
-					bool			in_multisample_enable		= false,
-					bool			in_antialiased_line_enable	= false );
+private:
+	pipeline_state* m_result;
 
-		D3D11_RASTERIZER_DESC desc;
-	};
-
-	rasterizer_state( );
-
-	void create( cook const& in_cook );
-	void destroy( );
-	
-	inline void set( ID3D11RasterizerState* in_state ) { m_rasterizer_state = in_state; }
-	inline ID3D11RasterizerState* const& get( ) { return m_rasterizer_state; }
-
-	void bind( ) const;
-
-protected:
-	ID3D11RasterizerState*		m_rasterizer_state;
 };
 
 } // namespace render

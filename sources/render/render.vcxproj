@@ -57,7 +57,7 @@
       <PreprocessorDefinitions>USE_RENDER_PROFILING;_MBCS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;DEBUG;RENDER_ALLOW_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)/sources/core;$(SolutionDir)/sources;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/sources/core;$(SolutionDir)/sources</AdditionalIncludeDirectories>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>false</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -77,7 +77,7 @@
       <PreprocessorDefinitions>USE_RENDER_PROFILING;_MBCS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)/sources/core;$(SolutionDir)/sources;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/sources/core;$(SolutionDir)/sources</AdditionalIncludeDirectories>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>false</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -88,107 +88,95 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="buffer.h" />
+    <ClInclude Include="api.h" />
     <ClInclude Include="camera.h" />
-    <ClInclude Include="constant_buffer.h" />
-    <ClInclude Include="constant_buffer_inline.h" />
     <ClInclude Include="dds_loader.h" />
-    <ClInclude Include="dx_include.h" />
-    <ClInclude Include="effect.h" />
-    <ClInclude Include="effect_inline.h" />
+    <ClInclude Include="dx.h" />
+    <ClInclude Include="dx12.h" />
+    <ClInclude Include="dx_command_allocator.h" />
+    <ClInclude Include="dx_command_list.h" />
+    <ClInclude Include="dx_command_signature.h" />
+    <ClInclude Include="dx_descriptor_heap.h" />
+    <ClInclude Include="dx_fence.h" />
+    <ClInclude Include="dx_heap.h" />
+    <ClInclude Include="dx_resource.h" />
+    <ClInclude Include="dx_root_signature.h" />
+    <ClInclude Include="generate_mesh_arguments_effect_cook.h" />
+    <ClInclude Include="gpu_double_pool_allocator.h" />
+    <ClInclude Include="gpu_heap_allocator.h" />
+    <ClInclude Include="gpu_pool_allocator.h" />
+    <ClInclude Include="gpu_structures.h" />
+    <ClInclude Include="gpu_uploader.h" />
     <ClInclude Include="handles.h" />
     <ClInclude Include="mesh_cook.h" />
     <ClInclude Include="object.h" />
-    <ClInclude Include="input_layout.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="mesh_box.h" />
     <ClInclude Include="mesh_quad.h" />
-    <ClInclude Include="constant_buffers_constants.h" />
     <ClInclude Include="object_cook.h" />
+    <ClInclude Include="object_inline.h" />
     <ClInclude Include="parameters_type.h" />
-    <ClInclude Include="pipeline_state_pool_inline.h" />
     <ClInclude Include="parameters.h" />
-    <ClInclude Include="pipeline_state_pool.h" />
     <ClInclude Include="model_mesh_cook.h" />
-    <ClInclude Include="resource_compilation.h" />
-    <ClInclude Include="scene_cook.h" />
-    <ClInclude Include="stage_visibility.h" />
-    <ClInclude Include="statistics.h" />
-    <ClInclude Include="render_object_allocator.h" />
-    <ClInclude Include="render_object_allocator_inline.h" />
-    <ClInclude Include="model_mesh.h" />
-    <ClInclude Include="shader_and_input_layout_container.h" />
-    <ClInclude Include="shader_and_input_layout_container_inline.h" />
-    <ClInclude Include="shader_container.h" />
-    <ClInclude Include="shader_container_inline.h" />
-    <ClInclude Include="renderer.h" />
-    <ClInclude Include="render_object.h" />
+    <ClInclude Include="dx_pipeline_state.h" />
     <ClInclude Include="pipeline_state.h" />
-    <ClInclude Include="api.h" />
+    <ClInclude Include="render.h" />
+    <ClInclude Include="render_mesh_objects_effect_cook.h" />
+    <ClInclude Include="scene_cook.h" />
+    <ClInclude Include="shader_cook.h" />
+    <ClInclude Include="shade_effect_cook.h" />
+    <ClInclude Include="render_allocator.h" />
+    <ClInclude Include="model_mesh.h" />
     <ClInclude Include="render_object_mesh.h" />
     <ClInclude Include="parameters_manager.h" />
     <ClInclude Include="resources.h" />
     <ClInclude Include="scene.h" />
-    <ClInclude Include="render_targets.h" />
-    <ClInclude Include="resource_views.h" />
-    <ClInclude Include="sampler.h" />
-    <ClInclude Include="shader.h" />
-    <ClInclude Include="stage_forward_default.h" />
-    <ClInclude Include="stage_initialization.h" />
-    <ClInclude Include="stage_statistics.h" />
-    <ClInclude Include="stage_ui.h" />
-    <ClInclude Include="texture1d.h" />
     <ClInclude Include="texture.h" />
-    <ClInclude Include="texture2d.h" />
-    <ClInclude Include="texture3d.h" />
-    <ClInclude Include="shader_containers.h" />
     <ClInclude Include="texture_cook.h" />
     <ClInclude Include="ui_batch.h" />
-    <ClInclude Include="world.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="buffer.cpp" />
+    <ClCompile Include="api.cpp" />
     <ClCompile Include="camera.cpp" />
-    <ClCompile Include="constant_buffer.cpp" />
     <ClCompile Include="dds_loader.cpp" />
-    <ClCompile Include="effect.cpp" />
+    <ClCompile Include="dx.cpp" />
+    <ClCompile Include="dx12.cpp" />
+    <ClCompile Include="dx_command_allocator.cpp" />
+    <ClCompile Include="dx_command_list.cpp" />
+    <ClCompile Include="dx_command_signature.cpp" />
+    <ClCompile Include="dx_desciptor_heap.cpp" />
+    <ClCompile Include="dx_fence.cpp" />
+    <ClCompile Include="dx_heap.cpp" />
+    <ClCompile Include="dx_resource.cpp" />
+    <ClCompile Include="dx_root_signature.cpp" />
+    <ClCompile Include="generate_mesh_arguments_effect_cook.cpp" />
+    <ClCompile Include="gpu_double_pool_allocator.cpp" />
+    <ClCompile Include="gpu_heap_allocator.cpp" />
+    <ClCompile Include="gpu_pool_allocator.cpp" />
+    <ClCompile Include="gpu_uploader.cpp" />
     <ClCompile Include="handles.cpp" />
     <ClCompile Include="mesh_cook.cpp" />
     <ClCompile Include="object.cpp" />
-    <ClCompile Include="input_layout.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="object_cook.cpp" />
-    <ClCompile Include="pipeline_state_pool.cpp" />
     <ClCompile Include="model_mesh_cook.cpp" />
-    <ClCompile Include="resource_compilation.cpp" />
-    <ClCompile Include="scene_cook.cpp" />
-    <ClCompile Include="stage_visibility.cpp" />
-    <ClCompile Include="statistics.cpp" />
-    <ClCompile Include="model_mesh.cpp" />
-    <ClCompile Include="render_object_allocator.cpp" />
-    <ClCompile Include="parameters.cpp" />
-    <ClCompile Include="stage_forward_default.cpp" />
-    <ClCompile Include="stage_initialization.cpp" />
-    <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="dx_pipeline_state.cpp" />
     <ClCompile Include="pipeline_state.cpp" />
-    <ClCompile Include="api.cpp" />
+    <ClCompile Include="render.cpp" />
+    <ClCompile Include="render_mesh_objects_effect_cook.cpp" />
+    <ClCompile Include="scene_cook.cpp" />
+    <ClCompile Include="shader_cook.cpp" />
+    <ClCompile Include="shade_effect_cook.cpp" />
+    <ClCompile Include="model_mesh.cpp" />
+    <ClCompile Include="render_allocator.cpp" />
+    <ClCompile Include="parameters.cpp" />
     <ClCompile Include="render_object_mesh.cpp" />
     <ClCompile Include="parameters_manager.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="scene.cpp" />
-    <ClCompile Include="render_targets.cpp" />
-    <ClCompile Include="resource_views.cpp" />
-    <ClCompile Include="sampler.cpp" />
-    <ClCompile Include="shader.cpp" />
-    <ClCompile Include="stage_statistics.cpp" />
-    <ClCompile Include="stage_ui.cpp" />
-    <ClCompile Include="texture1d.cpp" />
     <ClCompile Include="texture.cpp" />
-    <ClCompile Include="texture2d.cpp" />
-    <ClCompile Include="texture3d.cpp" />
     <ClCompile Include="texture_cook.cpp" />
     <ClCompile Include="ui_batch.cpp" />
-    <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">

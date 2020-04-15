@@ -1,0 +1,35 @@
+#include "structures.h"
+#include "layout.h"
+
+StructuredBuffer<uint>								g_mesh_ids					: register( t0 );
+StructuredBuffer<mesh_object>						g_mesh_objects				: register( t1 );
+StructuredBuffer<float4x3>							g_transforms				: register( t2 );
+RWStructuredBuffer<draw_indexed_indirect_command>	g_indirect_arguments_buffer	: register( u0 );
+RWStructuredBuffer<float4x4>						g_mesh_transform_buffer		: register( u1 );
+
+[numthreads( 256, 1, 1 )]
+void main( uint3 id : SV_DispatchThreadID )
+{
+	const uint i = id.x;
+
+	if ( i >= g_constant_buffer.indirect_params.w )
+		return;
+
+	const uint mesh_id = g_mesh_ids[i];
+
+	g_indirect_arguments_buffer[i].index_count_per_instance = g_mesh_objects[mesh_id].index_count;
+	g_indirect_arguments_buffer[i].instance_count = 1;
+	g_indirect_arguments_buffer[i].start_index_location = g_mesh_objects[mesh_id].index_buffer_offset;
+	g_indirect_arguments_buffer[i].base_vertex_location = g_mesh_objects[mesh_id].vertex_buffer_offset;
+	g_indirect_arguments_buffer[i].start_instance_location = i;
+
+	const float4x3 local_to_world = g_transforms[g_mesh_objects[mesh_id].transform_index];
+	const float4x4 local_to_world_4x4 = float4x4(
+		transpose( local_to_world )[0].xyzw,
+		transpose( local_to_world )[1].xyzw,
+		transpose( local_to_world )[2].xyzw,
+		float4(0.0f, 0.0f, 0.0f, 1.0f)
+	);
+	const float4x4 view_projection = g_constant_buffer.view_projection;
+	g_mesh_transform_buffer[i] = mul( view_projection, local_to_world_4x4 );
+}

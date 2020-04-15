@@ -2,8 +2,8 @@
 #include <macros.h>
 #include <lib/memory.h>
 #include <lib/strings.h>
+#include <render/api.h>
 #include <render/ui_batch.h>
-#include <render/world.h>
 
 namespace ui {
 

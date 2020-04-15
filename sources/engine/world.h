@@ -27,8 +27,6 @@ public:
 	inline math::u32x2 get_window_dimensions( ) const { return m_window_dimensions; }
 	inline bool is_active( ) const { return m_is_active; }
 
-	void set_game_ready( );
-
 private:
 	struct helper;
 
@@ -40,6 +38,7 @@ private:
 	void main_thread( );
 	void window_thread( );
 	void fs_thread( );
+	void render_copy_thread( );
 	void helper_thread( );
 
 	void create( );
@@ -50,7 +49,8 @@ private:
 
 	sys::thread m_threads[engine_thread_count];
 
-	sys::system_event m_exit_events[engine_busy_threads_count];
+	sys::system_event m_main_event;
+	sys::system_event m_window_event;
 
 	math::u32x2 m_window_dimensions;
 	u32 m_thread_count;
@@ -58,6 +58,7 @@ private:
 	bool m_is_active;
 
 	volatile bool m_alive;
+	volatile bool m_resource_system_alive;
 
 };
 
@@ -75,6 +76,7 @@ namespace world_interface {
 
 void create( );
 void update( );
+bool ready( );
 void destroy( );
 
 void window_resize( math::u32x2 const& new_dimensions );

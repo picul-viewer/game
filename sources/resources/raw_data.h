@@ -35,7 +35,6 @@ class raw_data : public default_resource<raw_data>
 {
 public:
 	friend class raw_data_cook;
-	friend class raw_data_compiler_cook;
 
 public:
 	enum : u32 {
@@ -46,11 +45,10 @@ public:
 	void destroy( );
 
 public:
+	static raw_data* create( uptr const size );
+
 	pointer data( ) const;
 	uptr size( ) const;
-
-private:
-	static raw_data* create( uptr const size );
 
 private:
 	uptr m_size;

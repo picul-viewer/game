@@ -8,6 +8,7 @@
 #include "model_mesh_cook.h"
 #include "handles.h"
 
+#include "gpu_structures.h"
 #include "mesh.h"
 #include "texture.h"
 
@@ -26,15 +27,18 @@ public:
 	static void destroy_resource( model_mesh* const in_resource );
 
 public:
-	void render( ) const;
-	
 	inline math::aabb_aligned& get_aabb( ) { return m_aabb; }
 	inline math::aabb_aligned const& get_aabb( ) const { return m_aabb; }
-	
+
 	inline mesh* get_mesh( ) const { return mesh::from_handle( m_mesh ); }
 
 	inline texture* get_diffuse_texture( ) const { return texture::from_handle( m_diffuse ); }
 	inline texture* get_specular_texture( ) const { return texture::from_handle( m_specular ); }
+
+private:
+	friend class render_object_mesh;
+
+	void fill_gpu_data( gpu::mesh_object& in_data );
 
 private:
 	math::aabb_aligned	m_aabb;

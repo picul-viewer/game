@@ -31,7 +31,6 @@ void object_cook::create_resource( )
 	pvoid const render_data = m_config.read_data( render_size );
 
 	render::object_cook* const render_cook = render::object_cook::create(
-		&m_result->m_render,
 		lib::reader( render_data, render_size )
 	);
 
@@ -40,9 +39,8 @@ void object_cook::create_resource( )
 
 void object_cook::on_subsystems_ready( queried_resources& in_queried )
 {
-	render::object::ptr render = in_queried.get_resource<render::object::ptr>( );
-	ASSERT( render != nullptr );
-	render.reset( );
+	m_result->m_render = in_queried.get_resource<render::object::ptr>( );
+	ASSERT( m_result->m_render != nullptr );
 
 	finish( m_result );
 }

@@ -1,98 +1,65 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="dx">
-      <UniqueIdentifier>{e51c383d-1a04-4499-b836-cc44ead02f9e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dx\buffers">
-      <UniqueIdentifier>{c06b87df-219a-4078-9784-5cd8eb449881}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dx\textures">
-      <UniqueIdentifier>{38f4217e-2009-4283-9345-da0a342f6e8c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dx\shaders">
-      <UniqueIdentifier>{8da9df3c-45ea-474f-ac1a-75d7bfa96a50}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dx\samplers">
-      <UniqueIdentifier>{75582400-4a11-4e8e-86f3-4e44d82bc51c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dx\pipeline_states">
-      <UniqueIdentifier>{39c278d2-ec4d-497b-a0dd-fd497ce3ee85}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="renderer">
-      <UniqueIdentifier>{e6497ef8-4add-4ef2-afe5-ee3441bfe369}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="renderer\stages">
-      <UniqueIdentifier>{6b425e7d-630f-4f17-b377-bbdf4b5a6ace}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dx\resource_views">
-      <UniqueIdentifier>{8975af85-d900-4d60-83b1-f4dcae1dc6d5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources">
-      <UniqueIdentifier>{47b5c29a-60d0-41ab-aae5-01004173494d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="parameters">
       <UniqueIdentifier>{4b88d307-b9a3-4448-bdde-d732f2d1be7a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="renderer\utils">
-      <UniqueIdentifier>{262c3621-63c8-49b1-a9be-21aadac36d90}</UniqueIdentifier>
+    <Filter Include="dx12">
+      <UniqueIdentifier>{0d77dd66-d2c6-493e-8f52-0c1e6793ce32}</UniqueIdentifier>
     </Filter>
-    <Filter Include="renderer\utils\effect">
-      <UniqueIdentifier>{c65cf6f1-6559-4e03-942d-0c4b541d5cf1}</UniqueIdentifier>
+    <Filter Include="render">
+      <UniqueIdentifier>{9d229988-923d-41d9-99c0-974688865ab5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="renderer\utils\render_target">
-      <UniqueIdentifier>{979b6059-b267-4258-8dfd-7b395ab2bc7a}</UniqueIdentifier>
+    <Filter Include="dx12\wrappers">
+      <UniqueIdentifier>{73e180fd-0666-43bc-8a0a-8182ed7d8b74}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\utils">
-      <UniqueIdentifier>{5ec71823-04a8-4e89-b6aa-64b0a9660b0f}</UniqueIdentifier>
+    <Filter Include="dx12\wrappers\heap">
+      <UniqueIdentifier>{63879682-e7b5-4217-9412-2094043bbaf7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\utils\pipeline_state_pool">
-      <UniqueIdentifier>{2b9e7b2e-7c22-4145-af95-d3014cc8af04}</UniqueIdentifier>
+    <Filter Include="dx12\wrappers\dx12">
+      <UniqueIdentifier>{ab6b33f9-23d4-4750-a61f-963dfd40740f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\utils\render_object_allocator">
-      <UniqueIdentifier>{670cc264-7622-4f51-b2f5-663c51a6cacd}</UniqueIdentifier>
+    <Filter Include="dx12\wrappers\dx">
+      <UniqueIdentifier>{396a6fdb-d85d-480b-a0bb-c228d04bd832}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\utils\shaders">
-      <UniqueIdentifier>{789593d5-6fdb-48fd-bf51-9c27973a34bc}</UniqueIdentifier>
+    <Filter Include="dx12\wrappers\descriptor_heap">
+      <UniqueIdentifier>{850ae3c7-f182-46fe-b493-c59c98ea8980}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\utils\shaders\shader_container">
-      <UniqueIdentifier>{5bced0eb-8110-44cf-9da9-09b8eb2b6102}</UniqueIdentifier>
+    <Filter Include="dx12\wrappers\command_signature">
+      <UniqueIdentifier>{cb8c0eb7-b1d3-4748-83b1-20ddbbadab20}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\utils\input_layout">
-      <UniqueIdentifier>{ed10ca64-0681-428c-89ce-096aef007663}</UniqueIdentifier>
+    <Filter Include="dx12\wrappers\command_list">
+      <UniqueIdentifier>{d346a607-1bed-42e7-b6b3-ef4d493508c0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="common">
-      <UniqueIdentifier>{a67a58ed-2ce1-46bb-a342-7cf608ed4f76}</UniqueIdentifier>
+    <Filter Include="dx12\wrappers\command_allocator">
+      <UniqueIdentifier>{0da6acf4-d5a0-4013-81c7-a1ff632b0de2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="common\world">
-      <UniqueIdentifier>{e6fd8471-77ab-4b34-81c3-519471ce2ddf}</UniqueIdentifier>
+    <Filter Include="dx12\wrappers\pipeline_state">
+      <UniqueIdentifier>{491ae74a-6d8b-4d3c-aadb-1dd08db3e3ed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="renderer\stages\stage_forward_default">
-      <UniqueIdentifier>{8f691ff8-d8d6-4e11-8fdb-5fa94c529027}</UniqueIdentifier>
+    <Filter Include="dx12\wrappers\resource">
+      <UniqueIdentifier>{265d70c9-fd80-4147-94cc-0b38a1d22163}</UniqueIdentifier>
     </Filter>
-    <Filter Include="renderer\stages\stage_initialization">
-      <UniqueIdentifier>{45451be4-67f2-41c8-9245-ed5fba41f851}</UniqueIdentifier>
+    <Filter Include="dx12\wrappers\root_signature">
+      <UniqueIdentifier>{13617e26-1a72-4095-9ed5-0526eba4569b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="renderer\utils\camera">
-      <UniqueIdentifier>{14fef490-01c9-4cc3-abcf-8e4f3cab34f6}</UniqueIdentifier>
+    <Filter Include="dx12\utils">
+      <UniqueIdentifier>{cfe69b90-2e66-4539-88f4-f6ccdb75669d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="dx\api">
-      <UniqueIdentifier>{46484c15-51a2-4ab6-9977-1442fc94a676}</UniqueIdentifier>
+    <Filter Include="dx12\utils\pipeline_state">
+      <UniqueIdentifier>{9e1e6db6-c9ec-4b3a-9359-6ee4903fefcb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="renderer\stages\stage_ui">
-      <UniqueIdentifier>{dc0a786e-e0ff-453e-86ec-3d177e1e4f5d}</UniqueIdentifier>
+    <Filter Include="dx12\utils\pipeline_state\shader_cook">
+      <UniqueIdentifier>{cf150dde-3566-47e9-8d29-b46c5dd30b35}</UniqueIdentifier>
     </Filter>
-    <Filter Include="renderer\stages\stage_statistics">
-      <UniqueIdentifier>{9e1fc7a2-5a4a-49dd-b6a6-8cafe4f492ff}</UniqueIdentifier>
+    <Filter Include="dx12\utils\uploader">
+      <UniqueIdentifier>{b778a57f-2396-4486-b447-5796771dd0b6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="renderer\stages\stage_statistics\statistics">
-      <UniqueIdentifier>{75e0e44d-68ab-468c-a27c-4dd1636fec3d}</UniqueIdentifier>
+    <Filter Include="dx12\wrappers\fence">
+      <UniqueIdentifier>{9f80a4b9-bd17-4e1b-bef2-8dc4f5e83a7c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="renderer\stages\stage_visibility">
-      <UniqueIdentifier>{a855374d-631d-4694-9ce3-a56b9ff4b358}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="common\ui_batch">
-      <UniqueIdentifier>{53a4a161-f8fc-4cad-8226-54141297fd41}</UniqueIdentifier>
+    <Filter Include="resources">
+      <UniqueIdentifier>{47b5c29a-60d0-41ab-aae5-01004173494d}</UniqueIdentifier>
     </Filter>
     <Filter Include="resources\classes">
       <UniqueIdentifier>{8a9c3af5-6811-4560-9474-0667fede5ade}</UniqueIdentifier>
@@ -151,61 +118,49 @@
     <Filter Include="resources\classes\models\mesh\cook">
       <UniqueIdentifier>{6fd64af7-837f-4645-898c-8c7dcd35903f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\compilation">
-      <UniqueIdentifier>{cdb3e09a-da27-4cd2-bde8-0ae37acd97e0}</UniqueIdentifier>
+    <Filter Include="dx12\utils\allocators">
+      <UniqueIdentifier>{1b725e4d-a764-4bac-9ea7-1ce2b016d519}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dx12\utils\allocators\heap">
+      <UniqueIdentifier>{727ffb05-aa1b-4196-9172-3564a8db83dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dx12\utils\allocators\pool">
+      <UniqueIdentifier>{e5fd25fc-6db2-4fc0-8139-fc26f48d246a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dx12\utils\allocators\double_pool">
+      <UniqueIdentifier>{53bd9fdf-bbaa-4a9e-b639-fb59fa44280e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\effects">
+      <UniqueIdentifier>{119aa326-0705-4729-99be-e6d2d63adc88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\effects\generate_mesh_arguments">
+      <UniqueIdentifier>{b0a944b5-5553-4c21-bc67-029a78b03bb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\effects\render_mesh_objects">
+      <UniqueIdentifier>{81eca212-0038-48d5-ba8b-d7524b2b16aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\effects\shade">
+      <UniqueIdentifier>{3cc97134-59d2-49a6-ad75-3954c1f771f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="api">
+      <UniqueIdentifier>{eb12d2bc-2196-4b2c-99a4-b942efaacedf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui_batch">
+      <UniqueIdentifier>{53a4a161-f8fc-4cad-8226-54141297fd41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\camera">
+      <UniqueIdentifier>{14fef490-01c9-4cc3-abcf-8e4f3cab34f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\render_allocator">
+      <UniqueIdentifier>{670cc264-7622-4f51-b2f5-663c51a6cacd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="buffer.cpp">
-      <Filter>dx\buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="input_layout.cpp">
-      <Filter>resources\utils\input_layout</Filter>
-    </ClCompile>
-    <ClCompile Include="shader.cpp">
-      <Filter>dx\shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="sampler.cpp">
-      <Filter>dx\samplers</Filter>
-    </ClCompile>
-    <ClCompile Include="pipeline_state.cpp">
-      <Filter>dx\pipeline_states</Filter>
-    </ClCompile>
-    <ClCompile Include="effect.cpp">
-      <Filter>renderer\utils\effect</Filter>
-    </ClCompile>
-    <ClCompile Include="render_targets.cpp">
-      <Filter>renderer\utils\render_target</Filter>
-    </ClCompile>
-    <ClCompile Include="renderer.cpp">
-      <Filter>renderer</Filter>
-    </ClCompile>
     <ClCompile Include="mesh.cpp">
       <Filter>resources\classes\dx\mesh</Filter>
     </ClCompile>
-    <ClCompile Include="constant_buffer.cpp">
-      <Filter>dx\buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="pipeline_state_pool.cpp">
-      <Filter>resources\utils\pipeline_state_pool</Filter>
-    </ClCompile>
     <ClCompile Include="texture.cpp">
       <Filter>resources\classes\dx\texture</Filter>
-    </ClCompile>
-    <ClCompile Include="texture1d.cpp">
-      <Filter>dx\textures</Filter>
-    </ClCompile>
-    <ClCompile Include="texture2d.cpp">
-      <Filter>dx\textures</Filter>
-    </ClCompile>
-    <ClCompile Include="texture3d.cpp">
-      <Filter>dx\textures</Filter>
-    </ClCompile>
-    <ClCompile Include="resource_views.cpp">
-      <Filter>dx\resource_views</Filter>
-    </ClCompile>
-    <ClCompile Include="world.cpp">
-      <Filter>common\world</Filter>
     </ClCompile>
     <ClCompile Include="object.cpp">
       <Filter>resources\classes\object</Filter>
@@ -213,23 +168,11 @@
     <ClCompile Include="scene.cpp">
       <Filter>resources\classes\scene</Filter>
     </ClCompile>
-    <ClCompile Include="render_object_allocator.cpp">
-      <Filter>resources\utils\render_object_allocator</Filter>
-    </ClCompile>
     <ClCompile Include="resources.cpp">
       <Filter>resources</Filter>
     </ClCompile>
-    <ClCompile Include="stage_forward_default.cpp">
-      <Filter>renderer\stages\stage_forward_default</Filter>
-    </ClCompile>
-    <ClCompile Include="stage_initialization.cpp">
-      <Filter>renderer\stages\stage_initialization</Filter>
-    </ClCompile>
     <ClCompile Include="camera.cpp">
-      <Filter>renderer\utils\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="api.cpp">
-      <Filter>dx\api</Filter>
+      <Filter>render\camera</Filter>
     </ClCompile>
     <ClCompile Include="parameters.cpp">
       <Filter>parameters</Filter>
@@ -238,19 +181,7 @@
       <Filter>parameters</Filter>
     </ClCompile>
     <ClCompile Include="ui_batch.cpp">
-      <Filter>common\ui_batch</Filter>
-    </ClCompile>
-    <ClCompile Include="stage_ui.cpp">
-      <Filter>renderer\stages\stage_ui</Filter>
-    </ClCompile>
-    <ClCompile Include="stage_statistics.cpp">
-      <Filter>renderer\stages\stage_statistics</Filter>
-    </ClCompile>
-    <ClCompile Include="statistics.cpp">
-      <Filter>renderer\stages\stage_statistics\statistics</Filter>
-    </ClCompile>
-    <ClCompile Include="stage_visibility.cpp">
-      <Filter>renderer\stages\stage_visibility</Filter>
+      <Filter>ui_batch</Filter>
     </ClCompile>
     <ClCompile Include="dds_loader.cpp">
       <Filter>resources\classes\dx\texture\dds_loader</Filter>
@@ -279,97 +210,85 @@
     <ClCompile Include="scene_cook.cpp">
       <Filter>resources\classes\scene\cook</Filter>
     </ClCompile>
-    <ClCompile Include="resource_compilation.cpp">
-      <Filter>resources\compilation</Filter>
+    <ClCompile Include="dx.cpp">
+      <Filter>dx12\wrappers\dx</Filter>
+    </ClCompile>
+    <ClCompile Include="dx12.cpp">
+      <Filter>dx12\wrappers\dx12</Filter>
+    </ClCompile>
+    <ClCompile Include="dx_command_allocator.cpp">
+      <Filter>dx12\wrappers\command_allocator</Filter>
+    </ClCompile>
+    <ClCompile Include="dx_command_list.cpp">
+      <Filter>dx12\wrappers\command_list</Filter>
+    </ClCompile>
+    <ClCompile Include="dx_pipeline_state.cpp">
+      <Filter>dx12\wrappers\pipeline_state</Filter>
+    </ClCompile>
+    <ClCompile Include="dx_heap.cpp">
+      <Filter>dx12\wrappers\heap</Filter>
+    </ClCompile>
+    <ClCompile Include="dx_desciptor_heap.cpp">
+      <Filter>dx12\wrappers\descriptor_heap</Filter>
+    </ClCompile>
+    <ClCompile Include="dx_resource.cpp">
+      <Filter>dx12\wrappers\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="render.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="dx_root_signature.cpp">
+      <Filter>dx12\wrappers\root_signature</Filter>
+    </ClCompile>
+    <ClCompile Include="dx_command_signature.cpp">
+      <Filter>dx12\wrappers\command_signature</Filter>
+    </ClCompile>
+    <ClCompile Include="shader_cook.cpp">
+      <Filter>dx12\utils\pipeline_state\shader_cook</Filter>
+    </ClCompile>
+    <ClCompile Include="pipeline_state.cpp">
+      <Filter>dx12\utils\pipeline_state</Filter>
+    </ClCompile>
+    <ClCompile Include="gpu_uploader.cpp">
+      <Filter>dx12\utils\uploader</Filter>
+    </ClCompile>
+    <ClCompile Include="dx_fence.cpp">
+      <Filter>dx12\wrappers\fence</Filter>
+    </ClCompile>
+    <ClCompile Include="gpu_heap_allocator.cpp">
+      <Filter>dx12\utils\allocators\heap</Filter>
+    </ClCompile>
+    <ClCompile Include="gpu_pool_allocator.cpp">
+      <Filter>dx12\utils\allocators\pool</Filter>
+    </ClCompile>
+    <ClCompile Include="gpu_double_pool_allocator.cpp">
+      <Filter>dx12\utils\allocators\double_pool</Filter>
+    </ClCompile>
+    <ClCompile Include="generate_mesh_arguments_effect_cook.cpp">
+      <Filter>render\effects\generate_mesh_arguments</Filter>
+    </ClCompile>
+    <ClCompile Include="render_mesh_objects_effect_cook.cpp">
+      <Filter>render\effects\render_mesh_objects</Filter>
+    </ClCompile>
+    <ClCompile Include="shade_effect_cook.cpp">
+      <Filter>render\effects\shade</Filter>
+    </ClCompile>
+    <ClCompile Include="api.cpp">
+      <Filter>api</Filter>
+    </ClCompile>
+    <ClCompile Include="render_allocator.cpp">
+      <Filter>resources\render_allocator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="buffer.h">
-      <Filter>dx\buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="input_layout.h">
-      <Filter>resources\utils\input_layout</Filter>
-    </ClInclude>
-    <ClInclude Include="shader.h">
-      <Filter>dx\shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="sampler.h">
-      <Filter>dx\samplers</Filter>
-    </ClInclude>
-    <ClInclude Include="pipeline_state.h">
-      <Filter>dx\pipeline_states</Filter>
-    </ClInclude>
-    <ClInclude Include="effect.h">
-      <Filter>renderer\utils\effect</Filter>
-    </ClInclude>
-    <ClInclude Include="render_targets.h">
-      <Filter>renderer\utils\render_target</Filter>
-    </ClInclude>
-    <ClInclude Include="renderer.h">
-      <Filter>renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="render_object.h">
-      <Filter>resources\classes\object\render_objects</Filter>
-    </ClInclude>
     <ClInclude Include="mesh.h">
       <Filter>resources\classes\dx\mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="constant_buffer.h">
-      <Filter>dx\buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="constant_buffer_inline.h">
-      <Filter>dx\buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="pipeline_state_pool.h">
-      <Filter>resources\utils\pipeline_state_pool</Filter>
-    </ClInclude>
-    <ClInclude Include="effect_inline.h">
-      <Filter>renderer\utils\effect</Filter>
-    </ClInclude>
-    <ClInclude Include="render_object_allocator_inline.h">
-      <Filter>resources\utils\render_object_allocator</Filter>
-    </ClInclude>
-    <ClInclude Include="render_object_allocator.h">
-      <Filter>resources\utils\render_object_allocator</Filter>
     </ClInclude>
     <ClInclude Include="texture.h">
       <Filter>resources\classes\dx\texture</Filter>
     </ClInclude>
-    <ClInclude Include="texture1d.h">
-      <Filter>dx\textures</Filter>
-    </ClInclude>
-    <ClInclude Include="texture2d.h">
-      <Filter>dx\textures</Filter>
-    </ClInclude>
-    <ClInclude Include="texture3d.h">
-      <Filter>dx\textures</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_views.h">
-      <Filter>dx\resource_views</Filter>
-    </ClInclude>
     <ClInclude Include="mesh_box.h">
       <Filter>resources\classes\dx\mesh\cook\default_mesh_data</Filter>
-    </ClInclude>
-    <ClInclude Include="shader_container.h">
-      <Filter>resources\utils\shaders\shader_container</Filter>
-    </ClInclude>
-    <ClInclude Include="shader_container_inline.h">
-      <Filter>resources\utils\shaders\shader_container</Filter>
-    </ClInclude>
-    <ClInclude Include="shader_and_input_layout_container.h">
-      <Filter>resources\utils\shaders\shader_container</Filter>
-    </ClInclude>
-    <ClInclude Include="shader_and_input_layout_container_inline.h">
-      <Filter>resources\utils\shaders\shader_container</Filter>
-    </ClInclude>
-    <ClInclude Include="shader_containers.h">
-      <Filter>resources\utils\shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="dx_include.h">
-      <Filter>dx</Filter>
-    </ClInclude>
-    <ClInclude Include="world.h">
-      <Filter>common\world</Filter>
     </ClInclude>
     <ClInclude Include="object.h">
       <Filter>resources\classes\object</Filter>
@@ -380,20 +299,8 @@
     <ClInclude Include="resources.h">
       <Filter>resources</Filter>
     </ClInclude>
-    <ClInclude Include="stage_forward_default.h">
-      <Filter>renderer\stages\stage_forward_default</Filter>
-    </ClInclude>
-    <ClInclude Include="stage_initialization.h">
-      <Filter>renderer\stages\stage_initialization</Filter>
-    </ClInclude>
-    <ClInclude Include="pipeline_state_pool_inline.h">
-      <Filter>resources\utils\pipeline_state_pool</Filter>
-    </ClInclude>
     <ClInclude Include="camera.h">
-      <Filter>renderer\utils\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="api.h">
-      <Filter>dx\api</Filter>
+      <Filter>render\camera</Filter>
     </ClInclude>
     <ClInclude Include="parameters.h">
       <Filter>parameters</Filter>
@@ -402,19 +309,7 @@
       <Filter>parameters</Filter>
     </ClInclude>
     <ClInclude Include="ui_batch.h">
-      <Filter>common\ui_batch</Filter>
-    </ClInclude>
-    <ClInclude Include="stage_ui.h">
-      <Filter>renderer\stages\stage_ui</Filter>
-    </ClInclude>
-    <ClInclude Include="stage_statistics.h">
-      <Filter>renderer\stages\stage_statistics</Filter>
-    </ClInclude>
-    <ClInclude Include="statistics.h">
-      <Filter>renderer\stages\stage_statistics\statistics</Filter>
-    </ClInclude>
-    <ClInclude Include="stage_visibility.h">
-      <Filter>renderer\stages\stage_visibility</Filter>
+      <Filter>ui_batch</Filter>
     </ClInclude>
     <ClInclude Include="parameters_type.h">
       <Filter>parameters</Filter>
@@ -449,11 +344,80 @@
     <ClInclude Include="scene_cook.h">
       <Filter>resources\classes\scene\cook</Filter>
     </ClInclude>
-    <ClInclude Include="resource_compilation.h">
-      <Filter>resources\compilation</Filter>
+    <ClInclude Include="dx.h">
+      <Filter>dx12\wrappers\dx</Filter>
     </ClInclude>
-    <ClInclude Include="constant_buffers_constants.h">
-      <Filter>resources\utils</Filter>
+    <ClInclude Include="dx12.h">
+      <Filter>dx12\wrappers\dx12</Filter>
+    </ClInclude>
+    <ClInclude Include="dx_command_allocator.h">
+      <Filter>dx12\wrappers\command_allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="dx_command_list.h">
+      <Filter>dx12\wrappers\command_list</Filter>
+    </ClInclude>
+    <ClInclude Include="dx_pipeline_state.h">
+      <Filter>dx12\wrappers\pipeline_state</Filter>
+    </ClInclude>
+    <ClInclude Include="dx_heap.h">
+      <Filter>dx12\wrappers\heap</Filter>
+    </ClInclude>
+    <ClInclude Include="dx_descriptor_heap.h">
+      <Filter>dx12\wrappers\descriptor_heap</Filter>
+    </ClInclude>
+    <ClInclude Include="dx_resource.h">
+      <Filter>dx12\wrappers\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="render.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="dx_root_signature.h">
+      <Filter>dx12\wrappers\root_signature</Filter>
+    </ClInclude>
+    <ClInclude Include="dx_command_signature.h">
+      <Filter>dx12\wrappers\command_signature</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_cook.h">
+      <Filter>dx12\utils\pipeline_state\shader_cook</Filter>
+    </ClInclude>
+    <ClInclude Include="pipeline_state.h">
+      <Filter>dx12\utils\pipeline_state</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu_uploader.h">
+      <Filter>dx12\utils\uploader</Filter>
+    </ClInclude>
+    <ClInclude Include="dx_fence.h">
+      <Filter>dx12\wrappers\fence</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu_heap_allocator.h">
+      <Filter>dx12\utils\allocators\heap</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu_pool_allocator.h">
+      <Filter>dx12\utils\allocators\pool</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu_structures.h">
+      <Filter>resources</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu_double_pool_allocator.h">
+      <Filter>dx12\utils\allocators\double_pool</Filter>
+    </ClInclude>
+    <ClInclude Include="generate_mesh_arguments_effect_cook.h">
+      <Filter>render\effects\generate_mesh_arguments</Filter>
+    </ClInclude>
+    <ClInclude Include="render_mesh_objects_effect_cook.h">
+      <Filter>render\effects\render_mesh_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="shade_effect_cook.h">
+      <Filter>render\effects\shade</Filter>
+    </ClInclude>
+    <ClInclude Include="api.h">
+      <Filter>api</Filter>
+    </ClInclude>
+    <ClInclude Include="render_allocator.h">
+      <Filter>resources\render_allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="object_inline.h">
+      <Filter>resources\classes\object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

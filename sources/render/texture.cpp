@@ -1,11 +1,12 @@
 #include "texture.h"
-#include "texture_cook.h"
+#include "resources.h"
 
 namespace render {
 
 void texture::destroy_resource( texture* const in_resource )
 {
-	in_resource->m_view.destroy( );
+	g_resources.destroy_texture( in_resource->m_texture_id );
+	in_resource->m_texture.destroy( );
 
 	container( ).remove( in_resource );
 }

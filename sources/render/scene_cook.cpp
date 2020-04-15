@@ -1,6 +1,8 @@
 #include "scene_cook.h"
 #include <lib/allocator.h>
 #include "resources.h"
+#include "scene.h"
+#include "render_object_mesh.h"
 
 namespace render {
 
@@ -23,13 +25,14 @@ void scene_cook::destroy( pointer const in_cook )
 
 void scene_cook::create_resource( )
 {
-	u32 const mesh_max_count = 4096;
+	u32 const mesh_max_count = 16384;
 
 	u32 const static_mesh_count = m_config.read<u32>( );
-
+	ASSERT_CMP( static_mesh_count, <=, mesh_max_count );
 	m_static_mesh_count = static_mesh_count;
 
-	ASSERT_CMP( m_static_mesh_count, <=, mesh_max_count );
+	uptr const objects_allocation_size = sizeof(render_object_mesh) * static_mesh_count;
+	m_result->m_static_objects_memory = g_resources.render_allocator( ).allocate( objects_allocation_size );
 
 	uptr const static_mesh_bvh_memory_size = math::bvh::node_data_size * 2 * static_mesh_count;
 	uptr const dynamic_mesh_bvh_memory_size = math::bvh::node_data_size * 2 * ( mesh_max_count - static_mesh_count );
@@ -38,8 +41,8 @@ void scene_cook::create_resource( )
 		static_mesh_bvh_memory_size +
 		dynamic_mesh_bvh_memory_size;
 
-	pointer const memory = virtual_allocator( ).allocate( memory_size );
-	m_result->m_memory = memory;
+	pointer const memory = g_resources.render_allocator( ).allocate( memory_size );
+	m_result->m_container_memory = memory;
 
 	pointer ptr = memory;
 
@@ -48,20 +51,22 @@ void scene_cook::create_resource( )
 	queries.create( stack_allocate( max_queries * sizeof(task_info) ), max_queries );
 
 	{
-		m_static_mesh_handles = std_allocator( ).allocate( m_static_mesh_count * sizeof(math::bvh::object_handle) );
+		math::bvh::object_handle* const handles = stack_allocate( static_mesh_count * sizeof(math::bvh::object_handle) );
+		render_object_mesh* obj = m_result->m_static_objects_memory;
 
-		for ( u32 i = 0; i < m_static_mesh_count; ++i )
+		for ( u32 i = 0; i < static_mesh_count; ++i, ++obj )
 		{
-			render_object_mesh* const obj = g_resources.get_render_object_allocator( ).mesh_allocator( ).allocate( );
 			new ( obj ) render_object_mesh( );
-			obj->initialize( m_config, queries );
-			m_static_mesh_handles[i] = (math::bvh::object_handle)g_resources.get_render_object_allocator( ).mesh_allocator( ).index_of( obj );
+			obj->create( m_config, queries );
+			handles[i] = (math::bvh::object_handle)g_resources.render_allocator( ).offset( obj );
 		}
 
 		m_result->m_static_mesh_container.create( ptr, static_mesh_bvh_memory_size );
-		m_result->m_static_mesh_container.deserialize( m_config, m_static_mesh_handles );
+		m_result->m_static_mesh_container.deserialize( m_config, handles );
 		ptr += static_mesh_bvh_memory_size;
+	}
 
+	{
 		m_result->m_dynamic_mesh_container.create( ptr, dynamic_mesh_bvh_memory_size );
 		ptr += dynamic_mesh_bvh_memory_size;
 	}
@@ -79,15 +84,41 @@ void scene_cook::create_resource( )
 
 void scene_cook::on_child_resources_ready( queried_resources& in_queried )
 {
-	for ( u32 i = 0; i < m_static_mesh_count; ++i )
+	u32 const max_task_count = 4096;
+	lib::buffer_array<gpu_upload_task> tasks;
+	tasks.create( stack_allocate( sizeof(gpu_upload_task) * max_task_count ), max_task_count );
+
+	uptr const allocator_size = 64 * Kb;
+	linear_allocator allocator;
+	allocator.create( stack_allocate( allocator_size ), allocator_size );
+
+	render_object_mesh* obj = m_result->m_static_objects_memory;
+
+	for ( u32 i = 0; i < m_static_mesh_count; ++i, ++obj )
 	{
-		render_object_mesh* const obj = g_resources.get_render_object_allocator( ).mesh_allocator( )[m_static_mesh_handles[i]];
-		obj->set_queried_resources( in_queried );
-		obj->update( math::float4x3::identity( ) );
+		obj->on_resources_ready( in_queried, tasks, allocator, true );
 	}
 
-	std_allocator( ).deallocate( m_static_mesh_handles );
+	if ( tasks.size( ) == 0 )
+		finish( m_result );
+	else
+	{
+		custom_task_context context = create_child_custom_tasks(
+			(u32)tasks.size( ),
+			resource_system::user_callback_task<scene_cook, &scene_cook::on_copy_tasks_finished>( this )
+		);
 
+		lib::for_each( tasks.begin( ), tasks.end( ), [context]( gpu_upload_task& in_task )
+		{
+			in_task.set_task_context( context );
+		} );
+
+		g_gpu_uploader.push_background_tasks( tasks.data( ), (u32)tasks.size( ) );
+	}
+}
+
+void scene_cook::on_copy_tasks_finished( )
+{
 	finish( m_result );
 }
 

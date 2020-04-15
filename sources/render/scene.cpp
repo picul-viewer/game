@@ -9,87 +9,42 @@ namespace render {
 
 void scene::destroy_resource( scene* const in_resource )
 {
-	in_resource->m_dynamic_mesh_container.for_each( []( math::bvh::object_handle const in_handle )
-	{
-		render_object_mesh* const obj = g_resources.get_render_object_allocator( ).mesh_allocator( )[in_handle];
-		obj->destroy( );
-		g_resources.get_render_object_allocator( ).mesh_allocator( ).deallocate( obj );
-	} );
-
 	in_resource->m_static_mesh_container.for_each( []( math::bvh::object_handle const in_handle )
 	{
-		render_object_mesh* const obj = g_resources.get_render_object_allocator( ).mesh_allocator( )[in_handle];
+		render_object_mesh* const obj = g_resources.render_allocator( ).offset_to_ptr( in_handle );
 		obj->destroy( );
-		g_resources.get_render_object_allocator( ).mesh_allocator( ).deallocate( obj );
 	} );
 
-	virtual_allocator( ).deallocate( in_resource->m_memory );
+	g_resources.render_allocator( ).deallocate( in_resource->m_container_memory );
+	g_resources.render_allocator( ).deallocate( in_resource->m_static_objects_memory );
 }
-
-struct scene::helper
-{
-
-struct functor_insert
-{
-	scene* scene_ptr;
-
-	template<typename T>
-	void operator( )( T* in_object ) const;
-
-	template<>
-	void operator( )( render_object_mesh* const in_object ) const
-	{
-		math::bvh::object_handle const object_handle =
-			(math::bvh::object_handle)g_resources.get_render_object_allocator( ).mesh_allocator( ).index_of( in_object );
-		math::bvh::node_handle const node_handle =
-			scene_ptr->m_dynamic_mesh_container.insert( object_handle, in_object->get_aabb( ).get_box( ) );
-		in_object->set_node_handle( node_handle );
-	}
-};
-
-struct functor_remove
-{
-	scene* scene_ptr;
-
-	template<typename T>
-	void operator( )( T* in_object ) const;
-
-	template<>
-	void operator( )( render_object_mesh* const in_object ) const
-	{
-		scene_ptr->m_dynamic_mesh_container.remove( in_object->get_node_handle( ) );
-	}
-};
-
-struct functor_move
-{
-	scene* scene_ptr;
-
-	template<typename T>
-	void operator( )( T* in_object ) const;
-
-	template<>
-	void operator( )( render_object_mesh* const in_object ) const
-	{
-		scene_ptr->m_dynamic_mesh_container.move( in_object->get_node_handle( ), in_object->get_aabb( ).get_box( ) );
-	}
-};
-
-};
 
 void scene::insert( object const& in_object )
 {
-	g_resources.get_render_object_allocator( ).for_each( in_object.objects( ), helper::functor_insert{ this } );
+	in_object.for_each_mesh_object( [this]( render_object_mesh* const in_obj )
+	{
+		math::bvh::object_handle const object_handle =
+			(math::bvh::object_handle)g_resources.render_allocator( ).offset( in_obj );
+		math::bvh::node_handle const node_handle =
+			m_dynamic_mesh_container.insert( object_handle, in_obj->get_aabb( ).get_box( ) );
+		in_obj->set_node_handle( node_handle );
+	} );
 }
 
 void scene::remove( object const& in_object )
 {
-	g_resources.get_render_object_allocator( ).for_each( in_object.objects( ), helper::functor_remove{ this } );
+	in_object.for_each_mesh_object( [this]( render_object_mesh* const in_obj )
+	{
+		m_dynamic_mesh_container.remove( in_obj->get_node_handle( ) );
+	} );
 }
 
 void scene::move( object const& in_object )
 {
-	g_resources.get_render_object_allocator( ).for_each( in_object.objects( ), helper::functor_move{ this } );
+	in_object.for_each_mesh_object( [this]( render_object_mesh* const in_obj )
+	{
+		m_dynamic_mesh_container.move( in_obj->get_node_handle( ), in_obj->get_aabb( ).get_box( ) );
+	} );
 }
 
 } // namespace render

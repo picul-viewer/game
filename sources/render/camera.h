@@ -3,28 +3,28 @@
 
 #include <types.h>
 #include <math/math_sse.h>
+#include "gpu_structures.h"
 
 namespace render {
 
 class camera
 {
 public:
-	void set_view( math::sse::matrix const& in_view );
-	void set_perspective( float fov, float aspect, float near, float far );
+	void set_view( math::float4x4 const& in_view );
+	void set_perspective( float in_fov, float in_aspect, float in_near, float in_far );
 	void update( );
-	
-	inline math::sse::matrix const& get_view( ) const { return m_view; }
-	inline math::sse::matrix const& get_projection( ) const { return m_projection; }
-	inline math::sse::matrix const& get_view_projection( ) const { return m_view_projection; }
 
-	inline math::sse::matrix& get_view( ) { return m_view; }
-	inline math::sse::matrix& get_projection( ) { return m_projection; }
-	inline math::sse::matrix& get_view_projection( ) { return m_view_projection; }
+	void fill_constant_buffer( gpu::constant_buffer& in_buffer );
+
+	inline math::float4x4& get_view( ) { return m_view; }
+	inline math::float4x4& get_projection( ) { return m_projection; }
+	inline math::float4x4& get_view_projection( ) { return m_view_projection; }
 
 protected:
-	math::sse::matrix m_view;
-	math::sse::matrix m_projection;
-	math::sse::matrix m_view_projection;
+	math::float4x4 m_view;
+	math::float4x4 m_projection;
+	math::float4x4 m_view_projection;
+	float m_near;
 
 };
 

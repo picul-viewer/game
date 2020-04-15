@@ -34,13 +34,10 @@ public:
 	math::bvh const& dynamic_mesh_container( ) const { return m_dynamic_mesh_container; }
 
 private:
-	struct helper;
-
-private:
-	pointer m_memory;
+	pointer m_container_memory;
+	pointer m_static_objects_memory;
 
 	math::bvh m_static_mesh_container;
-
 	math::bvh m_dynamic_mesh_container;
 };
 

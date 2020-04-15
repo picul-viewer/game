@@ -23,6 +23,7 @@ class world
 public:
 	void create( );
 	void update( );
+	bool ready( );
 	void destroy( );
 
 	void window_resize( math::u32x2 const& new_dimensions );
@@ -45,7 +46,9 @@ private:
 	ui::console m_console;
 	sys::ticker m_ticker;
 	ui::font::ptr m_console_font;
+	double m_angle;
 	bool m_console_visible;
+	volatile bool m_ready;
 
 };
 

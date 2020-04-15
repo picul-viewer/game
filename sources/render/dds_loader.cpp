@@ -1,9 +1,6 @@
 #include "dds_loader.h"
 
 #include <macros.h>
-#include <lib/allocator.h>
-
-#include "api.h"
 
 namespace render {
 namespace dds_loader {
@@ -218,225 +215,70 @@ DXGI_FORMAT dds_to_dxgi_format( dds_pixel_format const& ddpf )
 }
 
 
-void create_resource(
-	u32							in_resource_dimension,
-	u32							in_width,
-	u32							in_height,
-	u32							in_depth,
-	u32							in_mip_count,
-	u32							in_array_size,
-	DXGI_FORMAT					in_format,
-	D3D11_USAGE					in_usage,
-	u32							in_bind_flags,
-	u32							in_cpu_access_flags,
-	u32							in_misc_flags,
-	bool						in_force_srgb,
-	bool						in_is_cube_map,
-	D3D11_SUBRESOURCE_DATA*		in_data,
-	ID3D11ShaderResourceView*&	out_srv )
+void generate_upload_tasks(
+	u32 const width,
+	u32 const height,
+	u32 const depth,
+	u32 const mip_count,
+	u32 const array_size,
+	DXGI_FORMAT const format,
+	lib::reader& reader,
+	dx_resource const resource,
+	lib::buffer_array<gpu_upload_task>& upload_tasks
+)
 {
-	out_srv = nullptr;
+	bool const is_dxt = format_is_dxt( format );
 
-	if ( in_force_srgb )
-		in_format = format_make_srgb( in_format );
+	u32 num_bytes = 0;
+	u32 row_bytes = 0;
 
-	switch ( in_resource_dimension )
+	u32 index = 0;
+	for ( u32 j = 0; j < array_size; ++j )
 	{
-		case D3D11_RESOURCE_DIMENSION_TEXTURE1D:
+		u32 w = width;
+		u32 h = height;
+		u32 d = depth;
+
+		for ( u32 i = 0; i < mip_count; ++i )
 		{
-			D3D11_TEXTURE1D_DESC desc;
-			desc.Width			= in_width;
-			desc.MipLevels		= in_mip_count;
-			desc.ArraySize		= in_array_size;
-			desc.Format			= in_format;
-			desc.Usage			= in_usage;
-			desc.BindFlags		= in_bind_flags;
-			desc.CPUAccessFlags	= in_cpu_access_flags;
-			desc.MiscFlags		= in_misc_flags;
-
-			ID3D11Texture1D* texture = nullptr;
-			g_api.get_device( )->CreateTexture1D( &desc, in_data, &texture );
-
-			ASSERT				( texture != nullptr );
-
-			D3D11_SHADER_RESOURCE_VIEW_DESC srv_desc = {};
-			srv_desc.Format			= in_format;
-
-			if ( in_array_size > 1 )
+			if ( is_dxt )
 			{
-				srv_desc.ViewDimension				= D3D11_SRV_DIMENSION_TEXTURE1DARRAY;
-				srv_desc.Texture1DArray.MipLevels	= in_mip_count ? desc.MipLevels : (u32)-1;
-				srv_desc.Texture1DArray.ArraySize	= in_array_size;
+				u32 const num_blocks_wide = ( w > 0 ) ? ( w + 3 ) / 4 : 0;
+				u32 const num_blocks_high = ( h > 0 ) ? ( h + 3 ) / 4 : 0;
+
+				row_bytes = num_blocks_wide * format_get_bits_per_pixel( format );
+				num_bytes = row_bytes * num_blocks_high;
+			}
+			else if ( ( format == DXGI_FORMAT_R8G8_B8G8_UNORM ) || ( format == DXGI_FORMAT_G8R8_G8B8_UNORM ) )
+			{
+				row_bytes = ( ( w + 1 ) >> 1 ) * 4;
+				num_bytes = row_bytes * h;
 			}
 			else
 			{
-				srv_desc.ViewDimension				= D3D11_SRV_DIMENSION_TEXTURE1D;
-				srv_desc.Texture1D.MipLevels		= in_mip_count ? desc.MipLevels : (u32)-1;
+				u32 const bpp = format_get_bits_per_pixel( format );
+				row_bytes = ( w * bpp + 7 ) / 8;
+				num_bytes = row_bytes * h;
 			}
 
-			g_api.get_device( )->CreateShaderResourceView( texture, &srv_desc, &out_srv );
-			
-			ASSERT( out_srv != nullptr );
+			ASSERT( !is_dxt || ( ( w >= 4 ) && ( h >= 4 ) ) );
 
-			texture->Release( );
-			break;
-		}
+			gpu_upload_task& task = upload_tasks.emplace_back( );
 
-		case D3D11_RESOURCE_DIMENSION_TEXTURE2D:
-		{
-			D3D11_TEXTURE2D_DESC desc;
-			desc.Width				= in_width;
-			desc.Height				= in_height;
-			desc.MipLevels			= in_mip_count;
-			desc.ArraySize			= in_array_size;
-			desc.Format				= in_format;
-			desc.SampleDesc.Count	= 1;
-			desc.SampleDesc.Quality	= 0;
-			desc.Usage				= in_usage;
-			desc.BindFlags			= in_bind_flags;
-			desc.CPUAccessFlags		= in_cpu_access_flags;
-		
-			desc.MiscFlags			= in_misc_flags;
-			if ( in_is_cube_map )
-				desc.MiscFlags		|= D3D11_RESOURCE_MISC_TEXTURECUBE;
+			D3D12_SUBRESOURCE_FOOTPRINT footprint;
+			footprint.Format = format;
+			footprint.Width = w;
+			footprint.Height = h;
+			footprint.Depth = d;
+			footprint.RowPitch = math::align_up( row_bytes, D3D12_TEXTURE_DATA_PITCH_ALIGNMENT );
 
-			ID3D11Texture2D* texture = nullptr;
-			g_api.get_device( )->CreateTexture2D( &desc, in_data, &texture );
-			
-			ASSERT( texture != nullptr );
+			task.set_texture_upload( resource, index, footprint );
 
-			D3D11_SHADER_RESOURCE_VIEW_DESC srv_desc = {};
-			srv_desc.Format			= in_format;
+			uptr const data_size = num_bytes * d;
+			pvoid const data = reader.read_data( num_bytes * d );
 
-			if ( in_is_cube_map )
-			{
-				if ( in_array_size > 6 )
-				{
-					srv_desc.ViewDimension				= D3D11_SRV_DIMENSION_TEXTURECUBEARRAY;
-					srv_desc.TextureCubeArray.MipLevels	= ( in_mip_count == 0 ) ? -1 : desc.MipLevels;
-					srv_desc.TextureCubeArray.NumCubes	= in_array_size / 6;
-				}
-				else
-				{
-					srv_desc.ViewDimension				= D3D11_SRV_DIMENSION_TEXTURECUBE;
-					srv_desc.TextureCube.MipLevels		= ( in_mip_count == 0 ) ? -1 : desc.MipLevels;
-				}
-			}
-			else
-			{
-				if ( in_array_size > 1 )
-				{
-					srv_desc.ViewDimension				= D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
-					srv_desc.Texture2DArray.MipLevels	= ( in_mip_count == 0 ) ? -1 : desc.MipLevels;
-					srv_desc.Texture2DArray.ArraySize	= in_array_size;
-				}
-				else
-				{
-					srv_desc.ViewDimension				= D3D11_SRV_DIMENSION_TEXTURE2D;
-					srv_desc.Texture2D.MipLevels		= ( in_mip_count == 0 ) ? -1 : desc.MipLevels;
-				}
-			}
+			task.set_source_data( data, data_size, ( footprint.RowPitch == row_bytes ) ? 0 : row_bytes );
 
-			g_api.get_device( )->CreateShaderResourceView( texture, &srv_desc, &out_srv );
-			
-			ASSERT( out_srv != nullptr );
-
-			texture->Release( );
-			break;
-		}
-
-		case D3D11_RESOURCE_DIMENSION_TEXTURE3D:
-		{
-			D3D11_TEXTURE3D_DESC desc;
-			desc.Width			= in_width;
-			desc.Height			= in_height;
-			desc.Depth			= in_depth;
-			desc.MipLevels		= in_mip_count;
-			desc.Format			= in_format;
-			desc.Usage			= in_usage;
-			desc.BindFlags		= in_bind_flags;
-			desc.CPUAccessFlags	= in_cpu_access_flags;
-			desc.MiscFlags		= in_misc_flags;
-
-			ID3D11Texture3D* texture = nullptr;
-			g_api.get_device( )->CreateTexture3D( &desc, in_data, &texture );
-
-			ASSERT( texture != nullptr );
-
-			D3D11_SHADER_RESOURCE_VIEW_DESC srv_desc = {};
-			srv_desc.Format		= in_format;
-
-			srv_desc.ViewDimension			= D3D11_SRV_DIMENSION_TEXTURE3D;
-			srv_desc.Texture3D.MipLevels	= ( !in_mip_count ) ? -1 : desc.MipLevels;
-
-			g_api.get_device( )->CreateShaderResourceView( texture, &srv_desc, &out_srv );
-			
-			ASSERT( out_srv != nullptr );
-
-			texture->Release();
-			break;
-		}
-	}
-}
-
-void get_surface_info( uptr			width,
-					   uptr			height,
-					   DXGI_FORMAT	fmt,
-					   uptr&		out_num_bytes,
-					   uptr&		out_row_bytes )
-{
-	if ( format_is_dxt( fmt ) )
-	{
-		size_t num_blocks_wide	= ( width > 0 ) ? ( width + 3 ) / 4 : 0;
-		uptr num_blocks_high	= (height > 0) ? ( height + 3 ) / 4 : 0;
-
-		out_row_bytes			= num_blocks_wide * format_get_bits_per_pixel( fmt );
-		out_num_bytes			= out_row_bytes * num_blocks_high;
-	}
-	else if ( ( fmt == DXGI_FORMAT_R8G8_B8G8_UNORM ) ||
-			  ( fmt == DXGI_FORMAT_G8R8_G8B8_UNORM ) )
-	{
-		out_row_bytes			= ( ( width + 1 ) >> 1 ) * 4;
-		out_num_bytes			= out_row_bytes * height;
-	}
-	else
-	{
-		size_t bpp				= format_get_bits_per_pixel( fmt );
-		out_row_bytes			= (width * bpp + 7) / 8;
-		out_num_bytes			= out_row_bytes * height;
-	}
-}
-
-void fill_init_data( uptr						width,
-					 uptr						height,
-					 uptr						depth,
-					 uptr						mip_count,
-					 uptr						array_size,
-					 DXGI_FORMAT				format,
-					 lib::reader&				reader,
-					 D3D11_SUBRESOURCE_DATA*	init_data )
-{
-	ASSERT( init_data );
-
-	uptr num_bytes = 0;
-	uptr row_bytes = 0;
-
-	uptr index = 0;
-	for ( uptr j = 0; j < array_size; ++j )
-	{
-		uptr w = width;
-		uptr h = height;
-		uptr d = depth;
-
-		for ( size_t i = 0; i < mip_count; ++i )
-		{
-			get_surface_info( w, h, format, num_bytes, row_bytes );
-
-			ASSERT_CMP( index, <, mip_count * array_size );
-
-			init_data[index].pSysMem			= reader.read_data( num_bytes * d );
-			init_data[index].SysMemPitch		= (UINT)row_bytes;
-			init_data[index].SysMemSlicePitch	= (UINT)num_bytes;
 			++index;
 
 			w = ( w != 1 ) ? w >> 1 : 1;
@@ -446,9 +288,14 @@ void fill_init_data( uptr						width,
 	}
 }
 
-void load( ID3D11ShaderResourceView*& out_srv, lib::reader& in_reader )
+void load(
+	lib::reader& in_reader,
+	dx_resource& in_resource,
+	D3D12_SHADER_RESOURCE_VIEW_DESC& in_srv_desc,
+	lib::buffer_array<gpu_upload_task>& in_upload_tasks
+)
 {
-	ASSERT( in_reader.is_valid( ) );
+	ASSERT				( in_reader.is_valid( ) );
 
 	u32 magic_number	= in_reader.read<u32>( );
 	ASSERT_CMP			( magic_number, ==, c_dds_magic );
@@ -461,12 +308,12 @@ void load( ID3D11ShaderResourceView*& out_srv, lib::reader& in_reader )
 	u32 height			= header.height;
 	u32 depth			= header.depth;
 
-	u32 res_dim			= D3D11_RESOURCE_DIMENSION_UNKNOWN;
+	u32 res_dim			= D3D12_RESOURCE_DIMENSION_UNKNOWN;
 	u32 array_size		= 1;
 	DXGI_FORMAT format	= DXGI_FORMAT_UNKNOWN;
 	bool is_cube_map	= false;
 	
-	uptr mip_count		= header.mip_map_count;
+	u32 mip_count		= header.mip_map_count;
 	if ( mip_count == 0 )
 		mip_count = 1;
 
@@ -484,23 +331,18 @@ void load( ID3D11ShaderResourceView*& out_srv, lib::reader& in_reader )
 		res_dim = dxt_header.resource_dimension;
 		switch ( res_dim )
 		{
-		case D3D11_RESOURCE_DIMENSION_TEXTURE1D:
+		case D3D12_RESOURCE_DIMENSION_TEXTURE1D:
 			if ( header.flags & c_dds_height )
 				ASSERT_CMP( height, ==, 1 );
 
 			height = depth = 1;
 			break;
 
-		case D3D11_RESOURCE_DIMENSION_TEXTURE2D:
-			if ( dxt_header.misc_flag & D3D11_RESOURCE_MISC_TEXTURECUBE )
-			{
-				array_size	*= 6;
-				is_cube_map	= true;
-			}
+		case D3D12_RESOURCE_DIMENSION_TEXTURE2D:
 			depth = 1;
 			break;
 
-		case D3D11_RESOURCE_DIMENSION_TEXTURE3D:
+		case D3D12_RESOURCE_DIMENSION_TEXTURE3D:
 			ASSERT( header.flags & c_dds_header_flags_volume );
 			ASSERT_CMP( array_size, ==, 1 );
 			break;
@@ -515,7 +357,7 @@ void load( ID3D11ShaderResourceView*& out_srv, lib::reader& in_reader )
 		ASSERT( format != DXGI_FORMAT_UNKNOWN );
 
 		if ( header.flags & c_dds_header_flags_volume )
-			res_dim = D3D11_RESOURCE_DIMENSION_TEXTURE3D;
+			res_dim = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
 		else
 		{
 			if ( header.caps2 & c_dds_cubemap )
@@ -527,54 +369,168 @@ void load( ID3D11ShaderResourceView*& out_srv, lib::reader& in_reader )
 			}
 
 			depth			= 1;
-			res_dim			= D3D11_RESOURCE_DIMENSION_TEXTURE2D;
+			res_dim			= D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 		}
 
 		ASSERT( format_get_bits_per_pixel( format ) != 0 );
 	}
 
-	ASSERT_CMP( mip_count, <=, D3D11_REQ_MIP_LEVELS );
+	ASSERT_CMP( mip_count, <=, D3D12_REQ_MIP_LEVELS );
+
+
+	in_srv_desc.Format = format;
+	in_srv_desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
 	switch ( res_dim )
 	{
-	case D3D11_RESOURCE_DIMENSION_TEXTURE1D:
-		ASSERT_CMP( array_size, <=, D3D11_REQ_TEXTURE1D_ARRAY_AXIS_DIMENSION );
-		ASSERT_CMP( width, <=, D3D11_REQ_TEXTURE1D_U_DIMENSION );
-		break;
-
-	case D3D11_RESOURCE_DIMENSION_TEXTURE2D:
-		ASSERT_CMP( array_size, <=, D3D11_REQ_TEXTURE2D_ARRAY_AXIS_DIMENSION );
-
-		if ( is_cube_map )
+		case D3D12_RESOURCE_DIMENSION_TEXTURE1D:
 		{
-			ASSERT_CMP( width, <=, D3D11_REQ_TEXTURECUBE_DIMENSION );
-			ASSERT_CMP( height, <=, D3D11_REQ_TEXTURECUBE_DIMENSION );
+			ASSERT_CMP( array_size, <=, D3D12_REQ_TEXTURE1D_ARRAY_AXIS_DIMENSION );
+			ASSERT_CMP( width, <=, D3D12_REQ_TEXTURE1D_U_DIMENSION );
+
+			dx_resource::cook cook;
+			cook.create_texture1d(
+				format, width, array_size, mip_count,
+				true, false, false, false, false
+			);
+			cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
+			cook.set_initial_state( D3D12_RESOURCE_STATE_COMMON );
+			in_resource.create( cook );
+
+			if ( array_size == 1 )
+			{
+				in_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1D;
+				in_srv_desc.Texture1D.MostDetailedMip = 0;
+				in_srv_desc.Texture1D.MipLevels = -1;
+				in_srv_desc.Texture1D.ResourceMinLODClamp = 0.0f;
+			}
+			else
+			{
+				in_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1DARRAY;
+				in_srv_desc.Texture1DArray.ArraySize = array_size;
+				in_srv_desc.Texture1DArray.FirstArraySlice = 0;
+				in_srv_desc.Texture1DArray.MostDetailedMip = 0;
+				in_srv_desc.Texture1DArray.MipLevels = -1;
+				in_srv_desc.Texture1DArray.ResourceMinLODClamp = 0.0f;
+			}
+
+			break;
 		}
-		else
+
+		case D3D12_RESOURCE_DIMENSION_TEXTURE2D:
 		{
-			ASSERT_CMP( width, <=, D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION );
-			ASSERT_CMP( height, <=, D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION );
+			ASSERT_CMP( array_size, <=, D3D12_REQ_TEXTURE2D_ARRAY_AXIS_DIMENSION );
+
+			if ( is_cube_map )
+			{
+				ASSERT_CMP( width, <=, D3D12_REQ_TEXTURECUBE_DIMENSION );
+				ASSERT_CMP( height, <=, D3D12_REQ_TEXTURECUBE_DIMENSION );
+			}
+			else
+			{
+				ASSERT_CMP( width, <=, D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION );
+				ASSERT_CMP( height, <=, D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION );
+			}
+
+			// Avoid too small images with DXT formats.
+			bool const is_dxt = format_is_dxt( format );
+			if ( is_dxt )
+			{
+				BOOLEAN result;
+				u32 log_width, log_height;
+				result = _BitScanForward( (DWORD*)&log_width, width / 4 );
+				ASSERT( result );
+				result = _BitScanForward( (DWORD*)&log_height, height / 4 );
+				ASSERT( result );
+
+				mip_count = math::min( mip_count, math::min( log_width, log_height ) + 1 );
+			}
+
+			dx_resource::cook cook;
+			cook.create_texture2d(
+				format, width, height, array_size, mip_count,
+				true, false, false, false, false
+			);
+			cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
+			cook.set_initial_state( D3D12_RESOURCE_STATE_COMMON );
+			in_resource.create( cook );
+
+			if ( is_cube_map )
+			{
+				in_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+				in_srv_desc.TextureCube.MostDetailedMip = 0;
+				in_srv_desc.TextureCube.MipLevels = -1;
+				in_srv_desc.TextureCube.ResourceMinLODClamp = 0.0f;
+			}
+			else if ( array_size == 1 )
+			{
+				in_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+				in_srv_desc.Texture2D.MostDetailedMip = 0;
+				in_srv_desc.Texture2D.MipLevels = -1;
+				in_srv_desc.Texture2D.PlaneSlice = 0;
+				in_srv_desc.Texture2D.ResourceMinLODClamp = 0.0f;
+			}
+			else
+			{
+				in_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
+				in_srv_desc.Texture2DArray.ArraySize = array_size;
+				in_srv_desc.Texture2DArray.FirstArraySlice = 0;
+				in_srv_desc.Texture2DArray.MostDetailedMip = 0;
+				in_srv_desc.Texture2DArray.MipLevels = -1;
+				in_srv_desc.Texture2DArray.PlaneSlice = 0;
+				in_srv_desc.Texture2DArray.ResourceMinLODClamp = 0.0f;
+			}
+
+			break;
 		}
-		break;
 
-	case D3D11_RESOURCE_DIMENSION_TEXTURE3D:
-		ASSERT_CMP( array_size, <=, 1 );
-		ASSERT_CMP( width, <=, D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION );
-		ASSERT_CMP( height, <=, D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION );
-		ASSERT_CMP( depth, <=, D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION );
-		break;
+		case D3D12_RESOURCE_DIMENSION_TEXTURE3D:
+		{
+			ASSERT_CMP( array_size, <=, 1 );
+			ASSERT_CMP( width, <=, D3D12_REQ_TEXTURE3D_U_V_OR_W_DIMENSION );
+			ASSERT_CMP( height, <=, D3D12_REQ_TEXTURE3D_U_V_OR_W_DIMENSION );
+			ASSERT_CMP( depth, <=, D3D12_REQ_TEXTURE3D_U_V_OR_W_DIMENSION );
 
-	default:
-		UNREACHABLE_CODE
+			// Avoid too small images with DXT formats.
+			bool const is_dxt = format_is_dxt( format );
+			if ( is_dxt )
+			{
+				BOOLEAN result;
+				u32 log_width, log_height;
+				result = _BitScanForward( (DWORD*)&log_width, width / 4 );
+				ASSERT( result );
+				result = _BitScanForward( (DWORD*)&log_height, height / 4 );
+				ASSERT( result );
+
+				mip_count = math::min( mip_count, math::min( log_width, log_height ) + 1 );
+			}
+
+			dx_resource::cook cook;
+			cook.create_texture3d(
+				format, width, height, depth, mip_count,
+				true, false, false, false, false
+			);
+			cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
+			cook.set_initial_state( D3D12_RESOURCE_STATE_COMMON );
+			in_resource.create( cook );
+
+			in_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
+			in_srv_desc.Texture3D.MostDetailedMip = 0;
+			in_srv_desc.Texture3D.MipLevels = -1;
+			in_srv_desc.Texture3D.ResourceMinLODClamp = 0.0f;
+
+			break;
+		}
+
+		default:
+			UNREACHABLE_CODE
 	}
 
-	D3D11_SUBRESOURCE_DATA* init_data = stack_allocate( mip_count * array_size * sizeof(D3D11_SUBRESOURCE_DATA) );
 
-	fill_init_data( width, height, depth, mip_count, array_size, format, in_reader, init_data );
-
-	create_resource( res_dim, width, height, depth, (u32)mip_count, array_size,
-					 format, D3D11_USAGE_IMMUTABLE, D3D11_BIND_SHADER_RESOURCE,
-					 0, 0, false, is_cube_map, init_data, out_srv );
+	generate_upload_tasks(
+		width, height, depth, mip_count, array_size,
+		format, in_reader, in_resource, in_upload_tasks
+	);
 }
 
 } // namespace dds_loader

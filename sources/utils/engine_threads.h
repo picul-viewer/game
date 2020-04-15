@@ -6,14 +6,10 @@
 
 enum engine_threads : u32
 {
-	engine_busy_threads_first = 0,
-
-	engine_thread_main = engine_busy_threads_first,
+	engine_thread_main,
 	engine_thread_window,
-
-	engine_free_threads_first,
-
-	engine_thread_fs = engine_free_threads_first,
+	engine_thread_fs,
+	engine_thread_render_copy,
 
 	engine_helper_threads_first,
 
@@ -35,10 +31,8 @@ enum engine_threads : u32
 	engine_helper_thread_15,
 
 	engine_thread_count,
-
-	engine_busy_threads_count = engine_free_threads_first - engine_busy_threads_first,
-	engine_free_threads_count = engine_helper_threads_first - engine_free_threads_first,
-	engine_helper_threads_count = engine_thread_count - engine_helper_threads_first
+	engine_base_threads_count = engine_helper_threads_first,
+	engine_helper_threads_count = engine_thread_count - engine_helper_threads_first,
 };
 
 namespace utils {

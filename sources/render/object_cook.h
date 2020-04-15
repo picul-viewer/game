@@ -17,7 +17,7 @@ class scene;
 class object_cook : public default_resource_cook<object, object_cook>
 {
 public:
-	static object_cook* create( object* const in_resource_ptr, lib::reader const& in_config );
+	static object_cook* create( lib::reader const& in_config );
 	static void destroy( pointer const in_cook );
 
 public:
@@ -29,6 +29,7 @@ public:
 
 private:
 	void on_child_resources_ready( queried_resources& in_queried );
+	void on_copy_tasks_finished( );
 
 private:
 	object* m_result;
