@@ -46,6 +46,12 @@ typename shared_resource<Resource, ResourceHandle, MaxInstanceCount>::container_
 }
 
 template<typename Resource, typename ResourceHandle, u32 MaxInstanceCount>
+Resource* shared_resource<Resource, ResourceHandle, MaxInstanceCount>::from_handle( handle_value_type const& in_handle )
+{
+	return s_container.from_handle( in_handle );
+}
+
+template<typename Resource, typename ResourceHandle, u32 MaxInstanceCount>
 Resource* shared_resource<Resource, ResourceHandle, MaxInstanceCount>::from_handle( ResourceHandle const& in_handle )
 {
 	return s_container.from_handle( in_handle );

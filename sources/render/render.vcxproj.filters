@@ -145,14 +145,23 @@
     <Filter Include="api">
       <UniqueIdentifier>{eb12d2bc-2196-4b2c-99a4-b942efaacedf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ui_batch">
-      <UniqueIdentifier>{53a4a161-f8fc-4cad-8226-54141297fd41}</UniqueIdentifier>
-    </Filter>
     <Filter Include="render\camera">
       <UniqueIdentifier>{14fef490-01c9-4cc3-abcf-8e4f3cab34f6}</UniqueIdentifier>
     </Filter>
     <Filter Include="resources\render_allocator">
       <UniqueIdentifier>{670cc264-7622-4f51-b2f5-663c51a6cacd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\effects\render_ui">
+      <UniqueIdentifier>{37d4cd46-a147-4153-94bd-0a31e7056000}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\statistics">
+      <UniqueIdentifier>{7d865498-6e3f-4efe-a460-cf3c06f0cfec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\ui_processor">
+      <UniqueIdentifier>{53a4a161-f8fc-4cad-8226-54141297fd41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dx12\wrappers\query_heap">
+      <UniqueIdentifier>{3196491f-bac2-4e52-92fc-ab17fd3e3739}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -179,9 +188,6 @@
     </ClCompile>
     <ClCompile Include="parameters_manager.cpp">
       <Filter>parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="ui_batch.cpp">
-      <Filter>ui_batch</Filter>
     </ClCompile>
     <ClCompile Include="dds_loader.cpp">
       <Filter>resources\classes\dx\texture\dds_loader</Filter>
@@ -279,6 +285,18 @@
     <ClCompile Include="render_allocator.cpp">
       <Filter>resources\render_allocator</Filter>
     </ClCompile>
+    <ClCompile Include="ui_processor.cpp">
+      <Filter>render\ui_processor</Filter>
+    </ClCompile>
+    <ClCompile Include="render_ui_effect_cook.cpp">
+      <Filter>render\effects\render_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="statistics.cpp">
+      <Filter>render\statistics</Filter>
+    </ClCompile>
+    <ClCompile Include="dx_query_heap.cpp">
+      <Filter>dx12\wrappers\query_heap</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mesh.h">
@@ -307,9 +325,6 @@
     </ClInclude>
     <ClInclude Include="parameters_manager.h">
       <Filter>parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="ui_batch.h">
-      <Filter>ui_batch</Filter>
     </ClInclude>
     <ClInclude Include="parameters_type.h">
       <Filter>parameters</Filter>
@@ -418,6 +433,18 @@
     </ClInclude>
     <ClInclude Include="object_inline.h">
       <Filter>resources\classes\object</Filter>
+    </ClInclude>
+    <ClInclude Include="ui_processor.h">
+      <Filter>render\ui_processor</Filter>
+    </ClInclude>
+    <ClInclude Include="render_ui_effect_cook.h">
+      <Filter>render\effects\render_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="statistics.h">
+      <Filter>render\statistics</Filter>
+    </ClInclude>
+    <ClInclude Include="dx_query_heap.h">
+      <Filter>dx12\wrappers\query_heap</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

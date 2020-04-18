@@ -1,4 +1,5 @@
 #include "dx.h"
+#include <lib/fixed_string.h>
 #include "parameters.h"
 
 namespace render {
@@ -36,7 +37,7 @@ void dx::create( )
 
 		debug_controller->EnableDebugLayer( );
 	}
-#endif
+#endif // #ifdef RENDER_ALLOW_DEBUG
 
 	IDXGIFactory4* factory;
 	DX12_CHECK_RESULT( CreateDXGIFactory1( IID_PPV_ARGS( &factory ) ) );
@@ -96,7 +97,7 @@ void dx::create( )
 	for ( u32 i = 0; i < swap_chain_buffer_count; ++i )
 	{
 		DX12_CHECK_RESULT( m_swap_chain->GetBuffer( i, IID_PPV_ARGS( &m_swap_chain_buffers[i] ) ) );
-		set_dx_name( m_swap_chain_buffers[i], "swap_chain_buffer" );
+		set_dx_name( m_swap_chain_buffers[i], format( "swap_chain_buffer #%d", i ) );
 	}
 
 	factory->Release( );
@@ -111,6 +112,16 @@ void dx::destroy( )
 		m_swap_chain_buffers[i]->Release( );
 	m_swap_chain->Release( );
 	m_device->Release( );
+
+#ifdef RENDER_ALLOW_DEBUG
+	{
+		IDXGIDebug1* dxgi_debug = nullptr;
+		DX12_CHECK_RESULT( DXGIGetDebugInterface1( 0, IID_PPV_ARGS( &dxgi_debug ) ) );
+
+		dxgi_debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_SUMMARY);
+		dxgi_debug->Release();
+	}
+#endif // #ifdef RENDER_ALLOW_DEBUG
 }
 
 dx g_dx;

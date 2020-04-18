@@ -14,6 +14,11 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
+#ifdef RENDER_ALLOW_DEBUG
+#include <dxgidebug.h>
+#pragma comment(lib, "dxguid.lib")
+#endif // #ifdef RENDER_ALLOW_DEBUG
+
 #define DX12_CHECK_RESULT( expr )								\
 {																\
 	HRESULT const r = (expr);									\

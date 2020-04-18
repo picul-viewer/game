@@ -35,7 +35,23 @@ struct constant_buffer
 	float4 world_camera_screen_ray_y;
 	float4 deprojection_coefficients__fov_scale;
 	float4 viewport_size;
-	uint4 indirect_params;
+	uint4 indirect_params_0;
+	uint4 indirect_params_1;
+};
+
+struct dispatch_indirect_command
+{
+	uint group_count_x;
+	uint group_count_y;
+	uint group_count_z;
+};
+
+struct draw_indirect_command
+{
+	uint vertex_count_per_instance;
+	uint instance_count;
+	uint start_vertex_location;
+	uint start_instance_location;
 };
 
 struct draw_indexed_indirect_command
@@ -45,13 +61,6 @@ struct draw_indexed_indirect_command
 	uint start_index_location;
 	uint base_vertex_location;
 	uint start_instance_location;
-};
-
-struct dispatch_indirect_command
-{
-	uint group_count_x;
-	uint group_count_y;
-	uint group_count_z;
 };
 
 #endif // #ifndef GUARD_SHADER_STRUCTURES_H_INCLUDED

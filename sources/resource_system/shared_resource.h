@@ -73,6 +73,7 @@ private:
 public:
 	typedef typename ResourceHandle::value_type handle_value_type;
 
+	static Resource* from_handle( handle_value_type const& in_handle );
 	static Resource* from_handle( ResourceHandle const& in_handle );
 	static ResourceHandle to_handle( Resource* const in_resource );
 	static handle_value_type to_handle_value( Resource* const in_resource );

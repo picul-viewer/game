@@ -2,117 +2,103 @@
 #define GUARD_RENDER_STATISTICS_H_INCLUDED
 
 #include <types.h>
-#include "dx_include.h"
+#include <lib/linear_set.h>
+#include <lib/text_writer.h>
 #include <system/time.h>
+#include "dx.h"
+#include "dx_command_list.h"
+#include "dx_resource.h"
+#include "dx_query_heap.h"
 
 namespace render {
 
 class statistics
 {
 public:
-	statistics( );
-
 	void create( );
 	void destroy( );
 	
-	void process_frame( uptr const in_delay );
+	void resolve( dx_command_list const& in_list, u32 const in_frame_index );
 
-	void output_render_statistics( uptr const in_delay, pstr const out_string, uptr const in_max_chars ) const;
-	//void save_render_statistics( uptr const in_delay, pcstr in_file_name ) const;
+	void process( pstr const out_string, uptr const in_max_chars );
 
-	struct frame
-	{
-	public:
-		frame( );
-		~frame( );
-	private:
-		sys::timer m_timer;
-	};
-
-	struct debug_event
+	/*struct debug_event
 	{
 	public:
 		debug_event( LPCWSTR const in_name_wstr );
 		~debug_event( );
-	};
+	};*/
 	
 	struct profile_event
 	{
 	public:
-		profile_event( pcstr const in_name );
+		profile_event( dx_command_list const& in_list, u32 const in_frame_index, pcstr const in_name );
 		~profile_event( );
+
 	private:
-		u32 const m_event_index;
+		dx_command_list const& m_list;
+		u32 const m_frame_index;
+
 	};
 
-protected:
-	void begin_frame( );
-	void end_frame( float const in_elapsed_cpu_time );
-	
-	void begin_debug_event( LPCWSTR const in_name_wstr );
-	void end_debug_event( );
-	
-	u32 begin_profile_event( pcstr const in_name );
-	void end_profile_event( u32 const in_event_index );
-	
+private:
 	enum : u32 {
-		max_frames = 8,
-		max_events = 256,
+		max_events = 8
 	};
 
-	struct frame_struct
-	{
-		ID3D11Query* m_query;
-		ID3D11Query* m_t0;
-		ID3D11Query* m_t1;
-		u32 m_events_begin;
-		u32 m_events_end;
-		float m_precision;
-		float m_render_gpu_frame_time;
-		float m_render_cpu_frame_time;
-		float m_frame_time;
-
-		frame_struct( );
-	};
-
-	struct event_struct
+	struct event_data
 	{
 		pcstr m_name;
-		ID3D11Query* m_t0;
-		ID3D11Query* m_t1;
-		float m_time_start;
-		float m_time_finish;
-
-		event_struct( );
+		event_data* m_child;
+		event_data* m_next;
+		u32 m_query_index;
+		float m_current_value;
 	};
 
-	frame_struct m_frames[max_frames];
-	event_struct m_events[max_events];
-	
-	uptr m_frame_index;
-	u32 m_event_index;
+	typedef lib::linear_set<event_data, max_events * 2> event_set_type;
 
-	sys::ticker m_ticker;
+private:
+	void process_event_data( event_data* const in_data, lib::text_writer& in_writer, u64* const in_query_result, u32 const in_depth );
+	
+	//void begin_debug_event( LPCWSTR const in_name_wstr );
+	//void end_debug_event( );
+	
+	void begin_profile_event( dx_command_list const& in_list, u32 const in_frame_index, pcstr const in_name );
+	void end_profile_event( dx_command_list const& in_list, u32 const in_event_index );
+
+private:
+	byte m_event_set_memory[event_set_type::memory_size];
+	event_set_type m_event_set;
+
+	event_data* m_stack[max_events];
+
+	dx_query_heap m_heap;
+	dx_resource m_result_buffer;
+
+	event_data* m_root;
+
+	sys::ticker m_frame_ticker;
+	float m_current_cpu_frame_time;
+
+	double m_inv_frequency;
+
+	u32 m_query_count;
+	u32 m_stack_index;
 
 };
 
-
+#ifdef USE_RENDER_PROFILING
 extern statistics g_statistics;
+#endif // #ifdef USE_RENDER_PROFILING
 
 } // namespace render
 
-#ifdef USE_RENDER_PROFILING
-#	define RENDER_FRAME statistics::frame statistics_frame_struct
-#else
-#	define RENDER_FRAME
-#endif // #ifdef USE_RENDER_PROFILING
-
-#define RENDER_DEBUG_EVENT( name ) statistics::debug_event statistics_debug_event_##name( L#name )
+//#define RENDER_DEBUG_EVENT( name ) statistics::debug_event statistics_debug_event_##name( L#name )
 
 #ifdef USE_RENDER_PROFILING
-#	define RENDER_PROFILE_EVENT( name ) statistics::profile_event statistics_profile_event_##name( #name )
+#	define PROFILE_EVENT( list, frame_index, name ) statistics::profile_event statistics_profile_event_##name( list, frame_index, #name )
 #else
-#	define RENDER_PROFILE_EVENT( name )
+#	define PROFILE_EVENT( list, frame_index, name )
 #endif // #ifdef USE_RENDER_PROFILING
 
 #endif // #ifndef GUARD_RENDER_STATISTICS_H_INCLUDED

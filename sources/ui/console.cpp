@@ -1,9 +1,9 @@
 #include "console.h"
 #include <Windows.h>
 #include <lib/allocator.h>
+#include <render/api.h>
 #include <system/file.h>
 #include <system/window_input.h>
-#include <render/ui_batch.h>
 
 namespace ui {
 
@@ -53,7 +53,7 @@ void console::on_char( u32 const in_key )
 		if ( m_text_edit.get_length( ) == 0 )
 			return;
 
-		printf( "%s\n", m_text_edit_memory );
+		printf( "> %s\n", m_text_edit_memory );
 
 		if ( m_callback )
 			m_callback( m_text_edit_memory );
@@ -96,11 +96,11 @@ void console::on_input( )
 	m_text_edit.on_input( );
 }
 
-void console::render( render::ui_batch& in_batch ) const
+void console::render( ) const
 {
-	in_batch.add_color_quad( m_background_position, m_background_color );
-	in_batch.add_color_quad( m_edit_background_position, m_edit_background_color );
-	in_batch.next_level( );
+	render::ui_add_color_quad( m_background_position, m_background_color );
+	render::ui_add_color_quad( m_edit_background_position, m_edit_background_color );
+	render::ui_next_level( );
 
 	pcstr const edit_text = m_text_edit.get_text( );
 	uptr const edit_length = m_text_edit.get_length( );
@@ -123,11 +123,11 @@ void console::render( render::ui_batch& in_batch ) const
 		m_edit_text_position.x + selection_length_width + 1, m_edit_text_position.y + m_font_size );
 
 	if ( selection_length )
-		in_batch.add_color_quad( selection_position, m_selection_color );
+		render::ui_add_color_quad( selection_position, m_selection_color );
 
-	in_batch.add_color_quad( cursor_position, m_cursor_color );
+	render::ui_add_color_quad( cursor_position, m_cursor_color );
 
-	in_batch.next_level( );
+	render::ui_next_level( );
 
 	if ( m_next_line_indices.size( ) )
 	{
@@ -141,14 +141,14 @@ void console::render( render::ui_batch& in_batch ) const
 			pcstr const text = m_text.data( ) + index_start;
 			uptr const length = index_end - index_start;
 
-			m_font->render_string( text, length, m_text_position + math::u16x2( 0, text_offset ), m_font_size, m_text_color, in_batch );
+			m_font->render_string( text, length, m_text_position + math::u16x2( 0, text_offset ), m_font_size, m_text_color );
 			text_offset -= m_font_size;
 		}
 	}
 
-	m_font->render_string( edit_text, edit_length, m_edit_text_position, m_font_size, m_edit_text_color, in_batch );
+	m_font->render_string( edit_text, edit_length, m_edit_text_position, m_font_size, m_edit_text_color );
 
-	in_batch.next_level( );
+	render::ui_next_level( );
 }
 
 void console::print( pcstr const in_string, uptr const in_length )

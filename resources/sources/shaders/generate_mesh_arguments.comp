@@ -11,8 +11,9 @@ RWStructuredBuffer<float4x4>						g_mesh_transform_buffer		: register( u1 );
 void main( uint3 id : SV_DispatchThreadID )
 {
 	const uint i = id.x;
-
-	if ( i >= g_constant_buffer.indirect_params.w )
+	
+	// W-component is mesh objects count in fact.
+	if ( i >= g_constant_buffer.indirect_params_0.w )
 		return;
 
 	const uint mesh_id = g_mesh_ids[i];

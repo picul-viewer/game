@@ -16,7 +16,6 @@
 #include "dx_descriptor_heap.h"
 
 #include "render_allocator.h"
-#include "ui_batch.h"
 
 namespace render {
 
@@ -106,7 +105,6 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE read_only_dsv( ) const;
 
 	inline render_allocator& render_allocator( ) { return m_render_allocator; }
-	inline ui_batch& ui_batch( ) { return m_ui_batch; }
 
 private:
 	void create_resources( );
@@ -137,7 +135,6 @@ private:
 	dx_descriptor_heap m_dsv_heap;
 
 	::render::render_allocator m_render_allocator;
-	::render::ui_batch m_ui_batch;
 
 	pvoid m_allocator_memory;
 

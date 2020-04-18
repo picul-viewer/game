@@ -50,7 +50,19 @@ void render::set_current_scene( scene* in_scene )
 	g_render.set_scene( in_scene );
 }
 
-render::ui_batch& render::get_ui_batch( )
+void render::ui_add_quad(
+	math::u16x4 const in_corners_position, math::u16x4 const in_corners_texcoord,
+	math::half4 const& in_mult_color, math::half4 const& in_add_color, texture_handle const in_texture )
 {
-	return g_resources.ui_batch( );
+	g_render.ui_add_quad( in_corners_position, in_corners_texcoord, in_mult_color, in_add_color, in_texture );
+}
+
+void render::ui_add_color_quad( math::u16x4 const in_corners_position, math::half4 const& in_color )
+{
+	g_render.ui_add_color_quad( in_corners_position, in_color );
+}
+
+void render::ui_next_level( )
+{
+	g_render.ui_next_level( );
 }

@@ -32,7 +32,7 @@ check_resource_exists(
 		// cook object will be already disposed. In this case immediate exit takes
 		// place, and no load from cook object occur, so this should be totally safe.
 		if ( resource != nullptr )
-			finish( resource );
+			finish_impl( resource );
 
 		return;
 	}

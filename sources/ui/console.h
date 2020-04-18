@@ -23,7 +23,7 @@ public:
 	void on_char( u32 const in_key );
 	void on_input( );
 
-	void render( render::ui_batch& in_batch ) const;
+	void render( ) const;
 	
 	void print( pcstr const in_string, uptr const in_length );
 	template<typename ... Args>

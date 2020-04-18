@@ -4,6 +4,10 @@
 #include <types.h>
 #include <stdio.h>
 
+#ifdef DEBUG
+#define USE_ASSERTIONS
+#endif // #ifdef DEBUG
+
 #define NO_OP (void*)0
 
 namespace macros {
@@ -22,11 +26,11 @@ inline void logger( char const* message, Args ... args )
 
 #define LOG( message, ... ) macros::logger( message, ##__VA_ARGS__ )
 
-#ifdef DEBUG
+#ifdef USE_ASSERTIONS
 #	define DEBUG_BREAK( ) __debugbreak( )
-#endif // #ifdef DEBUG
+#endif // #ifdef USE_ASSERTIONS
 
-#ifdef DEBUG
+#ifdef USE_ASSERTIONS
 namespace macros {
 
 inline void assertion_failed( char const* expr, char const* file, char const* func, int line )
@@ -106,12 +110,12 @@ inline void log_value( pcstr const value )
 
 #	define ASSERT( expr, ... ) if ( !( expr ) ) { macros::assertion_failed( #expr, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); DEBUG_BREAK( ); }
 #	define ASSERT_CMP( l, s, r, ... ) if ( !( ( l ) s ( r ) ) ) { macros::assertion_failed( #l " " #s " " #r, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); LOG( "l = " ); macros::log_value( l ); LOG( ", r = " ); macros::log_value( r ); LOG( "\n" ); DEBUG_BREAK( ); }
-#else // #ifdef DEBUG
+#else // #ifdef USE_ASSERTIONS
 #	define ASSERT( expr, ... ) NO_OP
 #	define ASSERT_CMP( l, s, r ) NO_OP
-#endif // #ifdef DEBUG
+#endif // #ifdef USE_ASSERTIONS
 
-#ifdef DEBUG
+#ifdef USE_ASSERTIONS
 namespace macros {
 
 inline void fatal_error( char const* file, char const* func, int line )
@@ -122,17 +126,19 @@ inline void fatal_error( char const* file, char const* func, int line )
 template<typename ... Args>
 inline void fatal_error( char const* file, char const* func, int line, char const* message, Args ... args )
 {
-	LOG( "ERROR:\nfile: %s\nfunction: %s\nline: %d\nmessage: %s\n", file, func, line, message, args ... );
+	char text[8192] = { };
+	sprintf( text, message, args ... );
+	LOG( "ERROR:\nfile: %s\nfunction: %s\nline: %d\nmessage: %s\n", file, func, line, text );
 }
 
 }
 
-#	define FATAL_ERROR( ... ) macros::fatal_error( __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ); DEBUG_BREAK( )
-#else // #ifdef DEBUG
+#	define FATAL_ERROR( ... ) macros::fatal_error( __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__ ), DEBUG_BREAK( )
+#else // #ifdef USE_ASSERTIONS
 #	define FATAL_ERROR( ... ) NO_OP
-#endif // #ifdef DEBUG
+#endif // #ifdef USE_ASSERTIONS
 
-#ifdef DEBUG
+#ifdef USE_ASSERTIONS
 #	define UNREACHABLE_CODE { FATAL_ERROR( "unreachable code" ); } 
 #else
 namespace macros {
@@ -140,7 +146,7 @@ inline __declspec(noreturn) void noreturn_func( ) { }
 }
 
 #	define UNREACHABLE_CODE { macros::noreturn_func( ); }
-#endif // #ifdef DEBUG
+#endif // #ifdef USE_ASSERTIONS
 
 namespace macros {
 

@@ -10,8 +10,6 @@
 
 #include "parameters.h"
 
-#include "ui_batch.h"
-
 #include "gpu_structures.h"
 
 namespace render {
@@ -22,14 +20,10 @@ void resources::create( )
 
 	create_resources( );
 	create_images( );
-
-	m_ui_batch.create( );
 }
 
 void resources::destroy( )
 {
-	m_ui_batch.destroy( );
-
 	destroy_images( );
 	destroy_resources( );
 
@@ -356,7 +350,7 @@ void resources::get_transform_init_tasks( u32 const in_handle, math::float4x3& d
 	{
 		gpu_upload_task& task	= in_tasks.emplace_back( );
 		task.set_source_data	( &data, sizeof(math::float4x3) );
-		task.set_buffer_upload	( g_resources.transform_buffer( i ), sizeof(math::float4x3) * in_handle );
+		task.set_buffer_upload	( m_transform_buffer[i], sizeof(math::float4x3) * in_handle );
 	}
 }
 
@@ -399,7 +393,7 @@ void resources::update_dynamic_transforms_task( gpu_upload_task& in_task )
 	u32 const buffer_index = g_render.frame_index( ) % max_frame_delay;
 
 	in_task.set_source_data		( staging_data_ptr, data_size );
-	in_task.set_buffer_upload	( g_resources.transform_buffer( buffer_index ), sizeof(math::float4x3) * bounds.x );
+	in_task.set_buffer_upload	( m_transform_buffer[buffer_index], sizeof(math::float4x3) * bounds.x );
 
 	m_transform_update_bounds = math::u32x4( transform_count, 0, m_transform_update_bounds.x, m_transform_update_bounds.y );
 }

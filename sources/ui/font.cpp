@@ -3,7 +3,6 @@
 #include <lib/memory.h>
 #include <lib/strings.h>
 #include <render/api.h>
-#include <render/ui_batch.h>
 
 namespace ui {
 
@@ -43,7 +42,7 @@ u32 font::get_string_width( pcstr const in_str, uptr const in_length ) const
 
 void font::render_string(
 	pcstr const caption, uptr const length, math::u16x2 const position,
-	u16 const font_size, math::half4 const color, render::ui_batch& batch ) const
+	u16 const font_size, math::half4 const color ) const
 {
 	u16 const fsize = ( font_size != 0 ) ? font_size : m_char_height;
 
@@ -84,7 +83,7 @@ void font::render_string(
 				65535ul * row_index / m_chars_in_row + 65535ul * m_char_height / m_texture_dimensions.y
 			);
 
-			batch.add_quad(
+			render::ui_add_quad(
 				corners_position, corners_texcoord,
 				math::half4( 0.0f, 0.0f, 0.0f, color.w ),
 				math::half4( color.vx, 0.0f ),
@@ -97,7 +96,7 @@ void font::render_string(
 
 void font::render_multiline_string(
 	pcstr const caption, uptr const length, math::u16x2 const position, u16 const in_line_interval,
-	u16 const font_size, math::half4 const color, render::ui_batch& batch ) const
+	u16 const font_size, math::half4 const color ) const
 {
 	u16 const fsize = ( font_size != 0 ) ? font_size : m_char_height;
 
@@ -111,7 +110,7 @@ void font::render_multiline_string(
 		uptr const find_result = strings::find( str, '\n' );
 		uptr const line_end = ( find_result != (uptr)-1 ) ? find_result : str_end - str;
 
-		render_string( str, line_end, math::u16x2( position.x, position_y ), fsize, color, batch );
+		render_string( str, line_end, math::u16x2( position.x, position_y ), fsize, color );
 
 		str += line_end + 1;
 		position_y += fsize + in_line_interval;

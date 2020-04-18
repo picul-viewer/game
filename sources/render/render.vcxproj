@@ -99,6 +99,7 @@
     <ClInclude Include="dx_descriptor_heap.h" />
     <ClInclude Include="dx_fence.h" />
     <ClInclude Include="dx_heap.h" />
+    <ClInclude Include="dx_query_heap.h" />
     <ClInclude Include="dx_resource.h" />
     <ClInclude Include="dx_root_signature.h" />
     <ClInclude Include="generate_mesh_arguments_effect_cook.h" />
@@ -122,6 +123,7 @@
     <ClInclude Include="pipeline_state.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="render_mesh_objects_effect_cook.h" />
+    <ClInclude Include="render_ui_effect_cook.h" />
     <ClInclude Include="scene_cook.h" />
     <ClInclude Include="shader_cook.h" />
     <ClInclude Include="shade_effect_cook.h" />
@@ -131,9 +133,10 @@
     <ClInclude Include="parameters_manager.h" />
     <ClInclude Include="resources.h" />
     <ClInclude Include="scene.h" />
+    <ClInclude Include="statistics.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="texture_cook.h" />
-    <ClInclude Include="ui_batch.h" />
+    <ClInclude Include="ui_processor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="api.cpp" />
@@ -147,6 +150,7 @@
     <ClCompile Include="dx_desciptor_heap.cpp" />
     <ClCompile Include="dx_fence.cpp" />
     <ClCompile Include="dx_heap.cpp" />
+    <ClCompile Include="dx_query_heap.cpp" />
     <ClCompile Include="dx_resource.cpp" />
     <ClCompile Include="dx_root_signature.cpp" />
     <ClCompile Include="generate_mesh_arguments_effect_cook.cpp" />
@@ -164,6 +168,7 @@
     <ClCompile Include="pipeline_state.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="render_mesh_objects_effect_cook.cpp" />
+    <ClCompile Include="render_ui_effect_cook.cpp" />
     <ClCompile Include="scene_cook.cpp" />
     <ClCompile Include="shader_cook.cpp" />
     <ClCompile Include="shade_effect_cook.cpp" />
@@ -174,9 +179,10 @@
     <ClCompile Include="parameters_manager.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="scene.cpp" />
+    <ClCompile Include="statistics.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="texture_cook.cpp" />
-    <ClCompile Include="ui_batch.cpp" />
+    <ClCompile Include="ui_processor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">

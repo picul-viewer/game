@@ -16,8 +16,6 @@
 
 #include <resources/resources_path.h>
 
-#include <render/ui_batch.h>
-
 #include <macros.h>
 #include <Windows.h>
 
@@ -153,16 +151,12 @@ void world::update( )
 	m_camera.update( elapsed_time );
 
 	m_angle += elapsed_time;
-	m_object->update( math::matrix_rotation_x( (float)m_angle ) );
+	//m_object->update( math::matrix_rotation_x( (float)m_angle ) );
 
 	if ( !m_console_visible )
 		render::get_parameters( ).camera.view = m_camera.get_view_matrix( );
 	else
-	{
-		render::ui_batch& batch = render::get_ui_batch( );
-		batch.clear( );
-		m_console.render( batch );
-	}
+		m_console.render( );
 }
 
 void world::destroy( )
