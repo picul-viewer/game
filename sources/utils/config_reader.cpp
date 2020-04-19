@@ -457,12 +457,14 @@ bool config_reader::parse_vector( pcstr& str, u32& value )
 		}
 		while ( *str++ == ',' );
 
-		if ( *( str - 1 ) != ')' )
+		if ( *( --str ) != ')' )
 		{
-			error( str - 1, "')' expected" );
+			error( str, "')' expected" );
 			return false;
 		}
 	}
+
+	++str;
 
 	node_info* const info = m_allocator.allocate( sizeof(node_info) );
 	u32* const first = m_allocator.allocate( math::align_up( sizeof(u32) * i, sizeof(u64) ) );
@@ -516,12 +518,14 @@ bool config_reader::parse_list( pcstr& str, u32& value )
 			skip_spaces( str );
 		}
 
-		if ( *( str - 1 ) != ']' )
+		if ( *( --str ) != ']' )
 		{
-			error( str - 1, "']' expected" );
+			error( str, "']' expected" );
 			return false;
 		}
 	}
+
+	++str;
 
 	node_info* const info = m_allocator.allocate( sizeof(node_info) );
 
@@ -601,12 +605,14 @@ bool config_reader::parse_object( pcstr& str, u32& value )
 		}
 		while ( *str++ == ',' );
 
-		if ( *( str - 1 ) != '}' )
+		if ( *( --str ) != '}' )
 		{
-			error( str - 1, "'}' expected" );
+			error( str, "'}' expected" );
 			return false;
 		}
 	}
+
+	++str;
 
 	u32 table;
 	u32 table_size;
