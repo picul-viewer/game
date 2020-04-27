@@ -27,6 +27,8 @@ public:
 	template<typename Functor>
 	void remove_if( u32 const hash, Functor const& f );
 
+	void clear( );
+
 public:
 	enum : uptr {
 		key_table_memory_size = TableSize * sizeof(u8),

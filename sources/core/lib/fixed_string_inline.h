@@ -3,6 +3,7 @@
 
 #include <macros.h>
 #include <cstring>
+#include "algorithms.h"
 #include "weak_string.h"
 #include <lib/memory.h>
 
@@ -144,7 +145,7 @@ template<typename ... Args>
 fixed_string<1024> format( pcstr const mask, Args&& ... args )
 {
 	fixed_string<1024> result;
-	snprintf( result.data( ), fixed_string<1024>::max_string_size, mask, std::move( args ) ... );
+	snprintf( result.data( ), fixed_string<1024>::max_string_size, mask, lib::move( args ) ... );
 	return result;
 }
 

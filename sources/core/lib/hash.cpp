@@ -35,7 +35,7 @@ u16 lib::hash16( pcvoid const data, uptr const size, u16 const initial_value )
 
 u32 lib::hash32( pcvoid const data, uptr const size, u32 const initial_value )
 {
-	u32 result = initial_value;
+	u64 result64 = initial_value | ( (u64)initial_value << 32 );
 
 	uptr length_u64 = size / sizeof(u64);
 	uptr const left = size - length_u64 * sizeof(u64);
@@ -44,24 +44,26 @@ u32 lib::hash32( pcvoid const data, uptr const size, u32 const initial_value )
 
 	while ( length_u64-- )
 	{
-		result = (u32)_mm_crc32_u64( *(u64*)i, result );
+		result64 = _mm_crc32_u64( result64, *(u64*)i );
 		i += sizeof(u64);
 	}
 
+	u32 result = _mm_crc32_u32( result64 >> 32, result64 & 0xFFFFFFFF );
+
 	if ( left & sizeof(u32) )
 	{
-		result = _mm_crc32_u32( *(u32*)i, result );
+		result = _mm_crc32_u32( result, *(u32*)i );
 		i += sizeof(u32);
 	}
 	
 	if ( left & sizeof(u16) )
 	{
-		result = _mm_crc32_u16( *(u16*)i, result );
+		result = _mm_crc32_u16( result, *(u16*)i );
 		i += sizeof(u16);
 	}
 
 	if ( left & sizeof(u8) )
-		result = _mm_crc32_u8( *(u8*)i, result );
+		result = _mm_crc32_u8( result, *(u8*)i );
 
 	return result;
 }

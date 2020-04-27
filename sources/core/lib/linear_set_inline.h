@@ -124,8 +124,8 @@ bool linear_set<T, TableSize>::find_if_or_insert( u32 const hash, Functor const&
 	u8 key_to_insert = current_key;
 	T value_to_insert = m_value_table[index];
 
-	m_key_table[index] = i;
 	m_value_table[index] = value_gen( );
+	m_key_table[index] = i;
 
 	found_value = m_value_table + index;
 
@@ -259,6 +259,12 @@ void linear_set<T, TableSize>::remove_if( u32 const hash, Functor const& f )
 
 	m_key_table[index] = 0;
 	m_value_table[index] = 0;
+}
+
+template<typename T, u32 TableSize>
+void linear_set<T, TableSize>::clear( )
+{
+	memory::zero( m_key_table, sizeof(u8) * TableSize );
 }
 
 } // namespace lib
