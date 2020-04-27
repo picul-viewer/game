@@ -503,7 +503,6 @@ void render::update( )
 	}
 
 	// Push GPU commands for current frame.
-	if ( m_scene != nullptr )
 	{
 		u32 const swap_chain_buffer_index = g_dx.swap_chain( )->GetCurrentBackBufferIndex( );
 		u32 const frame_list_index = ( m_frame_index + max_frame_delay - 1 ) % max_frame_delay;
@@ -552,7 +551,7 @@ void render::prepare_frame( )
 	m_render_camera.set_perspective( g_parameters.camera.fov, 1.3333f, 0.01f, 100.0f );
 	m_render_camera.update( );
 
-	u32 const ui_upload_tasks_count = m_ui_processor.upload_task_count_needed( );;
+	u32 const ui_upload_tasks_count = m_ui_processor.upload_task_count_needed( );
 
 	u32 copy_task_count = 1 + ui_upload_tasks_count;
 	copy_task_count = m_scene										? copy_task_count + 1 : copy_task_count;
