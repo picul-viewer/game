@@ -53,9 +53,9 @@ void main(
 	const uint i1 = load_u16( g_indices, mesh.index_buffer_offset + 3 * polygon_id.y + 1 );
 	const uint i2 = load_u16( g_indices, mesh.index_buffer_offset + 3 * polygon_id.y + 2 );
 
-	const float3 v0_local = g_vertices[i0];
-	const float3 v1_local = g_vertices[i1];
-	const float3 v2_local = g_vertices[i2];
+	const float3 v0_local = g_vertices[mesh.vertex_buffer_offset + i0];
+	const float3 v1_local = g_vertices[mesh.vertex_buffer_offset + i1];
+	const float3 v2_local = g_vertices[mesh.vertex_buffer_offset + i2];
 
 	float3 v0 = mul( transpose( transform ), float4( v0_local, 1.0f ) );
 	float3 v1 = mul( transpose( transform ), float4( v1_local, 1.0f ) );
@@ -70,9 +70,9 @@ void main(
 	float2 screen_uv_bottom = screen_uv + float2( 0.0f, g_constant_buffer.viewport_size.w );
 	float3 world_camera_ray_bottom = screen_position_to_world_ray( screen_uv_bottom );
 
-	const vertex_data_unpacked v0_info = unpack_vertex_data( g_vertex_data[i0] );
-	const vertex_data_unpacked v1_info = unpack_vertex_data( g_vertex_data[i1] );
-	const vertex_data_unpacked v2_info = unpack_vertex_data( g_vertex_data[i2] );
+	const vertex_data_unpacked v0_info = unpack_vertex_data( g_vertex_data[mesh.vertex_buffer_offset + i0] );
+	const vertex_data_unpacked v1_info = unpack_vertex_data( g_vertex_data[mesh.vertex_buffer_offset + i1] );
+	const vertex_data_unpacked v2_info = unpack_vertex_data( g_vertex_data[mesh.vertex_buffer_offset + i2] );
 
 	const vertex_data_unpacked data = interpolate_vertex_data( v0_info, v1_info, v2_info, compute_barycentrics( g_constant_buffer.world_camera_position.xyz, world_camera_ray.xyz, v0.xyz, v1.xyz, v2.xyz ) );
 	const vertex_data_unpacked data_right = interpolate_vertex_data( v0_info, v1_info, v2_info, compute_barycentrics( g_constant_buffer.world_camera_position.xyz, world_camera_ray_right.xyz, v0.xyz, v1.xyz, v2.xyz ) );
