@@ -170,7 +170,7 @@ uptr bvh::divide_by_sah(
 	uptr best_left_count;
 	float sah = FLT_MAX;
 
-	for ( uptr i = count - 1; i > 0; --i )
+	for ( ptr i = count - 1; i > 0; --i )
 	{
 		aabb box;
 		box.set_min_max( nodes[i]->aabb_min, nodes[i]->aabb_max );
