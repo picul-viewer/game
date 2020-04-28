@@ -111,8 +111,10 @@ void shared_resource<Resource, ResourceHandle, MaxInstanceCount>::unlock_cook_pt
 template<typename Resource, typename ResourceHandle, u32 MaxInstanceCount>
 void shared_resource<Resource, ResourceHandle, MaxInstanceCount>::finish_creation( shared_resource_id const in_id, u32 const in_initial_ref_count )
 {
-	m_id = in_id;
-	m_ref_count = in_initial_ref_count;
+	lock_cook_ptr( );
+
+	u64 const combined_value = in_id | ( (u64)in_initial_ref_count << 32 );
+	m_cook_ptr_and_unready_bit = combined_value;
 }
 
 } // namespace resource_system

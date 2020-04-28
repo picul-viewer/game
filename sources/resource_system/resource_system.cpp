@@ -152,7 +152,9 @@ void resource_system::process_task( u32 const thread_index, task_data* const dat
 
 	data->functor( data->results, data->results_count, data->user_data );
 
-	if ( data->parent )
+	// If parent task collects children results,
+	// then decrement counter when task result is set.
+	if ( data->parent && ( data->parent->results_count == 0 ) )
 	{
 		if ( interlocked_dec( data->parent->pending_count ) == 0 )
 			push_task( data->parent );
@@ -278,7 +280,7 @@ void resource_system::create_subtasks(
 		parent_data->pending_count = in_children_count;
 	}
 
-	if ( current_data && current_data->parent )
+	if ( current_data && current_data->parent && ( current_data->parent->results_count == 0 ) )
 	{
 		if ( in_parent )
 			interlocked_inc( current_data->parent->pending_count );
@@ -364,7 +366,7 @@ custom_task_context resource_system::create_custom_subtasks(
 		parent_data->pending_count = in_count;
 	}
 
-	if ( current_data && current_data->parent )
+	if ( current_data && current_data->parent && ( current_data->parent->results_count == 0 ) )
 	{
 		if ( in_parent )
 			interlocked_inc( current_data->parent->pending_count );
@@ -387,9 +389,15 @@ void resource_system::set_current_task_result(
 
 	task_data* const parent_data = current_data->parent;
 	ASSERT( parent_data );
-	ASSERT( current_data->parent_index != -1 );
 
-	parent_data->results[current_data->parent_index] = in_result;
+	u32 const result_index = current_data->parent_index;
+	ASSERT( result_index != -1 );
+	ASSERT_CMP( result_index, <, parent_data->results_count );
+
+	parent_data->results[result_index] = in_result;
+
+	if ( interlocked_dec( parent_data->pending_count ) == 0 )
+		push_task( parent_data );
 }
 
 void resource_system::set_task_result(
@@ -402,8 +410,12 @@ void resource_system::set_task_result(
 	ASSERT( m_temp_allocator.contains_pointer( task_data ) );
 
 	ASSERT( in_result_index != -1 );
+	ASSERT_CMP( in_result_index, <, task_data->results_count );
 
 	task_data->results[in_result_index] = in_result;
+
+	if ( interlocked_dec( task_data->pending_count ) == 0 )
+		push_task( task_data );
 }
 
 void resource_system::finish_custom_task( custom_task_context const in_context )
