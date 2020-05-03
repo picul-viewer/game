@@ -28,16 +28,17 @@ bool sys::mpsc_queue<T>::push( value_type const& value )
 {
 	u32 const new_push_index	= interlocked_inc( m_pre_push_index );
 	u32 const target_index		= new_push_index - 1;
-	
+
 	m_data[target_index & m_index_mask] = value;
-	
+
 	SPIN_LOCK					( m_push_index != target_index );
-	
+
 	m_push_index				= new_push_index;
-	
+
 	store_fence					( );
 
 	u32 const current_size		= interlocked_inc( m_current_size );
+	ASSERT						( current_size <= m_index_mask + 1 );
 	return current_size <= 1;
 }
 
@@ -51,12 +52,13 @@ bool sys::mpsc_queue<T>::push( value_type const* const values, u32 const count )
 		m_data[i & m_index_mask] = values[j];
 
 	SPIN_LOCK					( m_push_index != target_index );
-	
+
 	m_push_index				= new_push_index;
 
 	store_fence					( );
 
 	u32 const current_size		= interlocked_add( m_current_size, count );
+	ASSERT						( current_size <= m_index_mask + 1 );
 	return current_size <= count;
 }
 
@@ -68,10 +70,10 @@ bool sys::mpsc_queue<T>::pop( value_type& value )
 		interlocked_inc			( m_current_size );
 		return false;
 	}
-	
+
 	u32 const pop_index			= m_pop_index;
 	u32 const new_pop_index		= pop_index + 1;
-	
+
 	value						= m_data[pop_index & m_index_mask];
 
 	m_pop_index					= new_pop_index;
