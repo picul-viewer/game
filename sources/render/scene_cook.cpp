@@ -84,7 +84,7 @@ void scene_cook::create_resource( )
 
 void scene_cook::on_child_resources_ready( queried_resources& in_queried )
 {
-	u32 const max_task_count = 4096;
+	u32 const max_task_count = 16384;
 	lib::buffer_array<gpu_upload_task> tasks;
 	tasks.create( stack_allocate( sizeof(gpu_upload_task) * max_task_count ), max_task_count );
 

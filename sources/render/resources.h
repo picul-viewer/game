@@ -48,8 +48,8 @@ class resources
 {
 public:
 	enum : u32 {
-		texture_descriptors_count = 256,
-		mesh_objects_count = 1024,
+		texture_descriptors_count = 1024,
+		mesh_objects_count = 4096,
 		transform_count = 16384
 	};
 

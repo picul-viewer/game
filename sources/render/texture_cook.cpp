@@ -16,7 +16,7 @@ namespace render {
 texture_cook* texture_cook::create( pcstr const in_path )
 {
 	uptr const length = strings::length( in_path );
-	uptr const size = sizeof(texture_cook) + length + 1;
+	uptr const size = length + 1;
 
 	texture_cook* const result = std_allocator( ).allocate( sizeof(texture_cook) + size );
 

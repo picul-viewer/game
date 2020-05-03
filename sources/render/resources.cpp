@@ -31,8 +31,8 @@ void resources::destroy( )
 }
 
 enum {
-	indices_count = 65536,
-	vertices_count = 65536
+	indices_count = 4 * 1024 * 1024,
+	vertices_count = 4 * 1024 * 1024
 };
 
 void resources::create_resources( )

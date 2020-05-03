@@ -16,7 +16,7 @@ namespace render {
 model_mesh_cook* model_mesh_cook::create( pcstr const in_path )
 {
 	uptr const length = strings::length( in_path );
-	uptr const size = sizeof(model_mesh_cook) + length + 1;
+	uptr const size = length + 1;
 
 	model_mesh_cook* const result = std_allocator( ).allocate( sizeof(model_mesh_cook) + size );
 
