@@ -44,7 +44,7 @@ void resource_system::create( u32 const in_thread_count )
 	m_thread_count = math::min( in_thread_count, (u32)engine_thread_count );
 
 	{
-		uptr const queue_size = 2 * 1024;
+		uptr const queue_size = 8 * 1024;
 		uptr const helper_queue_size = 32 * 1024;
 
 		uptr const queue_memory_size = queue_size * sizeof(task_data*);

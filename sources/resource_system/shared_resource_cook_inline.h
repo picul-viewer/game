@@ -12,6 +12,8 @@ init( shared_resource_id const in_id )
 	m_id = in_id;
 	m_next_subscriber = nullptr;
 	m_initial_ref_count = 1;
+	m_parent_task_offset = -1;
+	m_result_index = -1;
 }
 
 template<typename Resource, typename ResourceCook>
@@ -32,7 +34,7 @@ check_resource_exists(
 		// cook object will be already disposed. In this case immediate exit takes
 		// place, and no load from cook object occur, so this should be totally safe.
 		if ( resource != nullptr )
-			finish_impl( resource );
+			finish_cook( resource, m_parent_task_offset, m_result_index );
 
 		return;
 	}
