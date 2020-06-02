@@ -6,7 +6,6 @@
 #include <lib/weak_string.h>
 #include <lib/fixed_string.h>
 
-#include "fbx_compiler.h"
 #include "obj_compiler.h"
 #include "gltf_compiler.h"
 #include "texture_compiler.h"
@@ -32,15 +31,12 @@ public:
 		scan_functor const functor );
 
 protected:
-	void compile_fbx( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory );
 	void compile_obj( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory );
 	void compile_gltf( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory );
 	void compile_texture( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory );
 	void compile_config( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory );
 
 protected:
-	fbx_compiler m_fbx_compiler;
-
 	obj_compiler m_obj_compiler;
 
 	gltf_compiler m_gltf_compiler;

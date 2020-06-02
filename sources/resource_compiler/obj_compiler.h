@@ -4,8 +4,6 @@
 #include <types.h>
 #include <lib/weak_string.h>
 
-#include <fbxsdk.h>
-
 namespace resource_compiler {
 
 class obj_compiler

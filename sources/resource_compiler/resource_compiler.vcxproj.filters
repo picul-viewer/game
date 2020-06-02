@@ -3,9 +3,6 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="resource_compiler.cpp" />
-    <ClCompile Include="fbx_compiler.cpp">
-      <Filter>fbx_compiler</Filter>
-    </ClCompile>
     <ClCompile Include="texture_compiler.cpp">
       <Filter>texture_compiler</Filter>
     </ClCompile>
@@ -33,9 +30,6 @@
     <ClInclude Include="texture_compiler.h">
       <Filter>texture_compiler</Filter>
     </ClInclude>
-    <ClInclude Include="fbx_compiler.h">
-      <Filter>fbx_compiler</Filter>
-    </ClInclude>
     <ClInclude Include="config_compiler.h">
       <Filter>config_compiler</Filter>
     </ClInclude>
@@ -56,9 +50,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="fbx_compiler">
-      <UniqueIdentifier>{60b1dafa-4bd0-45e4-afb2-41b7f267696c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="texture_compiler">
       <UniqueIdentifier>{3ee34265-f827-473d-abc4-c7dab8826cbd}</UniqueIdentifier>
     </Filter>

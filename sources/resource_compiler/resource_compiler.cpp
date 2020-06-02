@@ -10,8 +10,6 @@ namespace resource_compiler {
 
 void resource_compiler::create( )
 {
-	m_fbx_compiler.create( );
-
 	m_obj_compiler.create( );
 
 	m_gltf_compiler.create( );
@@ -24,7 +22,8 @@ void resource_compiler::create( )
 
 void resource_compiler::destroy( )
 {
-	m_fbx_compiler.destroy( );
+	m_obj_compiler.destroy( );
+	m_gltf_compiler.destroy( );
 }
 
 typedef decltype(&resource_compiler::scan) scan_decl;
@@ -58,8 +57,6 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 {
 	enum resource_compiler_threads
 	{
-		fbx_compiler,
-
 		obj_compiler,
 
 		gltf_compiler,
@@ -74,26 +71,6 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 	sys::thread threads[threads_count];
 
 	u32 thread_index = 0;
-
-	scan_execute_data fbx_thread_data;
-	
-	sys::path fbx_input;
-	sys::path fbx_output;
-
-	{
-		fbx_input = input_path;
-		fbx_input += "meshes";
-		
-		fbx_output = output_path;
-		fbx_output += "meshes";
-
-		fbx_output.create_directory( );
-
-		fbx_thread_data = { this, &resource_compiler::scan, fbx_input.c_str( ), fbx_output.c_str( ), ".fbx", &resource_compiler::compile_fbx };
-
-		threads[thread_index].create( sys::thread::func_helper<&scan_thread_function>, 1 * Mb, &fbx_thread_data );
-		++thread_index;
-	}
 
 	scan_execute_data obj_thread_data;
 	
@@ -230,11 +207,6 @@ void resource_compiler::scan(
 
 		fi.destroy( );
 	}
-}
-
-void resource_compiler::compile_fbx( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory )
-{
-	m_fbx_compiler.compile( relevant_date, input_file_name, output_directory );
 }
 
 void resource_compiler::compile_obj( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory )
