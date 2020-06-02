@@ -19,11 +19,13 @@
 namespace resources {
 
 sys::path get_resource_path( pcstr const in_relative_path );
+sys::path get_resource_source_path( pcstr const in_relative_path );
 sys::path get_source_path_from_target_path( sys::path const in_path );
 sys::path get_target_path_from_source_path( sys::path const in_path );
 
 } // namespace resources
 
 using resources::get_resource_path;
+using resources::get_resource_source_path;
 
 #endif // #ifndef GUARD_RESOURCES_RESOURCES_PATH_H_INCLUDED

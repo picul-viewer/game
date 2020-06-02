@@ -18,6 +18,13 @@ sys::path get_resource_path( pcstr const in_relative_path )
 	return path;
 }
 
+sys::path get_resource_source_path(pcstr const in_relative_path)
+{
+	sys::path path = s_resources_sources_path;
+	path += in_relative_path;
+	return path;
+}
+
 sys::path get_source_path_from_target_path( sys::path const in_path )
 {
 	ASSERT( strings::compare_n( in_path.c_str( ), s_resources_path.c_str( ), s_resources_path_length ) == 0 );
