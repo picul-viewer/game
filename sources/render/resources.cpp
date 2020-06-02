@@ -193,19 +193,19 @@ void resources::create_images( )
 	{
 		dx_resource::cook resource_cook;
 		resource_cook.create_texture2d(
-			DXGI_FORMAT_R16G16_UINT,
+			DXGI_FORMAT_R32G32_UINT,
 			g_parameters.screen_resolution.x, g_parameters.screen_resolution.y, 1, 1,
 			true, false, true, false, false
 		);
 		resource_cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
 		resource_cook.set_initial_state( D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE );
-		resource_cook.set_clear_value( DXGI_FORMAT_R16G16_UINT, math::float4( 0.0f, 0.0f, 0.0f, 0.0f ) );
+		resource_cook.set_clear_value( DXGI_FORMAT_R32G32_UINT, math::float4( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
 		m_images[image_v_buffer_polygon_id].create( resource_cook );
 		set_dx_name( m_images[image_v_buffer_polygon_id], "render_target_v_buffer_polygon_id" );
 
 		D3D12_SHADER_RESOURCE_VIEW_DESC srv_desc;
-		srv_desc.Format = DXGI_FORMAT_R16G16_UINT;
+		srv_desc.Format = DXGI_FORMAT_R32G32_UINT;
 		srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 		srv_desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		srv_desc.Texture2D.MostDetailedMip = 0;
@@ -216,7 +216,7 @@ void resources::create_images( )
 		g_dx.device( )->CreateShaderResourceView( m_images[image_srv_v_buffer_polygon_id], &srv_desc, srv( image_srv_v_buffer_polygon_id ) );
 
 		D3D12_RENDER_TARGET_VIEW_DESC rtv_desc;
-		rtv_desc.Format = DXGI_FORMAT_R16G16_UINT;
+		rtv_desc.Format = DXGI_FORMAT_R32G32_UINT;
 		rtv_desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 		rtv_desc.Texture2D.MipSlice = 0;
 		rtv_desc.Texture2D.PlaneSlice = 0;

@@ -9,6 +9,8 @@
 
 #include <resource_system/queried_resources.h>
 
+#include <resources/raw_data.h>
+
 #include <system/time.h>
 #include <system/window_input_state.h>
 
@@ -35,18 +37,18 @@ private:
 	void initialize_console( );
 	static void on_console_command( pcstr const str );
 
-	void on_resources_ready( queried_resources& resources );
+	void on_scene_loaded( queried_resources& in_queried );
+	void on_resources_ready( queried_resources& in_queried );
 
 	void on_resources_destroyed( );
 
 private:
 	engine::scene::ptr m_scene;
-	engine::object::ptr m_object;
 	utils::fly_camera m_camera;
 	ui::console m_console;
 	sys::ticker m_ticker;
 	ui::font::ptr m_console_font;
-	double m_angle;
+	raw_data::ptr m_scene_data;
 	bool m_console_visible;
 	volatile bool m_ready;
 

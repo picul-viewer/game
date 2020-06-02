@@ -82,7 +82,7 @@ void render_mesh_objects_effect_cook::on_shaders_ready( queried_resources& in_re
 	ps_cook.set_input_layout( (u32)array_size( input_layout ), input_layout );
 	ps_cook.set_primitive_topology( D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE );
 	ps_cook.set_rtv_count( 1 );
-	ps_cook.set_rtv_format( 0, DXGI_FORMAT_R16G16_UINT );
+	ps_cook.set_rtv_format( 0, DXGI_FORMAT_R32G32_UINT );
 	ps_cook.set_dsv_format( DXGI_FORMAT_D24_UNORM_S8_UINT );
 
 	dx_pipeline_state ps;

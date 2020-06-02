@@ -548,7 +548,7 @@ void render::prepare_frame( )
 
 	// Initialize render camera.
 	m_render_camera.set_view( g_parameters.camera.view );
-	m_render_camera.set_perspective( g_parameters.camera.fov, 1.3333f, 0.01f, 100.0f );
+	m_render_camera.set_perspective( g_parameters.camera.fov, (float)g_parameters.screen_resolution.x / (float)g_parameters.screen_resolution.y, 0.1f, 1000.0f );
 	m_render_camera.update( );
 
 	u32 const ui_upload_tasks_count = m_ui_processor.upload_task_count_needed( );

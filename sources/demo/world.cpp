@@ -22,6 +22,8 @@
 #include <resource_system/api.h>
 #include <resources/raw_data.h>
 
+#include <system/file.h>
+
 namespace game {
 
 char scene_cook_data[256];
@@ -31,96 +33,44 @@ void world::create( )
 {
 	m_ready = false;
 
-	uptr scene_cook_size;
-	uptr object_cook_size;
-
-	{
-		// Empty scene.
-		lib::writer w( scene_cook_data, 256 );
-
-		u32* const render_size = w.ptr( );
-		w += sizeof(u32);
-		pointer const render_data = w.ptr( );
-
-		w.write<u32>( 0 );
-		w.write<u32>( 0 );
-
-		*render_size = (u32)w.size( render_data );
-
-		scene_cook_size = w.size( scene_cook_data );
-	}
-
-	{
-		u32 const grid_size = 10;
-
-		// Box object.
-		lib::writer w( object_cook_data, 1 * Mb );
-
-		u32* const render_size = w.ptr( );
-		w += sizeof(u32);
-		pointer const render_data = w.ptr( );
-
-		w.write<u16>( grid_size * grid_size * grid_size );
-
-		for ( u32 i = 0; i < grid_size; ++i )
-		for ( u32 j = 0; j < grid_size; ++j )
-		for ( u32 k = 0; k < grid_size; ++k )
-		{
-			float const dimension = grid_size * 2.0f + ( grid_size - 1 ) * 0.5f;
-
-			w.write_str( "configs/render/box.render_model_mesh.cfg" );
-
-			w.write<math::float4x3>(
-				math::float4x3(
-					math::float4( 1.0f, 0.0f, 0.0f, i * 2.5f + 1.0f - dimension * 0.5f ),
-					math::float4( 0.0f, 1.0f, 0.0f, j * 2.5f + 1.0f - dimension * 0.5f ),
-					math::float4( 0.0f, 0.0f, 1.0f, k * 2.5f + 1.0f - dimension * 0.5f )
-				)
-			);
-		}
-
-		*render_size = (u32)w.size( render_data );
-
-		object_cook_size = w.size( object_cook_data );
-	}
-
-	task_info queries[64];
-	u32 query_index = 0;
-
-	ui::font_cook* const font_cook = ui::font_cook::create( GET_RESOURCE_PATH( "configs\\fonts\\console.font.cfg" ) );
-	font_cook->fill_task_info( queries[query_index++] );
-
-	engine::scene_cook* const scene_cook = engine::scene_cook::create( lib::reader( scene_cook_data, scene_cook_size ) );
-	scene_cook->fill_task_info( queries[query_index++] );
-
-	engine::object_cook* const object_cook = engine::object_cook::create( lib::reader( object_cook_data, object_cook_size ) );
-	object_cook->fill_task_info( queries[query_index++] );
+	raw_data_cook* const cook = raw_data_cook::create( GET_RESOURCE_PATH( "configs/render/scenes/sponza.scene.cfg" ) );
 
 	resource_system::create_resources(
-		queries, query_index,
-		resource_system::user_callback_task<world, &world::on_resources_ready>( this )
+		resource_system::user_callback_task<world, &world::on_scene_loaded>( this ),
+		cook
 	);
 }
 
-void world::on_resources_ready( queried_resources& resources )
+void world::on_scene_loaded( queried_resources& in_queried )
 {
-	m_console_font = resources.get_resource<ui::font::ptr>( );
+	m_scene_data = in_queried.get_resource<raw_data::ptr>( );
 
-	m_scene = resources.get_resource<engine::scene::ptr>( );
-	
-	m_object = resources.get_resource<engine::object::ptr>( );
+	ui::font_cook* const font_cook = ui::font_cook::create( GET_RESOURCE_PATH( "configs/fonts/console.font.cfg" ) );
+
+	engine::scene_cook* const scene_cook = engine::scene_cook::create( lib::reader( m_scene_data->data( ), m_scene_data->size( ) ) );
+
+	resource_system::create_resources(
+		resource_system::user_callback_task<world, &world::on_resources_ready>( this ),
+		font_cook, scene_cook
+	);
+}
+
+void world::on_resources_ready( queried_resources& in_queried )
+{
+	m_scene_data->destroy( );
+	m_scene_data.reset( );
+
+	m_console_font = in_queried.get_resource<ui::font::ptr>( );
+
+	m_scene = in_queried.get_resource<engine::scene::ptr>( );
 
 	render::get_parameters( ).camera.fov = math::degree_to_radian( 60.0f );
 
-	m_object->update( math::float4x3::identity( ) );
-	m_scene->insert( m_object );
 	engine::g_world.set_current_scene( m_scene );
 
 	m_camera.create( math::float3( 0.0f ), math::float2( 0.0f ), math::float3( 2.0f, 5.0f, 15.0f ), 0.002f );
 
 	initialize_console( );
-
-	m_angle = 0.0f;
 
 	m_ready = true;
 }
@@ -150,9 +100,6 @@ void world::update( )
 	float const elapsed_time = (float)m_ticker.tick( );
 	m_camera.update( elapsed_time );
 
-	m_angle += elapsed_time;
-	//m_object->update( math::matrix_rotation_x( (float)m_angle ) );
-
 	if ( !m_console_visible )
 		render::get_parameters( ).camera.view = m_camera.get_view_matrix( );
 	else
@@ -170,10 +117,9 @@ void world::destroy( )
 
 	resource_system::destroy_resources(
 		resource_system::user_callback_task<world, &world::on_resources_destroyed>( this ),
-		m_object.get( ), m_scene.get( )
+		m_scene.get( )
 	);
 
-	m_object.reset( );
 	m_scene.reset( );
 }
 

@@ -84,5 +84,5 @@ void main(
 	const float4 diffuse = g_textures[NonUniformResourceIndex(mesh.diffuse_texture_index)].SampleGrad( g_sampler, data.texcoord, texcoord_ddx, texcoord_ddy );
 	const float4 specular = g_textures[NonUniformResourceIndex(mesh.specular_texture_index)].SampleGrad( g_sampler, data.texcoord, texcoord_ddx, texcoord_ddy );
 
-	out_color = diffuse * 0.8f + specular * 0.2f;
+	out_color = diffuse;
 }
