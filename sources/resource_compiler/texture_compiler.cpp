@@ -52,56 +52,57 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 	config_path.append( ".texconfig" );
 
 	sys::file config;
-	config.create( config_path.c_str( ), sys::file::open_read );
-	if ( !config.is_valid( ) )
+	if ( config.try_create( config_path.c_str( ), sys::file::open_read ) )
 	{
-		LOG( "texture_compiler: texture config is missing: \"%s\"\n", config_path.c_str( ) );
-		return;
-	}
+		uptr const size = config.size( );
+		ASSERT_CMP( size, <, 8 * Kb );
+		u8* const data = stack_allocate( size );
+		config.read( data, size );
 
-	uptr const size = config.size( );
-	ASSERT_CMP( size, <, 8 * Kb );
-	u8* const data = stack_allocate( size );
-	config.read( data, size );
+		config.destroy( );
 
-	config.destroy( );
+		str256 str;
 
-	str256 str;
-
-	lib::text_reader r( data, size );
-	r.read_str( str.data( ) );
-
-	if ( str == "format" )
-	{
+		lib::text_reader r( data, size );
 		r.read_str( str.data( ) );
-		command_line.append( " -f " );
-		command_line.append( str );
+
+		if ( str == "format" )
+		{
+			r.read_str( str.data( ) );
+			command_line.append( " -f " );
+			command_line.append( str );
 		
-		r.read_str( str.data( ) );
-	}
+			r.read_str( str.data( ) );
+		}
 	
-	if ( str == "mipmaps" )
-	{
-		r.read_str( str.data( ) );
-		command_line.append( " -m " );
-		command_line.append( str );
+		if ( str == "mipmaps" )
+		{
+			r.read_str( str.data( ) );
+			command_line.append( " -m " );
+			command_line.append( str );
 		
-		r.read_str( str.data( ) );
+			r.read_str( str.data( ) );
+		}
+
+		if ( str == "srgb" )
+		{
+			r.read_str( str.data( ) );
+			if ( str == "input" )
+				command_line.append( " -srgbi" );
+			else if ( str == "output" )
+				command_line.append( " -srgbo" );
+			else if ( str == "both" )
+				command_line.append( " -srgb" );
+			else
+				ASSERT( str == "none", "unexpected value: %s", str );
+
+			r.read_str( str.data( ) );
+		}
 	}
-
-	if ( str == "srgb" )
+	else
 	{
-		r.read_str( str.data( ) );
-		if ( str == "input" )
-			command_line.append( " -srgbi" );
-		else if ( str == "output" )
-			command_line.append( " -srgbo" );
-		else if ( str == "both" )
-			command_line.append( " -srgb" );
-		else
-			ASSERT( str == "none", "unexpected value: %s", str );
-
-		r.read_str( str.data( ) );
+		LOG( "texture_compiler: texture config is missing, so use default argumets: \"%s\"\n", config_path.c_str( ) );
+		command_line.append( " -f BC3_UNORM " );
 	}
 
 	command_line.append( " -nologo -y \"" );

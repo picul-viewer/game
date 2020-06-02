@@ -21,6 +21,8 @@
 #include <system/file.h>
 #include <system/file_iterator.h>
 
+#include "scene_compile_utils.h"
+
 namespace resource_compiler {
 
 void fbx_compiler::create( )
@@ -61,12 +63,6 @@ static inline ElementType get_element( FbxMesh* const mesh, FbxLayerElementTempl
 	return element->GetDirectArray( ).GetAt( base_index );
 }
 
-struct vertex_data_type
-{
-	math::float2 uv;
-	math::half4 normal;
-};
-
 math::float3 get_mesh_vertex( FbxMesh* const mesh, u32 const polygon_index, u32 const vertex_index )
 {
 	FbxVector4 const& pos = mesh->GetControlPointAt( mesh->GetPolygonVertex( polygon_index, vertex_index ) );
@@ -84,13 +80,6 @@ vertex_data_type get_mesh_vertex_data( FbxMesh* const mesh, u32 const polygon_in
 	data.normal					= math::half4( (float)normal.mData[0], (float)normal.mData[1], (float)normal.mData[2], 0.0f );
 
 	return data;
-}
-
-bool operator==( vertex_data_type const& l, vertex_data_type const& r )
-{
-	return
-		( l.uv		== r.uv		) &&
-		( l.normal	== r.normal	);
 }
 
 static void process_mesh( FbxMesh* const mesh, lib::buffer_array<math::float3>& vertices, lib::buffer_array<vertex_data_type>& vertices_data, u16*& indices, u32& index_count )

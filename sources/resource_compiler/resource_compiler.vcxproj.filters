@@ -18,6 +18,15 @@
     <ClCompile Include="config_compiler_common.cpp">
       <Filter>config_compiler</Filter>
     </ClCompile>
+    <ClCompile Include="obj_compiler.cpp">
+      <Filter>obj_compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="scene_compile_utils.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf_compiler.cpp">
+      <Filter>gltf_compiler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource_compiler.h" />
@@ -36,6 +45,15 @@
     <ClInclude Include="config_compiler_common.h">
       <Filter>config_compiler</Filter>
     </ClInclude>
+    <ClInclude Include="obj_compiler.h">
+      <Filter>obj_compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_compile_utils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf_compiler.h">
+      <Filter>gltf_compiler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="fbx_compiler">
@@ -46,6 +64,15 @@
     </Filter>
     <Filter Include="config_compiler">
       <UniqueIdentifier>{e281983f-e584-41b2-b9f5-af70dd01a994}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="obj_compiler">
+      <UniqueIdentifier>{622201d7-b91e-4dfe-86f3-68a38348b1fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{9ec9da85-7aac-4bc8-b942-966d1890ccfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gltf_compiler">
+      <UniqueIdentifier>{41ebe3a8-d571-4ccb-bf62-db8971f0242a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

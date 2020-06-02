@@ -10,12 +10,11 @@ namespace resource_compiler {
 
 void resource_compiler::create( )
 {
-	/*m_shader_compiler_dbg_4_0.create( "4_0", true );
-	m_shader_compiler_rel_4_0.create( "4_0", false );
-	m_shader_compiler_dbg_5_0.create( "5_0", true );
-	m_shader_compiler_rel_5_0.create( "5_0", false );*/
-
 	m_fbx_compiler.create( );
+
+	m_obj_compiler.create( );
+
+	m_gltf_compiler.create( );
 
 	pcstr const tex_conv_path = "..\\..\\prebuilt\\texconv.exe";
 	m_texture_compiler.create( tex_conv_path );
@@ -27,20 +26,6 @@ void resource_compiler::destroy( )
 {
 	m_fbx_compiler.destroy( );
 }
-
-/*struct shader_compiler_data
-{
-	shader_compiler* compiler;
-	pcstr input_path;
-	pcstr output_path;
-};
-
-void shader_compiler_thread_function( void* const param )
-{
-	shader_compiler_data* data = (shader_compiler_data*)param;
-
-	data->compiler->compile( data->input_path, data->output_path );
-}*/
 
 typedef decltype(&resource_compiler::scan) scan_decl;
 
@@ -73,12 +58,11 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 {
 	enum resource_compiler_threads
 	{
-		/*shader_compiler_debug_4_0 = 0,
-		shader_compiler_release_4_0,
-		shader_compiler_debug_5_0,
-		shader_compiler_release_5_0,*/
-
 		fbx_compiler,
+
+		obj_compiler,
+
+		gltf_compiler,
 
 		texture_compiler,
 
@@ -90,43 +74,6 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 	sys::thread threads[threads_count];
 
 	u32 thread_index = 0;
-
-	/*shader_compiler_data shader_thread_data[4];
-
-	sys::path shader_input;
-	sys::path shader_output;
-
-	{
-		shader_input = input_path;
-		shader_input += "shaders";
-		
-		shader_output = output_path;
-		shader_output += "shaders";
-
-		shader_output.create_directory( );
-
-		shader_thread_data[0].compiler = &m_shader_compiler_dbg_4_0;
-		shader_thread_data[0].input_path = shader_input.c_str( );
-		shader_thread_data[0].output_path = shader_output.c_str( );
-
-		shader_thread_data[1].compiler = &m_shader_compiler_rel_4_0;
-		shader_thread_data[1].input_path = shader_input.c_str( );
-		shader_thread_data[1].output_path = shader_output.c_str( );
-
-		shader_thread_data[2].compiler = &m_shader_compiler_dbg_5_0;
-		shader_thread_data[2].input_path = shader_input.c_str( );
-		shader_thread_data[2].output_path = shader_output.c_str( );
-
-		shader_thread_data[3].compiler = &m_shader_compiler_rel_5_0;
-		shader_thread_data[3].input_path = shader_input.c_str( );
-		shader_thread_data[3].output_path = shader_output.c_str( );
-
-		for ( u32 i = 0; i < 4; ++i )
-		{
-			threads[thread_index].create( sys::thread::func_helper<&shader_compiler_thread_function>, 1 * Mb, &shader_thread_data[i] );
-			++thread_index;
-		}
-	}*/
 
 	scan_execute_data fbx_thread_data;
 	
@@ -145,6 +92,46 @@ void resource_compiler::compile( weak_const_string const input_path, weak_const_
 		fbx_thread_data = { this, &resource_compiler::scan, fbx_input.c_str( ), fbx_output.c_str( ), ".fbx", &resource_compiler::compile_fbx };
 
 		threads[thread_index].create( sys::thread::func_helper<&scan_thread_function>, 1 * Mb, &fbx_thread_data );
+		++thread_index;
+	}
+
+	scan_execute_data obj_thread_data;
+	
+	sys::path obj_input;
+	sys::path obj_output;
+
+	{
+		obj_input = input_path;
+		obj_input += "scenes";
+		
+		obj_output = output_path;
+		obj_output += "configs/render/scenes";
+
+		obj_output.create_directory( );
+
+		obj_thread_data = { this, &resource_compiler::scan, obj_input.c_str( ), obj_output.c_str( ), ".obj", &resource_compiler::compile_obj };
+
+		threads[thread_index].create( sys::thread::func_helper<&scan_thread_function>, 16 * Mb, &obj_thread_data );
+		++thread_index;
+	}
+
+	scan_execute_data gltf_thread_data;
+	
+	sys::path gltf_input;
+	sys::path gltf_output;
+
+	{
+		gltf_input = input_path;
+		gltf_input += "scenes";
+		
+		gltf_output = output_path;
+		gltf_output += "configs/render/scenes";
+
+		gltf_output.create_directory( );
+
+		gltf_thread_data = { this, &resource_compiler::scan, gltf_input.c_str( ), gltf_output.c_str( ), ".gltf", &resource_compiler::compile_gltf };
+
+		threads[thread_index].create( sys::thread::func_helper<&scan_thread_function>, 16 * Mb, &gltf_thread_data );
 		++thread_index;
 	}
 	
@@ -248,6 +235,16 @@ void resource_compiler::scan(
 void resource_compiler::compile_fbx( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory )
 {
 	m_fbx_compiler.compile( relevant_date, input_file_name, output_directory );
+}
+
+void resource_compiler::compile_obj( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory )
+{
+	m_obj_compiler.compile( relevant_date, input_file_name, output_directory );
+}
+
+void resource_compiler::compile_gltf( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory )
+{
+	m_gltf_compiler.compile( relevant_date, input_file_name, output_directory );
 }
 
 void resource_compiler::compile_texture( u64 const relevant_date, pcstr const input_file_name, pcstr const output_directory )

@@ -99,7 +99,10 @@
     <ClCompile Include="config_compiler_types.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="fbx_compiler.cpp" />
+    <ClCompile Include="gltf_compiler.cpp" />
+    <ClCompile Include="obj_compiler.cpp" />
     <ClCompile Include="resource_compiler.cpp" />
+    <ClCompile Include="scene_compile_utils.cpp" />
     <ClCompile Include="texture_compiler.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -107,7 +110,10 @@
     <ClInclude Include="config_compiler_common.h" />
     <ClInclude Include="config_compiler_macros.h" />
     <ClInclude Include="fbx_compiler.h" />
+    <ClInclude Include="gltf_compiler.h" />
+    <ClInclude Include="obj_compiler.h" />
     <ClInclude Include="resource_compiler.h" />
+    <ClInclude Include="scene_compile_utils.h" />
     <ClInclude Include="texture_compiler.h" />
   </ItemGroup>
   <ItemGroup>
