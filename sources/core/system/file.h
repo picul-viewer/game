@@ -23,6 +23,7 @@ public:
 
 public:
 	void create( pcstr path, open_mode mode );
+	bool try_create( pcstr path, open_mode mode );
 	void destroy( );
 
 	uptr size( ) const;

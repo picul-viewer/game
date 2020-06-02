@@ -26,7 +26,7 @@ fixed_string<MaxSize>::fixed_string( i_const_string<StringClass> const& str )
 	ASSERT( str_casted.c_str( ) );
 
 	ASSERT_CMP( str_casted.length( ), <, MaxSize - 1 );
-	strings::copy_n( m_data, str_casted.c_str( ), str_casted.length( ) + 1 );
+	strings::copy( m_data, str_casted.c_str( ) );
 }
 
 template<uptr MaxSize>
@@ -52,7 +52,7 @@ fixed_string<MaxSize>& fixed_string<MaxSize>::operator=( i_const_string<StringCl
 	ASSERT( str_casted.c_str( ) );
 
 	ASSERT_CMP( str_casted.length( ), <, MaxSize - 1 );
-	strings::copy_n( m_data, str_casted.c_str( ), str_casted.length( ) + 1 );
+	strings::copy( m_data, str_casted.c_str( ) );
 
 	return *this;
 }
@@ -85,7 +85,7 @@ fixed_string<MaxSize>& fixed_string<MaxSize>::operator+=( i_const_string<StringC
 
 	uptr l = length( );
 	ASSERT_CMP( l + str_casted.length( ), <, MaxSize - 1 );
-	strings::copy_n( m_data + l, str_casted.c_str( ), str_casted.length( ) + 1 );
+	strings::copy( m_data + l, str_casted.c_str( ) );
 	return *this;
 }
 
@@ -132,20 +132,19 @@ fixed_string<MaxSize> operator+( fixed_string<MaxSize> const& l, i_const_string<
 	StringClass const& r_casted = static_cast<StringClass const&>( r );
 	ASSERT( r_casted.c_str( ) );
 
-	uptr ll = l.length( ), rl = r_casted.length( );
-	ASSERT_CMP( ll + rl, <, MaxSize - 1 );
+	uptr const ll = l.length( );
+	ASSERT_CMP( ll + r_casted.length( ), <, MaxSize - 1 );
 	fixed_string<MaxSize> result;
 	strings::copy_n( result.data( ), l.c_str( ), ll );
-	strings::copy_n( result.data( ) + ll, r_casted.c_str( ), rl );
-	result.data( )[ll + rl] = '\0';
+	strings::copy( result.data( ) + ll, r_casted.c_str( ) );
 	return result;
 }
 
-template<typename ... Args>
-fixed_string<1024> format( pcstr const mask, Args&& ... args )
+template<typename StrType, typename ... Args>
+StrType format( pcstr const mask, Args&& ... args )
 {
-	fixed_string<1024> result;
-	snprintf( result.data( ), fixed_string<1024>::max_string_size, mask, lib::move( args ) ... );
+	StrType result;
+	snprintf( result.data( ), StrType::max_string_size, mask, lib::move( args ) ... );
 	return result;
 }
 

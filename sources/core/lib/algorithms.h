@@ -2,6 +2,7 @@
 #define GUARD_CORE_ALGORITHMS_H_INCLUDED
 
 #include <algorithm>
+#include <numeric>
 
 namespace lib {
 
@@ -14,6 +15,7 @@ using std::output_iterator_tag;
 using std::random_access_iterator_tag;
 
 
+using std::iota;
 using std::sort;
 using std::for_each;
 using std::find;

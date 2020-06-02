@@ -48,9 +48,6 @@ fixed_string<MaxSize> operator+( fixed_string<MaxSize> const& l, pcstr r );
 template<uptr MaxSize, typename StringClass>
 fixed_string<MaxSize> operator+( fixed_string<MaxSize> const& l, i_const_string<StringClass> const& r );
 
-template<typename ... Args>
-fixed_string<1024> format( pcstr const mask, Args&& ... args );
-
 typedef fixed_string<Cache_Line>	little_string;
 typedef fixed_string<256>			str256;
 typedef fixed_string<512>			str512;
@@ -58,6 +55,9 @@ typedef fixed_string<1024>			str1024;
 typedef fixed_string<2048>			str2048;
 typedef fixed_string<4096>			str4096;
 typedef fixed_string<8192>			str8192;
+
+template<typename StrType = str1024, typename ... Args>
+StrType format( pcstr const mask, Args&& ... args );
 
 #include "fixed_string_inline.h"
 

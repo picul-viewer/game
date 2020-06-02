@@ -6,6 +6,12 @@
 
 void sys::file::create( pcstr path, open_mode mode )
 {
+	bool const result = try_create( path, mode );
+	ASSERT( result, "open file error: \"%s\"\nerror type: %d\n", path, GetLastError( ) );
+}
+
+bool sys::file::try_create( pcstr path, open_mode mode )
+{
 	DWORD access_flags = 0;
 	DWORD share_flags = 0;
 	DWORD creation = 0;
@@ -28,7 +34,7 @@ void sys::file::create( pcstr path, open_mode mode )
 
 	m_handle = CreateFile( path, access_flags, share_flags, nullptr, creation, FILE_ATTRIBUTE_NORMAL, nullptr );
 
-	ASSERT( m_handle != INVALID_HANDLE_VALUE, "open file error: \"%s\"\nerror type: %d\n", path, GetLastError( ) );
+	return m_handle != INVALID_HANDLE_VALUE;
 }
 
 void sys::file::destroy( )

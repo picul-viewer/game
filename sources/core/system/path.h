@@ -26,6 +26,8 @@ public:
 	template<typename StringClass>
 	path& operator+=( i_const_string<StringClass> const& str );
 
+	void add_extension( pcstr in_extension );
+
 	bool is_valid( ) const;
 	pcstr get_file_name( ) const;
 	void create_directory( ) const;
@@ -38,6 +40,8 @@ public:
 	static void create_directory( pcstr in_path );
 	static void remove_file_extension( pstr in_path );
 	static pcstr get_file_extension( pcstr in_path );
+
+	static sys::path rebase( pcstr in_path, uptr in_base_length, pcstr in_new_base );
 
 protected:
 	str256 m_string;
