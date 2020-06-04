@@ -42,11 +42,24 @@ public:
 	void ui_add_color_quad( math::u16x4 const in_corners_position, math::half4 const& in_color );
 	void ui_next_level( );
 
+	void reload( );
+
 	inline u64 frame_index( ) const { return m_frame_index; }
 
 private:
 	void on_resources_created( queried_resources& in_resources );
 	void on_resources_destroyed( );
+
+	void fill_effect_tasks( lib::buffer_array<task_info>& in_tasks );
+	void record_render( );
+
+	void reload_render( );
+	void on_effects_destroyed( );
+	void on_effects_created( );
+
+	template<typename Functor>
+	void render_wait( Functor const& in_functor );
+	void push_cmd_lists( );
 
 	void prepare_frame( );
 	void prepare_frame_copy( );
@@ -92,10 +105,9 @@ private:
 
 	ui::font::ptr m_debug_font;
 
-	u32 m_effect_count;
-
 	bool volatile m_ready;
 	bool volatile m_copy_finished;
+	bool volatile m_need_to_record_render;
 
 };
 

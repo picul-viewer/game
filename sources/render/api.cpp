@@ -66,3 +66,8 @@ void render::ui_next_level( )
 {
 	g_render.ui_next_level( );
 }
+
+void render::reload( )
+{
+	g_render.reload( );
+}

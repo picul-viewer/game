@@ -24,6 +24,7 @@ void render::create( )
 {
 	m_ready = false;
 	m_copy_finished = true;
+	m_need_to_record_render = false;
 
 	m_scene = nullptr;
 	m_next_scene = nullptr;
@@ -128,45 +129,20 @@ void render::create( )
 
 	m_debug_font.reset( );
 
-	m_effect_count = 0;
-
-	u32 const task_count = 5;
-	task_info tasks[task_count];
-	u32 index = 0;
+	// Create font for statistics
+	u32 const max_task_count = 5;
+	task_info tasks_memory[max_task_count];
+	lib::buffer_array<task_info> tasks( tasks_memory, max_task_count );
 
 	{
 		ui::font_cook* const cook = ui::font_cook::create( GET_RESOURCE_PATH( "configs\\fonts\\console.font.cfg" ) );
-		cook->fill_task_info( tasks[index++] );
+		cook->fill_task_info( tasks.emplace_back( ) );
 	}
 
-	{
-		generate_mesh_arguments_effect_cook* const cook = generate_mesh_arguments_effect_cook::create( &m_ps_generate_mesh_arguments );
-		cook->fill_task_info( tasks[index++] );
-		++m_effect_count;
-	}
-
-	{
-		render_mesh_objects_effect_cook* const cook = render_mesh_objects_effect_cook::create( &m_ps_render_mesh_objects );
-		cook->fill_task_info( tasks[index++] );
-		++m_effect_count;
-	}
-
-	{
-		shade_effect_cook* const cook = shade_effect_cook::create( &m_ps_shade );
-		cook->fill_task_info( tasks[index++] );
-		++m_effect_count;
-	}
-
-	{
-		render_ui_effect_cook* const cook = render_ui_effect_cook::create( &m_ps_render_ui );
-		cook->fill_task_info( tasks[index++] );
-		++m_effect_count;
-	}
-
-	ASSERT( index == task_count );
+	fill_effect_tasks( tasks );
 
 	resource_system::create_resources(
-		tasks, task_count,
+		tasks.data( ), (u32)tasks.size( ),
 		resource_system::user_callback_task<render, &render::on_resources_created>( this )
 	);
 }
@@ -175,12 +151,42 @@ void render::on_resources_created( queried_resources& in_resources )
 {
 	m_debug_font = in_resources.get_resource<ui::font::ptr>( );
 
-	for ( uptr i = 0; i < m_effect_count; ++i )
+	for ( u32 i = 1; i < in_resources.count( ); ++i )
 	{
 		pipeline_state* result = in_resources.get_resource<pipeline_state*>( );
 		ASSERT( result );
 	}
 
+	record_render( );
+
+	m_ready = true;
+}
+
+void render::fill_effect_tasks( lib::buffer_array<task_info>& in_tasks )
+{
+	{
+		generate_mesh_arguments_effect_cook* const cook = generate_mesh_arguments_effect_cook::create( &m_ps_generate_mesh_arguments );
+		cook->fill_task_info( in_tasks.emplace_back( ) );
+	}
+
+	{
+		render_mesh_objects_effect_cook* const cook = render_mesh_objects_effect_cook::create( &m_ps_render_mesh_objects );
+		cook->fill_task_info( in_tasks.emplace_back( ) );
+	}
+
+	{
+		shade_effect_cook* const cook = shade_effect_cook::create( &m_ps_shade );
+		cook->fill_task_info( in_tasks.emplace_back( ) );
+	}
+
+	{
+		render_ui_effect_cook* const cook = render_ui_effect_cook::create( &m_ps_render_ui );
+		cook->fill_task_info( in_tasks.emplace_back( ) );
+	}
+}
+
+void render::record_render( )
+{
 	m_cmd_allocator.create( D3D12_COMMAND_LIST_TYPE_DIRECT );
 	m_cmd_allocator->Reset( );
 	set_dx_name( m_cmd_allocator, "cmd_allocator" );
@@ -414,8 +420,6 @@ void render::on_resources_created( queried_resources& in_resources )
 			DX12_CHECK_RESULT( list->Close( ) );
 		}
 	}
-
-	m_ready = true;
 }
 
 void render::destroy( )
@@ -423,19 +427,7 @@ void render::destroy( )
 	m_ready = false;
 
 	// Wait for GPU.
-	{
-		sys::system_event const events[] = { m_gpu_frame_event, m_rs_queue_event };
-
-		while ( m_gpu_frame_index->GetCompletedValue( ) < m_frame_index )
-		{
-			bool const rs_queue_processed = resource_system::process_task( engine_thread_main );
-
-			if ( rs_queue_processed )
-				continue;
-
-			sys::system_event::wait_any( (u32)array_size( events ), events );
-		}
-	}
+	render_wait( [this]( ) { return m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index; } );
 
 	m_indirect_arguments_buffer.destroy( );
 	m_instance_transforms_buffer.destroy( );
@@ -485,48 +477,93 @@ bool render::ready( )
 	return m_ready;
 }
 
+void render::reload_render( )
+{
+	m_ready = false;
+
+	resource_system::destroy_resources(
+		resource_system::user_callback_task<render, &render::on_effects_destroyed>( this ),
+		&m_ps_generate_mesh_arguments, &m_ps_render_mesh_objects, &m_ps_shade, &m_ps_render_ui
+	);
+}
+
+void render::on_effects_destroyed( )
+{
+	u32 const max_task_count = 4;
+	task_info tasks_memory[max_task_count];
+	lib::buffer_array<task_info> tasks( tasks_memory, max_task_count );
+
+	fill_effect_tasks( tasks );
+
+	resource_system::create_resources(
+		tasks.data( ), (u32)tasks.size( ),
+		resource_system::user_callback_task<render, &render::on_effects_created>( this )
+	);
+}
+
+void render::on_effects_created( )
+{
+	record_render( );
+
+	m_ready = true;
+
+	// To exit from potential wait.
+	m_rs_queue_event.set( );
+}
+
+template<typename Functor>
+void render::render_wait( Functor const& in_functor )
+{
+	sys::system_event const events[] = { m_gpu_frame_event, m_rs_queue_event };
+
+	while ( !in_functor( ) )
+	{
+		bool const rs_queue_processed = resource_system::process_task( engine_thread_main );
+
+		if ( rs_queue_processed )
+			continue;
+
+		sys::system_event::wait_any( (u32)array_size( events ), events );
+	}
+}
+
+void render::push_cmd_lists( )
+{
+	u32 const swap_chain_buffer_index = g_dx.swap_chain( )->GetCurrentBackBufferIndex( );
+	u32 const frame_list_index = ( m_frame_index + max_frame_delay - 1 ) % max_frame_delay;
+	ID3D12CommandList* const current_cmd_list = m_cmd_lists[swap_chain_buffer_index][frame_list_index];
+	g_dx.queue_graphics( )->ExecuteCommandLists( 1, &current_cmd_list );
+}
+
 void render::update( )
 {
 	// Wait for copy tasks for current frame.
+	if ( !m_need_to_record_render )
 	{
-		sys::system_event const events[] = { m_gpu_frame_event, m_rs_queue_event };
+		render_wait( [this]( ) { return m_copy_finished; } );
 
-		while ( !m_copy_finished )
-		{
-			bool const rs_queue_processed = resource_system::process_task( engine_thread_main );
+		// Push GPU commands for current frame.
+		push_cmd_lists( );
 
-			if ( rs_queue_processed )
-				continue;
+		// Wait for previous frame.
+		render_wait( [this]( ) { return m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index; } );
 
-			sys::system_event::wait_any( (u32)array_size( events ), events );
-		}
+		// Present (previous frame).
+		DX12_CHECK_RESULT( g_dx.swap_chain( )->Present( 0, 0 ) );
 	}
-
-	// Push GPU commands for current frame.
+	else
 	{
-		u32 const swap_chain_buffer_index = g_dx.swap_chain( )->GetCurrentBackBufferIndex( );
-		u32 const frame_list_index = ( m_frame_index + max_frame_delay - 1 ) % max_frame_delay;
-		ID3D12CommandList* const current_cmd_list = m_cmd_lists[swap_chain_buffer_index][frame_list_index];
-		g_dx.queue_graphics( )->ExecuteCommandLists( 1, &current_cmd_list );
+		render_wait( [this]( ) { return m_copy_finished && ( m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index ); } );
+
+		reload_render( );
+		render_wait( [this]( ) { return ready( ); } );
+		// This was set, but might not be reset (if WaitForMultipleObjects wasn't called).
+		m_rs_queue_event.reset( );
+		m_need_to_record_render = false;
+
+		// Push GPU commands for current frame.
+		push_cmd_lists( );
 	}
-
-	// Wait for previous frame.
-	{
-		sys::system_event const events[] = { m_gpu_frame_event, m_rs_queue_event };
-
-		while ( m_gpu_frame_index->GetCompletedValue( ) < m_frame_index )
-		{
-			bool const rs_queue_processed = resource_system::process_task( engine_thread_main );
-
-			if ( rs_queue_processed )
-				continue;
-
-			sys::system_event::wait_any( (u32)array_size( events ), events );
-		}
-	}
-
-	// Present (previous frame).
-	DX12_CHECK_RESULT( g_dx.swap_chain( )->Present( 0, 0 ) );
 
 	DX12_CHECK_RESULT( g_dx.queue_graphics( )->Signal( m_gpu_frame_index, m_frame_index + 1 ) );
 	m_gpu_frame_index->SetEventOnCompletion( m_frame_index + 1, m_gpu_frame_event.get_handle( ) );
@@ -609,6 +646,10 @@ void render::prepare_frame( )
 
 	m_render_camera.fill_constant_buffer( cpu_constant_buffer );
 	cpu_constant_buffer.viewport_size = math::float4( g_parameters.screen_resolution.x, g_parameters.screen_resolution.y, 1.0f / g_parameters.screen_resolution.x, 1.0f / g_parameters.screen_resolution.y );
+
+	cpu_constant_buffer.sun_direction.vx = math::normalize( g_parameters.sun.direction );
+	cpu_constant_buffer.sun_radiance.vx = g_parameters.sun.radiance;
+
 	cpu_constant_buffer.indirect_params_0 = math::u32x4( ( mesh_list_size + 255 ) / 256, 1, 1, mesh_list_size );
 	cpu_constant_buffer.indirect_params_1 = math::u32x4( ui_dispatch_dimension, 0, 0, 0 );
 
@@ -669,6 +710,11 @@ void render::ui_add_color_quad( math::u16x4 const in_corners_position, math::hal
 void render::ui_next_level( )
 {
 	m_ui_processor.next_level( );
+}
+
+void render::reload( )
+{
+	m_need_to_record_render = true;
 }
 
 render g_render;

@@ -28,6 +28,8 @@ void ui_add_quad(
 void ui_add_color_quad( math::u16x4 const in_corners_position, math::half4 const& in_color );
 void ui_next_level( );
 
+void reload( );
+
 } // namespace render
 
 #endif // #ifndef GUARD_RENDER_API_H_INCLUDED

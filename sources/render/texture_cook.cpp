@@ -58,8 +58,7 @@ void texture_cook::on_file_loaded( queried_resources& in_queried )
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srv_desc;
 
-	lib::buffer_array<gpu_upload_task> upload_tasks;
-	upload_tasks.create( m_upload_tasks, max_upload_tasks );
+	lib::buffer_array<gpu_upload_task> upload_tasks( m_upload_tasks, max_upload_tasks );
 
 	dds_loader::load( r, m_result->m_texture, srv_desc, upload_tasks );
 

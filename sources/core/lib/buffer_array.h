@@ -11,6 +11,9 @@ class buffer_array
 public:
 	typedef T value_type;
 
+	buffer_array( ) = default;
+	buffer_array( pointer const buffer, uptr const capacity, uptr const size = 0 );
+
 	void create( pointer const buffer, uptr const capacity, uptr const size = 0 );
 
 	void push_back( T const& value );

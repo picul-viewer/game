@@ -175,13 +175,15 @@ void world::window_input( )
 			else
 				engine::g_world.exit( );
 		}
-
-		if ( ( k == key::f9 ) && pressed )
+		else if ( ( k == key::f5 ) && pressed )
+		{
+			render::reload( );
+		}
+		else if ( ( k == key::f9 ) && pressed )
 		{
 			render::get_parameters( ).draw_statistics = !render::get_parameters( ).draw_statistics;
 		}
-
-		if ( m_console_visible )
+		else if ( m_console_visible )
 			m_console.on_input( );
     }
 }

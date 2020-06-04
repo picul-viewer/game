@@ -4,6 +4,12 @@
 #include <macros.h>
 
 template<typename T>
+lib::buffer_array<T>::buffer_array( pointer const buffer, uptr const capacity, uptr const size )
+{
+	create( buffer, capacity, size );
+}
+
+template<typename T>
 void lib::buffer_array<T>::create( pointer const buffer, uptr const capacity, uptr const size )
 {
 	m_begin			= buffer;
