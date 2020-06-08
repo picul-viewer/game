@@ -8,7 +8,6 @@
 
 #include "dx_resource.h"
 #include "handles.h"
-#include "texture_manager.h"
 
 namespace render {
 
