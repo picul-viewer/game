@@ -90,12 +90,12 @@ public:
 				-m_obj->positions[3 * obj_ind.p + 2]
 			);
 
-			in_vertex_data[i].normal = math::half4(
+			in_vertex_data[i].normal.vx = math::normalize( math::float3(
 				m_obj->normals[3 * obj_ind.n + 0],
 				m_obj->normals[3 * obj_ind.n + 1],
-				-m_obj->normals[3 * obj_ind.n + 2],
-				0.0f
-			);
+				-m_obj->normals[3 * obj_ind.n + 2]
+			) ) * 0.5f + 0.5f;
+			in_vertex_data[i].normal.w = 0.0f;
 			in_vertex_data[i].uv = math::float2(
 				m_obj->texcoords[2 * obj_ind.t + 0],
 				1.0f - m_obj->texcoords[2 * obj_ind.t + 1]

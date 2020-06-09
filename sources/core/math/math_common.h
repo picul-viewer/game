@@ -2,6 +2,7 @@
 #define GUARD_CORE_MATH_COMMON_H_INCLUDED
 
 #include <types.h>
+#include <macros.h>
 
 namespace math
 {
@@ -188,6 +189,30 @@ public:
 };
 
 inline bool operator==( half const l, half const r )
+{
+	return l.data == r.data;
+}
+
+struct unorm16
+{
+public:
+	inline unorm16( ) = default;
+
+	inline unorm16( float n )
+	{
+		ASSERT( ( n >= 0.0f ) && ( n <= 1.0f ) );
+		data = (u16)( n * 65535.0f );
+	}
+
+	inline operator float( )
+	{
+		return data / 65535.0f;
+	}
+
+	u16 data;
+};
+
+inline bool operator==( unorm16 const l, unorm16 const r )
 {
 	return l.data == r.data;
 }

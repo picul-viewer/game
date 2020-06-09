@@ -37,7 +37,7 @@ vertex_data_unpacked unpack_vertex_data( vertex_data data )
 {	
 	vertex_data_unpacked result;
 	result.texcoord = data.texcoord;
-	result.normal = float3( f16tof32( data.normal.x ), f16tof32( data.normal.x >> 16 ), f16tof32( data.normal.y ) );
+	result.normal = uint3( data.normal.x & 0xFFFF, data.normal.x >> 16, data.normal.y ) / 65535.0f * 2.0f - 1.0f;
 	return result;
 }
 

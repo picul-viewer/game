@@ -99,12 +99,12 @@ public:
 					-m_positions[vertex_index].z
 				);
 				in_vertex_data[i].uv = m_texcoords[vertex_index];
-				in_vertex_data[i].normal = math::half4(
+				in_vertex_data[i].normal.vx = math::normalize( math::float3(
 					m_normals[vertex_index].x,
 					m_normals[vertex_index].y,
-					-m_normals[vertex_index].z,
-					0.0f
-				);
+					-m_normals[vertex_index].z
+				) ) * 0.5f + 0.5f;
+				in_vertex_data[i].normal.w = 0.0f;
 			}
 		}
 		else
@@ -121,12 +121,12 @@ public:
 					-m_positions[vertex_index].z
 				);
 				in_vertex_data[i].uv = m_texcoords[vertex_index];
-				in_vertex_data[i].normal = math::half4(
+				in_vertex_data[i].normal.vx = math::normalize( math::float3(
 					m_normals[vertex_index].x,
 					m_normals[vertex_index].y,
-					-m_normals[vertex_index].z,
-					0.0f
-				);
+					-m_normals[vertex_index].z
+				) ) * 0.5f + 0.5f;
+				in_vertex_data[i].normal.w = 0.0f;
 			};
 		}
 

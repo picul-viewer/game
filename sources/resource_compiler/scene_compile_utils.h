@@ -12,7 +12,7 @@ namespace resource_compiler {
 struct vertex_data_type
 {
 	math::float2 uv;
-	math::half4 normal;
+	math::unorm16x4 normal;
 };
 
 bool operator==( vertex_data_type const& l, vertex_data_type const& r );
