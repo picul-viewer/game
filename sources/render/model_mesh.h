@@ -32,8 +32,8 @@ public:
 
 	inline mesh* get_mesh( ) const { return mesh::from_handle( m_mesh ); }
 
-	inline texture* get_diffuse_texture( ) const { return texture::from_handle( m_diffuse ); }
-	inline texture* get_specular_texture( ) const { return texture::from_handle( m_specular ); }
+	inline texture* get_albedo_texture( ) const { return texture::from_handle( m_albedo ); }
+	inline texture* get_metal_rough_texture( ) const { return texture::from_handle( m_metal_rough ); }
 
 private:
 	friend class render_object_mesh;
@@ -45,8 +45,8 @@ private:
 
 	mesh_handle			m_mesh;
 
-	texture_handle		m_diffuse;
-	texture_handle		m_specular;
+	texture_handle		m_albedo;
+	texture_handle		m_metal_rough;
 };
 
 } // namespace render

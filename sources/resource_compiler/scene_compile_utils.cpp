@@ -150,32 +150,32 @@ void mesh_compiler::save_mesh(
 }
 
 void write_model_mesh_to_file(
-	pcstr const in_diffuse_name,
-	pcstr const in_specular_name,
+	pcstr const in_albedo_name,
+	pcstr const in_metal_rough_name,
 	pcstr const in_mesh_path,
 	pcstr const in_model_mesh_path,
 	sys::path const& in_textures_path,
 	math::aabb const& in_aabb
 )
 {
-	sys::path diffuse = GET_RESOURCE_PATH( "textures/diffuse.dds" );
+	sys::path albedo = GET_RESOURCE_PATH( "textures/albedo.dds" );
 
-	if ( in_diffuse_name )
+	if ( in_albedo_name )
 	{
-		little_string diffuse_name = in_diffuse_name;
-		sys::path::remove_file_extension( diffuse_name );
-		diffuse_name += ".dds";
-		diffuse = in_textures_path + diffuse_name;
+		little_string albedo_name = in_albedo_name;
+		sys::path::remove_file_extension( albedo_name );
+		albedo_name += ".dds";
+		albedo = in_textures_path + albedo_name;
 	}
 
-	sys::path specular = diffuse;
+	sys::path metal_rough = GET_RESOURCE_PATH( "textures/metal_rough.dds" );
 
-	if ( in_specular_name )
+	if ( in_metal_rough_name )
 	{
-		little_string specular_name = in_specular_name;
-		sys::path::remove_file_extension( specular_name );
-		specular_name += ".dds";
-		specular = in_textures_path + specular_name;
+		little_string metal_rough_name = in_metal_rough_name;
+		sys::path::remove_file_extension( metal_rough_name );
+		metal_rough_name += ".dds";
+		metal_rough = in_textures_path + metal_rough_name;
 	}
 
 	uptr const model_mesh_memory_size = 4 * Kb;
@@ -185,8 +185,8 @@ void write_model_mesh_to_file(
 	model_mesh_output.write( in_aabb.get_min( ) );
 	model_mesh_output.write( in_aabb.get_max( ) );
 	model_mesh_output.write_str( in_mesh_path );
-	model_mesh_output.write_str( diffuse.c_str( ) );
-	model_mesh_output.write_str( specular.c_str( ) );
+	model_mesh_output.write_str( albedo.c_str( ) );
+	model_mesh_output.write_str( metal_rough.c_str( ) );
 
 	sys::file f;
 	f.create( in_model_mesh_path, sys::file::open_write );
@@ -234,8 +234,8 @@ scene_compiler::~scene_compiler( )
 
 void scene_compiler::add_mesh(
 	mesh_compiler* const in_mesh_compiler,
-	pcstr const in_diffuse_name,
-	pcstr const in_specular_name,
+	pcstr const in_albedo_name,
+	pcstr const in_metal_rough_name,
 	math::float4x3 const& in_transform
 )
 {
@@ -250,7 +250,7 @@ void scene_compiler::add_mesh(
 		m_meshes.push_back( { format( m_model_mesh_path.c_str( ), (u32)i ), in_transform } );
 
 		write_model_mesh_to_file(
-			in_diffuse_name, in_specular_name, format( m_mesh_path.c_str( ), (u32)i ),
+			in_albedo_name, in_metal_rough_name, format( m_mesh_path.c_str( ), (u32)i ),
 			m_meshes.back( ).model_mesh_path.c_str( ), m_textures_path, m_aabbs[i]
 		);
 

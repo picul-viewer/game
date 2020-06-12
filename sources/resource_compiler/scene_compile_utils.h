@@ -35,8 +35,8 @@ private:
 };
 
 void write_model_mesh_to_file(
-	pcstr const in_diffuse_name,
-	pcstr const in_specular_name,
+	pcstr const in_albedo_name,
+	pcstr const in_metal_rough_name,
 	pcstr const in_mesh_path,
 	pcstr const in_model_mesh_path,
 	sys::path const& in_textures_path,
@@ -49,10 +49,10 @@ public:
 	scene_compiler( pcstr const in_input_path, pcstr const in_output_path );
 	~scene_compiler( );
 
-	void add_mesh( 
+	void add_mesh(
 		mesh_compiler* const in_mesh_compiler,
-		pcstr const in_diffuse_name,
-		pcstr const in_specular_name,
+		pcstr const in_albedo_name,
+		pcstr const in_metal_rough_name,
 		math::float4x3 const& in_transform
 	);
 

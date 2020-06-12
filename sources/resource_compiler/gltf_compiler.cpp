@@ -146,7 +146,7 @@ private:
 
 void process_node(
 	cgltf_node const& in_node,
-	scene_compiler& compiler
+	scene_compiler& in_compiler
 )
 {
 	cgltf_mesh* const mesh = in_node.mesh;
@@ -162,16 +162,16 @@ void process_node(
 
 			gltf_mesh_compiler mesh_compiler( primitive );
 
-			pcstr diffuse_name = nullptr;
-			pcstr specular_name = nullptr;
+			pcstr albedo_name = nullptr;
+			pcstr metal_rough_name = nullptr;
 
 			if ( ( primitive.material != nullptr ) && primitive.material->has_pbr_metallic_roughness )
 			{
-				cgltf_texture* const diffuse_texture = primitive.material->pbr_metallic_roughness.base_color_texture.texture;
-				if ( diffuse_texture ) diffuse_name = diffuse_texture->image->uri;
+				cgltf_texture* const albedo_texture = primitive.material->pbr_metallic_roughness.base_color_texture.texture;
+				if ( albedo_texture ) albedo_name = albedo_texture->image->uri;
 
-				cgltf_texture* const specular_texture = primitive.material->pbr_metallic_roughness.metallic_roughness_texture.texture;
-				if ( specular_texture ) specular_name = specular_texture->image->uri;
+				cgltf_texture* const metal_rough_texture = primitive.material->pbr_metallic_roughness.metallic_roughness_texture.texture;
+				if ( metal_rough_texture ) metal_rough_name = metal_rough_texture->image->uri;
 			}
 
 			compiler.add_mesh( &mesh_compiler, diffuse_name, specular_name, node_to_world );
@@ -182,7 +182,7 @@ void process_node(
 	{
 		cgltf_node* const node = in_node.children[i];
 		ASSERT( node );
-		process_node( *node, compiler );
+		process_node( *node, in_compiler );
 	}
 }
 

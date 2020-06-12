@@ -8,8 +8,8 @@ struct mesh_object
 	uint index_count;
 	uint vertex_count;
 	uint transform_index;
-	uint diffuse_texture_index;
-	uint specular_texture_index;
+	uint albedo_texture_index;
+	uint metal_rough_texture_index;
 	uint padding;
 };
 

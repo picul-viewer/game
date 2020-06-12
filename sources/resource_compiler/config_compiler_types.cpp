@@ -108,8 +108,8 @@ bool compile_config_render_model_mesh( pstr const data, uptr const size, pcstr c
 	output.write( read_float3( root["aabb_min"] ) );
 	output.write( read_float3( root["aabb_max"] ) );
 	output.write_str( root["mesh"].as_string( ) );
-	output.write_str( root["diffuse"].as_string( ) );
-	output.write_str( root["specular"].as_string( ) );
+	output.write_str( root["albedo"].as_string( ) );
+	output.write_str( root["metal_rough"].as_string( ) );
 
 	return save( output_memory, output.size( output_memory ), output_path );
 }

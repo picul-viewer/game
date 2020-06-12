@@ -70,14 +70,14 @@ void model_mesh_cook::on_file_loaded( queried_resources& in_queried )
 		cook->fill_task_info( queries[query_count++] );
 	}
 	
-	// Diffuse texture.
+	// Albedo texture.
 	{
 		pcstr const path	= r.read_str( );
 		texture_cook* cook	= texture_cook::create( get_resource_path( path ).c_str( ) );
 		cook->fill_task_info( queries[query_count++] );
 	}
 
-	// Specular texture.
+	// Metalness/roughness texture.
 	{
 		pcstr const path	= r.read_str( );
 		texture_cook* cook	= texture_cook::create( get_resource_path( path ).c_str( ) );
@@ -94,8 +94,8 @@ void model_mesh_cook::on_subresources_loaded( queried_resources& in_queried )
 {
 	m_result->m_mesh = in_queried.get_resource<mesh_handle>( );
 
-	m_result->m_diffuse = in_queried.get_resource<texture_handle>( );
-	m_result->m_specular = in_queried.get_resource<texture_handle>( );
+	m_result->m_albedo = in_queried.get_resource<texture_handle>( );
+	m_result->m_metal_rough = in_queried.get_resource<texture_handle>( );
 
 	finish( m_result );
 }

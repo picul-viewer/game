@@ -131,12 +131,12 @@ public:
 		m_material_index = currrent_material_index;
 	}
 
-	pcstr current_diffuse( ) const
+	pcstr current_albedo( ) const
 	{
 		return m_obj->materials[m_material_index].map_Kd.name;
 	}
 
-	pcstr current_specular( ) const
+	pcstr current_metal_rough( ) const
 	{
 		return m_obj->materials[m_material_index].map_Ks.name;
 	}
@@ -174,9 +174,9 @@ void obj_compiler::compile( u64 relevant_date, weak_const_string input_file_name
 
 	while ( !obj_compiler.finished( ) )
 	{
-		pcstr const diffuse = obj_compiler.current_diffuse( );
-		pcstr const specular = obj_compiler.current_specular( );
-		compiler.add_mesh( &obj_compiler, diffuse, specular, math::float4x3::identity( ) );
+		pcstr const albedo = obj_compiler.current_albedo( );
+		pcstr const metal_rough = obj_compiler.current_metal_rough( );
+		compiler.add_mesh( &obj_compiler, albedo, metal_rough, math::float4x3::identity( ) );
 		obj_compiler.go_to_next( );
 	}
 

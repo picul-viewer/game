@@ -81,8 +81,8 @@ void main(
 	const float2 texcoord_ddx = data_right.texcoord.xy - data.texcoord.xy;
 	const float2 texcoord_ddy = data_bottom.texcoord.xy - data.texcoord.xy;
 
-	const float4 diffuse = g_textures[NonUniformResourceIndex(mesh.diffuse_texture_index)].SampleGrad( g_sampler, data.texcoord, texcoord_ddx, texcoord_ddy );
-	const float4 specular = g_textures[NonUniformResourceIndex(mesh.specular_texture_index)].SampleGrad( g_sampler, data.texcoord, texcoord_ddx, texcoord_ddy );
-
-	out_color = diffuse;
+	const float3 albedo = g_textures[NonUniformResourceIndex(mesh.albedo_texture_index)].SampleGrad( g_sampler, data.texcoord, texcoord_ddx, texcoord_ddy ).xyz;
+	const float2 metalness_roughness = g_textures[NonUniformResourceIndex(mesh.metal_rough_texture_index)].SampleGrad( g_sampler, data.texcoord, texcoord_ddx, texcoord_ddy ).zy;
+	
+	out_color = float4( albedo, 0.0f );
 }
