@@ -26,6 +26,7 @@ class render
 {
 public:
 	enum { max_mesh_object_list_size = 4096 };
+	enum { max_point_light_object_list_size = 512 };
 
 public:
 	void create( );
@@ -67,7 +68,7 @@ private:
 	void process_statistics( );
 
 private:
-	enum { max_copy_task_count = 5 };
+	enum { max_copy_task_count = 8 };
 
 private:
 	ui_processor m_ui_processor;
@@ -79,8 +80,10 @@ private:
 	dx_resource m_indirect_arguments_buffer;
 	dx_resource m_instance_transforms_buffer;
 	dx_resource m_mesh_object_list[max_frame_delay];
+	dx_resource m_point_light_object_list[max_frame_delay];
 
 	u32 m_cpu_mesh_object_lists[max_frame_delay][max_mesh_object_list_size];
+	u32 m_cpu_point_light_object_lists[max_frame_delay][max_point_light_object_list_size];
 	gpu::constant_buffer m_cpu_constant_buffers[max_frame_delay];
 	gpu_upload_task m_copy_tasks[max_copy_task_count];
 

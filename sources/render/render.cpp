@@ -104,6 +104,22 @@ void render::create( )
 	{
 		dx_resource::cook cook;
 		cook.create_buffer(
+			max_point_light_object_list_size * sizeof(u32),
+			true, false, false, false
+		);
+		cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
+		cook.set_initial_state( D3D12_RESOURCE_STATE_COMMON );
+
+		for ( u32 i = 0; i < max_frame_delay; ++i )
+		{
+			m_point_light_object_list[i].create( cook );
+			set_dx_name( m_point_light_object_list[i], format( "point_light_object_list #%d", i ) );
+		}
+	}
+
+	{
+		dx_resource::cook cook;
+		cook.create_buffer(
 			render::max_mesh_object_list_size * sizeof(gpu::draw_indexed_indirect_command),
 			false, true, false, false
 		);
@@ -231,7 +247,7 @@ void render::record_render( )
 					list->SetComputeRootConstantBufferView( 0, g_resources.constant_buffer( j )->GetGPUVirtualAddress( ) );
 					list->SetComputeRootShaderResourceView( 1, m_mesh_object_list[j]->GetGPUVirtualAddress( ) );
 					list->SetComputeRootShaderResourceView( 2, g_resources.mesh_object_buffer( )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 3, g_resources.transform_buffer( j )->GetGPUVirtualAddress( ) );
+					list->SetComputeRootShaderResourceView( 3, g_resources.transforms( ).buffer( j )->GetGPUVirtualAddress( ) );
 					list->SetComputeRootUnorderedAccessView( 4, m_indirect_arguments_buffer->GetGPUVirtualAddress( ) );
 					list->SetComputeRootUnorderedAccessView( 5, m_instance_transforms_buffer->GetGPUVirtualAddress( ) );
 
@@ -355,8 +371,10 @@ void render::record_render( )
 					list->SetGraphicsRootShaderResourceView( 2, g_resources.index_buffer( )->GetGPUVirtualAddress( ) );
 					list->SetGraphicsRootShaderResourceView( 3, g_resources.vertex_buffer( )->GetGPUVirtualAddress( ) );
 					list->SetGraphicsRootShaderResourceView( 4, g_resources.vertex_data_buffer( )->GetGPUVirtualAddress( ) );
-					list->SetGraphicsRootShaderResourceView( 5, g_resources.transform_buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetGraphicsRootDescriptorTable( 6, g_resources.srv_heap( )->GetGPUDescriptorHandleForHeapStart( ) );
+					list->SetGraphicsRootShaderResourceView( 5, g_resources.transforms( ).buffer( j )->GetGPUVirtualAddress( ) );
+					list->SetGraphicsRootShaderResourceView( 6, g_resources.point_lights( ).buffer( j )->GetGPUVirtualAddress( ) );
+					list->SetGraphicsRootShaderResourceView( 7, m_point_light_object_list[j]->GetGPUVirtualAddress( ) );
+					list->SetGraphicsRootDescriptorTable( 8, g_resources.srv_heap( )->GetGPUDescriptorHandleForHeapStart( ) );
 
 					D3D12_CPU_DESCRIPTOR_HANDLE const rtv = g_resources.rtv( image_rtv_output_0 + i );
 					D3D12_CPU_DESCRIPTOR_HANDLE const dsv = g_resources.read_only_dsv( );
@@ -451,7 +469,10 @@ void render::on_resources_destroyed( )
 	m_cmd_allocator.destroy( );
 
 	for ( u32 i = 0 ; i < max_frame_delay; ++i )
+	{
 		m_mesh_object_list[i].destroy( );
+		m_point_light_object_list[i].destroy( );
+	}
 
 	m_dispatch_cs.destroy( );
 	m_draw_cs.destroy( );
@@ -588,19 +609,19 @@ void render::prepare_frame( )
 	m_render_camera.set_perspective( g_parameters.camera.fov, (float)g_parameters.screen_resolution.x / (float)g_parameters.screen_resolution.y, 0.1f, 1000.0f );
 	m_render_camera.update( );
 
-	u32 const ui_upload_tasks_count = m_ui_processor.upload_task_count_needed( );
-
-	u32 copy_task_count = 1 + ui_upload_tasks_count;
-	copy_task_count = m_scene										? copy_task_count + 1 : copy_task_count;
-	copy_task_count = g_resources.need_dynamic_transforms_update( )	? copy_task_count + 1 : copy_task_count;
+	u32 copy_task_count = 1; // Constant buffer.
+	copy_task_count += m_ui_processor.upload_task_count_needed( );
+	copy_task_count = m_scene											? copy_task_count + 2 : copy_task_count;
+	copy_task_count = g_resources.transforms( ).need_gpu_update( )		? copy_task_count + 1 : copy_task_count;
+	copy_task_count = g_resources.point_lights( ).need_gpu_update( )	? copy_task_count + 1 : copy_task_count;
 
 	ASSERT_CMP( copy_task_count, <=, max_copy_task_count );
 
 	custom_task_context const context = resource_system::create_custom_tasks( copy_task_count, resource_system::user_callback_task<render, &render::prepare_frame_copy>( this ) );
-
-	u32 task_index = 0;
+	lib::buffer_array<gpu_upload_task> copy_tasks( m_copy_tasks, copy_task_count );
 
 	u32 mesh_list_size = 0;
+	u32 point_light_list_size = 0;
 
 	if ( m_scene )
 	{
@@ -611,9 +632,7 @@ void render::prepare_frame( )
 		math::frustum frustum;
 		frustum.set_from_matrix( m_render_camera.get_view_projection( ) );
 
-		lib::buffer_array<u32> cpu_mesh_object_list;
-		cpu_mesh_object_list.create( m_cpu_mesh_object_lists[cmd_index], max_mesh_object_list_size );
-		cpu_mesh_object_list.clear( );
+		lib::buffer_array<u32> cpu_mesh_object_list( m_cpu_mesh_object_lists[cmd_index], max_mesh_object_list_size );
 
 		static_mesh_container.frustum_test( frustum, [&cpu_mesh_object_list]( math::bvh::object_handle const in_handle )
 		{
@@ -629,17 +648,33 @@ void render::prepare_frame( )
 
 		mesh_list_size = (u32)cpu_mesh_object_list.size( );
 
-		m_copy_tasks[task_index].set_buffer_upload( m_mesh_object_list[cmd_index], 0 );
-		m_copy_tasks[task_index].set_source_data( cpu_mesh_object_list.data( ), mesh_list_size * sizeof(u32) );
-		m_copy_tasks[task_index].set_task_context( context );
-		++task_index;
+		gpu_upload_task& mesh_list_task = copy_tasks.emplace_back( );
+		mesh_list_task.set_buffer_upload( m_mesh_object_list[cmd_index], 0 );
+		mesh_list_task.set_source_data( cpu_mesh_object_list.data( ), mesh_list_size * sizeof(u32) );
+
+
+		auto const& static_point_light_container = m_scene->static_point_light_container( );
+
+		lib::buffer_array<u32> cpu_point_light_object_list( m_cpu_point_light_object_lists[cmd_index], max_point_light_object_list_size );
+
+		for ( u32 i = 0; i < static_point_light_container.size( ); ++i )
+		{
+			math::float4 const& sphere = math::float4( static_point_light_container[i].m_data.position, static_point_light_container[i].m_data.range );
+			if ( frustum.test_sphere_outside( sphere ) )
+				continue;
+
+			cpu_point_light_object_list.push_back( static_point_light_container[i].m_object_handle );
+		}
+
+		point_light_list_size = (u32)cpu_point_light_object_list.size( );
+
+		gpu_upload_task& point_light_list_task = copy_tasks.emplace_back( );
+		point_light_list_task.set_buffer_upload( m_point_light_object_list[cmd_index], 0 );
+		point_light_list_task.set_source_data( cpu_point_light_object_list.data( ), point_light_list_size * sizeof(u32) );
 	}
 
 	// Process UI.
-	u32 const ui_dispatch_dimension = m_ui_processor.prepare_ui( m_copy_tasks + task_index );
-
-	for ( u32 i = 0; i < ui_upload_tasks_count; ++i )
-		m_copy_tasks[task_index++].set_task_context( context );
+	u32 const ui_dispatch_dimension = m_ui_processor.prepare_ui( copy_tasks );
 
 	// Fill constant buffers.
 	gpu::constant_buffer& cpu_constant_buffer = m_cpu_constant_buffers[cmd_index];
@@ -647,30 +682,36 @@ void render::prepare_frame( )
 	m_render_camera.fill_constant_buffer( cpu_constant_buffer );
 	cpu_constant_buffer.viewport_size = math::float4( g_parameters.screen_resolution.x, g_parameters.screen_resolution.y, 1.0f / g_parameters.screen_resolution.x, 1.0f / g_parameters.screen_resolution.y );
 
-	cpu_constant_buffer.sun_direction.vx = math::normalize( g_parameters.sun.direction );
-	cpu_constant_buffer.sun_radiance.vx = g_parameters.sun.radiance;
+	if ( m_scene )
+	{
+		cpu_constant_buffer.sun_direction.vx = m_scene->get_sun_direction( );
+		cpu_constant_buffer.sun_radiance.vx = m_scene->get_sun_radiance( );
+		cpu_constant_buffer.sun_radiance.w = ( m_scene->get_sun_radiance( ) == math::float3( 0.0f ) ) ? 0.0f : 1.0f;
+	}
 
 	cpu_constant_buffer.indirect_params_0 = math::u32x4( ( mesh_list_size + 255 ) / 256, 1, 1, mesh_list_size );
-	cpu_constant_buffer.indirect_params_1 = math::u32x4( ui_dispatch_dimension, 0, 0, 0 );
+	cpu_constant_buffer.indirect_params_1 = math::u32x4( ui_dispatch_dimension, point_light_list_size, 0, 0 );
 
-	m_copy_tasks[task_index].set_buffer_upload( g_resources.constant_buffer( cmd_index ), 0 );
-	m_copy_tasks[task_index].set_source_data( &cpu_constant_buffer, sizeof(gpu::constant_buffer) );
-	m_copy_tasks[task_index].set_task_context( context );
-	++task_index;
+	gpu_upload_task& constants_task = copy_tasks.emplace_back( );
+	constants_task.set_buffer_upload( g_resources.constant_buffer( cmd_index ), 0 );
+	constants_task.set_source_data( &cpu_constant_buffer, sizeof(gpu::constant_buffer) );
 
 	// Update transforms.
-	if ( g_resources.need_dynamic_transforms_update( ) )
-	{
-		g_resources.update_dynamic_transforms_task( m_copy_tasks[task_index] );
-		m_copy_tasks[task_index].set_task_context( context );
-		++task_index;
-	}
+	if ( g_resources.transforms( ).need_gpu_update( ) )
+		g_resources.transforms( ).update_gpu_task( copy_tasks.emplace_back( ) );
+
+	// Update point lights.
+	if ( g_resources.point_lights( ).need_gpu_update( ) )
+		g_resources.point_lights( ).update_gpu_task( copy_tasks.emplace_back( ) );
 
 #ifdef USE_RENDER_PROFILING
 	process_statistics( );
 #endif // #ifdef USE_RENDER_PROFILING
 
-	ASSERT_CMP( task_index, ==, copy_task_count );
+	ASSERT_CMP( copy_tasks.size( ), ==, copy_task_count );
+
+	for ( u32 i = 0; i < copy_tasks.size( ); ++i )
+		copy_tasks[i].set_task_context( context );
 
 	g_gpu_uploader.push_immediate_tasks( m_copy_tasks, copy_task_count );
 }

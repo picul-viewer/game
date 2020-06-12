@@ -56,6 +56,17 @@ public:
 		math::float4x3 const& in_transform
 	);
 
+	void add_point_light(
+		math::float3 const& in_position,
+		float const in_range,
+		math::float3 const& in_color
+	);
+
+	void set_sun_settings(
+		math::float3 const& in_direction,
+		math::float3 const& in_radiance
+	);
+
 	void compile( );
 
 private:
@@ -65,9 +76,25 @@ private:
 		math::float4x3 transform;
 	};
 
+	struct point_light_desc
+	{
+		math::float3 position;
+		float range;
+		math::float3 color;
+	};
+
+	struct sun_desc
+	{
+		math::float3 direction;
+		math::float3 radiance;
+	};
+
 private:
 	lib::buffer_array<mesh_desc> m_meshes;
 	lib::buffer_array<math::aabb> m_aabbs;
+	lib::buffer_array<point_light_desc> m_point_lights;
+	sun_desc m_sun_settings;
+
 	sys::path m_textures_path;
 	sys::path m_mesh_path;
 	sys::path m_model_mesh_path;

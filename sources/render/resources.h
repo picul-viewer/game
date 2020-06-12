@@ -10,7 +10,10 @@
 #include "gpu_double_pool_allocator.h"
 #include "gpu_heap_allocator.h"
 #include "gpu_pool_allocator.h"
+#include "gpu_object_manager.h"
 #include "gpu_uploader.h"
+
+#include "gpu_structures.h"
 
 #include "dx_resource.h"
 #include "dx_descriptor_heap.h"
@@ -50,13 +53,17 @@ public:
 	enum : u32 {
 		texture_descriptors_count = 1024,
 		mesh_objects_count = 4096,
-		transform_count = 16384
+		transform_count = 16384,
+		point_light_count = 4096
 	};
 
 	enum : u32 {
 		hlsl_images_space = 8,
 		hlsl_textures_space = 9
 	};
+
+	typedef gpu_object_manager<math::float4x3> transforms_type;
+	typedef gpu_object_manager<gpu::point_light_object> point_lights_type;
 
 public:
 	void create( );
@@ -75,14 +82,6 @@ public:
 	u32 create_mesh_object( );
 	void destroy_mesh_object( u32 const in_index );
 
-	u32 create_static_transform( );
-	u32 create_dynamic_transform( );
-	void destroy_transform( u32 const in_handle );
-	void get_transform_init_tasks( u32 const in_handle, math::float4x3& data, lib::buffer_array<gpu_upload_task>& in_tasks );
-	void update_dynamic_transform( u32 const in_handle, math::float4x3 const& data );
-	bool need_dynamic_transforms_update( ) const;
-	void update_dynamic_transforms_task( gpu_upload_task& in_task );
-
 
 	dx_descriptor_heap const& srv_heap( ) const { return m_srv_heap; }
 	dx_descriptor_heap const& rtv_heap( ) const { return m_rtv_heap; }
@@ -92,7 +91,9 @@ public:
 	inline dx_resource const& vertex_data_buffer( ) const { return m_vertex_data_buffer; }
 	inline dx_resource const& mesh_object_buffer( ) const { return m_mesh_object_buffer; }
 	inline dx_resource const& constant_buffer( u32 const in_index ) const { ASSERT_CMP( in_index, <, max_frame_delay ); return m_constant_buffers[in_index]; }
-	inline dx_resource const& transform_buffer( u32 const in_index ) const { ASSERT_CMP( in_index, <, max_frame_delay ); return m_transform_buffer[in_index]; }
+
+	inline transforms_type& transforms( ) { return m_transforms; }
+	inline point_lights_type& point_lights( ) { return m_point_lights; }
 
 	D3D12_INDEX_BUFFER_VIEW index_buffer_view( ) const;
 	D3D12_VERTEX_BUFFER_VIEW vertex_buffer_view( ) const;
@@ -114,13 +115,13 @@ private:
 	void destroy_images( );
 
 private:
+	transforms_type m_transforms;
+	point_lights_type m_point_lights;
+
 	gpu_pool_allocator m_texture_descriptor_allocator;
 	gpu_heap_allocator m_mesh_index_allocator;
 	gpu_heap_allocator m_mesh_vertex_allocator;
 	gpu_pool_allocator m_mesh_object_allocator;
-	gpu_double_pool_allocator m_transform_allocator;
-	math::float4x3* m_cpu_transform_data;
-	math::float4x3* m_cpu_transform_data_staging;
 
 	dx_resource m_images[image_count];
 	dx_resource m_depth_buffer;
@@ -129,7 +130,6 @@ private:
 	dx_resource m_vertex_data_buffer;
 	dx_resource m_mesh_object_buffer;
 	dx_resource m_constant_buffers[max_frame_delay];
-	dx_resource m_transform_buffer[max_frame_delay];
 	dx_descriptor_heap m_srv_heap;
 	dx_descriptor_heap m_rtv_heap;
 	dx_descriptor_heap m_dsv_heap;
@@ -137,9 +137,6 @@ private:
 	::render::render_allocator m_render_allocator;
 
 	pvoid m_allocator_memory;
-
-	// Current and previuos
-	math::u32x4 m_transform_update_bounds;
 
 };
 

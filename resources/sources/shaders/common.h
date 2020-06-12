@@ -3,6 +3,10 @@
 
 #include "layout.h"
 
+static const float c_pi = 3.1415926535898f;
+static const float c_inv_pi = 1.0f / c_pi;
+static const float c_eps = 1e-7f;
+
 uint load_u16( StructuredBuffer<uint> buffer, uint index )
 {
 	uint real_index = index >> 1;
@@ -39,6 +43,16 @@ vertex_data_unpacked unpack_vertex_data( vertex_data data )
 	result.texcoord = data.texcoord;
 	result.normal = uint3( data.normal.x & 0xFFFF, data.normal.x >> 16, data.normal.y ) / 65535.0f * 2.0f - 1.0f;
 	return result;
+}
+
+uint mesh_list_size( )
+{
+	return g_constant_buffer.indirect_params_0.w;
+}
+
+uint point_light_list_size( )
+{
+	return g_constant_buffer.indirect_params_1.y;
 }
 
 #endif // #ifndef GUARD_SHADER_COMMON_H_INCLUDED

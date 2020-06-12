@@ -195,13 +195,16 @@ void write_model_mesh_to_file(
 	f.destroy( );
 }
 
-scene_compiler::scene_compiler( pcstr const in_input_path, pcstr const in_output_path )
+scene_compiler::scene_compiler( pcstr const in_input_path, pcstr const in_output_path ) :
+	m_sun_settings{ }
 {
 	u32 const max_mesh_count = 16384;
+	u32 const max_light_count = 4096;
 
 	uptr const memory_size =
 		max_mesh_count * sizeof(mesh_desc) +
-		max_mesh_count * sizeof(math::aabb);
+		max_mesh_count * sizeof(math::aabb) +
+		max_light_count * sizeof(point_light_desc);
 
 	m_data = std_allocator( ).allocate( memory_size );
 
@@ -211,6 +214,8 @@ scene_compiler::scene_compiler( pcstr const in_input_path, pcstr const in_output
 	p += max_mesh_count * sizeof(mesh_desc);
 	m_aabbs.create( p, max_mesh_count );
 	p += max_mesh_count * sizeof(math::aabb);
+	m_point_lights.create( p, max_light_count );
+	p += max_light_count * sizeof(point_light_desc);
 
 	ASSERT_CMP( p, ==, m_data + memory_size );
 
@@ -258,6 +263,27 @@ void scene_compiler::add_mesh(
 	}
 }
 
+void scene_compiler::add_point_light(
+	math::float3 const& in_position,
+	float const in_range,
+	math::float3 const& in_color
+)
+{
+	point_light_desc& data = m_point_lights.emplace_back( );
+	data.position = in_position;
+	data.range = in_range;
+	data.color = in_color;
+}
+
+void scene_compiler::set_sun_settings(
+	math::float3 const& in_direction,
+	math::float3 const& in_radiance
+)
+{
+	m_sun_settings.direction = in_direction;
+	m_sun_settings.radiance = in_radiance;
+}
+
 void scene_compiler::compile( )
 {
 	uptr const output_size = 16 * Mb;
@@ -271,6 +297,8 @@ void scene_compiler::compile( )
 
 	u32 const mesh_count = (u32)m_meshes.size( );
 	output.write( mesh_count );
+	u32 const point_light_count = (u32)m_point_lights.size( );
+	output.write( point_light_count );
 
 	for ( mesh_desc* i = m_meshes.begin( ); i < m_meshes.end( ); ++i )
 	{
@@ -289,6 +317,16 @@ void scene_compiler::compile( )
 	static_mesh_bvh.build( m_aabbs.data( ), bvh_handles, mesh_count );
 	static_mesh_bvh.serialize( output );
 	static_mesh_bvh.destroy( );
+
+	for ( point_light_desc* i = m_point_lights.begin( ); i < m_point_lights.end( ); ++i )
+	{
+		output.write( i->position );
+		output.write( i->range );
+		output.write( i->color );
+	}
+
+	output.write( m_sun_settings.direction );
+	output.write( m_sun_settings.radiance );
 
 	*render_size = (u32)output.size( render_output );
 

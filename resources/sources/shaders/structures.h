@@ -13,6 +13,14 @@ struct mesh_object
 	uint padding;
 };
 
+struct point_light_object
+{
+	float3 position;
+	float range;
+	float3 color;
+	float squared_range;
+};
+
 struct vertex_data
 {
 	float2 texcoord;
@@ -35,6 +43,8 @@ struct constant_buffer
 	float4 world_camera_screen_ray_y;
 	float4 deprojection_coefficients__fov_scale;
 	float4 viewport_size;
+	float4 sun_direction;
+	float4 sun_radiance;
 	uint4 indirect_params_0;
 	uint4 indirect_params_1;
 };

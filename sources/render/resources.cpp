@@ -10,8 +10,6 @@
 
 #include "parameters.h"
 
-#include "gpu_structures.h"
-
 namespace render {
 
 void resources::create( )
@@ -44,16 +42,16 @@ void resources::create_resources( )
 	u32 const indices_memory_size = gpu_heap_allocator::memory_size( indices_ranges_count );
 	u32 const vertices_memory_size = gpu_heap_allocator::memory_size( vertices_ranges_count );
 	u32 const mesh_objects_memory_size = gpu_pool_allocator::memory_size( mesh_objects_count );
-	u32 const transform_memory_size = gpu_double_pool_allocator::memory_size( transform_count );
-	u32 const cpu_transform_memory_size = transform_count * sizeof(math::float4x3);
+	u32 const transforms_memory_size = transforms_type::memory_size( transform_count );
+	u32 const point_lights_memory_size = point_lights_type::memory_size( point_light_count );
 
 	uptr const memory_size =
 		texture_descriptors_memory_size +
 		indices_memory_size +
 		vertices_memory_size +
 		mesh_objects_memory_size +
-		transform_memory_size +
-		cpu_transform_memory_size * max_frame_delay
+		transforms_memory_size +
+		point_lights_memory_size
 	;
 
 	pointer const memory = virtual_allocator( ).allocate( memory_size );
@@ -69,14 +67,10 @@ void resources::create_resources( )
 	m += vertices_memory_size;
 	m_mesh_object_allocator.create( m, mesh_objects_count, 0 );
 	m += mesh_objects_memory_size;
-	m_transform_allocator.create( m, transform_count, 0, 0 );
-	m += transform_memory_size;
-	m_cpu_transform_data = m;
-	m += cpu_transform_memory_size;
-	m_cpu_transform_data_staging = m;
-	m += cpu_transform_memory_size;
-
-	m_transform_update_bounds = math::u32x4( transform_count, 0, transform_count, 0 );
+	m_transforms.create( m, transform_count );
+	m += transforms_memory_size;
+	m_point_lights.create( m, point_light_count );
+	m += point_lights_memory_size;
 
 	ASSERT( m == memory + memory_size );
 
@@ -151,27 +145,14 @@ void resources::create_resources( )
 			set_dx_name( m_constant_buffers[i], format( "constant_buffer #%d", i ) );
 		}
 	}
-
-	{
-		dx_resource::cook cook;
-		cook.create_buffer(
-			transform_count * sizeof(math::float4x3),
-			true, false, false, false
-		);
-		cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
-		cook.set_initial_state( D3D12_RESOURCE_STATE_COMMON );
-
-		for ( u32 i = 0; i < max_frame_delay; ++i )
-		{
-			m_transform_buffer[i].create( cook );
-			set_dx_name( m_transform_buffer[i], format( "transform_buffer #%d", i ) );
-		}
-	}
 }
 
 void resources::destroy_resources( )
 {
 	virtual_allocator( ).deallocate( m_allocator_memory );
+
+	m_transforms.destroy( );
+	m_point_lights.destroy( );
 
 	m_srv_heap.destroy( );
 	m_rtv_heap.destroy( );
@@ -182,10 +163,7 @@ void resources::destroy_resources( )
 	m_mesh_object_buffer.destroy( );
 
 	for ( u32 i = 0; i < max_frame_delay; ++i )
-	{
 		m_constant_buffers[i].destroy( );
-		m_transform_buffer[i].destroy( );
-	}
 }
 
 void resources::create_images( )
@@ -324,78 +302,6 @@ u32 resources::create_mesh_object( )
 void resources::destroy_mesh_object( u32 const in_index )
 {
 	m_mesh_object_allocator.deallocate( in_index );
-}
-
-u32 resources::create_static_transform( )
-{
-	return m_transform_allocator.allocate_left( );
-}
-
-u32 resources::create_dynamic_transform( )
-{
-	return m_transform_allocator.allocate_right( );
-}
-
-void resources::destroy_transform( u32 const in_handle )
-{
-	m_transform_allocator.deallocate( in_handle );
-}
-
-void resources::get_transform_init_tasks( u32 const in_handle, math::float4x3& data, lib::buffer_array<gpu_upload_task>& in_tasks )
-{
-	// Static transforms only
-	ASSERT_CMP( in_handle, <, m_transform_allocator.left_last_index( ) );
-
-	for ( u32 i = 0; i < max_frame_delay; ++i )
-	{
-		gpu_upload_task& task	= in_tasks.emplace_back( );
-		task.set_source_data	( &data, sizeof(math::float4x3) );
-		task.set_buffer_upload	( m_transform_buffer[i], sizeof(math::float4x3) * in_handle );
-	}
-}
-
-void resources::update_dynamic_transform( u32 const in_handle, math::float4x3 const& data )
-{
-	// Dynamic transforms only
-	ASSERT_CMP( in_handle, >=, m_transform_allocator.right_last_index( ) );
-
-	m_cpu_transform_data[in_handle] = data;
-
-	m_transform_update_bounds.x = math::min( m_transform_update_bounds.x, in_handle );
-	m_transform_update_bounds.y = math::max( m_transform_update_bounds.y, in_handle + 1 );
-}
-
-bool resources::need_dynamic_transforms_update( ) const
-{
-	return ( m_transform_update_bounds.x < m_transform_update_bounds.y ) || ( m_transform_update_bounds.z < m_transform_update_bounds.w );
-}
-
-void resources::update_dynamic_transforms_task( gpu_upload_task& in_task )
-{
-	ASSERT( need_dynamic_transforms_update( ) );
-
-	math::u32x2 const bounds = ( m_transform_update_bounds.z < m_transform_update_bounds.w ) ?
-		math::u32x2(
-			math::min( m_transform_update_bounds.x, m_transform_update_bounds.z ),
-			math::max( m_transform_update_bounds.y, m_transform_update_bounds.w )
-		) :
-		m_transform_update_bounds.vx.vx;
-
-	ASSERT_CMP( bounds.x, >=, m_transform_allocator.right_last_index( ) );
-	ASSERT_CMP( bounds.y, <=, transform_count );
-
-	pvoid const data_ptr = m_cpu_transform_data + bounds.x;
-	pvoid const staging_data_ptr = m_cpu_transform_data_staging + bounds.x;
-	uptr const data_size = sizeof(math::float4x3) * ( bounds.y - bounds.x );
-
-	memory::copy( staging_data_ptr, data_ptr, data_size );
-
-	u32 const buffer_index = g_render.frame_index( ) % max_frame_delay;
-
-	in_task.set_source_data		( staging_data_ptr, data_size );
-	in_task.set_buffer_upload	( m_transform_buffer[buffer_index], sizeof(math::float4x3) * bounds.x );
-
-	m_transform_update_bounds = math::u32x4( transform_count, 0, m_transform_update_bounds.x, m_transform_update_bounds.y );
 }
 
 D3D12_INDEX_BUFFER_VIEW resources::index_buffer_view( ) const

@@ -84,7 +84,7 @@ u32 ui_processor::upload_task_count_needed( ) const
 	return m_current_quad_count != 0 ? 2 : 0;
 }
 
-u32 ui_processor::prepare_ui( gpu_upload_task* const in_tasks )
+u32 ui_processor::prepare_ui( lib::buffer_array<gpu_upload_task>& in_tasks )
 {
 	ASSERT_CMP( m_current_quad_count, ==, m_batched_quad_count );
 
@@ -176,11 +176,13 @@ u32 ui_processor::prepare_ui( gpu_upload_task* const in_tasks )
 
 	ASSERT_CMP( first_quad_index, ==, m_current_quad_count );
 
-	in_tasks[0].set_source_data( m_cpu_command_buffer, command_count * sizeof(gpu::draw_indirect_command) );
-	in_tasks[0].set_buffer_upload( m_ui_command_buffer[g_render.frame_index( ) % max_frame_delay], 0 );
+	gpu_upload_task& commands_task = in_tasks.emplace_back( );
+	commands_task.set_source_data( m_cpu_command_buffer, command_count * sizeof(gpu::draw_indirect_command) );
+	commands_task.set_buffer_upload( m_ui_command_buffer[g_render.frame_index( ) % max_frame_delay], 0 );
 
-	in_tasks[1].set_source_data( m_cpu_vertex_buffer, m_current_quad_count * 6 * sizeof(vertex_data) );
-	in_tasks[1].set_buffer_upload( m_ui_vertex_buffer[g_render.frame_index( ) % max_frame_delay], 0 );
+	gpu_upload_task& vertices_task = in_tasks.emplace_back( );
+	vertices_task.set_source_data( m_cpu_vertex_buffer, m_current_quad_count * 6 * sizeof(vertex_data) );
+	vertices_task.set_buffer_upload( m_ui_vertex_buffer[g_render.frame_index( ) % max_frame_delay], 0 );
 
 	m_current_batch_count = 0;
 	m_current_quad_count = 0;

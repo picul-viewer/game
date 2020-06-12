@@ -27,12 +27,12 @@ void render_object_mesh::on_resources_ready( queried_resources& in_queried, lib:
 
 	if ( in_is_static )
 	{
-		m_transform_handle = g_resources.create_static_transform( );
-		g_resources.get_transform_init_tasks( m_transform_handle, m_local_transform, in_tasks );
+		m_transform_handle = g_resources.transforms( ).allocate_static( );
+		g_resources.transforms( ).get_init_tasks( m_transform_handle, m_local_transform, in_tasks );
 	}
 	else
 	{
-		m_transform_handle = g_resources.create_dynamic_transform( );
+		m_transform_handle = g_resources.transforms( ).allocate_dynamic( );
 		update( math::float4x3::identity( ) );
 	}
 
@@ -49,7 +49,7 @@ void render_object_mesh::on_resources_ready( queried_resources& in_queried, lib:
 
 void render_object_mesh::destroy( )
 {
-	g_resources.destroy_transform( m_transform_handle );
+	g_resources.transforms( ).deallocate( m_transform_handle );
 	g_resources.destroy_mesh_object( m_object_handle );
 	m_model.release( );
 }
@@ -61,7 +61,7 @@ void render_object_mesh::update( math::float4x3 const& in_transform )
 	m_aabb							= model_mesh::from_handle( m_model )->get_aabb( );
 	m_aabb.modify					( transform );
 	
-	g_resources.update_dynamic_transform( m_transform_handle, transform );
+	g_resources.transforms( ).update( m_transform_handle, transform );
 }
 
 } // namespace render

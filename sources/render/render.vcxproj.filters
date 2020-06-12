@@ -76,9 +76,6 @@
     <Filter Include="resources\classes\object\render_objects">
       <UniqueIdentifier>{526509c8-6a01-49ee-89c8-d91b57821df3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\classes\object\render_objects\direct_light">
-      <UniqueIdentifier>{c2a3f8e8-c5fa-46ed-8170-7e6411a8b77e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\classes\object\render_objects\mesh">
       <UniqueIdentifier>{7d72011f-3a23-40b6-8736-f7009806af6b}</UniqueIdentifier>
     </Filter>
@@ -162,6 +159,9 @@
     </Filter>
     <Filter Include="dx12\wrappers\query_heap">
       <UniqueIdentifier>{3196491f-bac2-4e52-92fc-ab17fd3e3739}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\gpu_object_manager">
+      <UniqueIdentifier>{d6b40d71-3aa2-4b01-8321-79a07967b0e1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -296,6 +296,9 @@
     </ClCompile>
     <ClCompile Include="dx_query_heap.cpp">
       <Filter>dx12\wrappers\query_heap</Filter>
+    </ClCompile>
+    <ClCompile Include="render_object_point_light.cpp">
+      <Filter>resources\classes\object\render_objects\point_light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -445,6 +448,15 @@
     </ClInclude>
     <ClInclude Include="dx_query_heap.h">
       <Filter>dx12\wrappers\query_heap</Filter>
+    </ClInclude>
+    <ClInclude Include="render_object_point_light.h">
+      <Filter>resources\classes\object\render_objects\point_light</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu_object_manager.h">
+      <Filter>resources\gpu_object_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu_object_manager_inline.h">
+      <Filter>resources\gpu_object_manager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

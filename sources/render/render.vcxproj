@@ -105,6 +105,8 @@
     <ClInclude Include="generate_mesh_arguments_effect_cook.h" />
     <ClInclude Include="gpu_double_pool_allocator.h" />
     <ClInclude Include="gpu_heap_allocator.h" />
+    <ClInclude Include="gpu_object_manager.h" />
+    <ClInclude Include="gpu_object_manager_inline.h" />
     <ClInclude Include="gpu_pool_allocator.h" />
     <ClInclude Include="gpu_structures.h" />
     <ClInclude Include="gpu_uploader.h" />
@@ -123,6 +125,7 @@
     <ClInclude Include="pipeline_state.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="render_mesh_objects_effect_cook.h" />
+    <ClInclude Include="render_object_point_light.h" />
     <ClInclude Include="render_ui_effect_cook.h" />
     <ClInclude Include="scene_cook.h" />
     <ClInclude Include="shader_cook.h" />
@@ -168,6 +171,7 @@
     <ClCompile Include="pipeline_state.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="render_mesh_objects_effect_cook.cpp" />
+    <ClCompile Include="render_object_point_light.cpp" />
     <ClCompile Include="render_ui_effect_cook.cpp" />
     <ClCompile Include="scene_cook.cpp" />
     <ClCompile Include="shader_cook.cpp" />

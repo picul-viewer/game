@@ -3,6 +3,7 @@
 #include "resources.h"
 #include "scene.h"
 #include "render_object_mesh.h"
+#include "render_object_point_light.h"
 
 namespace render {
 
@@ -26,12 +27,19 @@ void scene_cook::destroy( pointer const in_cook )
 void scene_cook::create_resource( )
 {
 	u32 const mesh_max_count = 16384;
+	u32 const max_light_count = 4096;
 
 	u32 const static_mesh_count = m_config.read<u32>( );
 	ASSERT_CMP( static_mesh_count, <=, mesh_max_count );
+
+	u32 const static_point_light_count = m_config.read<u32>( );
+	ASSERT_CMP( static_point_light_count, <=, max_light_count );
+
 	m_static_mesh_count = static_mesh_count;
 
-	uptr const objects_allocation_size = sizeof(render_object_mesh) * static_mesh_count;
+	uptr const objects_allocation_size =
+		sizeof(render_object_mesh) * static_mesh_count +
+		sizeof(render_object_point_light) * static_point_light_count;
 	m_result->m_static_objects_memory = g_resources.render_allocator( ).allocate( objects_allocation_size );
 
 	uptr const static_mesh_bvh_memory_size = math::bvh::node_data_size * 2 * static_mesh_count;
@@ -52,18 +60,31 @@ void scene_cook::create_resource( )
 
 	{
 		math::bvh::object_handle* const handles = stack_allocate( static_mesh_count * sizeof(math::bvh::object_handle) );
-		render_object_mesh* obj = m_result->m_static_objects_memory;
+		lib::buffer_array<render_object_mesh> static_meshes( m_result->m_static_objects_memory, static_mesh_count, static_mesh_count );
 
-		for ( u32 i = 0; i < static_mesh_count; ++i, ++obj )
+		for ( u32 i = 0; i < static_mesh_count; ++i )
 		{
-			new ( obj ) render_object_mesh( );
-			obj->create( m_config, queries );
-			handles[i] = (math::bvh::object_handle)g_resources.render_allocator( ).offset( obj );
+			new ( &static_meshes[i] ) render_object_mesh( );
+			static_meshes[i].create( m_config, queries );
+			handles[i] = (math::bvh::object_handle)g_resources.render_allocator( ).offset( &static_meshes[i] );
 		}
 
 		m_result->m_static_mesh_container.create( ptr, static_mesh_bvh_memory_size );
 		m_result->m_static_mesh_container.deserialize( m_config, handles );
 		ptr += static_mesh_bvh_memory_size;
+
+
+		m_result->m_static_point_light_container.create( (render_object_point_light*)static_meshes.end( ), static_point_light_count, static_point_light_count );
+		lib::buffer_array<render_object_point_light>& static_point_lights = m_result->m_static_point_light_container;
+
+		for ( u32 i = 0; i < static_point_lights.size( ); ++i )
+		{
+			new ( &static_point_lights[i] ) render_object_point_light( );
+			static_point_lights[i].create( m_config, queries );
+		}
+
+		m_result->m_sun_direction = m_config.read<math::float3>( );
+		m_result->m_sun_radiance = m_config.read<math::float3>( );
 	}
 
 	{
@@ -92,12 +113,14 @@ void scene_cook::on_child_resources_ready( queried_resources& in_queried )
 	linear_allocator allocator;
 	allocator.create( stack_allocate( allocator_size ), allocator_size );
 
-	render_object_mesh* obj = m_result->m_static_objects_memory;
+	render_object_mesh* obj_mesh = m_result->m_static_objects_memory;
 
-	for ( u32 i = 0; i < m_static_mesh_count; ++i, ++obj )
-	{
-		obj->on_resources_ready( in_queried, tasks, allocator, true );
-	}
+	for ( u32 i = 0; i < m_static_mesh_count; ++i, ++obj_mesh )
+		obj_mesh->on_resources_ready( in_queried, tasks, allocator, true );
+
+	lib::buffer_array<render_object_point_light>& static_point_lights = m_result->m_static_point_light_container;
+	for ( u32 i = 0; i < static_point_lights.size( ); ++i )
+		static_point_lights[i].on_resources_ready( in_queried, tasks, allocator, true );
 
 	if ( tasks.size( ) == 0 )
 		finish( m_result );

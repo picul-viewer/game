@@ -50,19 +50,21 @@ void shade_effect_cook::on_shaders_ready( queried_resources& in_resources )
 	raw_data::ptr vs_shader = in_resources.get_resource<raw_data::ptr>( );
 	raw_data::ptr ps_shader = in_resources.get_resource<raw_data::ptr>( );
 
-	dx_root_signature::root_parameter root_parameters[7];
+	dx_root_signature::root_parameter root_parameters[9];
 	root_parameters[0].create_descriptor( D3D12_ROOT_PARAMETER_TYPE_CBV, 0, 0, D3D12_SHADER_VISIBILITY_PIXEL );
 	root_parameters[1].create_descriptor( D3D12_ROOT_PARAMETER_TYPE_SRV, 0, 0, D3D12_SHADER_VISIBILITY_PIXEL );
 	root_parameters[2].create_descriptor( D3D12_ROOT_PARAMETER_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_PIXEL );
 	root_parameters[3].create_descriptor( D3D12_ROOT_PARAMETER_TYPE_SRV, 2, 0, D3D12_SHADER_VISIBILITY_PIXEL );
 	root_parameters[4].create_descriptor( D3D12_ROOT_PARAMETER_TYPE_SRV, 3, 0, D3D12_SHADER_VISIBILITY_PIXEL );
 	root_parameters[5].create_descriptor( D3D12_ROOT_PARAMETER_TYPE_SRV, 4, 0, D3D12_SHADER_VISIBILITY_PIXEL );
+	root_parameters[6].create_descriptor( D3D12_ROOT_PARAMETER_TYPE_SRV, 5, 0, D3D12_SHADER_VISIBILITY_PIXEL );
+	root_parameters[7].create_descriptor( D3D12_ROOT_PARAMETER_TYPE_SRV, 6, 0, D3D12_SHADER_VISIBILITY_PIXEL );
 
 	dx_root_signature::descriptor_range descriptor_ranges[2];
 	descriptor_ranges[0].create( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, resources::hlsl_images_space, image_srv_count );
 	descriptor_ranges[1].create( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, resources::hlsl_textures_space, resources::texture_descriptors_count );
 
-	root_parameters[6].create_descriptor_table( descriptor_ranges, (u32)array_size( descriptor_ranges ), D3D12_SHADER_VISIBILITY_PIXEL );
+	root_parameters[8].create_descriptor_table( descriptor_ranges, (u32)array_size( descriptor_ranges ), D3D12_SHADER_VISIBILITY_PIXEL );
 
 	dx_root_signature::static_sampler samplers[1];
 	samplers[0].create(

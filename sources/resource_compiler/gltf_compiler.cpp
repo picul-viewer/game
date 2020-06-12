@@ -174,7 +174,39 @@ void process_node(
 				if ( metal_rough_texture ) metal_rough_name = metal_rough_texture->image->uri;
 			}
 
-			compiler.add_mesh( &mesh_compiler, diffuse_name, specular_name, node_to_world );
+			in_compiler.add_mesh( &mesh_compiler, albedo_name, metal_rough_name, node_to_world );
+		}
+	}
+
+	cgltf_light* const light = in_node.light;
+
+	if ( light != nullptr )
+	{
+		math::float4x4 node_to_world;
+		cgltf_node_transform_world( &in_node, node_to_world.data );
+
+		switch ( light->type )
+		{
+			case cgltf_light_type_directional:
+			{
+				math::float3 direction = math::modify_by_transform( math::float4( 0.0f, 0.0f, 1.0f, 0.0f ), math::transpose( node_to_world ) );
+				direction.z = -direction.z;
+				math::float3 const& radiance = light->intensity * math::float3( light->color );
+				in_compiler.set_sun_settings( direction, radiance );
+			}
+			break;
+
+			case cgltf_light_type_point:
+			{
+				math::float3 position = math::modify_by_transform( math::float4( 0.0f, 0.0f, 0.0f, 1.0f ), math::transpose( node_to_world ) );
+				position.z = -position.z;
+				float const range = light->range;
+				math::float3 const& color = light->intensity * math::float3( light->color );
+				in_compiler.add_point_light( position, range, color );
+			}
+			break;
+
+			default: UNREACHABLE_CODE
 		}
 	}
 

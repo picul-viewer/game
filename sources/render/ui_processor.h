@@ -51,7 +51,7 @@ public:
 	void next_level( );
 
 	u32 upload_task_count_needed( ) const;
-	u32 prepare_ui( gpu_upload_task* const in_tasks );
+	u32 prepare_ui( lib::buffer_array<gpu_upload_task>& in_tasks );
 
 	inline dx_resource const& command_buffer( u32 const in_index ) { ASSERT_CMP( in_index, <, max_frame_delay ); return m_ui_command_buffer[in_index]; }
 	inline dx_resource const& vertex_buffer( u32 const in_index ) { ASSERT_CMP( in_index, <, max_frame_delay ); return m_ui_vertex_buffer[in_index]; }
