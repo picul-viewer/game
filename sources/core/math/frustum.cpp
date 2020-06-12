@@ -59,6 +59,31 @@ intersection frustum::plane::test_aabb( aabb const& box ) const
 	return intersect;
 }
 
+// true, if sphere is fully inside the frustum
+bool frustum::plane::test_sphere_inside( math::float4 const& sphere ) const
+{
+	float const value = dot( sphere.vx, n ) + d;
+	return value >= sphere.w;
+}
+
+// true, if sphere is fully outside the frustum
+bool frustum::plane::test_sphere_outside( math::float4 const& sphere ) const
+{
+	float const value = dot( sphere.vx, n ) + d;
+	return value < -sphere.w;
+}
+
+intersection frustum::plane::test_sphere( math::float4 const& sphere ) const
+{
+	if ( test_sphere_outside( sphere ) )
+		return outside;
+
+	if ( test_sphere_inside( sphere ) )
+		return inside;
+
+	return intersect;
+}
+
 // true, if AABB is fully inside the frustum
 bool frustum::test_aabb_inside( aabb const& box ) const
 {
@@ -94,6 +119,47 @@ intersection frustum::test_aabb( aabb const& box ) const
 	for ( u32 i = 0; i < plane_count; ++i )
 	{
 		if ( !planes[i].test_aabb_inside( box ) )
+			return intersect;
+	}
+
+	return inside;
+}
+
+// true, if sphere is fully inside the frustum
+bool frustum::test_sphere_inside( math::float4 const& sphere ) const
+{
+	for ( u32 i = 0; i < plane_count; ++i )
+	{
+		if ( !planes[i].test_sphere_inside( sphere ) )
+			return false;
+	}
+
+	return true;
+}
+
+// true, if sphere is fully outside the frustum
+bool frustum::test_sphere_outside( math::float4 const& sphere ) const
+{
+	for ( u32 i = 0; i < plane_count; ++i )
+	{
+		if ( planes[i].test_sphere_outside( sphere ) )
+			return true;
+	}
+
+	return false;
+}
+
+intersection frustum::test_sphere( math::float4 const& sphere ) const
+{
+	for ( u32 i = 0; i < plane_count; ++i )
+	{
+		if ( planes[i].test_sphere_outside( sphere ) )
+			return outside;
+	}
+
+	for ( u32 i = 0; i < plane_count; ++i )
+	{
+		if ( !planes[i].test_sphere_inside( sphere ) )
 			return intersect;
 	}
 

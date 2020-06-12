@@ -25,8 +25,11 @@ public:
 
 	bool test_aabb_inside( aabb const& box ) const;
 	bool test_aabb_outside( aabb const& box ) const;
+	bool test_sphere_inside( math::float4 const& sphere ) const;
+	bool test_sphere_outside( math::float4 const& sphere ) const;
 
 	intersection test_aabb( aabb const& box ) const;
+	intersection test_sphere( math::float4 const& sphere ) const;
 
 protected:
 	struct plane
@@ -43,8 +46,11 @@ protected:
 
 		bool test_aabb_inside( aabb const& box ) const;
 		bool test_aabb_outside( aabb const& box ) const;
+		bool test_sphere_inside( math::float4 const& sphere ) const;
+		bool test_sphere_outside( math::float4 const& sphere ) const;
 
 		intersection test_aabb( aabb const& box ) const;
+		intersection test_sphere( math::float4 const& sphere ) const;
 	};
 
 	enum plane_id
