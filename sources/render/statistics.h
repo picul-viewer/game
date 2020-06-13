@@ -2,6 +2,7 @@
 #define GUARD_RENDER_STATISTICS_H_INCLUDED
 
 #include <types.h>
+#include <lib/linear_allocator.h>
 #include <lib/linear_set.h>
 #include <lib/text_writer.h>
 #include <system/time.h>
@@ -55,7 +56,7 @@ private:
 		float m_current_value;
 	};
 
-	typedef lib::linear_set<event_data, max_events * 2> event_set_type;
+	typedef lib::linear_set<u32, max_events * 2> event_set_type;
 
 private:
 	void process_event_data( event_data* const in_data, lib::text_writer& in_writer, u64* const in_query_result, u32 const in_depth );
@@ -67,7 +68,8 @@ private:
 	void end_profile_event( dx_command_list const& in_list, u32 const in_event_index );
 
 private:
-	byte m_event_set_memory[event_set_type::memory_size];
+	event_data m_events[max_events];
+	byte m_events_memory[event_set_type::memory_size];
 	event_set_type m_event_set;
 
 	event_data* m_stack[max_events];

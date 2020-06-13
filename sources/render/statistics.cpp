@@ -11,7 +11,7 @@ namespace render {
 
 void statistics::create( )
 {
-	m_event_set.create( m_event_set_memory );
+	m_event_set.create( m_events_memory );
 
 	m_heap.create( max_events * max_frame_delay * 2, D3D12_QUERY_HEAP_TYPE_TIMESTAMP );
 
@@ -109,29 +109,31 @@ void statistics::begin_profile_event( dx_command_list const& in_list, u32 const 
 {
 	ASSERT_CMP( in_frame_index, <, max_frame_delay );
 
-	event_data* found_data;
+	u32* found_index;
 
 	bool const found = m_event_set.find_if_or_insert(
 		lib::hash( in_name ),
-		[in_name]( event_data const& in_data )
+		[in_name, this]( u32 const in_index )
 		{
-			return in_data.m_name == in_name;
+			return m_events[in_index].m_name == in_name;
 		},
 		[in_name, this]( )
 		{
 			ASSERT( m_query_count < max_events );
 
-			event_data data;
+			event_data& data = m_events[m_query_count];
 			data.m_name = in_name;
 			data.m_child = nullptr;
 			data.m_next = nullptr;
-			data.m_query_index = m_query_count++;
+			data.m_query_index = m_query_count;
 			data.m_current_value = 0.0f;
 
-			return data;
+			return m_query_count++;
 		},
-		found_data
+		found_index
 	);
+
+	event_data* const found_data = m_events + *found_index;
 
 	if ( !found )
 	{
