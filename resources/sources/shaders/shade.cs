@@ -41,15 +41,21 @@ vertex_data_unpacked interpolate_vertex_data( vertex_data_unpacked v0, vertex_da
 	return data;
 }
 
-void main(
-	in	float4	in_position : SV_Position,
-	out	float4	out_color	: SV_Target0
-)
+[numthreads( 16, 16, 1 )]
+void main( uint3 id : SV_DispatchThreadID )
 {
-	const uint3 pixel_index = uint3( in_position.xy, 0 );
-	const uint2 polygon_id = g_polygon_id.Load( pixel_index );
+	if ( any( id.xy >= uint2( g_constant_buffer.viewport_size.xy ) ) )
+		return;
 
-	const mesh_object mesh = g_mesh_objects[polygon_id.x];
+	const uint2 polygon_id = g_polygon_id.Load( uint3( id.xy, 0 ) );
+
+	if (polygon_id.x == 0)
+	{
+		g_radiance_uav[id.xy] = 0.0f;
+		return;
+	}
+
+	const mesh_object mesh = g_mesh_objects[polygon_id.x - 1];
 	const float4x3 transform = g_transforms[mesh.transform_index];
 
 	const uint i0 = load_u16( g_indices, mesh.index_buffer_offset + 3 * polygon_id.y + 0 );
@@ -64,12 +70,12 @@ void main(
 	float3 v1 = mul( transpose( transform ), float4( v1_local, 1.0f ) );
 	float3 v2 = mul( transpose( transform ), float4( v2_local, 1.0f ) );
 
-	float2 screen_uv = in_position.xy * g_constant_buffer.viewport_size.zw;
+	float2 screen_uv = ( id.xy + 0.5f ) * g_constant_buffer.viewport_size.zw;
 	float3 world_camera_ray = screen_position_to_world_ray( screen_uv );
-	
+
 	float2 screen_uv_right = screen_uv + float2( g_constant_buffer.viewport_size.z, 0.0f );
 	float3 world_camera_ray_right = screen_position_to_world_ray( screen_uv_right );
-	
+
 	float2 screen_uv_bottom = screen_uv + float2( 0.0f, g_constant_buffer.viewport_size.w );
 	float3 world_camera_ray_bottom = screen_position_to_world_ray( screen_uv_bottom );
 
@@ -80,7 +86,7 @@ void main(
 	const float3 barycentrics = compute_barycentrics( g_constant_buffer.world_camera_position.xyz, world_camera_ray.xyz, v0.xyz, v1.xyz, v2.xyz );
 	const float3 v = barycentrics.x * v0 + barycentrics.y * v1 + barycentrics.z * v2;
 	const vertex_data_unpacked data = interpolate_vertex_data( v0_info, v1_info, v2_info, barycentrics );
-	
+
 	const vertex_data_unpacked data_right = interpolate_vertex_data( v0_info, v1_info, v2_info, compute_barycentrics( g_constant_buffer.world_camera_position.xyz, world_camera_ray_right.xyz, v0.xyz, v1.xyz, v2.xyz ) );
 	const vertex_data_unpacked data_bottom = interpolate_vertex_data( v0_info, v1_info, v2_info, compute_barycentrics( g_constant_buffer.world_camera_position.xyz, world_camera_ray_bottom.xyz, v0.xyz, v1.xyz, v2.xyz ) );
 
@@ -92,14 +98,14 @@ void main(
 
 	const float3 n = normalize( mul( transpose( transform ), float4( data.normal.xyz, 0.0f ) ).xyz );
 	const float3 i = normalize( -world_camera_ray );
-	
+
 	float3 result = shade_sun( albedo, metalness_roughness, n, i );
-	
+
 	for ( uint li = 0; li < point_light_list_size( ); ++li )
 	{
 		uint light_index = g_point_light_list[li];
 		result += shade_point( albedo, metalness_roughness, n, i, v, g_point_light_objects[light_index] );
 	}
-	
-	out_color = float4( result, 0.0f );
+
+	g_radiance_uav[id.xy] = float4( result, 0.0f );
 }

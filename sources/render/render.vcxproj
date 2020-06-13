@@ -127,6 +127,7 @@
     <ClInclude Include="render_mesh_objects_effect_cook.h" />
     <ClInclude Include="render_object_point_light.h" />
     <ClInclude Include="render_ui_effect_cook.h" />
+    <ClInclude Include="resolve_effect_cook.h" />
     <ClInclude Include="scene_cook.h" />
     <ClInclude Include="shader_cook.h" />
     <ClInclude Include="shade_effect_cook.h" />
@@ -173,6 +174,7 @@
     <ClCompile Include="render_mesh_objects_effect_cook.cpp" />
     <ClCompile Include="render_object_point_light.cpp" />
     <ClCompile Include="render_ui_effect_cook.cpp" />
+    <ClCompile Include="resolve_effect_cook.cpp" />
     <ClCompile Include="scene_cook.cpp" />
     <ClCompile Include="shader_cook.cpp" />
     <ClCompile Include="shade_effect_cook.cpp" />

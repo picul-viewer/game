@@ -163,6 +163,9 @@
     <Filter Include="resources\gpu_object_manager">
       <UniqueIdentifier>{d6b40d71-3aa2-4b01-8321-79a07967b0e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="render\effects\resolve">
+      <UniqueIdentifier>{4f329643-54c1-4d0f-b38c-d67a0c0155b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mesh.cpp">
@@ -299,6 +302,9 @@
     </ClCompile>
     <ClCompile Include="render_object_point_light.cpp">
       <Filter>resources\classes\object\render_objects\point_light</Filter>
+    </ClCompile>
+    <ClCompile Include="resolve_effect_cook.cpp">
+      <Filter>render\effects\resolve</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -457,6 +463,9 @@
     </ClInclude>
     <ClInclude Include="gpu_object_manager_inline.h">
       <Filter>resources\gpu_object_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="resolve_effect_cook.h">
+      <Filter>render\effects\resolve</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

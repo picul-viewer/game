@@ -15,7 +15,7 @@ void main( uint3 id : SV_DispatchThreadID )
 	if ( i >= mesh_list_size( ) )
 		return;
 
-	const uint mesh_id = g_mesh_ids[i];
+	const uint mesh_id = g_mesh_ids[i] - 1;
 
 	g_indirect_arguments_buffer[i].index_count_per_instance = g_mesh_objects[mesh_id].index_count;
 	g_indirect_arguments_buffer[i].instance_count = 1;

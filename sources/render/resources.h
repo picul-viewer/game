@@ -25,16 +25,24 @@ namespace render {
 enum images
 {
 	image_v_buffer_polygon_id = 0,
+	image_radiance,
 
 	image_count
 };
 
-enum image_srvs
+enum image_srv_uavs
 {
 	image_srv_v_buffer_polygon_id = 0,
 	image_srv_depth_buffer,
+	image_srv_radiance,
 
-	image_srv_count
+	image_srv_count,
+
+	image_uav_radiance = image_srv_count,
+
+	image_srv_uav_count,
+
+	image_uav_count = image_srv_uav_count - image_srv_count
 };
 
 enum image_rtvs
@@ -83,7 +91,7 @@ public:
 	void destroy_mesh_object( u32 const in_index );
 
 
-	dx_descriptor_heap const& srv_heap( ) const { return m_srv_heap; }
+	dx_descriptor_heap const& srv_uav_heap( ) const { return m_srv_uav_heap; }
 	dx_descriptor_heap const& rtv_heap( ) const { return m_rtv_heap; }
 	inline dx_resource const& depth_buffer( ) const { return m_depth_buffer; }
 	inline dx_resource const& index_buffer( ) const { return m_index_buffer; }
@@ -102,6 +110,7 @@ public:
 	dx_resource const& image( u32 const in_index ) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE srv( u32 const in_index ) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtv( u32 const in_index ) const;
+	D3D12_CPU_DESCRIPTOR_HANDLE uav( u32 const in_index ) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE dsv( ) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE read_only_dsv( ) const;
 
@@ -130,7 +139,7 @@ private:
 	dx_resource m_vertex_data_buffer;
 	dx_resource m_mesh_object_buffer;
 	dx_resource m_constant_buffers[max_frame_delay];
-	dx_descriptor_heap m_srv_heap;
+	dx_descriptor_heap m_srv_uav_heap;
 	dx_descriptor_heap m_rtv_heap;
 	dx_descriptor_heap m_dsv_heap;
 

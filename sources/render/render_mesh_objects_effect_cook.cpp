@@ -75,15 +75,12 @@ void render_mesh_objects_effect_cook::on_shaders_ready( queried_resources& in_re
 	ps_cook.set_blend_for_rt( 0, false );
 	ps_cook.set_rasterizer_state( D3D12_FILL_MODE_SOLID, D3D12_CULL_MODE_BACK );
 	ps_cook.set_depth( true, true, D3D12_COMPARISON_FUNC_LESS_EQUAL );
-	ps_cook.set_stencil(
-		true, 0x0, 0x1,
-		D3D12_COMPARISON_FUNC_ALWAYS, D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_REPLACE
-	);
+	ps_cook.set_stencil( false );
 	ps_cook.set_input_layout( (u32)array_size( input_layout ), input_layout );
 	ps_cook.set_primitive_topology( D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE );
 	ps_cook.set_rtv_count( 1 );
 	ps_cook.set_rtv_format( 0, DXGI_FORMAT_R32G32_UINT );
-	ps_cook.set_dsv_format( DXGI_FORMAT_D24_UNORM_S8_UINT );
+	ps_cook.set_dsv_format( DXGI_FORMAT_D32_FLOAT );
 
 	dx_pipeline_state ps;
 	ps.create( ps_cook );

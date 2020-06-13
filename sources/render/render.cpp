@@ -16,6 +16,7 @@
 #include "generate_mesh_arguments_effect_cook.h"
 #include "render_mesh_objects_effect_cook.h"
 #include "shade_effect_cook.h"
+#include "resolve_effect_cook.h"
 #include "render_ui_effect_cook.h"
 
 namespace render {
@@ -144,12 +145,11 @@ void render::create( )
 	}
 
 	m_debug_font.reset( );
-
-	// Create font for statistics
-	u32 const max_task_count = 5;
+	u32 const max_task_count = 6;
 	task_info tasks_memory[max_task_count];
 	lib::buffer_array<task_info> tasks( tasks_memory, max_task_count );
 
+	// Create font for statistics
 	{
 		ui::font_cook* const cook = ui::font_cook::create( GET_RESOURCE_PATH( "configs\\fonts\\console.font.cfg" ) );
 		cook->fill_task_info( tasks.emplace_back( ) );
@@ -192,6 +192,11 @@ void render::fill_effect_tasks( lib::buffer_array<task_info>& in_tasks )
 
 	{
 		shade_effect_cook* const cook = shade_effect_cook::create( &m_ps_shade );
+		cook->fill_task_info( in_tasks.emplace_back( ) );
+	}
+
+	{
+		resolve_effect_cook* const cook = resolve_effect_cook::create( &m_ps_resolve );
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
@@ -276,7 +281,7 @@ void render::record_render( )
 					barriers[2].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 					barriers[2].Transition.pResource = g_resources.image( image_v_buffer_polygon_id );
 					barriers[2].Transition.Subresource = 0;
-					barriers[2].Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+					barriers[2].Transition.StateBefore = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
 					barriers[2].Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 					list->ResourceBarrier( (u32)array_size( barriers ), barriers );
@@ -331,21 +336,21 @@ void render::record_render( )
 					barriers[0].Transition.pResource = g_resources.image( image_v_buffer_polygon_id );
 					barriers[0].Transition.Subresource = 0;
 					barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-					barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+					barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
 
 					barriers[1].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 					barriers[1].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 					barriers[1].Transition.pResource = g_resources.index_buffer( );
 					barriers[1].Transition.Subresource = 0;
 					barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_INDEX_BUFFER;
-					barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+					barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
 
 					barriers[2].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 					barriers[2].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 					barriers[2].Transition.pResource = g_resources.vertex_buffer( );
 					barriers[2].Transition.Subresource = 0;
 					barriers[2].Transition.StateBefore = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
-					barriers[2].Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+					barriers[2].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
 
 					barriers[3].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 					barriers[3].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -360,31 +365,68 @@ void render::record_render( )
 				{
 					PROFILE_EVENT( list, j, shade );
 
-					list->SetGraphicsRootSignature( m_ps_shade.rs( ) );
+					list->SetComputeRootSignature( m_ps_shade.rs( ) );
 					list->SetPipelineState( m_ps_shade.ps( ) );
 
-					ID3D12DescriptorHeap* const heap = g_resources.srv_heap( );
+					ID3D12DescriptorHeap* const heap = g_resources.srv_uav_heap( );
 					list->SetDescriptorHeaps( 1, &heap );
 
-					list->SetGraphicsRootConstantBufferView( 0, g_resources.constant_buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetGraphicsRootShaderResourceView( 1, g_resources.mesh_object_buffer( )->GetGPUVirtualAddress( ) );
-					list->SetGraphicsRootShaderResourceView( 2, g_resources.index_buffer( )->GetGPUVirtualAddress( ) );
-					list->SetGraphicsRootShaderResourceView( 3, g_resources.vertex_buffer( )->GetGPUVirtualAddress( ) );
-					list->SetGraphicsRootShaderResourceView( 4, g_resources.vertex_data_buffer( )->GetGPUVirtualAddress( ) );
-					list->SetGraphicsRootShaderResourceView( 5, g_resources.transforms( ).buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetGraphicsRootShaderResourceView( 6, g_resources.point_lights( ).buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetGraphicsRootShaderResourceView( 7, m_point_light_object_list[j]->GetGPUVirtualAddress( ) );
-					list->SetGraphicsRootDescriptorTable( 8, g_resources.srv_heap( )->GetGPUDescriptorHandleForHeapStart( ) );
+					list->SetComputeRootConstantBufferView( 0, g_resources.constant_buffer( j )->GetGPUVirtualAddress( ) );
+					list->SetComputeRootShaderResourceView( 1, g_resources.mesh_object_buffer( )->GetGPUVirtualAddress( ) );
+					list->SetComputeRootShaderResourceView( 2, g_resources.index_buffer( )->GetGPUVirtualAddress( ) );
+					list->SetComputeRootShaderResourceView( 3, g_resources.vertex_buffer( )->GetGPUVirtualAddress( ) );
+					list->SetComputeRootShaderResourceView( 4, g_resources.vertex_data_buffer( )->GetGPUVirtualAddress( ) );
+					list->SetComputeRootShaderResourceView( 5, g_resources.transforms( ).buffer( j )->GetGPUVirtualAddress( ) );
+					list->SetComputeRootShaderResourceView( 6, g_resources.point_lights( ).buffer( j )->GetGPUVirtualAddress( ) );
+					list->SetComputeRootShaderResourceView( 7, m_point_light_object_list[j]->GetGPUVirtualAddress( ) );
+					list->SetComputeRootDescriptorTable( 8, g_resources.srv_uav_heap( )->GetGPUDescriptorHandleForHeapStart( ) );
+
+					u16 const tile_size = 16;
+					math::u16x2 const group_count = ( g_parameters.screen_resolution + math::u16x2( tile_size - 1 ) ) / tile_size;
+					list->Dispatch( group_count.x, group_count.y, 1 );
+				}
+
+				{
+					D3D12_RESOURCE_BARRIER barriers[1];
+
+					barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+					barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+					barriers[0].Transition.pResource = g_resources.image( image_radiance );
+					barriers[0].Transition.Subresource = 0;
+					barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
+					barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+					list->ResourceBarrier( (u32)array_size( barriers ), barriers );
+				}
+
+				{
+					PROFILE_EVENT( list, j, resolve );
+
+					list->SetGraphicsRootSignature( m_ps_resolve.rs( ) );
+					list->SetPipelineState( m_ps_resolve.ps( ) );
+
+					ID3D12DescriptorHeap* const heap = g_resources.srv_uav_heap( );
+					list->SetDescriptorHeaps( 1, &heap );
+
+					list->SetGraphicsRootDescriptorTable( 0, g_resources.srv_uav_heap( )->GetGPUDescriptorHandleForHeapStart( ) );
 
 					D3D12_CPU_DESCRIPTOR_HANDLE const rtv = g_resources.rtv( image_rtv_output_0 + i );
-					D3D12_CPU_DESCRIPTOR_HANDLE const dsv = g_resources.read_only_dsv( );
-					list->OMSetRenderTargets( 1, &rtv, TRUE, &dsv );
-
-					list->ClearRenderTargetView( rtv, math::float4( 0.0f ).data, 0, nullptr );
-
-					list->OMSetStencilRef( 0x1 );
+					list->OMSetRenderTargets( 1, &rtv, TRUE, nullptr );
 
 					list->DrawInstanced( 3, 1, 0, 0 );
+				}
+
+				{
+					D3D12_RESOURCE_BARRIER barriers[1];
+
+					barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+					barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+					barriers[0].Transition.pResource = g_resources.image( image_radiance );
+					barriers[0].Transition.Subresource = 0;
+					barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+					barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
+
+					list->ResourceBarrier( (u32)array_size( barriers ), barriers );
 				}
 
 				{
@@ -395,10 +437,10 @@ void render::record_render( )
 					list->SetGraphicsRootSignature( m_ps_render_ui.rs( ) );
 					list->SetPipelineState( m_ps_render_ui.ps( ) );
 
-					ID3D12DescriptorHeap* const heap = g_resources.srv_heap( );
+					ID3D12DescriptorHeap* const heap = g_resources.srv_uav_heap( );
 					list->SetDescriptorHeaps( 1, &heap );
 
-					list->SetGraphicsRootDescriptorTable( 0, g_resources.srv_heap( )->GetGPUDescriptorHandleForHeapStart( ) );
+					list->SetGraphicsRootDescriptorTable( 0, g_resources.srv_uav_heap( )->GetGPUDescriptorHandleForHeapStart( ) );
 
 					D3D12_CPU_DESCRIPTOR_HANDLE const rtv = g_resources.rtv( image_rtv_output_0 + i );
 					list->OMSetRenderTargets( 1, &rtv, FALSE, nullptr );
@@ -452,7 +494,7 @@ void render::destroy( )
 
 	resource_system::destroy_resources(
 		resource_system::user_callback_task<render, &render::on_resources_destroyed>( this ),
-		m_debug_font.get( ), &m_ps_generate_mesh_arguments, &m_ps_render_mesh_objects, &m_ps_shade, &m_ps_render_ui
+		m_debug_font.get( ), &m_ps_generate_mesh_arguments, &m_ps_render_mesh_objects, &m_ps_shade, &m_ps_resolve, &m_ps_render_ui
 	);
 
 	m_debug_font.reset( );
@@ -504,13 +546,13 @@ void render::reload_render( )
 
 	resource_system::destroy_resources(
 		resource_system::user_callback_task<render, &render::on_effects_destroyed>( this ),
-		&m_ps_generate_mesh_arguments, &m_ps_render_mesh_objects, &m_ps_shade, &m_ps_render_ui
+		&m_ps_generate_mesh_arguments, &m_ps_render_mesh_objects, &m_ps_shade, &m_ps_resolve, &m_ps_render_ui
 	);
 }
 
 void render::on_effects_destroyed( )
 {
-	u32 const max_task_count = 4;
+	u32 const max_task_count = 5;
 	task_info tasks_memory[max_task_count];
 	lib::buffer_array<task_info> tasks( tasks_memory, max_task_count );
 
@@ -637,13 +679,13 @@ void render::prepare_frame( )
 		static_mesh_container.frustum_test( frustum, [&cpu_mesh_object_list]( math::bvh::object_handle const in_handle )
 		{
 			render_object_mesh* const obj = g_resources.render_allocator( ).offset_to_ptr( in_handle );
-			cpu_mesh_object_list.push_back( obj->m_object_handle );
+			cpu_mesh_object_list.push_back( obj->m_object_handle + 1 );
 		} );
 
 		dynamic_mesh_container.frustum_test( frustum, [&cpu_mesh_object_list]( math::bvh::object_handle const in_handle )
 		{
 			render_object_mesh* const obj = g_resources.render_allocator( ).offset_to_ptr( in_handle );
-			cpu_mesh_object_list.push_back( obj->m_object_handle );
+			cpu_mesh_object_list.push_back( obj->m_object_handle + 1 );
 		} );
 
 		mesh_list_size = (u32)cpu_mesh_object_list.size( );

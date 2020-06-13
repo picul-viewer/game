@@ -75,12 +75,12 @@ void resources::create_resources( )
 	ASSERT( m == memory + memory_size );
 
 
-	m_srv_heap.create( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, image_srv_count + texture_descriptors_count, true );
-	set_dx_name( m_srv_heap, "srv_heap" );
+	m_srv_uav_heap.create( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, image_srv_uav_count + texture_descriptors_count, true );
+	set_dx_name( m_srv_uav_heap, "srv_uav_heap" );
 	m_rtv_heap.create( D3D12_DESCRIPTOR_HEAP_TYPE_RTV, image_rtv_count, false );
-	set_dx_name( m_srv_heap, "rtv_heap" );
+	set_dx_name( m_rtv_heap, "rtv_heap" );
 	m_dsv_heap.create( D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, false );
-	set_dx_name( m_srv_heap, "dsv_heap" );
+	set_dx_name( m_dsv_heap, "dsv_heap" );
 
 	{
 		dx_resource::cook cook;
@@ -154,7 +154,7 @@ void resources::destroy_resources( )
 	m_transforms.destroy( );
 	m_point_lights.destroy( );
 
-	m_srv_heap.destroy( );
+	m_srv_uav_heap.destroy( );
 	m_rtv_heap.destroy( );
 	m_dsv_heap.destroy( );
 	m_index_buffer.destroy( );
@@ -176,7 +176,7 @@ void resources::create_images( )
 			true, false, true, false, false
 		);
 		resource_cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
-		resource_cook.set_initial_state( D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE );
+		resource_cook.set_initial_state( D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE );
 		resource_cook.set_clear_value( DXGI_FORMAT_R32G32_UINT, math::float4( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
 		m_images[image_v_buffer_polygon_id].create( resource_cook );
@@ -191,7 +191,7 @@ void resources::create_images( )
 		srv_desc.Texture2D.PlaneSlice = 0;
 		srv_desc.Texture2D.ResourceMinLODClamp = 0.0f;
 
-		g_dx.device( )->CreateShaderResourceView( m_images[image_srv_v_buffer_polygon_id], &srv_desc, srv( image_srv_v_buffer_polygon_id ) );
+		g_dx.device( )->CreateShaderResourceView( m_images[image_v_buffer_polygon_id], &srv_desc, srv( image_srv_v_buffer_polygon_id ) );
 
 		D3D12_RENDER_TARGET_VIEW_DESC rtv_desc;
 		rtv_desc.Format = DXGI_FORMAT_R32G32_UINT;
@@ -199,35 +199,24 @@ void resources::create_images( )
 		rtv_desc.Texture2D.MipSlice = 0;
 		rtv_desc.Texture2D.PlaneSlice = 0;
 
-		g_dx.device( )->CreateRenderTargetView( m_images[image_rtv_v_buffer_polygon_id], &rtv_desc, rtv( image_rtv_v_buffer_polygon_id ) );
+		g_dx.device( )->CreateRenderTargetView( m_images[image_v_buffer_polygon_id], &rtv_desc, rtv( image_rtv_v_buffer_polygon_id ) );
 	}
 
 	{
 		dx_resource::cook resource_cook;
 		resource_cook.create_texture2d(
-			DXGI_FORMAT_R24G8_TYPELESS,
+			DXGI_FORMAT_R16G16B16A16_FLOAT,
 			g_parameters.screen_resolution.x, g_parameters.screen_resolution.y, 1, 1,
-			true, false, false, true, false
+			true, true, false, false, false
 		);
 		resource_cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
-		resource_cook.set_initial_state( D3D12_RESOURCE_STATE_DEPTH_WRITE );
-		resource_cook.set_clear_value( DXGI_FORMAT_D24_UNORM_S8_UINT, 1.0f, 0u );
+		resource_cook.set_initial_state( D3D12_RESOURCE_STATE_UNORDERED_ACCESS );
 
-		m_depth_buffer.create( resource_cook );
-		set_dx_name( m_depth_buffer, "depth_buffer" );
-
-		D3D12_DEPTH_STENCIL_VIEW_DESC dsv_desc;
-		dsv_desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		dsv_desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-		dsv_desc.Flags = D3D12_DSV_FLAG_NONE;
-		dsv_desc.Texture2D.MipSlice = 0;
-		g_dx.device( )->CreateDepthStencilView( m_depth_buffer, &dsv_desc, dsv( ) );
-
-		dsv_desc.Flags = D3D12_DSV_FLAG_READ_ONLY_DEPTH | D3D12_DSV_FLAG_READ_ONLY_STENCIL;
-		g_dx.device( )->CreateDepthStencilView( m_depth_buffer, &dsv_desc, read_only_dsv( ) );
+		m_images[image_radiance].create( resource_cook );
+		set_dx_name( m_images[image_radiance], "render_target_radiance" );
 
 		D3D12_SHADER_RESOURCE_VIEW_DESC srv_desc;
-		srv_desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		srv_desc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 		srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 		srv_desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		srv_desc.Texture2D.MostDetailedMip = 0;
@@ -235,7 +224,51 @@ void resources::create_images( )
 		srv_desc.Texture2D.PlaneSlice = 0;
 		srv_desc.Texture2D.ResourceMinLODClamp = 0.0f;
 
-		g_dx.device( )->CreateShaderResourceView( m_images[image_srv_depth_buffer], &srv_desc, srv( image_srv_depth_buffer ) );
+		g_dx.device( )->CreateShaderResourceView( m_images[image_radiance], &srv_desc, srv( image_srv_radiance ) );
+
+		D3D12_UNORDERED_ACCESS_VIEW_DESC uav_desc;
+		uav_desc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		uav_desc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
+		uav_desc.Texture2D.MipSlice = 0;
+		uav_desc.Texture2D.PlaneSlice = 0;
+
+		g_dx.device( )->CreateUnorderedAccessView( m_images[image_radiance], nullptr, &uav_desc, uav( image_uav_radiance ) );
+	}
+
+	{
+		dx_resource::cook resource_cook;
+		resource_cook.create_texture2d(
+			DXGI_FORMAT_R32_TYPELESS,
+			g_parameters.screen_resolution.x, g_parameters.screen_resolution.y, 1, 1,
+			true, false, false, true, false
+		);
+		resource_cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
+		resource_cook.set_initial_state( D3D12_RESOURCE_STATE_DEPTH_WRITE );
+		resource_cook.set_clear_value( DXGI_FORMAT_D32_FLOAT, 1.0f, 0u );
+
+		m_depth_buffer.create( resource_cook );
+		set_dx_name( m_depth_buffer, "depth_buffer" );
+
+		D3D12_DEPTH_STENCIL_VIEW_DESC dsv_desc;
+		dsv_desc.Format = DXGI_FORMAT_D32_FLOAT;
+		dsv_desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+		dsv_desc.Flags = D3D12_DSV_FLAG_NONE;
+		dsv_desc.Texture2D.MipSlice = 0;
+		g_dx.device( )->CreateDepthStencilView( m_depth_buffer, &dsv_desc, dsv( ) );
+
+		dsv_desc.Flags = D3D12_DSV_FLAG_READ_ONLY_DEPTH;
+		g_dx.device( )->CreateDepthStencilView( m_depth_buffer, &dsv_desc, read_only_dsv( ) );
+
+		D3D12_SHADER_RESOURCE_VIEW_DESC srv_desc;
+		srv_desc.Format = DXGI_FORMAT_R32_FLOAT;
+		srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srv_desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srv_desc.Texture2D.MostDetailedMip = 0;
+		srv_desc.Texture2D.MipLevels = 1;
+		srv_desc.Texture2D.PlaneSlice = 0;
+		srv_desc.Texture2D.ResourceMinLODClamp = 0.0f;
+
+		g_dx.device( )->CreateShaderResourceView( m_depth_buffer, &srv_desc, srv( image_srv_depth_buffer ) );
 	}
 
 	{
@@ -261,8 +294,8 @@ u32 resources::create_texture( dx_resource const in_texture, D3D12_SHADER_RESOUR
 {
 	u32 const result = m_texture_descriptor_allocator.allocate( );
 
-	D3D12_CPU_DESCRIPTOR_HANDLE handle = m_srv_heap->GetCPUDescriptorHandleForHeapStart( );
-	handle.ptr += g_dx.cbv_srv_uav_descriptor_size( ) * ( image_srv_count + result );
+	D3D12_CPU_DESCRIPTOR_HANDLE handle = m_srv_uav_heap->GetCPUDescriptorHandleForHeapStart( );
+	handle.ptr += g_dx.cbv_srv_uav_descriptor_size( ) * ( image_srv_uav_count + result );
 
 	g_dx.device( )->CreateShaderResourceView( in_texture, &in_srv_desc, handle );
 
@@ -340,7 +373,7 @@ dx_resource const& resources::image( u32 const in_index ) const
 D3D12_CPU_DESCRIPTOR_HANDLE resources::srv( u32 const in_index ) const
 {
 	ASSERT_CMP( in_index, <, image_srv_count );
-	D3D12_CPU_DESCRIPTOR_HANDLE result = m_srv_heap->GetCPUDescriptorHandleForHeapStart( );
+	D3D12_CPU_DESCRIPTOR_HANDLE result = m_srv_uav_heap->GetCPUDescriptorHandleForHeapStart( );
 	result.ptr += g_dx.cbv_srv_uav_descriptor_size( ) * in_index;
 	return result;
 }
@@ -350,6 +383,15 @@ D3D12_CPU_DESCRIPTOR_HANDLE resources::rtv( u32 const in_index ) const
 	ASSERT_CMP( in_index, <, image_rtv_count );
 	D3D12_CPU_DESCRIPTOR_HANDLE result = m_rtv_heap->GetCPUDescriptorHandleForHeapStart( );
 	result.ptr += g_dx.rtv_descriptor_size( ) * in_index;
+	return result;
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE resources::uav( u32 const in_index ) const
+{
+	ASSERT_CMP( in_index, >=, image_srv_count );
+	ASSERT_CMP( in_index, <, image_srv_uav_count );
+	D3D12_CPU_DESCRIPTOR_HANDLE result = m_srv_uav_heap->GetCPUDescriptorHandleForHeapStart( );
+	result.ptr += g_dx.cbv_srv_uav_descriptor_size( ) * in_index;
 	return result;
 }
 

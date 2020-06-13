@@ -76,6 +76,7 @@ private:
 	pipeline_state m_ps_generate_mesh_arguments;
 	pipeline_state m_ps_render_mesh_objects;
 	pipeline_state m_ps_shade;
+	pipeline_state m_ps_resolve;
 	pipeline_state m_ps_render_ui;
 	dx_resource m_indirect_arguments_buffer;
 	dx_resource m_instance_transforms_buffer;

@@ -82,7 +82,7 @@ void statistics::process( pstr const out_string, uptr const in_max_chars )
 void statistics::process_event_data( event_data* const in_data, lib::text_writer& in_writer, u64* const in_query_result, u32 const in_depth )
 {
 	u64 const begin_tick = in_query_result[in_data->m_query_index * 2 + 0];
-	u64 const end_tick = in_query_result[in_data->m_query_index * 2 + 1];
+	u64 const end_tick = math::max( in_query_result[in_data->m_query_index * 2 + 1], begin_tick );
 	float const elapsed_time = (float)( (double)( end_tick - begin_tick ) * m_inv_frequency );
 
 	in_data->m_current_value = math::lerp( in_data->m_current_value, elapsed_time, adaptation_speed );
