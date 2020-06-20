@@ -16,10 +16,10 @@ public:
 
 private:
 	enum : u64 {
-		representative_size_bits = 31,
+		representative_size_bits = 30,
 		max_allocation_size_in_cells = 1ull << representative_size_bits,
 
-		min_allocation_log_size = 5,
+		min_allocation_log_size = 4,
 		max_allocation_log_size = min_allocation_log_size + representative_size_bits,
 
 		min_allocation_size = 1ull << min_allocation_log_size,
