@@ -69,7 +69,7 @@ int main( )
 	// Heap allocator.
 	if ( g_test_heap )
 	{
-		uptr const heap_size = 16 * Gb;
+		uptr const heap_size = 8 * Gb;
 		pvoid const heap_memory = virtual_allocator( ).allocate( heap_size );
 
 		heap h;

@@ -85,6 +85,93 @@ u32 heap::get_size_index_for_block( u32 const size_in_cells )
 	return msb_index * 2 + ( ( size_in_cells & previous_bit_mask ) ? 1 : 0 );
 }
 
+void heap::list_push( u32 const list_index, u32 const block_index )
+{
+	u32& size_list = m_size_pointers[list_index];
+	block_data* const data = get_block_data_for_pointer( m_memory + block_index );
+
+	if ( size_list == invalid_size_index )
+	{
+		data->list_prev_index = block_index;
+		data->list_next_index = block_index;
+
+		size_list = block_index;
+
+		m_size_flags |= ( 1ull << list_index );
+	}
+	else
+	{
+		u32 const next_index = size_list;
+		block_data* const next_data = get_block_data_for_pointer( m_memory + next_index );
+
+		u32 const prev_index = next_data->list_prev_index;
+		block_data* const prev_data = get_block_data_for_pointer( m_memory + prev_index );
+
+		data->list_next_index = next_index;
+		data->list_prev_index = prev_index;
+
+		next_data->list_prev_index = block_index;
+		prev_data->list_next_index = block_index;
+	}
+}
+
+u32 heap::list_pop( u32 const list_index )
+{
+	ASSERT( ( m_size_flags & ( 1ull << list_index ) ) != 0 );
+
+	u32& size_list = m_size_pointers[list_index];
+	u32 const result_index = size_list;
+
+	cell* const result = m_memory + result_index;
+	block_data* const data = get_block_data_for_pointer( result );
+
+	if ( data->list_next_index == result_index )
+	{
+		size_list = invalid_size_index;
+		m_size_flags &= ~( 1ull << list_index );
+	}
+	else
+	{
+		block_data* const list_prev_data = get_block_data_for_pointer( m_memory + data->list_prev_index );
+		block_data* const list_next_data = get_block_data_for_pointer( m_memory + data->list_next_index );
+
+		list_prev_data->list_next_index = data->list_next_index;
+		list_next_data->list_prev_index = data->list_prev_index;
+
+		size_list = data->list_next_index;
+	}
+
+	return result_index;
+}
+
+void heap::list_remove( u32 const list_index, u32 const block_index )
+{
+	ASSERT( ( m_size_flags & ( 1ull << list_index ) ) != 0 );
+
+	u32& size_list = m_size_pointers[list_index];
+	ASSERT( size_list != invalid_size_index );
+
+	block_data* const data = get_block_data_for_pointer( m_memory + block_index );
+
+	if ( data->list_next_index == block_index )
+	{
+		ASSERT_CMP( size_list, ==, data->list_next_index );
+		size_list = invalid_size_index;
+		m_size_flags &= ~( 1ull << list_index );
+	}
+	else
+	{
+		block_data* const list_prev_data = get_block_data_for_pointer( m_memory + data->list_prev_index );
+		block_data* const list_next_data = get_block_data_for_pointer( m_memory + data->list_next_index );
+
+		list_prev_data->list_next_index = data->list_next_index;
+		list_next_data->list_prev_index = data->list_prev_index;
+
+		if ( size_list == block_index )
+			size_list = data->list_next_index;
+	}
+}
+
 pointer heap::allocate( uptr size )
 {
 	// Keep in mind additional 4 bytes for block size and min_allocation_size-byte granularity.
@@ -125,29 +212,11 @@ pointer heap::allocate( uptr size )
 	}
 
 	// Else, use found block to allocate memory.
-	u32& request_size_list = m_size_pointers[request_size_index];
-
-	u32 const result_index = request_size_list;
+	// Remove found block from size list.
+	u32 const result_index = list_pop( request_size_index );
 	cell* const result = m_memory + result_index;
 
-	// Remove found block from size list.
 	block_data* const data = get_block_data_for_pointer( result );
-
-	if ( data->list_next_index == result_index )
-	{
-		request_size_list = invalid_size_index;
-		m_size_flags &= ~( 1ull << request_size_index );
-	}
-	else
-	{
-		block_data* const list_prev_data = get_block_data_for_pointer( m_memory + data->list_prev_index );
-		block_data* const list_next_data = get_block_data_for_pointer( m_memory + data->list_next_index );
-
-		list_prev_data->list_next_index = data->list_next_index;
-		list_next_data->list_prev_index = data->list_prev_index;
-
-		request_size_list = data->list_next_index;
-	}
 
 	// Get block size properly depending on it's location.
 	u32 const block_size = ( result_index == 0 ) ? m_first_size : ( data->this_size_data & this_block_size_mask );
@@ -179,32 +248,9 @@ pointer heap::allocate( uptr size )
 		u32 const remainder_size_index = get_size_index_for_block( remainder_size );
 		ASSERT_CMP( remainder_size_index, <, sizes_count );
 
-		u32& remainder_size_list = m_size_pointers[remainder_size_index];
 		u32 const remainder_index = result_index + request_size;
 
-		if ( remainder_size_list == invalid_size_index )
-		{
-			remainder_block_data->list_prev_index = remainder_index;
-			remainder_block_data->list_next_index = remainder_index;
-
-			remainder_size_list = remainder_index;
-
-			m_size_flags |= ( 1ull << remainder_size_index );
-		}
-		else
-		{
-			u32 const next_index = remainder_size_list;
-			block_data* const next_data = get_block_data_for_pointer( m_memory + next_index );
-
-			u32 const prev_index = next_data->list_prev_index;
-			block_data* const prev_data = get_block_data_for_pointer( m_memory + prev_index );
-
-			remainder_block_data->list_next_index = next_index;
-			remainder_block_data->list_prev_index = prev_index;
-
-			next_data->list_prev_index = remainder_index;
-			prev_data->list_next_index = remainder_index;
-		}
+		list_push( remainder_size_index, remainder_index );
 
 		// Update basis block size properly depending on it's location.
 		if ( result_index == 0 )
@@ -264,40 +310,18 @@ void heap::deallocate( pointer p )
 		if ( current_block_data->this_size_data & prev_block_free_flag_mask )
 		{
 			// If previous block is free, then need to merge it with current.
-			
+
 			u32 const previous_size = current_block_data->prev_size;
 			cell* const previous_block = ptr - previous_size;
+			block_data* const data = get_block_data_for_pointer( previous_block );
 
 			// Find appropriate size list for previous block.
 			ASSERT_CMP( previous_size, <=, max_allocation_size_in_cells );
 			u32 const previous_size_index = get_size_index_for_block( previous_size );
 			ASSERT_CMP( previous_size_index, <, sizes_count );
-			
-			ASSERT( ( m_size_flags & ( 1ull << previous_size_index ) ) != 0 );
 
-			u32& previous_size_list = m_size_pointers[previous_size_index];
-			ASSERT( previous_size_list != invalid_size_index );
-			
 			// Remove previous block from it's size list.
-			block_data* const data = get_block_data_for_pointer( previous_block );
-				
-			if ( data->list_next_index == previous_block - m_memory )
-			{
-				ASSERT_CMP( previous_size_list, ==, data->list_next_index );
-				previous_size_list = invalid_size_index;
-				m_size_flags &= ~( 1ull << previous_size_index );
-			}
-			else
-			{
-				block_data* const list_prev_data = get_block_data_for_pointer( m_memory + data->list_prev_index );
-				block_data* const list_next_data = get_block_data_for_pointer( m_memory + data->list_next_index );
-
-				list_prev_data->list_next_index = data->list_next_index;
-				list_next_data->list_prev_index = data->list_prev_index;
-
-				if ( m_memory + previous_size_list == previous_block )
-					previous_size_list = data->list_next_index;
-			}
+			list_remove( previous_size_index, (u32)( previous_block - m_memory ) );
 
 			// Update data for size lists update.
 			free_pointer = previous_block;
@@ -339,28 +363,7 @@ void heap::deallocate( pointer p )
 		u32 const next_size_index = get_size_index_for_block( next_size );
 		ASSERT_CMP( next_size_index, <, sizes_count );
 
-		ASSERT( ( m_size_flags & ( 1ull << next_size_index ) ) != 0 );
-
-		u32& next_size_list = m_size_pointers[next_size_index];
-		ASSERT( next_size_list != invalid_size_index );
-
-		if ( next_data->list_next_index == next_block - m_memory )
-		{
-			ASSERT_CMP( next_size_list, ==, next_data->list_next_index );
-			next_size_list = invalid_size_index;
-			m_size_flags &= ~( 1ull << next_size_index );
-		}
-		else
-		{
-			block_data* const list_prev_data = get_block_data_for_pointer( m_memory + next_data->list_prev_index );
-			block_data* const list_next_data = get_block_data_for_pointer( m_memory + next_data->list_next_index );
-
-			list_prev_data->list_next_index = next_data->list_next_index;
-			list_next_data->list_prev_index = next_data->list_prev_index;
-
-			if ( m_memory + next_size_list == next_block )
-				next_size_list = next_data->list_next_index;
-		}
+		list_remove( next_size_index, (u32)( next_block - m_memory ) );
 
 		// Update data for size lists update.
 		free_size += next_size;
@@ -387,32 +390,8 @@ void heap::deallocate( pointer p )
 	u32 const free_size_index = get_size_index_for_block( free_size );
 	ASSERT_CMP( free_size_index, <, sizes_count );
 
-	u32& free_size_list = m_size_pointers[free_size_index];
 	u32 const free_index = (u32)( free_pointer - m_memory );
-
-	if ( free_size_list == invalid_size_index )
-	{
-		free_block_data->list_prev_index = free_index;
-		free_block_data->list_next_index = free_index;
-
-		free_size_list = free_index;
-		
-		m_size_flags |= ( 1ull << free_size_index );
-	}
-	else
-	{
-		u32 const next_index = free_size_list;
-		block_data* const next_data = get_block_data_for_pointer( m_memory + next_index );
-
-		u32 const prev_index = next_data->list_prev_index;
-		block_data* const prev_data = get_block_data_for_pointer( m_memory + prev_index );
-
-		free_block_data->list_next_index = next_index;
-		free_block_data->list_prev_index = prev_index;
-
-		next_data->list_prev_index = free_index;
-		prev_data->list_next_index = free_index;
-	}
+	list_push( free_size_index, free_index );
 
 	// Update free block data properly.
 	// Check whether free block is located in the beginning of the heap memory.

@@ -29,12 +29,16 @@ private:
 	};
 
 private:
+	struct cell { u8 unused[min_allocation_size]; };
+
+private:
 	static u32 get_desired_size_index_for_query( u32 const size_in_cells );
 	u32 get_size_index_for_query( u32 const size_in_cells );
 	static u32 get_size_index_for_block( u32 const size_in_cells );
 
-private:
-	struct cell { u8 unused[min_allocation_size]; };
+	void list_push( u32 const list_index, u32 const block_index );
+	u32 list_pop( u32 const list_index );
+	void list_remove( u32 const list_index, u32 const block_index );
 
 private:
 	// List is organized in the next manner:
