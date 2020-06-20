@@ -29,6 +29,7 @@ template<typename Allocator>
 double perf_test( Allocator& a )
 {
 	pvoid* const ptrs = stack_allocate( g_ptrs_count * sizeof(pvoid) );
+	memset( ptrs, 0, g_ptrs_count * sizeof(pvoid) );
 	uptr const size_mult = g_max_size - g_min_size + 1;
 
 	srand( g_seed );
@@ -36,22 +37,25 @@ double perf_test( Allocator& a )
 	sys::timer t;
 	t.start( );
 
-	for ( u32 i = 0; i < g_ptrs_count; ++i )
-	{
-		uptr const size = g_min_size + random( ) * size_mult / rand_max;
-		ptrs[i] = a.allocate( size );
-	}
-
-	for ( u32 i = 0; i < g_iter_count - g_ptrs_count; ++i )
+	for ( u32 i = 0; i < g_iter_count; ++i )
 	{
 		u32 const index = random( ) % g_ptrs_count;
-		uptr const size = g_min_size + random( ) * size_mult / rand_max;
-		a.deallocate( ptrs[index] );
-		ptrs[index] = a.allocate( size );
+
+		if ( ptrs[index] )
+		{
+			a.deallocate( ptrs[index] );
+			ptrs[index] = nullptr;
+		}
+		else
+		{
+			uptr const size = g_min_size + random( ) * size_mult / rand_max;
+			ptrs[index] = a.allocate( size );
+		}
 	}
 
 	for ( u32 i = 0; i < g_ptrs_count; ++i )
-		a.deallocate( ptrs[i] );
+		if ( ptrs[i] )
+			a.deallocate( ptrs[i] );
 
 	double const time = t.elapsed( );
 	return time;
