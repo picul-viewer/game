@@ -195,13 +195,13 @@ pointer heap::allocate( uptr size )
 		// Know for sure, that previous block is allocated ( because it's tracked during deallocation,
 		// and this block would be merged with untouched memory ), so set previous block free flag to zero.
 		// Also this block is allocated, so do not set 2MSB.
-		if ( result == m_memory )
-			m_first_size = request_size;
-		else
+		if ( result != m_memory )
 		{
 			block_data* const result_data = get_block_data_for_pointer( result );
 			result_data->this_size_data = request_size;
 		}
+		else
+			m_first_size = request_size;
 
 		// Update next block data ( next block does not exist for now, but may be in the future ).
 		// Only previous block free flag should be updated.
@@ -255,13 +255,13 @@ pointer heap::allocate( uptr size )
 		list_push( remainder_size_index, remainder_index );
 
 		// Update basis block size properly depending on it's location.
-		if ( result_index == 0 )
-			m_first_size = request_size;
-		else
+		if ( result_index != 0 )
 		{
 			// Store new size, save previous block free flag, unset this block free flag.
 			data->this_size_data = ( data->this_size_data & prev_block_free_flag_mask ) | request_size;
 		}
+		else
+			m_first_size = request_size;
 	}
 	else	
 	{
@@ -285,58 +285,42 @@ void heap::deallocate( pointer p )
 	ASSERT( ( (pbyte)p >= (pbyte)m_memory ) && ( (pbyte)p < (pbyte)m_free_pointer ) );
 	ASSERT( ( ( (pbyte)p - (pbyte)m_memory ) % min_allocation_size ) == 0 );
 	cell* ptr = (cell*)p;
-	
+
 	block_data* const current_block_data = get_block_data_for_pointer( ptr );
 
 	// This will be used for size list update.
 	cell* free_pointer = ptr;
-	u32 free_size = 0;
 	block_data* free_block_data = current_block_data;
 
-	u32 current_block_size = 0;
-	
-	// Check whether free block is located in the beginning of the heap memory.
-	if ( ptr == m_memory )
+	// Get current block size depending on location.
+	u32 const current_block_size = ( ptr == m_memory ) ? m_first_size : current_block_data->this_size_data & this_block_size_mask;
+	// Default free size is current block size.
+	u32 free_size = current_block_size;
+
+	// Check whether previous block is free (and also whether current block is not beginning of the memory).
+	if ( ( ptr != m_memory ) && ( current_block_data->this_size_data & prev_block_free_flag_mask ) )
 	{
-		// If block is located in the very beginning of the heap memory, than block size is stored in specific place.
-		// Also in this case don't need to check whether previous block is empty ( because there is no previous block ).
-		current_block_size = m_first_size;
-		free_size = current_block_size;
-	}
-	else
-	{
-		// Initialize block size from size cell before block.
-		current_block_size = current_block_data->this_size_data & this_block_size_mask;
+		// If previous block is free, then need to merge it with current.
 
-		// Check whether previous block is free.
-		if ( current_block_data->this_size_data & prev_block_free_flag_mask )
-		{
-			// If previous block is free, then need to merge it with current.
+		// Prefetch next block.
+		_mm_prefetch( (char*)( ptr + current_block_size ), _MM_HINT_NTA );
 
-			u32 const previous_size = current_block_data->prev_size;
-			cell* const previous_block = ptr - previous_size;
-			block_data* const data = get_block_data_for_pointer( previous_block );
+		u32 const previous_size = current_block_data->prev_size;
+		cell* const previous_block = ptr - previous_size;
+		block_data* const data = get_block_data_for_pointer( previous_block );
 
-			// Find appropriate size list for previous block.
-			ASSERT_CMP( previous_size, <=, max_allocation_size_in_cells );
-			u32 const previous_size_index = get_size_index_for_block( previous_size );
-			ASSERT_CMP( previous_size_index, <, sizes_count );
+		// Find appropriate size list for previous block.
+		ASSERT_CMP( previous_size, <=, max_allocation_size_in_cells );
+		u32 const previous_size_index = get_size_index_for_block( previous_size );
+		ASSERT_CMP( previous_size_index, <, sizes_count );
 
-			// Remove previous block from it's size list.
-			list_remove( previous_size_index, (u32)( previous_block - m_memory ) );
+		// Remove previous block from it's size list.
+		list_remove( previous_size_index, (u32)( previous_block - m_memory ) );
 
-			// Update data for size lists update.
-			free_pointer = previous_block;
-			free_size = current_block_size + previous_size;
-			free_block_data = data;
-		}
-		else
-		{
-			// Do not update flags in previous block data, because previous block is free and target flag is invalid.
-
-			// Update data for size lists update.
-			free_size = current_block_size;
-		}
+		// Update data for size lists update.
+		free_pointer = previous_block;
+		free_size = current_block_size + previous_size;
+		free_block_data = data;
 	}
 
 	cell* const next_block = ptr + current_block_size;
@@ -397,15 +381,13 @@ void heap::deallocate( pointer p )
 
 	// Update free block data properly.
 	// Check whether free block is located in the beginning of the heap memory.
-	if ( free_index == 0 )
-	{
-		m_first_size = free_size;
-	}
-	else
+	if ( free_index != 0 )
 	{
 		// Store new size, set 2MSB, save previous block free flag.
 		free_block_data->this_size_data = ( free_block_data->this_size_data & ( ~this_block_size_mask ) ) | free_size | this_block_free_flag_mask;
 	}
+	else
+		m_first_size = free_size;
 }
 
 void heap::dump( )
