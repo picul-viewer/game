@@ -5,7 +5,7 @@
 
 void heap::create( pointer const memory, uptr const size )
 {
-	ASSERT_CMP( size, <, 4 * Gb );
+	ASSERT_CMP( size, <, ( 1ull << representative_size_bits ) * min_allocation_size );
 
 	m_memory = memory;
 	m_memory_end = m_memory + size;
@@ -42,23 +42,23 @@ static inline block_data* get_block_data_for_pointer( pointer p )
 	return p - sizeof(u32) * 2;
 }
 
-u32 heap::get_desired_size_index_for_query( u32 const size )
+u32 heap::get_desired_size_index_for_query( u32 const size_in_cells )
 {
 	u32 msb_index;
-	u8 const result = _BitScanReverse( (unsigned long*)&msb_index, size );
+	u8 const result = _BitScanReverse( (unsigned long*)&msb_index, size_in_cells );
 	ASSERT( result == 1 );
 
-	if ( ( size & ( size - 1 ) ) == 0 )
-		return ( msb_index - min_allocation_log_size ) * 2;
+	if ( ( size_in_cells & ( size_in_cells - 1 ) ) == 0 )
+		return msb_index * 2;
 
 	u32 const previous_bit_mask = 1u << ( msb_index - 1 );
 
-	return ( msb_index - min_allocation_log_size ) * 2 + ( ( size & previous_bit_mask ) ? 2 : 1 );
+	return msb_index * 2 + ( ( size_in_cells & previous_bit_mask ) ? 2 : 1 );
 }
 
-u32 heap::get_size_index_for_query( u32 const size )
+u32 heap::get_size_index_for_query( u32 const size_in_cells )
 {
-	u32 const desired_size_index = get_desired_size_index_for_query( size );
+	u32 const desired_size_index = get_desired_size_index_for_query( size_in_cells );
 	
 	u32 msb_index;
 	u8 const result = _BitScanForward64( (unsigned long*)&msb_index, m_size_flags >> desired_size_index );
@@ -66,33 +66,31 @@ u32 heap::get_size_index_for_query( u32 const size )
 	return result ? desired_size_index + msb_index : 0xFFFFFFFF;
 }
 
-u32 heap::get_size_index_for_block( u32 const size )
+u32 heap::get_size_index_for_block( u32 const size_in_cells )
 {
 	u32 msb_index;
-	u8 const result = _BitScanReverse( (unsigned long*)&msb_index, size );
+	u8 const result = _BitScanReverse( (unsigned long*)&msb_index, size_in_cells );
 	ASSERT( result == 1 );
 
 	u32 const previous_bit_mask = 1u << ( msb_index - 1 );
 
-	return ( msb_index - min_allocation_log_size ) * 2 + ( ( size & previous_bit_mask ) ? 1 : 0 );
+	return msb_index * 2 + ( ( size_in_cells & previous_bit_mask ) ? 1 : 0 );
 }
 
 pointer heap::allocate( uptr size )
 {
-	// Keep in mind additional 4 bytes for block size and 16-byte granularity.
-	uptr const extended_size = math::align_up( size + 4, 16 );
-	ASSERT_CMP( extended_size, <, 0x80000000 );
-	u32 const request_size = math::max( (u32)extended_size, (u32)min_allocation_size );
+	// Keep in mind additional 4 bytes for block size and min_allocation_size-byte granularity.
+	uptr const allocation_size = math::align_up( size + sizeof(u32), min_allocation_size );
+	ASSERT_CMP( allocation_size, <, max_allocation_size );
+	u32 const request_size = (u32)( allocation_size / min_allocation_size );
 
-	ASSERT_CMP( request_size, >=, min_allocation_size );
-	ASSERT_CMP( request_size, <=, max_allocation_size );
 	u32 const request_size_index = get_size_index_for_query( request_size );
 
 	// If such block is not exists.
 	if ( request_size_index == 0xFFFFFFFF )
 	{
 		// Allocate block in untouched memory.
-		pointer const result = m_free_pointer;
+		cell* const result = m_free_pointer;
 		m_free_pointer += request_size;
 		ASSERT_CMP( m_free_pointer, <, m_memory_end );
 
@@ -121,7 +119,7 @@ pointer heap::allocate( uptr size )
 	u32& request_size_list = m_size_pointers[request_size_index];
 
 	u32 const result_index = request_size_list;
-	pointer const result = m_memory + result_index;
+	cell* const result = m_memory + result_index;
 
 	// Remove found block from size list.
 	block_data* const data = get_block_data_for_pointer( result );
@@ -155,21 +153,19 @@ pointer heap::allocate( uptr size )
 		// Need to split found block into two: first will become allocated ( basis ), second will stay free ( remainder ).
 
 		// Update remainder block data properly.
-		pointer const remainder_pointer = result + request_size;
+		cell* const remainder_pointer = result + request_size;
 		block_data* const remainder_block_data = get_block_data_for_pointer( remainder_pointer );
 
 		// Remainder goes after basis which is to be allocated for request, so previous block free flag is unset.
 		remainder_block_data->this_size_data = remainder_size;
 
 		// Update next after remainder block data properly.
-		pointer const next = result + block_size;
+		cell* const next = result + block_size;
 		block_data* const next_data = get_block_data_for_pointer( next );
 
 		next_data->prev_size = remainder_size;
 
 		// Add remainder block to it's size list.
-		ASSERT_CMP( request_size, >=, min_allocation_size );
-		ASSERT_CMP( request_size, <=, max_allocation_size );
 		u32 const remainder_size_index = get_size_index_for_block( remainder_size );
 		ASSERT_CMP( remainder_size_index, <, sizes_count );
 
@@ -212,7 +208,7 @@ pointer heap::allocate( uptr size )
 	else	
 	{
 		// Else, update next block data previous block free flag.
-		pointer const next = result + block_size;
+		cell* const next = result + block_size;
 		block_data* const next_data = get_block_data_for_pointer( next );
 
 		// Unset MSB.
@@ -224,19 +220,21 @@ pointer heap::allocate( uptr size )
 
 void heap::deallocate( pointer p )
 {
-	ASSERT( ( p >= m_memory ) && ( p < m_free_pointer ) );
+	ASSERT( ( (pbyte)p >= (pbyte)m_memory ) && ( (pbyte)p < (pbyte)m_free_pointer ) );
+	ASSERT( ( ( (pbyte)p - (pbyte)m_memory ) % min_allocation_size ) == 0 );
+	cell* ptr = (cell*)p;
 	
-	block_data* const current_block_data = get_block_data_for_pointer( p );
+	block_data* const current_block_data = get_block_data_for_pointer( ptr );
 
 	// This will be used for size list update.
-	pointer free_pointer = p;
+	cell* free_pointer = ptr;
 	u32 free_size = 0;
 	block_data* free_block_data = current_block_data;
 
 	u32 current_block_size = 0;
 	
 	// Check whether free block is located in the beginning of the heap memory.
-	if ( p == m_memory )
+	if ( ptr == m_memory )
 	{
 		// If block is located in the very beginning of the heap memory, than block size is stored in specific place.
 		// Also in this case don't need to check whether previous block is empty ( because there is no previous block ).
@@ -254,11 +252,10 @@ void heap::deallocate( pointer p )
 			// If previous block is free, then need to merge it with current.
 			
 			u32 const previous_size = current_block_data->prev_size;
-			pointer const previous_block = p - previous_size;
+			cell* const previous_block = ptr - previous_size;
 
 			// Find appropriate size list for previous block.
-			ASSERT_CMP( previous_size, >=, min_allocation_size );
-			ASSERT_CMP( previous_size, <=, max_allocation_size );
+			ASSERT_CMP( previous_size, <=, max_allocation_size_in_cells );
 			u32 const previous_size_index = get_size_index_for_block( previous_size );
 			ASSERT_CMP( previous_size_index, <, sizes_count );
 			
@@ -302,7 +299,7 @@ void heap::deallocate( pointer p )
 		}
 	}
 
-	pointer const next_block = p + current_block_size;
+	cell* const next_block = ptr + current_block_size;
 
 	// Check whether untouched memory starts right after current block.
 	if ( next_block == m_free_pointer )
@@ -321,15 +318,14 @@ void heap::deallocate( pointer p )
 	ASSERT( ( next_data->this_size_data & 0x80000000 ) == 0 );
 
 	// Access next after next block data to check whether next block is free.
-	pointer const next_next_block = next_block + next_size;
+	cell* const next_next_block = next_block + next_size;
 	block_data* const next_next_data = get_block_data_for_pointer( next_next_block );
 
 	// Check whether next block is free.
 	if ( next_next_data->this_size_data & 0x80000000 )
 	{
 		// If next block is free, remove it from it's size list.
-		ASSERT_CMP( next_size, >=, min_allocation_size );
-		ASSERT_CMP( next_size, <=, max_allocation_size );
+		ASSERT_CMP( next_size, <, max_allocation_size_in_cells );
 		u32 const next_size_index = get_size_index_for_block( next_size );
 		ASSERT_CMP( next_size_index, <, sizes_count );
 		
@@ -373,8 +369,7 @@ void heap::deallocate( pointer p )
 	}
 
 	// Add new free block to it's size list.
-	ASSERT_CMP( free_size, >=, min_allocation_size );
-	ASSERT_CMP( free_size, <=, max_allocation_size );
+	ASSERT_CMP( free_size, <, max_allocation_size_in_cells );
 	u32 const free_size_index = get_size_index_for_block( free_size );
 	ASSERT_CMP( free_size_index, <, sizes_count );
 
@@ -420,7 +415,7 @@ void heap::deallocate( pointer p )
 
 void heap::dump( )
 {
-	pointer p = m_memory;
+	cell* p = m_memory;
 	u32 size = m_first_size;
 
 	u32 free_count_in_memory = 0;
