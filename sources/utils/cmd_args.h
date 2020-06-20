@@ -3,6 +3,7 @@
 
 #include <types.h>
 #include <lib/fixed_string.h>
+#include "parse.h"
 
 namespace utils {
 
