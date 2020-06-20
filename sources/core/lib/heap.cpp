@@ -92,8 +92,8 @@ void heap::list_push( u32 const list_index, u32 const block_index )
 
 	if ( size_list == invalid_size_index )
 	{
-		data->list_prev_index = block_index;
-		data->list_next_index = block_index;
+		data->list_prev_index = invalid_size_index;
+		data->list_next_index = invalid_size_index;
 
 		size_list = block_index;
 
@@ -104,14 +104,10 @@ void heap::list_push( u32 const list_index, u32 const block_index )
 		u32 const next_index = size_list;
 		block_data* const next_data = get_block_data_for_pointer( m_memory + next_index );
 
-		u32 const prev_index = next_data->list_prev_index;
-		block_data* const prev_data = get_block_data_for_pointer( m_memory + prev_index );
-
+		data->list_prev_index = invalid_size_index;
 		data->list_next_index = next_index;
-		data->list_prev_index = prev_index;
 
 		next_data->list_prev_index = block_index;
-		prev_data->list_next_index = block_index;
 	}
 }
 
@@ -125,20 +121,20 @@ u32 heap::list_pop( u32 const list_index )
 	cell* const result = m_memory + result_index;
 	block_data* const data = get_block_data_for_pointer( result );
 
-	if ( data->list_next_index == result_index )
+	ASSERT_CMP( data->list_prev_index, ==, invalid_size_index );
+	u32 const list_next_index = data->list_next_index;
+
+	if ( list_next_index == invalid_size_index )
 	{
 		size_list = invalid_size_index;
 		m_size_flags &= ~( 1ull << list_index );
 	}
 	else
 	{
-		block_data* const list_prev_data = get_block_data_for_pointer( m_memory + data->list_prev_index );
-		block_data* const list_next_data = get_block_data_for_pointer( m_memory + data->list_next_index );
+		block_data* const list_next_data = get_block_data_for_pointer( m_memory + list_next_index );
+		list_next_data->list_prev_index = invalid_size_index;
 
-		list_prev_data->list_next_index = data->list_next_index;
-		list_next_data->list_prev_index = data->list_prev_index;
-
-		size_list = data->list_next_index;
+		size_list = list_next_index;
 	}
 
 	return result_index;
@@ -152,23 +148,29 @@ void heap::list_remove( u32 const list_index, u32 const block_index )
 	ASSERT( size_list != invalid_size_index );
 
 	block_data* const data = get_block_data_for_pointer( m_memory + block_index );
+	u32 const list_next_index = data->list_next_index;
 
-	if ( data->list_next_index == block_index )
+	if ( list_next_index == invalid_size_index )
 	{
-		ASSERT_CMP( size_list, ==, data->list_next_index );
+		ASSERT_CMP( size_list, ==, list_next_index );
 		size_list = invalid_size_index;
 		m_size_flags &= ~( 1ull << list_index );
 	}
 	else
 	{
-		block_data* const list_prev_data = get_block_data_for_pointer( m_memory + data->list_prev_index );
-		block_data* const list_next_data = get_block_data_for_pointer( m_memory + data->list_next_index );
+		u32 const list_prev_index = data->list_prev_index;
 
-		list_prev_data->list_next_index = data->list_next_index;
+		block_data* const list_next_data = get_block_data_for_pointer( m_memory + list_next_index );
 		list_next_data->list_prev_index = data->list_prev_index;
 
+		if ( list_prev_index != invalid_size_index )
+		{
+			block_data* const list_prev_data = get_block_data_for_pointer( m_memory + list_prev_index );
+			list_prev_data->list_next_index = data->list_next_index;
+		}
+
 		if ( size_list == block_index )
-			size_list = data->list_next_index;
+			size_list = list_next_index;
 	}
 }
 
