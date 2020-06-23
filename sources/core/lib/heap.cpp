@@ -92,10 +92,7 @@ void heap::list_push( u32 const list_index, u32 const block_index )
 
 	if ( size_list == invalid_size_index )
 	{
-		data->list_prev_index = invalid_size_index;
 		data->list_next_index = invalid_size_index;
-
-		size_list = block_index;
 
 		m_size_flags |= ( 1ull << list_index );
 	}
@@ -103,12 +100,13 @@ void heap::list_push( u32 const list_index, u32 const block_index )
 	{
 		u32 const next_index = size_list;
 		block_data* const next_data = get_block_data_for_pointer( m_memory + next_index );
-
-		data->list_prev_index = invalid_size_index;
 		data->list_next_index = next_index;
 
 		next_data->list_prev_index = block_index;
 	}
+
+	data->list_prev_index = invalid_size_index;
+	size_list = block_index;
 }
 
 u32 heap::list_pop( u32 const list_index )
@@ -126,16 +124,15 @@ u32 heap::list_pop( u32 const list_index )
 
 	if ( list_next_index == invalid_size_index )
 	{
-		size_list = invalid_size_index;
 		m_size_flags &= ~( 1ull << list_index );
 	}
 	else
 	{
 		block_data* const list_next_data = get_block_data_for_pointer( m_memory + list_next_index );
 		list_next_data->list_prev_index = invalid_size_index;
-
-		size_list = list_next_index;
 	}
+
+	size_list = list_next_index;
 
 	return result_index;
 }
@@ -148,29 +145,29 @@ void heap::list_remove( u32 const list_index, u32 const block_index )
 	ASSERT( size_list != invalid_size_index );
 
 	block_data* const data = get_block_data_for_pointer( m_memory + block_index );
+
 	u32 const list_next_index = data->list_next_index;
+	u32 const list_prev_index = data->list_prev_index;
 
-	if ( list_next_index == invalid_size_index )
-	{
-		ASSERT_CMP( size_list, ==, list_next_index );
-		size_list = invalid_size_index;
-		m_size_flags &= ~( 1ull << list_index );
-	}
-	else
-	{
-		u32 const list_prev_index = data->list_prev_index;
+	u64 size_flags_unset = 1;
 
+	if ( list_next_index != invalid_size_index )
+	{
 		block_data* const list_next_data = get_block_data_for_pointer( m_memory + list_next_index );
 		list_next_data->list_prev_index = data->list_prev_index;
+		size_flags_unset = 0;
+	}
 
-		if ( list_prev_index != invalid_size_index )
-		{
-			block_data* const list_prev_data = get_block_data_for_pointer( m_memory + list_prev_index );
-			list_prev_data->list_next_index = data->list_next_index;
-		}
+	if ( list_prev_index != invalid_size_index )
+	{
+		block_data* const list_prev_data = get_block_data_for_pointer( m_memory + list_prev_index );
+		list_prev_data->list_next_index = data->list_next_index;
+	}
 
-		if ( size_list == block_index )
-			size_list = list_next_index;
+	if ( size_list == block_index )
+	{
+		size_list = list_next_index;
+		m_size_flags &= ~( size_flags_unset << list_index );
 	}
 }
 
@@ -184,98 +181,98 @@ pointer heap::allocate( uptr size )
 	u32 const request_size_index = get_size_index_for_query( request_size );
 
 	// If such block is not exists.
-	if ( request_size_index == invalid_size_index )
+	if ( request_size_index != invalid_size_index )
 	{
-		// Allocate block in untouched memory.
-		cell* const result = m_free_pointer;
-		m_free_pointer += request_size;
-		ASSERT_CMP( m_free_pointer, <, m_memory_end );
+		// If such block exists, use it to allocate memory.
+		// Remove found block from size list.
+		u32 const result_index = list_pop( request_size_index );
+		cell* const result = m_memory + result_index;
 
-		// Depending on whether this is very beginning of the heap memory, update service data properly.
-		// Know for sure, that previous block is allocated ( because it's tracked during deallocation,
-		// and this block would be merged with untouched memory ), so set previous block free flag to zero.
-		// Also this block is allocated, so do not set 2MSB.
-		if ( result != m_memory )
+		block_data* const data = get_block_data_for_pointer( result );
+
+		// Get block size properly depending on it's location.
+		u32 const block_size = ( result_index == 0 ) ? m_first_size : ( data->this_size_data & this_block_size_mask );
+		ASSERT_CMP( block_size, >=, request_size );
+
+		// Calculate redudant memory size.
+		u32 const remainder_size = block_size - request_size;
+
+		// Check whether there is a notable redudant memory in the block.
+		if ( remainder_size > 0 )
 		{
-			block_data* const result_data = get_block_data_for_pointer( result );
-			result_data->this_size_data = request_size;
+			// Need to split found block into two: first will become allocated ( basis ), second will stay free ( remainder ).
+
+			// Update remainder block data properly.
+			cell* const remainder_pointer = result + request_size;
+			block_data* const remainder_block_data = get_block_data_for_pointer( remainder_pointer );
+
+			// Remainder goes after basis which is to be allocated for request, so previous block free flag is unset.
+			// Remainder is gonna be free, so set 2MSB.
+			remainder_block_data->this_size_data = remainder_size | this_block_free_flag_mask;
+
+			// Update next after remainder block data properly.
+			cell* const next = result + block_size;
+			block_data* const next_data = get_block_data_for_pointer( next );
+
+			next_data->prev_size = remainder_size;
+
+			// Add remainder block to it's size list.
+			u32 const remainder_size_index = get_size_index_for_block( remainder_size );
+			ASSERT_CMP( remainder_size_index, <, sizes_count );
+
+			u32 const remainder_index = result_index + request_size;
+
+			list_push( remainder_size_index, remainder_index );
+
+			// Update basis block size properly depending on it's location.
+			if ( result_index != 0 )
+			{
+				// Store new size, save previous block free flag, unset this block free flag.
+				data->this_size_data = ( data->this_size_data & prev_block_free_flag_mask ) | request_size;
+			}
+			else
+				m_first_size = request_size;
 		}
-		else
-			m_first_size = request_size;
+		else	
+		{
+			// Else, update next block data previous block free flag.
+			cell* const next = result + block_size;
+			block_data* const next_data = get_block_data_for_pointer( next );
 
-		// Update next block data ( next block does not exist for now, but may be in the future ).
-		// Only previous block free flag should be updated.
-		block_data* const next_data = get_block_data_for_pointer( result + request_size );
+			// Unset MSB.
+			next_data->this_size_data &= ~prev_block_free_flag_mask;
 
-		// Unset MSB. (And do not care for 2MSB.)
-		next_data->this_size_data = 0;
+			// Unset 2MSB for this result block, if block is not located in the beginning of the heap memory.
+			if ( result_index != 0 )
+				data->this_size_data &= ~this_block_free_flag_mask;
+		}
 
 		return result;
 	}
 
-	// Else, use found block to allocate memory.
-	// Remove found block from size list.
-	u32 const result_index = list_pop( request_size_index );
-	cell* const result = m_memory + result_index;
+	// Else, allocate block in untouched memory.
+	cell* const result = m_free_pointer;
+	m_free_pointer += request_size;
+	ASSERT_CMP( m_free_pointer, <, m_memory_end );
 
-	block_data* const data = get_block_data_for_pointer( result );
-
-	// Get block size properly depending on it's location.
-	u32 const block_size = ( result_index == 0 ) ? m_first_size : ( data->this_size_data & this_block_size_mask );
-	ASSERT_CMP( block_size, >=, request_size );
-
-	// Calculate redudant memory size.
-	u32 const remainder_size = block_size - request_size;
-
-	// Check whether there is a notable redudant memory in the block.
-	if ( remainder_size > 0 )
+	// Depending on whether this is very beginning of the heap memory, update service data properly.
+	// Know for sure, that previous block is allocated ( because it's tracked during deallocation,
+	// and this block would be merged with untouched memory ), so set previous block free flag to zero.
+	// Also this block is allocated, so do not set 2MSB.
+	if ( result != m_memory )
 	{
-		// Need to split found block into two: first will become allocated ( basis ), second will stay free ( remainder ).
-
-		// Update remainder block data properly.
-		cell* const remainder_pointer = result + request_size;
-		block_data* const remainder_block_data = get_block_data_for_pointer( remainder_pointer );
-
-		// Remainder goes after basis which is to be allocated for request, so previous block free flag is unset.
-		// Remainder is gonna be free, so set 2MSB.
-		remainder_block_data->this_size_data = remainder_size | this_block_free_flag_mask;
-
-		// Update next after remainder block data properly.
-		cell* const next = result + block_size;
-		block_data* const next_data = get_block_data_for_pointer( next );
-
-		next_data->prev_size = remainder_size;
-
-		// Add remainder block to it's size list.
-		u32 const remainder_size_index = get_size_index_for_block( remainder_size );
-		ASSERT_CMP( remainder_size_index, <, sizes_count );
-
-		u32 const remainder_index = result_index + request_size;
-
-		list_push( remainder_size_index, remainder_index );
-
-		// Update basis block size properly depending on it's location.
-		if ( result_index != 0 )
-		{
-			// Store new size, save previous block free flag, unset this block free flag.
-			data->this_size_data = ( data->this_size_data & prev_block_free_flag_mask ) | request_size;
-		}
-		else
-			m_first_size = request_size;
+		block_data* const result_data = get_block_data_for_pointer( result );
+		result_data->this_size_data = request_size;
 	}
-	else	
-	{
-		// Else, update next block data previous block free flag.
-		cell* const next = result + block_size;
-		block_data* const next_data = get_block_data_for_pointer( next );
+	else
+		m_first_size = request_size;
 
-		// Unset MSB.
-		next_data->this_size_data &= ~prev_block_free_flag_mask;
+	// Update next block data ( next block does not exist for now, but may be in the future ).
+	// Only previous block free flag should be updated.
+	block_data* const next_data = get_block_data_for_pointer( result + request_size );
 
-		// Unset 2MSB for this result block, if block is not located in the beginning of the heap memory.
-		if ( result_index != 0 )
-			data->this_size_data &= ~this_block_free_flag_mask;
-	}
+	// Unset MSB. (And do not care for 2MSB.)
+	next_data->this_size_data = 0;
 
 	return result;
 }
