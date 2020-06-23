@@ -87,26 +87,21 @@ u32 heap::get_size_index_for_block( u32 const size_in_cells )
 
 void heap::list_push( u32 const list_index, u32 const block_index )
 {
-	u32& size_list = m_size_pointers[list_index];
+	u32 const size_list_value = m_size_pointers[list_index];
 	block_data* const data = get_block_data_for_pointer( m_memory + block_index );
 
-	if ( size_list == invalid_size_index )
+	if ( size_list_value == invalid_size_index )
 	{
-		data->list_next_index = invalid_size_index;
-
 		m_size_flags |= ( 1ull << list_index );
 	}
 	else
 	{
-		u32 const next_index = size_list;
-		block_data* const next_data = get_block_data_for_pointer( m_memory + next_index );
-		data->list_next_index = next_index;
-
+		block_data* const next_data = get_block_data_for_pointer( m_memory + size_list_value );
 		next_data->list_prev_index = block_index;
 	}
 
-	data->list_prev_index = invalid_size_index;
-	size_list = block_index;
+	data->list_next_index = size_list_value;
+	m_size_pointers[list_index] = block_index;
 }
 
 u32 heap::list_pop( u32 const list_index )
@@ -126,11 +121,6 @@ u32 heap::list_pop( u32 const list_index )
 	{
 		m_size_flags &= ~( 1ull << list_index );
 	}
-	else
-	{
-		block_data* const list_next_data = get_block_data_for_pointer( m_memory + list_next_index );
-		list_next_data->list_prev_index = invalid_size_index;
-	}
 
 	size_list = list_next_index;
 
@@ -141,8 +131,8 @@ void heap::list_remove( u32 const list_index, u32 const block_index )
 {
 	ASSERT( ( m_size_flags & ( 1ull << list_index ) ) != 0 );
 
-	u32& size_list = m_size_pointers[list_index];
-	ASSERT( size_list != invalid_size_index );
+	u32 const size_list_value = m_size_pointers[list_index];
+	ASSERT( size_list_value != invalid_size_index );
 
 	block_data* const data = get_block_data_for_pointer( m_memory + block_index );
 
@@ -158,15 +148,15 @@ void heap::list_remove( u32 const list_index, u32 const block_index )
 		size_flags_unset = 0;
 	}
 
-	if ( list_prev_index != invalid_size_index )
+	if ( ( size_list_value != block_index ) && ( list_prev_index != invalid_size_index ) )
 	{
 		block_data* const list_prev_data = get_block_data_for_pointer( m_memory + list_prev_index );
 		list_prev_data->list_next_index = data->list_next_index;
 	}
 
-	if ( size_list == block_index )
+	if ( size_list_value == block_index )
 	{
-		size_list = list_next_index;
+		m_size_pointers[list_index] = list_next_index;
 		m_size_flags &= ~( size_flags_unset << list_index );
 	}
 }
@@ -255,6 +245,13 @@ pointer heap::allocate( uptr size )
 	m_free_pointer += request_size;
 	ASSERT_CMP( m_free_pointer, <, m_memory_end );
 
+	// Update next block data ( next block does not exist for now, but may be in the future ).
+	// Only previous block free flag should be updated.
+	block_data* const next_data = get_block_data_for_pointer( result + request_size );
+
+	// Unset MSB. (And do not care for 2MSB.)
+	next_data->this_size_data = 0;
+
 	// Depending on whether this is very beginning of the heap memory, update service data properly.
 	// Know for sure, that previous block is allocated ( because it's tracked during deallocation,
 	// and this block would be merged with untouched memory ), so set previous block free flag to zero.
@@ -266,13 +263,6 @@ pointer heap::allocate( uptr size )
 	}
 	else
 		m_first_size = request_size;
-
-	// Update next block data ( next block does not exist for now, but may be in the future ).
-	// Only previous block free flag should be updated.
-	block_data* const next_data = get_block_data_for_pointer( result + request_size );
-
-	// Unset MSB. (And do not care for 2MSB.)
-	next_data->this_size_data = 0;
 
 	return result;
 }
@@ -298,9 +288,6 @@ void heap::deallocate( pointer p )
 	if ( ( ptr != m_memory ) && ( current_block_data->this_size_data & prev_block_free_flag_mask ) )
 	{
 		// If previous block is free, then need to merge it with current.
-
-		// Prefetch next block.
-		_mm_prefetch( (char*)( ptr + current_block_size ), _MM_HINT_NTA );
 
 		u32 const previous_size = current_block_data->prev_size;
 		cell* const previous_block = ptr - previous_size;
@@ -442,7 +429,10 @@ void heap::dump( )
 		do
 		{
 			block_data* const data = get_block_data_for_pointer( m_memory + j );
-			ASSERT_CMP( data->list_prev_index, ==, prev_j );
+
+			// Do not care about first element prev index.
+			if (prev_j != invalid_size_index)
+				ASSERT_CMP( data->list_prev_index, ==, prev_j );
 
 			LOG( "%d ", j );
 			++free_count_in_lists;
