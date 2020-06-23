@@ -436,22 +436,21 @@ void heap::dump( )
 		u32 const current_size = ( 1ull << ( i / 2 + min_allocation_log_size - 1 ) ) * ( ( i % 2 ) ? 3 : 2 );
 		LOG( "size: %d\n", current_size );
 
-		u32 const e = m_size_pointers[i];
-		u32 j = e;
+		u32 prev_j = invalid_size_index;
+		u32 j = m_size_pointers[i];
 
 		do
 		{
+			block_data* const data = get_block_data_for_pointer( m_memory + j );
+			ASSERT_CMP( data->list_prev_index, ==, prev_j );
+
 			LOG( "%d ", j );
-
-			u32 const next_j = get_block_data_for_pointer( m_memory + j )->list_next_index;
-
-			ASSERT_CMP( get_block_data_for_pointer( m_memory + next_j )->list_prev_index, ==, j );
-
 			++free_count_in_lists;
 
-			j = next_j;
+			prev_j = j;
+			j = data->list_next_index;
 		}
-		while ( j != e );
+		while ( j != invalid_size_index );
 		
 		LOG( "\n" );
 	}
