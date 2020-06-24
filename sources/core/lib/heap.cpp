@@ -148,7 +148,8 @@ void heap::list_remove( u32 const list_index, u32 const block_index )
 		size_flags_unset = 0;
 	}
 
-	if ( ( size_list_value != block_index ) && ( list_prev_index != invalid_size_index ) )
+	ASSERT( list_prev_index != invalid_size_index );
+	if ( size_list_value != block_index )
 	{
 		block_data* const list_prev_data = get_block_data_for_pointer( m_memory + list_prev_index );
 		list_prev_data->list_next_index = data->list_next_index;
