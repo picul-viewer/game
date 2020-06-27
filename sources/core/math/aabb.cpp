@@ -1,5 +1,6 @@
 #include "aabb.h"
 
+#include <float.h>
 #include <macros.h>
 #include "math_common.h"
 
@@ -149,6 +150,12 @@ void aabb::modify( float4x3 const& transform )
 	m_max = new_max;
 }
 
+void aabb::invalidate( )
+{
+	m_min = math::float3( FLT_MAX );
+	m_max = math::float3( FLT_MIN );
+}
+
 
 aabb_aligned::aabb_aligned( )
 {
@@ -226,17 +233,6 @@ void aabb_aligned::modify( sse::vector const& transform )
 	m_max = _mm_add_ps( m_max, transform );
 }
 
-float aabb_aligned::surface_area( ) const
-{
-	__m128 bones = _mm_sub_ps( m_max, m_min );
-	__m128 mbones = _mm_shuffle_ps( bones, bones, _MM_SHUFFLE( 3, 0, 2, 1 ) );
-
-	__m128 squares = _mm_mul_ps( bones, mbones );
-	__m128 sq1 = _mm_shuffle_ps( squares, squares, _MM_SHUFFLE( 1, 1, 1, 1 ) );
-	__m128 sq2 = _mm_shuffle_ps( squares, squares, _MM_SHUFFLE( 2, 2, 2, 2 ) );
-	return _mm_mul_ss( _mm_add_ss( _mm_add_ss( squares, sq1 ), sq2 ), _mm_set_ss( 2.0f ) ).m128_f32[0];
-}
-
 void aabb_aligned::modify( sse::matrix3 const& transform )
 {
 	__m128 l0_l = _mm_mul_ps( transform[0], m_min );
@@ -269,6 +265,23 @@ void aabb_aligned::modify( sse::matrix3 const& transform )
 
 	m_min = _mm_add_ps( _mm_add_ps( min_x, min_y ), _mm_add_ps( min_z, trans ) );
 	m_max = _mm_add_ps( _mm_add_ps( max_x, max_y ), _mm_add_ps( max_z, trans ) );
+}
+
+void aabb_aligned::invalidate( )
+{
+	m_min = _mm_set1_ps( FLT_MAX );
+	m_max = _mm_set1_ps( FLT_MIN );
+}
+
+float aabb_aligned::surface_area( ) const
+{
+	__m128 bones = _mm_sub_ps( m_max, m_min );
+	__m128 mbones = _mm_shuffle_ps( bones, bones, _MM_SHUFFLE( 3, 0, 2, 1 ) );
+
+	__m128 squares = _mm_mul_ps( bones, mbones );
+	__m128 sq1 = _mm_shuffle_ps( squares, squares, _MM_SHUFFLE( 1, 1, 1, 1 ) );
+	__m128 sq2 = _mm_shuffle_ps( squares, squares, _MM_SHUFFLE( 2, 2, 2, 2 ) );
+	return _mm_mul_ss( _mm_add_ss( _mm_add_ss( squares, sq1 ), sq2 ), _mm_set_ss( 2.0f ) ).m128_f32[0];
 }
 
 } // namespace math

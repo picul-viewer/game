@@ -154,7 +154,7 @@ uptr bvh::divide_by_sah(
 {
 	aabb current_box;
 
-	current_box.set_min_max( float3( FLT_MAX ), float3( FLT_MIN ) );
+	current_box.invalidate( );
 
 	for ( uptr i = 0; i < count; ++i )
 	{
@@ -165,7 +165,7 @@ uptr bvh::divide_by_sah(
 		aabbs[i] = current_box;
 	}
 
-	current_box.set_min_max( float3( FLT_MAX ), float3( FLT_MIN ) );
+	current_box.invalidate( );
 
 	uptr best_left_count;
 	float sah = FLT_MAX;
@@ -543,6 +543,16 @@ void bvh::clear( )
 {
 	m_allocator.clear( );
 	m_root = invalid;
+}
+
+math::aabb bvh::get_aabb( ) const
+{
+	ASSERT( m_root != invalid );
+	node_data* const root = m_allocator[m_root];
+
+	math::aabb result;
+	result.set_min_max( root->aabb_min, root->aabb_max );
+	return result;
 }
 
 void bvh::refit_node( node_data& node ) const

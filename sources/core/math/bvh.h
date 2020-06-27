@@ -39,6 +39,8 @@ public:
 	template<typename Callback>
 	void frustum_test( frustum const& f, Callback const& callback ) const;
 
+	math::aabb get_aabb( ) const;
+
 private:
 	mem_align(16)
 	struct node_data

@@ -44,6 +44,12 @@ inline V<T> clamp( V<T> const& v, V<T> const& l, V<T> const& r )
 	return V<T>( clamp( v.vx, l.vx, r.vx ), clamp( v.vy, l.vy, r.vy ) );
 }
 
+template<template<typename> typename V, typename T>
+inline V<T> abs( V<T> const& v )
+{
+	return V<T>( abs( v.vx ), abs( v.vy ) );
+}
+
 inline float modf( float n, float* integral )
 {
 	return modff( n, integral );

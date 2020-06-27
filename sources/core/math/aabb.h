@@ -30,7 +30,10 @@ public:
 	void modify( float3x3 const& transform );
 	void modify( float4x3 const& transform );
 	
+	void invalidate( );
+
 	float surface_area( ) const;
+
 public:
 	float3 m_min;
 	float3 m_max;
@@ -61,7 +64,10 @@ public:
 	void modify( sse::vector const& transform );
 	void modify( sse::matrix3 const& transform );
 
+	void invalidate( );
+
 	float surface_area( ) const;
+
 public:
 	sse::vector m_min;
 	sse::vector m_max;
