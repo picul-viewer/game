@@ -18,17 +18,17 @@ const math::float3 vertices[] = {
 
 const u16 indices[] = {
 	0u, 1u, 2u,
-    0u, 2u, 3u,
-    4u, 5u, 6u,
-    4u, 6u, 7u,
-    3u, 2u, 5u,
-    3u, 5u, 4u,
-    2u, 1u, 6u,
-    2u, 6u, 5u,
-    1u, 7u, 6u,
-    1u, 0u, 7u,
-    0u, 3u, 4u,
-    0u, 4u, 7u
+	0u, 2u, 3u,
+	4u, 5u, 6u,
+	4u, 6u, 7u,
+	3u, 2u, 5u,
+	3u, 5u, 4u,
+	2u, 1u, 6u,
+	2u, 6u, 5u,
+	1u, 7u, 6u,
+	1u, 0u, 7u,
+	0u, 3u, 4u,
+	0u, 4u, 7u
 };
 
 const u32 index_count = 36;

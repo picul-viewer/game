@@ -42,7 +42,8 @@ void dx::create( )
 	IDXGIFactory4* factory;
 	DX12_CHECK_RESULT( CreateDXGIFactory1( IID_PPV_ARGS( &factory ) ) );
 
-    IDXGIAdapter* const adapter = choose_adapter( factory );
+	IDXGIAdapter* const adapter = choose_adapter( factory );
+	ASSERT( adapter );
 
 	DX12_CHECK_RESULT( D3D12CreateDevice( adapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS( &m_device ) ) );
 
@@ -75,24 +76,24 @@ void dx::create( )
 		set_dx_name( m_queue_copy, "copy_queue" );
 	}
 
-    DXGI_SWAP_CHAIN_DESC swap_chain_desc;
-    swap_chain_desc.BufferDesc.Width = g_parameters.screen_resolution.x;
-    swap_chain_desc.BufferDesc.Height = g_parameters.screen_resolution.y;
-    swap_chain_desc.BufferDesc.RefreshRate.Numerator = 60;
-    swap_chain_desc.BufferDesc.RefreshRate.Denominator = 1;
-    swap_chain_desc.BufferDesc.Format = back_buffer_format;
-    swap_chain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-    swap_chain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-    swap_chain_desc.SampleDesc.Count = 1;
-    swap_chain_desc.SampleDesc.Quality = 0;
-    swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    swap_chain_desc.BufferCount = swap_chain_buffer_count;
-    swap_chain_desc.OutputWindow = (HWND)g_parameters.hwnd;
-    swap_chain_desc.Windowed = true;
+	DXGI_SWAP_CHAIN_DESC swap_chain_desc;
+	swap_chain_desc.BufferDesc.Width = g_parameters.screen_resolution.x;
+	swap_chain_desc.BufferDesc.Height = g_parameters.screen_resolution.y;
+	swap_chain_desc.BufferDesc.RefreshRate.Numerator = 60;
+	swap_chain_desc.BufferDesc.RefreshRate.Denominator = 1;
+	swap_chain_desc.BufferDesc.Format = back_buffer_format;
+	swap_chain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	swap_chain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	swap_chain_desc.SampleDesc.Count = 1;
+	swap_chain_desc.SampleDesc.Quality = 0;
+	swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swap_chain_desc.BufferCount = swap_chain_buffer_count;
+	swap_chain_desc.OutputWindow = (HWND)g_parameters.hwnd;
+	swap_chain_desc.Windowed = true;
 	swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-    swap_chain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+	swap_chain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-    DX12_CHECK_RESULT( factory->CreateSwapChain( m_queue_graphics, &swap_chain_desc, (IDXGISwapChain**)&m_swap_chain ) );
+	DX12_CHECK_RESULT( factory->CreateSwapChain( m_queue_graphics, &swap_chain_desc, (IDXGISwapChain**)&m_swap_chain ) );
 
 	for ( u32 i = 0; i < swap_chain_buffer_count; ++i )
 	{

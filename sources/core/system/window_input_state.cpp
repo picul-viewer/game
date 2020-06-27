@@ -4,10 +4,10 @@
 
 void sys::window_input_state::on_message( pvoid raw_data )
 {
-    RAWINPUT* const raw = (RAWINPUT*)raw_data;
+	RAWINPUT* const raw = (RAWINPUT*)raw_data;
 
-    if (raw->header.dwType == RIM_TYPEKEYBOARD)
-    {
+	if (raw->header.dwType == RIM_TYPEKEYBOARD)
+	{
 		key const k			= (key)raw->data.keyboard.VKey;
 		bool const pressed	= !( raw->data.keyboard.Flags & 0x1 );
 
@@ -29,9 +29,9 @@ void sys::window_input_state::on_message( pvoid raw_data )
 
 			m_keyboard.set_key_pressed( actual_key, pressed );
 		}
-    }
-    else if (raw->header.dwType == RIM_TYPEMOUSE)
-    {
+	}
+	else if (raw->header.dwType == RIM_TYPEMOUSE)
+	{
 		if ( ( raw->data.mouse.usFlags & 0x3 ) == MOUSE_MOVE_RELATIVE )
 			m_mouse.mouse_position += math::s32x2( raw->data.mouse.lLastX, raw->data.mouse.lLastY );
 		else
@@ -54,7 +54,7 @@ void sys::window_input_state::on_message( pvoid raw_data )
 
 		if ( raw->data.mouse.usButtonFlags & RI_MOUSE_WHEEL )
 			m_mouse.wheel_delta += raw->data.mouse.usButtonData;
-    }
+	}
 	else
 		UNREACHABLE_CODE
 }

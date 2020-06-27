@@ -83,18 +83,18 @@ void dx_root_signature::static_sampler::create(
 )
 {
 	desc.Filter = in_filter;
-    desc.AddressU = in_address_u;
-    desc.AddressV = in_address_v;
-    desc.AddressW = in_address_w;
-    desc.MipLODBias = in_mip_lod_bias;
-    desc.MaxAnisotropy = in_max_anisotrophy;
-    desc.ComparisonFunc = in_comparison_func;
-    desc.BorderColor = in_border_color;
-    desc.MinLOD = in_min_lod;
-    desc.MaxLOD = in_max_lod;
-    desc.ShaderRegister = in_register;
-    desc.RegisterSpace = in_space;
-    desc.ShaderVisibility = in_visibility;
+	desc.AddressU = in_address_u;
+	desc.AddressV = in_address_v;
+	desc.AddressW = in_address_w;
+	desc.MipLODBias = in_mip_lod_bias;
+	desc.MaxAnisotropy = in_max_anisotrophy;
+	desc.ComparisonFunc = in_comparison_func;
+	desc.BorderColor = in_border_color;
+	desc.MinLOD = in_min_lod;
+	desc.MaxLOD = in_max_lod;
+	desc.ShaderRegister = in_register;
+	desc.RegisterSpace = in_space;
+	desc.ShaderVisibility = in_visibility;
 }
 
 void dx_root_signature::cook::create(
@@ -146,8 +146,7 @@ void dx_root_signature::create( cook const& in_cook )
 
 void dx_root_signature::destroy( )
 {
-	s32 const ref_cnt = m_rs->Release( );
-	ASSERT_CMP( ref_cnt, ==, 0 );
+	m_rs->Release( );
 }
 
 } // namespace render

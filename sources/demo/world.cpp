@@ -161,7 +161,7 @@ void world::window_input( )
 	RAWINPUT& data			= *(RAWINPUT*)g_window_input.get_raw_input( );
 
 	if (data.header.dwType == RIM_TYPEKEYBOARD)
-    {
+	{
 		key const k			= (key)data.data.keyboard.VKey;
 		bool const pressed	= !( data.data.keyboard.Flags & 0x1 );
 
@@ -185,7 +185,7 @@ void world::window_input( )
 		}
 		else if ( m_console_visible )
 			m_console.on_input( );
-    }
+	}
 }
 
 world g_world;

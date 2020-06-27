@@ -14,7 +14,7 @@ static const math::float3 vertices[] = {
 
 static const u16 indices[] = {
 	0u, 1u, 2u,
-    0u, 2u, 3u
+	0u, 2u, 3u
 };
 
 static const u32 index_count = 6;

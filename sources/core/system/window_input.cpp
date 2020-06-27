@@ -43,7 +43,7 @@ void sys::window_input::on_message( pvoid handle )
 {
 	// NOTE: don't support joistics for now, so sizeof(RAWINPUT) is known.
 	u32 size = sizeof(RAWINPUT);
-    u32 read_size = GetRawInputData( (HRAWINPUT)handle, RID_INPUT, m_last_input, &size, sizeof(RAWINPUTHEADER) );
+	u32 read_size = GetRawInputData( (HRAWINPUT)handle, RID_INPUT, m_last_input, &size, sizeof(RAWINPUTHEADER) );
 	ASSERT_CMP( read_size, <=, sizeof(RAWINPUT) );
 
 	g_input_state.on_message( m_last_input );
