@@ -26,6 +26,8 @@ enum images
 {
 	image_v_buffer_polygon_id = 0,
 	image_radiance,
+	image_depth_buffer,
+	image_sun_shadowmap,
 
 	image_count
 };
@@ -35,6 +37,7 @@ enum image_srv_uavs
 	image_srv_v_buffer_polygon_id = 0,
 	image_srv_depth_buffer,
 	image_srv_radiance,
+	image_srv_sun_shadowmap,
 
 	image_srv_count,
 
@@ -55,6 +58,15 @@ enum image_rtvs
 	image_rtv_count
 };
 
+enum image_dsvs
+{
+	image_dsv_screen = 0,
+	image_dsv_screen_readonly,
+	image_dsv_sun_shadowmap,
+
+	image_dsv_count
+};
+
 class resources
 {
 public:
@@ -68,6 +80,10 @@ public:
 	enum : u32 {
 		hlsl_images_space = 8,
 		hlsl_textures_space = 9
+	};
+
+	enum : u32 {
+		sun_shadowmap_dimension = 4096
 	};
 
 	typedef gpu_object_manager<math::float4x3> transforms_type;
@@ -93,7 +109,6 @@ public:
 
 	dx_descriptor_heap const& srv_uav_heap( ) const { return m_srv_uav_heap; }
 	dx_descriptor_heap const& rtv_heap( ) const { return m_rtv_heap; }
-	inline dx_resource const& depth_buffer( ) const { return m_depth_buffer; }
 	inline dx_resource const& index_buffer( ) const { return m_index_buffer; }
 	inline dx_resource const& vertex_buffer( ) const { return m_vertex_buffer; }
 	inline dx_resource const& vertex_data_buffer( ) const { return m_vertex_data_buffer; }
@@ -111,8 +126,7 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE srv( u32 const in_index ) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtv( u32 const in_index ) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE uav( u32 const in_index ) const;
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv( ) const;
-	D3D12_CPU_DESCRIPTOR_HANDLE read_only_dsv( ) const;
+	D3D12_CPU_DESCRIPTOR_HANDLE dsv( u32 const in_index ) const;
 
 	inline render_allocator& render_allocator( ) { return m_render_allocator; }
 
@@ -133,7 +147,6 @@ private:
 	gpu_pool_allocator m_mesh_object_allocator;
 
 	dx_resource m_images[image_count];
-	dx_resource m_depth_buffer;
 	dx_resource m_index_buffer;
 	dx_resource m_vertex_buffer;
 	dx_resource m_vertex_data_buffer;

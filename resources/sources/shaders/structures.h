@@ -36,7 +36,9 @@ struct vertex_data_unpacked
 struct constant_buffer
 {
 	float4x4 view_projection;
-	float3x4 inv_view;
+	float4x4 sun_view_projection;
+	float4 sun_view_projection_inv_transp_0;
+	float4 sun_view_projection_inv_transp_1;
 	float4 world_camera_position;
 	float4 world_camera_ray_top_left;
 	float4 world_camera_screen_ray_x;
@@ -45,8 +47,13 @@ struct constant_buffer
 	float4 viewport_size;
 	float4 sun_direction;
 	float4 sun_radiance;
+
+	// Mesh count, sun shadowmap mesh count, point light count, UI batch count
 	uint4 indirect_params_0;
+	// Mesh gen arg count, 1, 1, unused
 	uint4 indirect_params_1;
+	// Sun shadowmap mesh gen arg count, 1, 1, unused
+	uint4 indirect_params_2;
 };
 
 struct dispatch_indirect_command

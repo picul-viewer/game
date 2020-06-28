@@ -6,6 +6,7 @@
 static const float c_pi = 3.1415926535898f;
 static const float c_inv_pi = 1.0f / c_pi;
 static const float c_eps = 1e-7f;
+static const float c_half_float_eps = 6.1e-5;
 
 uint load_u16( StructuredBuffer<uint> buffer, uint index )
 {
@@ -47,12 +48,22 @@ vertex_data_unpacked unpack_vertex_data( vertex_data data )
 
 uint mesh_list_size( )
 {
-	return g_constant_buffer.indirect_params_0.w;
+	return g_constant_buffer.indirect_params_0.x;
+}
+
+uint sun_shadowmap_mesh_list_size( )
+{
+	return g_constant_buffer.indirect_params_0.y;
 }
 
 uint point_light_list_size( )
 {
-	return g_constant_buffer.indirect_params_1.y;
+	return g_constant_buffer.indirect_params_0.z;
+}
+
+uint ui_batch_list_size( )
+{
+	return g_constant_buffer.indirect_params_0.w;
 }
 
 #endif // #ifndef GUARD_SHADER_COMMON_H_INCLUDED

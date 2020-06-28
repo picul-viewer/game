@@ -1,24 +1,24 @@
-#include "render_mesh_objects_effect_cook.h"
+#include "render_mesh_effect_cook.h"
 #include <resources/resources_path.h>
 #include <resource_system/api.h>
 #include "shader_cook.h"
 
 namespace render {
 
-render_mesh_objects_effect_cook* render_mesh_objects_effect_cook::create( pipeline_state* const in_ptr )
+render_mesh_effect_cook* render_mesh_effect_cook::create( pipeline_state* const in_ptr )
 {
-	render_mesh_objects_effect_cook* const result = std_allocator( ).allocate( sizeof(render_mesh_objects_effect_cook) );
+	render_mesh_effect_cook* const result = std_allocator( ).allocate( sizeof(render_mesh_effect_cook) );
 	result->init( );
 	result->m_result = in_ptr;
 	return result;
 }
 
-void render_mesh_objects_effect_cook::destroy( pointer const in_cook )
+void render_mesh_effect_cook::destroy( pointer const in_cook )
 {
 	std_allocator( ).deallocate( in_cook );
 }
 
-void render_mesh_objects_effect_cook::create_resource( )
+void render_mesh_effect_cook::create_resource( )
 {
 	shader_cook* vs_cook = shader_cook::create(
 		shader_type_vertex,
@@ -36,14 +36,14 @@ void render_mesh_objects_effect_cook::create_resource( )
 
 	create_child_resources(
 		resource_system::user_callback_task<
-			render_mesh_objects_effect_cook,
-			&render_mesh_objects_effect_cook::on_shaders_ready
+			render_mesh_effect_cook,
+			&render_mesh_effect_cook::on_shaders_ready
 		>( this ),
 		vs_cook, ps_cook
 	);
 }
 
-void render_mesh_objects_effect_cook::on_shaders_ready( queried_resources& in_resources )
+void render_mesh_effect_cook::on_shaders_ready( queried_resources& in_resources )
 {
 	raw_data::ptr vs_shader = in_resources.get_resource<raw_data::ptr>( );
 	raw_data::ptr ps_shader = in_resources.get_resource<raw_data::ptr>( );

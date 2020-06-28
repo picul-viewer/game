@@ -22,11 +22,15 @@ void shade_effect_cook::destroy( pointer const in_cook )
 
 void shade_effect_cook::create_resource( )
 {
+	shader_define defines[1];
+	defines[0].name = "SUN_SHADOWMAP_DIMENSION";
+	defines[0].value = format( "%d", resources::sun_shadowmap_dimension );
+
 	shader_cook* cs_cook = shader_cook::create(
 		shader_type_compute,
 		"shade.cs",
-		0,
-		nullptr
+		(u32)array_size( defines ),
+		defines
 	);
 
 	create_child_resources(

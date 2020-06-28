@@ -29,8 +29,8 @@ void resources::destroy( )
 }
 
 enum {
-	indices_count = 4 * 1024 * 1024,
-	vertices_count = 4 * 1024 * 1024
+	indices_count = 32 * 1024 * 1024,
+	vertices_count = 16 * 1024 * 1024
 };
 
 void resources::create_resources( )
@@ -79,7 +79,7 @@ void resources::create_resources( )
 	set_dx_name( m_srv_uav_heap, "srv_uav_heap" );
 	m_rtv_heap.create( D3D12_DESCRIPTOR_HEAP_TYPE_RTV, image_rtv_count, false );
 	set_dx_name( m_rtv_heap, "rtv_heap" );
-	m_dsv_heap.create( D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, false );
+	m_dsv_heap.create( D3D12_DESCRIPTOR_HEAP_TYPE_DSV, image_dsv_count, false );
 	set_dx_name( m_dsv_heap, "dsv_heap" );
 
 	{
@@ -246,18 +246,18 @@ void resources::create_images( )
 		resource_cook.set_initial_state( D3D12_RESOURCE_STATE_DEPTH_WRITE );
 		resource_cook.set_clear_value( DXGI_FORMAT_D32_FLOAT, 1.0f, 0u );
 
-		m_depth_buffer.create( resource_cook );
-		set_dx_name( m_depth_buffer, "depth_buffer" );
+		m_images[image_depth_buffer].create( resource_cook );
+		set_dx_name( m_images[image_depth_buffer], "depth_buffer" );
 
 		D3D12_DEPTH_STENCIL_VIEW_DESC dsv_desc;
 		dsv_desc.Format = DXGI_FORMAT_D32_FLOAT;
 		dsv_desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 		dsv_desc.Flags = D3D12_DSV_FLAG_NONE;
 		dsv_desc.Texture2D.MipSlice = 0;
-		g_dx.device( )->CreateDepthStencilView( m_depth_buffer, &dsv_desc, dsv( ) );
+		g_dx.device( )->CreateDepthStencilView( m_images[image_depth_buffer], &dsv_desc, dsv( image_dsv_screen ) );
 
 		dsv_desc.Flags = D3D12_DSV_FLAG_READ_ONLY_DEPTH;
-		g_dx.device( )->CreateDepthStencilView( m_depth_buffer, &dsv_desc, read_only_dsv( ) );
+		g_dx.device( )->CreateDepthStencilView( m_images[image_depth_buffer], &dsv_desc, dsv( image_dsv_screen_readonly ) );
 
 		D3D12_SHADER_RESOURCE_VIEW_DESC srv_desc;
 		srv_desc.Format = DXGI_FORMAT_R32_FLOAT;
@@ -268,7 +268,40 @@ void resources::create_images( )
 		srv_desc.Texture2D.PlaneSlice = 0;
 		srv_desc.Texture2D.ResourceMinLODClamp = 0.0f;
 
-		g_dx.device( )->CreateShaderResourceView( m_depth_buffer, &srv_desc, srv( image_srv_depth_buffer ) );
+		g_dx.device( )->CreateShaderResourceView( m_images[image_depth_buffer], &srv_desc, srv( image_srv_depth_buffer ) );
+	}
+
+	{
+		dx_resource::cook resource_cook;
+		resource_cook.create_texture2d(
+			DXGI_FORMAT_R16_TYPELESS,
+			sun_shadowmap_dimension, sun_shadowmap_dimension, 1, 1,
+			true, false, false, true, false
+		);
+		resource_cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
+		resource_cook.set_initial_state( D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE );
+		resource_cook.set_clear_value( DXGI_FORMAT_D16_UNORM, 1.0f, 0u );
+
+		m_images[image_sun_shadowmap].create( resource_cook );
+		set_dx_name( m_images[image_sun_shadowmap], "sun_shadowmap" );
+
+		D3D12_DEPTH_STENCIL_VIEW_DESC dsv_desc;
+		dsv_desc.Format = DXGI_FORMAT_D16_UNORM;
+		dsv_desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+		dsv_desc.Flags = D3D12_DSV_FLAG_NONE;
+		dsv_desc.Texture2D.MipSlice = 0;
+		g_dx.device( )->CreateDepthStencilView( m_images[image_sun_shadowmap], &dsv_desc, dsv( image_dsv_sun_shadowmap ) );
+
+		D3D12_SHADER_RESOURCE_VIEW_DESC srv_desc;
+		srv_desc.Format = DXGI_FORMAT_R16_UNORM;
+		srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srv_desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srv_desc.Texture2D.MostDetailedMip = 0;
+		srv_desc.Texture2D.MipLevels = 1;
+		srv_desc.Texture2D.PlaneSlice = 0;
+		srv_desc.Texture2D.ResourceMinLODClamp = 0.0f;
+
+		g_dx.device( )->CreateShaderResourceView( m_images[image_sun_shadowmap], &srv_desc, srv( image_srv_sun_shadowmap ) );
 	}
 
 	{
@@ -287,7 +320,6 @@ void resources::destroy_images( )
 {
 	for ( u32 i = 0; i < image_count; ++i )
 		m_images[i].destroy( );
-	m_depth_buffer.destroy( );
 }
 
 u32 resources::create_texture( dx_resource const in_texture, D3D12_SHADER_RESOURCE_VIEW_DESC const& in_srv_desc )
@@ -395,15 +427,11 @@ D3D12_CPU_DESCRIPTOR_HANDLE resources::uav( u32 const in_index ) const
 	return result;
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE resources::dsv( ) const
+D3D12_CPU_DESCRIPTOR_HANDLE resources::dsv( u32 const in_index ) const
 {
-	return m_dsv_heap->GetCPUDescriptorHandleForHeapStart( );
-}
-
-D3D12_CPU_DESCRIPTOR_HANDLE resources::read_only_dsv( ) const
-{
+	ASSERT_CMP( in_index, <, image_dsv_count );
 	D3D12_CPU_DESCRIPTOR_HANDLE result = m_dsv_heap->GetCPUDescriptorHandleForHeapStart( );
-	result.ptr += g_dx.dsv_descriptor_size( );
+	result.ptr += g_dx.dsv_descriptor_size( ) * in_index;
 	return result;
 }
 

@@ -130,12 +130,6 @@
     <Filter Include="render\effects">
       <UniqueIdentifier>{119aa326-0705-4729-99be-e6d2d63adc88}</UniqueIdentifier>
     </Filter>
-    <Filter Include="render\effects\generate_mesh_arguments">
-      <UniqueIdentifier>{b0a944b5-5553-4c21-bc67-029a78b03bb9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="render\effects\render_mesh_objects">
-      <UniqueIdentifier>{81eca212-0038-48d5-ba8b-d7524b2b16aa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="render\effects\shade">
       <UniqueIdentifier>{3cc97134-59d2-49a6-ad75-3954c1f771f0}</UniqueIdentifier>
     </Filter>
@@ -165,6 +159,15 @@
     </Filter>
     <Filter Include="render\effects\resolve">
       <UniqueIdentifier>{4f329643-54c1-4d0f-b38c-d67a0c0155b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\effects\gen_arg_mesh">
+      <UniqueIdentifier>{b0a944b5-5553-4c21-bc67-029a78b03bb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\effects\render_shadowmap">
+      <UniqueIdentifier>{ec9a72e6-cc22-43ea-a753-b21f11bed2d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\effects\render_mesh">
+      <UniqueIdentifier>{81eca212-0038-48d5-ba8b-d7524b2b16aa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -273,12 +276,6 @@
     <ClCompile Include="gpu_double_pool_allocator.cpp">
       <Filter>dx12\utils\allocators\double_pool</Filter>
     </ClCompile>
-    <ClCompile Include="generate_mesh_arguments_effect_cook.cpp">
-      <Filter>render\effects\generate_mesh_arguments</Filter>
-    </ClCompile>
-    <ClCompile Include="render_mesh_objects_effect_cook.cpp">
-      <Filter>render\effects\render_mesh_objects</Filter>
-    </ClCompile>
     <ClCompile Include="shade_effect_cook.cpp">
       <Filter>render\effects\shade</Filter>
     </ClCompile>
@@ -305,6 +302,15 @@
     </ClCompile>
     <ClCompile Include="resolve_effect_cook.cpp">
       <Filter>render\effects\resolve</Filter>
+    </ClCompile>
+    <ClCompile Include="render_shadowmap_effect_cook.cpp">
+      <Filter>render\effects\render_shadowmap</Filter>
+    </ClCompile>
+    <ClCompile Include="render_mesh_effect_cook.cpp">
+      <Filter>render\effects\render_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="gen_arg_mesh_effect_cook.cpp">
+      <Filter>render\effects\gen_arg_mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -425,12 +431,6 @@
     <ClInclude Include="gpu_double_pool_allocator.h">
       <Filter>dx12\utils\allocators\double_pool</Filter>
     </ClInclude>
-    <ClInclude Include="generate_mesh_arguments_effect_cook.h">
-      <Filter>render\effects\generate_mesh_arguments</Filter>
-    </ClInclude>
-    <ClInclude Include="render_mesh_objects_effect_cook.h">
-      <Filter>render\effects\render_mesh_objects</Filter>
-    </ClInclude>
     <ClInclude Include="shade_effect_cook.h">
       <Filter>render\effects\shade</Filter>
     </ClInclude>
@@ -466,6 +466,15 @@
     </ClInclude>
     <ClInclude Include="resolve_effect_cook.h">
       <Filter>render\effects\resolve</Filter>
+    </ClInclude>
+    <ClInclude Include="render_shadowmap_effect_cook.h">
+      <Filter>render\effects\render_shadowmap</Filter>
+    </ClInclude>
+    <ClInclude Include="render_mesh_effect_cook.h">
+      <Filter>render\effects\render_mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="gen_arg_mesh_effect_cook.h">
+      <Filter>render\effects\gen_arg_mesh</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

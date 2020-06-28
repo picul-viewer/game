@@ -97,9 +97,10 @@ void main( uint3 id : SV_DispatchThreadID )
 	const float2 metalness_roughness = g_textures[NonUniformResourceIndex(mesh.metal_rough_texture_index)].SampleGrad( g_sampler, data.texcoord, texcoord_ddx, texcoord_ddy ).zy;
 
 	const float3 n = normalize( mul( transpose( transform ), float4( data.normal.xyz, 0.0f ) ).xyz );
+	const float3 geom_n = cross( v1 - v0, v2 - v0 );
 	const float3 i = normalize( -world_camera_ray );
 
-	float3 result = shade_sun( albedo, metalness_roughness, n, i );
+	float3 result = shadow_sun( v, geom_n ) * shade_sun( albedo, metalness_roughness, n, i );
 
 	for ( uint li = 0; li < point_light_list_size( ); ++li )
 	{

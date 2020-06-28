@@ -1,42 +1,47 @@
-#include "generate_mesh_arguments_effect_cook.h"
+#include "gen_arg_mesh_effect_cook.h"
 #include <resources/resources_path.h>
 #include <resource_system/api.h>
 #include "shader_cook.h"
 
 namespace render {
 
-generate_mesh_arguments_effect_cook* generate_mesh_arguments_effect_cook::create( pipeline_state* const in_ptr )
+gen_arg_mesh_effect_cook* gen_arg_mesh_effect_cook::create( pipeline_state* const in_ptr, type const in_type )
 {
-	generate_mesh_arguments_effect_cook* const result = std_allocator( ).allocate( sizeof(generate_mesh_arguments_effect_cook) );
+	gen_arg_mesh_effect_cook* const result = std_allocator( ).allocate( sizeof(gen_arg_mesh_effect_cook) );
 	result->init( );
 	result->m_result = in_ptr;
+	result->m_type = in_type;
 	return result;
 }
 
-void generate_mesh_arguments_effect_cook::destroy( pointer const in_cook )
+void gen_arg_mesh_effect_cook::destroy( pointer const in_cook )
 {
 	std_allocator( ).deallocate( in_cook );
 }
 
-void generate_mesh_arguments_effect_cook::create_resource( )
+void gen_arg_mesh_effect_cook::create_resource( )
 {
+	shader_define defines[1];
+	defines[0].name = "GEN_ARG_TYPE";
+	defines[0].value = format( "%d", m_type );
+
 	shader_cook* cook = shader_cook::create(
 		shader_type_compute,
-		"generate_mesh_arguments.comp",
-		0,
-		nullptr
+		"gen_arg.cs",
+		(u32)array_size( defines ),
+		defines
 	);
 
 	create_child_resources(
 		resource_system::user_callback_task<
-			generate_mesh_arguments_effect_cook,
-			&generate_mesh_arguments_effect_cook::on_shaders_ready
+			gen_arg_mesh_effect_cook,
+			&gen_arg_mesh_effect_cook::on_shaders_ready
 		>( this ),
 		cook
 	);
 }
 
-void generate_mesh_arguments_effect_cook::on_shaders_ready( queried_resources& in_resources )
+void gen_arg_mesh_effect_cook::on_shaders_ready( queried_resources& in_resources )
 {
 	raw_data::ptr shader = in_resources.get_resource<raw_data::ptr>( );
 

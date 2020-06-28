@@ -8,6 +8,7 @@ ConstantBuffer<constant_buffer> g_constant_buffer : register( b0 );
 Texture2D<uint2>	g_polygon_id	: register( t0, space8 );
 Texture2D<float>	g_depth			: register( t1, space8 );
 Texture2D<float4>	g_radiance		: register( t2, space8 );
+Texture2D<float>	g_sun_shadowmap	: register( t3, space8 );
 
 RWTexture2D<float4>	g_radiance_uav	: register( u0, space8 );
 

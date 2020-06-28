@@ -36,8 +36,6 @@ void camera::fill_constant_buffer( gpu::constant_buffer& in_buffer )
 	math::float4 camera_position_world = math::modify_by_transform( math::float4( 0.0f, 0.0f, 0.0f, 1.0f ), inv_view );
 	camera_position_world /= camera_position_world.w;
 
-	in_buffer.inv_view = inv_view;
-
 	in_buffer.world_camera_position = camera_position_world;
 	in_buffer.world_camera_ray_top_left = camera_top_left_ray_world - camera_position_world;
 	in_buffer.world_camera_screen_ray_x = camera_top_right_ray_world - camera_top_left_ray_world;

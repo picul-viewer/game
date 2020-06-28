@@ -11,10 +11,10 @@ pipeline_state* pipeline_state::create_resource( pipeline_state* const in_ptr, d
 	return in_ptr;
 }
 
-void pipeline_state::destroy_resource( pipeline_state* const in_resource )
+void pipeline_state::destroy( )
 {
-	in_resource->m_ps.destroy( );
-	in_resource->m_rs.destroy( );
+	m_ps.destroy( );
+	m_rs.destroy( );
 }
 
 } // namespace render

@@ -1,5 +1,5 @@
-#ifndef GUARD_RENDER_RENDER_MESH_OBJECTS_EFFECT_COOK_H_INCLUDED
-#define GUARD_RENDER_RENDER_MESH_OBJECTS_EFFECT_COOK_H_INCLUDED
+#ifndef GUARD_RENDER_RENDER_MESH_EFFECT_COOK_H_INCLUDED
+#define GUARD_RENDER_RENDER_MESH_EFFECT_COOK_H_INCLUDED
 
 #include <types.h>
 #include <resource_system/default_resource_cook.h>
@@ -7,10 +7,10 @@
 
 namespace render {
 
-class render_mesh_objects_effect_cook : public default_resource_cook<pipeline_state, render_mesh_objects_effect_cook>
+class render_mesh_effect_cook : public default_resource_cook<pipeline_state, render_mesh_effect_cook>
 {
 public:
-	static render_mesh_objects_effect_cook* create( pipeline_state* const in_ptr );
+	static render_mesh_effect_cook* create( pipeline_state* const in_ptr );
 	static void destroy( pointer const in_cook );
 
 public:
@@ -30,4 +30,4 @@ private:
 
 } // namespace render
 
-#endif // #ifndef GUARD_RENDER_RENDER_MESH_OBJECTS_EFFECT_COOK_H_INCLUDED
+#endif // #ifndef GUARD_RENDER_RENDER_MESH_EFFECT_COOK_H_INCLUDED

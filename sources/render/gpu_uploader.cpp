@@ -114,7 +114,7 @@ bool gpu_uploader_queue::empty( ) const
 }
 
 
-static const uptr upload_buffer_size = 8 * Mb;
+static const uptr upload_buffer_size = 16 * Mb;
 
 void gpu_uploader::create( )
 {
