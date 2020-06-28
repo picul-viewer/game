@@ -50,7 +50,7 @@ void mesh_compiler::compile( lib::buffer_array<math::aabb>& in_aabbs, pcstr cons
 	indices.create( indices_data, max_indices );
 
 	math::aabb aabb;
-	aabb.set_min_max( math::float3( FLT_MAX ), math::float3( FLT_MIN ) );
+	aabb.invalidate( );
 
 	math::float3 vertex_positions[3];
 	vertex_data_type vertex_data[3];
@@ -81,7 +81,7 @@ void mesh_compiler::compile( lib::buffer_array<math::aabb>& in_aabbs, pcstr cons
 			vertices_data.clear( );
 			indices.clear( );
 			vertices_map.clear( );
-			aabb.set_min_max( math::float3( FLT_MAX ), math::float3( FLT_MIN ) );
+			aabb.invalidate( );
 		}
 
 		for ( u32 i = 0; i < 3; ++i )
