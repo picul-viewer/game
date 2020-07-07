@@ -17,11 +17,14 @@ IDXGIAdapter* choose_adapter( IDXGIFactory1* const in_factory )
 		DXGI_ADAPTER_DESC desc;
 		current_adapter->GetDesc( &desc );
 
-		// If this is software driver then exit.
-		if ( desc.Description[0] == L'M' )
+		// Choose if NVidia or AMD.
+		if ( ( desc.Description[0] == L'N' ) || ( desc.Description[0] == L'A' ) )
+		{
+			adapter = current_adapter;
+			LOG( "Render device: %S\n", desc.Description );
 			break;
+		}
 
-		adapter = current_adapter;
 		++i;
 	}
 
