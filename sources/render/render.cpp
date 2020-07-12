@@ -90,7 +90,7 @@ void render::create( )
 	{
 		dx_resource::cook cook;
 		cook.create_buffer(
-			max_mesh_object_list_size * sizeof(u32),
+			max_mesh_list_size * sizeof(u32),
 			true, false, false, false
 		);
 		cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
@@ -98,17 +98,17 @@ void render::create( )
 
 		for ( u32 i = 0; i < max_frame_delay; ++i )
 		{
-			m_mesh_object_list[i].create( cook );
-			set_dx_name( m_mesh_object_list[i], format( "mesh_object_list #%d", i ) );
-			m_sun_shadowmap_mesh_object_list[i].create( cook );
-			set_dx_name( m_sun_shadowmap_mesh_object_list[i], format( "sun_shadowmap_mesh_object_list #%d", i ) );
+			m_mesh_list[i].create( cook );
+			set_dx_name( m_mesh_list[i], format( "mesh_object_list #%d", i ) );
+			m_sun_shadow_mesh_list[i].create( cook );
+			set_dx_name( m_sun_shadow_mesh_list[i], format( "sun_shadow_mesh_list #%d", i ) );
 		}
 	}
 
 	{
 		dx_resource::cook cook;
 		cook.create_buffer(
-			max_point_light_object_list_size * sizeof(u32),
+			max_point_light_list_size * sizeof(u32),
 			true, false, false, false
 		);
 		cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
@@ -116,39 +116,39 @@ void render::create( )
 
 		for ( u32 i = 0; i < max_frame_delay; ++i )
 		{
-			m_point_light_object_list[i].create( cook );
-			set_dx_name( m_point_light_object_list[i], format( "point_light_object_list #%d", i ) );
+			m_point_light_list[i].create( cook );
+			set_dx_name( m_point_light_list[i], format( "point_light_list #%d", i ) );
 		}
 	}
 
 	{
 		dx_resource::cook cook;
 		cook.create_buffer(
-			max_mesh_object_list_size * sizeof(gpu::draw_indexed_indirect_command),
+			max_mesh_list_size * sizeof(gpu::draw_indexed_indirect_command),
 			false, true, false, false
 		);
 		cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
 		cook.set_initial_state( D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT );
 
-		m_mesh_indirect_arguments_buffer.create( cook );
-		set_dx_name( m_mesh_indirect_arguments_buffer, "mesh_indirect_arguments_buffer" );
-		m_sun_shadowmap_indirect_arguments_buffer.create( cook );
-		set_dx_name( m_sun_shadowmap_indirect_arguments_buffer, "sun_shadowmap_indirect_arguments_buffer" );
+		m_scene_mesh_indirect_buffer.create( cook );
+		set_dx_name( m_scene_mesh_indirect_buffer, "scene_mesh_indirect_buffer" );
+		m_sun_shadow_mesh_indirect_buffer.create( cook );
+		set_dx_name( m_sun_shadow_mesh_indirect_buffer, "sun_shadow_mesh_indirect_buffer" );
 	}
 
 	{
 		dx_resource::cook cook;
 		cook.create_buffer(
-			max_mesh_object_list_size * sizeof(math::float4x4),
+			max_mesh_list_size * sizeof(math::float4x4),
 			true, true, false, false
 		);
 		cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
 		cook.set_initial_state( D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER );
 
-		m_mesh_transforms_buffer.create( cook );
-		set_dx_name( m_mesh_transforms_buffer, "mesh_transforms_buffer" );
-		m_sun_shadowmap_mesh_transforms_buffer.create( cook );
-		set_dx_name( m_sun_shadowmap_mesh_transforms_buffer, "sun_shadowmap_mesh_transforms_buffer" );
+		m_scene_mesh_transforms_buffer.create( cook );
+		set_dx_name( m_scene_mesh_transforms_buffer, "scene_mesh_transforms_buffer" );
+		m_sun_shadow_mesh_transforms_buffer.create( cook );
+		set_dx_name( m_sun_shadow_mesh_transforms_buffer, "sun_shadow_mesh_transforms_buffer" );
 	}
 
 	m_debug_font.reset( );
@@ -262,28 +262,28 @@ void render::record_render( )
 
 					barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 					barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[0].Transition.pResource = m_mesh_indirect_arguments_buffer;
+					barriers[0].Transition.pResource = m_scene_mesh_indirect_buffer;
 					barriers[0].Transition.Subresource = 0;
 					barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
 					barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 
 					barriers[1].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 					barriers[1].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[1].Transition.pResource = m_mesh_transforms_buffer;
+					barriers[1].Transition.pResource = m_scene_mesh_transforms_buffer;
 					barriers[1].Transition.Subresource = 0;
 					barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
 					barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 
 					barriers[2].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 					barriers[2].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[2].Transition.pResource = m_sun_shadowmap_indirect_arguments_buffer;
+					barriers[2].Transition.pResource = m_sun_shadow_mesh_indirect_buffer;
 					barriers[2].Transition.Subresource = 0;
 					barriers[2].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
 					barriers[2].Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 
 					barriers[3].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 					barriers[3].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[3].Transition.pResource = m_sun_shadowmap_mesh_transforms_buffer;
+					barriers[3].Transition.pResource = m_sun_shadow_mesh_transforms_buffer;
 					barriers[3].Transition.Subresource = 0;
 					barriers[3].Transition.StateBefore = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
 					barriers[3].Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
@@ -298,11 +298,11 @@ void render::record_render( )
 					list->SetPipelineState( m_ps_gen_arg_mesh.ps( ) );
 
 					list->SetComputeRootConstantBufferView( 0, g_resources.constant_buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 1, m_mesh_object_list[j]->GetGPUVirtualAddress( ) );
+					list->SetComputeRootShaderResourceView( 1, m_mesh_list[j]->GetGPUVirtualAddress( ) );
 					list->SetComputeRootShaderResourceView( 2, g_resources.mesh_object_buffer( )->GetGPUVirtualAddress( ) );
 					list->SetComputeRootShaderResourceView( 3, g_resources.transforms( ).buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootUnorderedAccessView( 4, m_mesh_indirect_arguments_buffer->GetGPUVirtualAddress( ) );
-					list->SetComputeRootUnorderedAccessView( 5, m_mesh_transforms_buffer->GetGPUVirtualAddress( ) );
+					list->SetComputeRootUnorderedAccessView( 4, m_scene_mesh_indirect_buffer->GetGPUVirtualAddress( ) );
+					list->SetComputeRootUnorderedAccessView( 5, m_scene_mesh_transforms_buffer->GetGPUVirtualAddress( ) );
 
 					u32 const dispatch_size_offset = offsetof( gpu::constant_buffer, indirect_params_1.x );
 					list->ExecuteIndirect( m_dispatch_cs, 1, g_resources.constant_buffer( j ), dispatch_size_offset, nullptr, 0 );
@@ -315,11 +315,11 @@ void render::record_render( )
 					list->SetPipelineState( m_ps_gen_arg_sun_shadowmap.ps( ) );
 
 					list->SetComputeRootConstantBufferView( 0, g_resources.constant_buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 1, m_sun_shadowmap_mesh_object_list[j]->GetGPUVirtualAddress( ) );
+					list->SetComputeRootShaderResourceView( 1, m_sun_shadow_mesh_list[j]->GetGPUVirtualAddress( ) );
 					list->SetComputeRootShaderResourceView( 2, g_resources.mesh_object_buffer( )->GetGPUVirtualAddress( ) );
 					list->SetComputeRootShaderResourceView( 3, g_resources.transforms( ).buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootUnorderedAccessView( 4, m_sun_shadowmap_indirect_arguments_buffer->GetGPUVirtualAddress( ) );
-					list->SetComputeRootUnorderedAccessView( 5, m_sun_shadowmap_mesh_transforms_buffer->GetGPUVirtualAddress( ) );
+					list->SetComputeRootUnorderedAccessView( 4, m_sun_shadow_mesh_indirect_buffer->GetGPUVirtualAddress( ) );
+					list->SetComputeRootUnorderedAccessView( 5, m_sun_shadow_mesh_transforms_buffer->GetGPUVirtualAddress( ) );
 
 					u32 const dispatch_size_offset = offsetof( gpu::constant_buffer, indirect_params_2.x );
 					list->ExecuteIndirect( m_dispatch_cs, 1, g_resources.constant_buffer( j ), dispatch_size_offset, nullptr, 0 );
@@ -330,28 +330,28 @@ void render::record_render( )
 
 					barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 					barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[0].Transition.pResource = m_mesh_indirect_arguments_buffer;
+					barriers[0].Transition.pResource = m_scene_mesh_indirect_buffer;
 					barriers[0].Transition.Subresource = 0;
 					barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 					barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
 
 					barriers[1].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 					barriers[1].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[1].Transition.pResource = m_mesh_transforms_buffer;
+					barriers[1].Transition.pResource = m_scene_mesh_transforms_buffer;
 					barriers[1].Transition.Subresource = 0;
 					barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 					barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
 
 					barriers[2].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 					barriers[2].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[2].Transition.pResource = m_sun_shadowmap_indirect_arguments_buffer;
+					barriers[2].Transition.pResource = m_sun_shadow_mesh_indirect_buffer;
 					barriers[2].Transition.Subresource = 0;
 					barriers[2].Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 					barriers[2].Transition.StateAfter = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
 
 					barriers[3].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 					barriers[3].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[3].Transition.pResource = m_sun_shadowmap_mesh_transforms_buffer;
+					barriers[3].Transition.pResource = m_sun_shadow_mesh_transforms_buffer;
 					barriers[3].Transition.Subresource = 0;
 					barriers[3].Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 					barriers[3].Transition.StateAfter = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
@@ -393,11 +393,11 @@ void render::record_render( )
 
 					D3D12_VERTEX_BUFFER_VIEW vbvs[3];
 					vbvs[0] = g_resources.vertex_buffer_view( );
-					vbvs[1].BufferLocation = m_mesh_transforms_buffer->GetGPUVirtualAddress( );
-					vbvs[1].SizeInBytes = max_mesh_object_list_size * sizeof(math::float4x4);
+					vbvs[1].BufferLocation = m_scene_mesh_transforms_buffer->GetGPUVirtualAddress( );
+					vbvs[1].SizeInBytes = max_mesh_list_size * sizeof(math::float4x4);
 					vbvs[1].StrideInBytes = sizeof(math::float4x4);
-					vbvs[2].BufferLocation = m_mesh_object_list[j]->GetGPUVirtualAddress( );
-					vbvs[2].SizeInBytes = max_mesh_object_list_size * sizeof(u32);
+					vbvs[2].BufferLocation = m_mesh_list[j]->GetGPUVirtualAddress( );
+					vbvs[2].SizeInBytes = max_mesh_list_size * sizeof(u32);
 					vbvs[2].StrideInBytes = sizeof(u32);
 					list->IASetVertexBuffers( 0, (u32)array_size( vbvs ), vbvs );
 
@@ -406,8 +406,8 @@ void render::record_render( )
 					u32 const instance_count_offset = offsetof( gpu::constant_buffer, indirect_params_0.x );
 					list->ExecuteIndirect(
 						m_draw_indexed_cs,
-						max_mesh_object_list_size,
-						m_mesh_indirect_arguments_buffer, 0,
+						max_mesh_list_size,
+						m_scene_mesh_indirect_buffer, 0,
 						g_resources.constant_buffer( j ), instance_count_offset
 					);
 				}
@@ -430,8 +430,8 @@ void render::record_render( )
 
 					D3D12_VERTEX_BUFFER_VIEW vbvs[2];
 					vbvs[0] = g_resources.vertex_buffer_view( );
-					vbvs[1].BufferLocation = m_sun_shadowmap_mesh_transforms_buffer->GetGPUVirtualAddress( );
-					vbvs[1].SizeInBytes = max_mesh_object_list_size * sizeof(math::float4x4);
+					vbvs[1].BufferLocation = m_sun_shadow_mesh_transforms_buffer->GetGPUVirtualAddress( );
+					vbvs[1].SizeInBytes = max_mesh_list_size * sizeof(math::float4x4);
 					vbvs[1].StrideInBytes = sizeof(math::float4x4);
 					list->IASetVertexBuffers( 0, (u32)array_size( vbvs ), vbvs );
 
@@ -440,8 +440,8 @@ void render::record_render( )
 					u32 const instance_count_offset = offsetof( gpu::constant_buffer, indirect_params_0.y );
 					list->ExecuteIndirect(
 						m_draw_indexed_cs,
-						max_mesh_object_list_size,
-						m_sun_shadowmap_indirect_arguments_buffer, 0,
+						max_mesh_list_size,
+						m_sun_shadow_mesh_indirect_buffer, 0,
 						g_resources.constant_buffer( j ), instance_count_offset
 					);
 				}
@@ -503,7 +503,7 @@ void render::record_render( )
 					list->SetComputeRootShaderResourceView( 4, g_resources.vertex_data_buffer( )->GetGPUVirtualAddress( ) );
 					list->SetComputeRootShaderResourceView( 5, g_resources.transforms( ).buffer( j )->GetGPUVirtualAddress( ) );
 					list->SetComputeRootShaderResourceView( 6, g_resources.point_lights( ).buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 7, m_point_light_object_list[j]->GetGPUVirtualAddress( ) );
+					list->SetComputeRootShaderResourceView( 7, m_point_light_list[j]->GetGPUVirtualAddress( ) );
 					list->SetComputeRootDescriptorTable( 8, g_resources.srv_uav_heap( )->GetGPUDescriptorHandleForHeapStart( ) );
 
 					u16 const tile_size = 16;
@@ -616,10 +616,10 @@ void render::destroy( )
 	// Wait for GPU.
 	render_wait( [this]( ) { return m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index; } );
 
-	m_mesh_indirect_arguments_buffer.destroy( );
-	m_mesh_transforms_buffer.destroy( );
-	m_sun_shadowmap_indirect_arguments_buffer.destroy( );
-	m_sun_shadowmap_mesh_transforms_buffer.destroy( );
+	m_scene_mesh_indirect_buffer.destroy( );
+	m_scene_mesh_transforms_buffer.destroy( );
+	m_sun_shadow_mesh_indirect_buffer.destroy( );
+	m_sun_shadow_mesh_transforms_buffer.destroy( );
 
 	destroy_effects( );
 
@@ -643,8 +643,8 @@ void render::on_resources_destroyed( )
 
 	for ( u32 i = 0 ; i < max_frame_delay; ++i )
 	{
-		m_mesh_object_list[i].destroy( );
-		m_point_light_object_list[i].destroy( );
+		m_mesh_list[i].destroy( );
+		m_point_light_list[i].destroy( );
 	}
 
 	m_dispatch_cs.destroy( );
@@ -805,7 +805,7 @@ void render::prepare_frame( )
 		math::frustum frustum;
 		frustum.set_from_matrix( m_render_camera.get_view_projection( ) );
 
-		lib::buffer_array<u32> cpu_mesh_object_list( m_cpu_mesh_object_lists[cmd_index], max_mesh_object_list_size );
+		lib::buffer_array<u32> cpu_mesh_object_list( m_cpu_mesh_lists[cmd_index], max_mesh_list_size );
 
 		static_mesh_container.frustum_test( frustum, [&cpu_mesh_object_list]( math::bvh::object_handle const in_handle )
 		{
@@ -822,11 +822,11 @@ void render::prepare_frame( )
 		mesh_list_size = (u32)cpu_mesh_object_list.size( );
 
 		gpu_upload_task& mesh_list_task = copy_tasks.emplace_back( );
-		mesh_list_task.set_buffer_upload( m_mesh_object_list[cmd_index], 0 );
+		mesh_list_task.set_buffer_upload( m_mesh_list[cmd_index], 0 );
 		mesh_list_task.set_source_data( cpu_mesh_object_list.data( ), mesh_list_size * sizeof(u32) );
 
 
-		lib::buffer_array<u32> cpu_sun_shadowmap_mesh_object_list( m_cpu_sun_shadowmap_mesh_object_lists[cmd_index], max_mesh_object_list_size );
+		lib::buffer_array<u32> cpu_sun_shadowmap_mesh_object_list( m_cpu_sun_shadow_mesh_lists[cmd_index], max_mesh_list_size );
 
 		static_mesh_container.for_each( [&cpu_sun_shadowmap_mesh_object_list]( math::bvh::object_handle const in_handle )
 		{
@@ -843,13 +843,13 @@ void render::prepare_frame( )
 		sun_shadowmap_mesh_list_size = (u32)cpu_sun_shadowmap_mesh_object_list.size( );
 
 		gpu_upload_task& sun_shadowmap_mesh_list_task = copy_tasks.emplace_back( );
-		sun_shadowmap_mesh_list_task.set_buffer_upload( m_sun_shadowmap_mesh_object_list[cmd_index], 0 );
+		sun_shadowmap_mesh_list_task.set_buffer_upload( m_sun_shadow_mesh_list[cmd_index], 0 );
 		sun_shadowmap_mesh_list_task.set_source_data( cpu_sun_shadowmap_mesh_object_list.data( ), sun_shadowmap_mesh_list_size * sizeof(u32) );
 
 
 		auto const& static_point_light_container = m_scene->static_point_light_container( );
 
-		lib::buffer_array<u32> cpu_point_light_object_list( m_cpu_point_light_object_lists[cmd_index], max_point_light_object_list_size );
+		lib::buffer_array<u32> cpu_point_light_object_list( m_cpu_point_light_lists[cmd_index], max_point_light_list_size );
 
 		for ( u32 i = 0; i < static_point_light_container.size( ); ++i )
 		{
@@ -863,7 +863,7 @@ void render::prepare_frame( )
 		point_light_list_size = (u32)cpu_point_light_object_list.size( );
 
 		gpu_upload_task& point_light_list_task = copy_tasks.emplace_back( );
-		point_light_list_task.set_buffer_upload( m_point_light_object_list[cmd_index], 0 );
+		point_light_list_task.set_buffer_upload( m_point_light_list[cmd_index], 0 );
 		point_light_list_task.set_source_data( cpu_point_light_object_list.data( ), point_light_list_size * sizeof(u32) );
 	}
 

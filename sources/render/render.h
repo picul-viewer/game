@@ -26,8 +26,8 @@ class render
 {
 public:
 	enum {
-		max_mesh_object_list_size = 4096,
-		max_point_light_object_list_size = 512
+		max_mesh_list_size = 4096,
+		max_point_light_list_size = 512
 	};
 
 public:
@@ -73,6 +73,12 @@ private:
 	enum { max_copy_task_count = 8 };
 
 private:
+	u32 m_cpu_mesh_lists[max_frame_delay][max_mesh_list_size];
+	u32 m_cpu_sun_shadow_mesh_lists[max_frame_delay][max_mesh_list_size];
+	u32 m_cpu_point_light_lists[max_frame_delay][max_point_light_list_size];
+	gpu::constant_buffer m_cpu_constant_buffers[max_frame_delay];
+	gpu_upload_task m_copy_tasks[max_copy_task_count];
+
 	ui_processor m_ui_processor;
 
 	pipeline_state m_ps_gen_arg_mesh;
@@ -84,19 +90,13 @@ private:
 	pipeline_state m_ps_resolve;
 	pipeline_state m_ps_render_ui;
 
-	dx_resource m_mesh_indirect_arguments_buffer;
-	dx_resource m_sun_shadowmap_indirect_arguments_buffer;
-	dx_resource m_mesh_transforms_buffer;
-	dx_resource m_sun_shadowmap_mesh_transforms_buffer;
-	dx_resource m_mesh_object_list[max_frame_delay];
-	dx_resource m_sun_shadowmap_mesh_object_list[max_frame_delay];
-	dx_resource m_point_light_object_list[max_frame_delay];
-
-	u32 m_cpu_mesh_object_lists[max_frame_delay][max_mesh_object_list_size];
-	u32 m_cpu_sun_shadowmap_mesh_object_lists[max_frame_delay][max_mesh_object_list_size];
-	u32 m_cpu_point_light_object_lists[max_frame_delay][max_point_light_object_list_size];
-	gpu::constant_buffer m_cpu_constant_buffers[max_frame_delay];
-	gpu_upload_task m_copy_tasks[max_copy_task_count];
+	dx_resource m_scene_mesh_indirect_buffer;
+	dx_resource m_sun_shadow_mesh_indirect_buffer;
+	dx_resource m_scene_mesh_transforms_buffer;
+	dx_resource m_sun_shadow_mesh_transforms_buffer;
+	dx_resource m_mesh_list[max_frame_delay];
+	dx_resource m_sun_shadow_mesh_list[max_frame_delay];
+	dx_resource m_point_light_list[max_frame_delay];
 
 	camera m_render_camera;
 

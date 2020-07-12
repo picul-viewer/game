@@ -191,7 +191,6 @@ inline float4x4 matrix_orthographic( float left, float right, float bottom, floa
 					 float4( 0.0f, 0.0f, 0.0f, 1.0f ) );
 }
 
-// depth: znear - 1, zfar - 0
 inline float4x4 matrix_perspective( float fov, float aspect, float znear, float zfar )
 {
 	float const

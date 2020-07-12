@@ -28,7 +28,7 @@ float shadow_sun( float3 world_position, float3 geometric_normal )
 	return shadow_factor;
 }
 
-float3 shade_sun( float3 albedo, float2 metalness_roughness, float3 n, float3 i )
+float3 shade_sun( float3 albedo, float2 metalness_roughness, float3 v, float3 n, float3 geom_n, float3 i )
 {
 	if ( g_constant_buffer.sun_radiance.w == 0.0f )
 		return 0.0f;
@@ -45,8 +45,9 @@ float3 shade_sun( float3 albedo, float2 metalness_roughness, float3 n, float3 i 
 		return 0.0f;
 
 	const float3 brdf_value = brdf( albedo, lerp( 0.05f, albedo, metalness_roughness.x ), metalness_roughness.y, n_dot_h, io_dot_h, i_dot_n, o_dot_n );
+	const float shadow = shadow_sun( v, geom_n );
 
-	return g_constant_buffer.sun_radiance.xyz * brdf_value * o_dot_n;
+	return g_constant_buffer.sun_radiance.xyz * shadow * brdf_value * o_dot_n;
 }
 
 float3 shade_point( float3 albedo, float2 metalness_roughness, float3 n, float3 i, float3 position, point_light_object light )
