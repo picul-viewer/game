@@ -79,24 +79,24 @@ void dx::create( )
 		set_dx_name( m_queue_copy, "copy_queue" );
 	}
 
-	DXGI_SWAP_CHAIN_DESC swap_chain_desc;
-	swap_chain_desc.BufferDesc.Width = g_parameters.screen_resolution.x;
-	swap_chain_desc.BufferDesc.Height = g_parameters.screen_resolution.y;
-	swap_chain_desc.BufferDesc.RefreshRate.Numerator = 60;
-	swap_chain_desc.BufferDesc.RefreshRate.Denominator = 1;
-	swap_chain_desc.BufferDesc.Format = back_buffer_format;
-	swap_chain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	swap_chain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	DXGI_SWAP_CHAIN_DESC1 swap_chain_desc;
+	swap_chain_desc.Width = g_parameters.screen_resolution.x;
+	swap_chain_desc.Height = g_parameters.screen_resolution.y;
+	swap_chain_desc.Format = back_buffer_format;
+	swap_chain_desc.Stereo = false;
 	swap_chain_desc.SampleDesc.Count = 1;
 	swap_chain_desc.SampleDesc.Quality = 0;
 	swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swap_chain_desc.BufferCount = swap_chain_buffer_count;
-	swap_chain_desc.OutputWindow = (HWND)g_parameters.hwnd;
-	swap_chain_desc.Windowed = true;
+	swap_chain_desc.Scaling = DXGI_SCALING_STRETCH;
 	swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swap_chain_desc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 	swap_chain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	DX12_CHECK_RESULT( factory->CreateSwapChain( m_queue_graphics, &swap_chain_desc, (IDXGISwapChain**)&m_swap_chain ) );
+	IDXGISwapChain1* temp_swap_chain = nullptr;
+	DX12_CHECK_RESULT( factory->CreateSwapChainForHwnd( m_queue_graphics, (HWND)g_parameters.hwnd, &swap_chain_desc, nullptr, nullptr, (IDXGISwapChain1**)&temp_swap_chain ) );
+	temp_swap_chain->QueryInterface( IID_PPV_ARGS( &m_swap_chain ) );
+	temp_swap_chain->Release( );
 
 	for ( u32 i = 0; i < swap_chain_buffer_count; ++i )
 	{
@@ -121,9 +121,8 @@ void dx::destroy( )
 	{
 		IDXGIDebug1* dxgi_debug = nullptr;
 		DX12_CHECK_RESULT( DXGIGetDebugInterface1( 0, IID_PPV_ARGS( &dxgi_debug ) ) );
-
-		dxgi_debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_SUMMARY);
-		dxgi_debug->Release();
+		dxgi_debug->ReportLiveObjects( DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL );
+		dxgi_debug->Release( );
 	}
 #endif // #ifdef RENDER_ALLOW_DEBUG
 }
