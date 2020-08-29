@@ -172,6 +172,9 @@
     <Filter Include="lib\hash\linear_set">
       <UniqueIdentifier>{a9dbcf29-28bf-4d75-a768-d76752b24ab3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\memory\allocation_manager">
+      <UniqueIdentifier>{56df02ff-29ed-46ca-b846-4001708672de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -283,9 +286,6 @@
     </ClInclude>
     <ClInclude Include="lib\linear_allocator_inline.h">
       <Filter>lib\memory\allocators\linear</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\memory_block.h">
-      <Filter>lib\memory</Filter>
     </ClInclude>
     <ClInclude Include="lib\buffer_array.h">
       <Filter>lib\array\buffer_array</Filter>
@@ -439,6 +439,12 @@
     </ClInclude>
     <ClInclude Include="math\bvh.h">
       <Filter>math\collision\bvh</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\allocation_builder.h">
+      <Filter>lib\memory\allocation_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\allocation_builder_inline.h">
+      <Filter>lib\memory\allocation_manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

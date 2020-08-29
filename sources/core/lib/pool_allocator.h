@@ -3,7 +3,6 @@
 
 #include <types.h>
 #include "allocator.h"
-#include "memory_block.h"
 
 namespace lib {
 

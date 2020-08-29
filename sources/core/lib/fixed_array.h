@@ -2,7 +2,6 @@
 #define GUARD_CORE_FIXED_ARRAY_H_INCLUDED
 
 #include <types.h>
-#include "memory_block.h"
 
 namespace lib {
 

@@ -95,6 +95,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="lib\algorithms.h" />
+    <ClInclude Include="lib\allocation_builder.h" />
+    <ClInclude Include="lib\allocation_builder_inline.h" />
     <ClInclude Include="lib\allocator.h" />
     <ClInclude Include="lib\allocator_inline.h" />
     <ClInclude Include="lib\alloc_string.h" />
@@ -123,7 +125,6 @@
     <ClInclude Include="lib\linear_allocator.h" />
     <ClInclude Include="lib\linear_allocator_inline.h" />
     <ClInclude Include="lib\memory.h" />
-    <ClInclude Include="lib\memory_block.h" />
     <ClInclude Include="lib\pool_allocator.h" />
     <ClInclude Include="lib\pool_array_allocator.h" />
     <ClInclude Include="lib\pool_allocator_inline.h" />
