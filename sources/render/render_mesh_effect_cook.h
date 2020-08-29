@@ -10,8 +10,7 @@ namespace render {
 class render_mesh_effect_cook : public default_resource_cook<pipeline_state, render_mesh_effect_cook>
 {
 public:
-	static render_mesh_effect_cook* create( pipeline_state* const in_ptr );
-	static void destroy( pointer const in_cook );
+	render_mesh_effect_cook( pipeline_state* const in_ptr );
 
 public:
 	enum : u32 {

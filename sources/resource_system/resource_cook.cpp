@@ -3,10 +3,9 @@
 
 namespace resource_system {
 
-void resource_cook::init( cook_destroyer const in_destroyer )
-{
-	m_destroyer = in_destroyer;
-}
+resource_cook::resource_cook( cook_destroyer const in_destroyer ) :
+	m_destroyer( in_destroyer )
+{ }
 
 void resource_cook::finish_cook( pvoid const in_result )
 {

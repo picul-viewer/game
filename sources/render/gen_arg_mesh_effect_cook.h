@@ -17,8 +17,7 @@ public:
 	};
 
 public:
-	static gen_arg_mesh_effect_cook* create( pipeline_state* const in_ptr, type const in_type );
-	static void destroy( pointer const in_cook );
+	gen_arg_mesh_effect_cook( pipeline_state* const in_ptr, type const in_type );
 
 public:
 	enum : u32 {

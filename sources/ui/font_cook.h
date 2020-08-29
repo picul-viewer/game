@@ -16,8 +16,8 @@ class font;
 class font_cook : public shared_resource_cook<font, font_cook>
 {
 public:
-	static font_cook* create( pcstr const in_path );
-	static void destroy( pointer const in_cook );
+	font_cook( pcstr const in_path );
+	static uptr size( pcstr const in_path );
 
 public:
 	enum : u32 {
@@ -25,6 +25,9 @@ public:
 	};
 
 	void create_resource( );
+
+private:
+	u32 create( pcstr const in_path );
 
 private:
 	void query_file( font* const in_resource_ptr );

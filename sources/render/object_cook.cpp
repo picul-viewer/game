@@ -8,21 +8,9 @@
 
 namespace render {
 
-object_cook* object_cook::create( lib::reader const& in_config )
-{
-	object_cook* const result = std_allocator( ).allocate( sizeof(object_cook) );
-
-	result->init( );
-
-	result->m_config = in_config;
-
-	return result;
-}
-
-void object_cook::destroy( pointer const in_cook )
-{
-	std_allocator( ).deallocate( in_cook );
-}
+object_cook::object_cook( lib::reader const& in_config ) :
+	m_config( in_config )
+{ }
 
 void object_cook::create_resource( )
 {

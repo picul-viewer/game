@@ -5,19 +5,10 @@
 
 namespace render {
 
-render_shadowmap_effect_cook* render_shadowmap_effect_cook::create( pipeline_state* const in_ptr, bool const in_is_directional_light )
-{
-	render_shadowmap_effect_cook* const result = std_allocator( ).allocate( sizeof(render_shadowmap_effect_cook) );
-	result->init( );
-	result->m_result = in_ptr;
-	result->m_is_directional_light = in_is_directional_light;
-	return result;
-}
-
-void render_shadowmap_effect_cook::destroy( pointer const in_cook )
-{
-	std_allocator( ).deallocate( in_cook );
-}
+render_shadowmap_effect_cook::render_shadowmap_effect_cook( pipeline_state* const in_ptr, bool const in_is_directional_light ) :
+	m_result( in_ptr ),
+	m_is_directional_light( in_is_directional_light )
+{ }
 
 void render_shadowmap_effect_cook::create_resource( )
 {
@@ -25,7 +16,7 @@ void render_shadowmap_effect_cook::create_resource( )
 	defines->name = "DIRECTIONAL_LIGHT";
 	defines->value = "";
 
-	shader_cook* vs_cook = shader_cook::create(
+	shader_cook* vs_cook = create_cook<shader_cook>(
 		shader_type_vertex,
 		"shadowmap.vs",
 		m_is_directional_light ? 1 : 0,

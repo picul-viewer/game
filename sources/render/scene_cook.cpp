@@ -7,22 +7,10 @@
 
 namespace render {
 
-scene_cook* scene_cook::create( scene* const in_resource_ptr, lib::reader const& in_config )
-{
-	scene_cook* const result = std_allocator( ).allocate( sizeof(scene_cook) );
-
-	result->init( );
-
-	result->m_result = in_resource_ptr;
-	result->m_config = in_config;
-
-	return result;
-}
-
-void scene_cook::destroy( pointer const in_cook )
-{
-	std_allocator( ).deallocate( in_cook );
-}
+scene_cook::scene_cook( scene* const in_resource_ptr, lib::reader const& in_config ) :
+	m_result( in_resource_ptr ),
+	m_config( in_config )
+{ }
 
 void scene_cook::create_resource( )
 {

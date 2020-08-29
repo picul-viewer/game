@@ -6,29 +6,20 @@
 
 namespace render {
 
-render_ui_effect_cook* render_ui_effect_cook::create( pipeline_state* const in_ptr )
-{
-	render_ui_effect_cook* const result = std_allocator( ).allocate( sizeof(render_ui_effect_cook) );
-	result->init( );
-	result->m_result = in_ptr;
-	return result;
-}
-
-void render_ui_effect_cook::destroy( pointer const in_cook )
-{
-	std_allocator( ).deallocate( in_cook );
-}
+render_ui_effect_cook::render_ui_effect_cook( pipeline_state* const in_ptr ) :
+	m_result( in_ptr )
+{ }
 
 void render_ui_effect_cook::create_resource( )
 {
-	shader_cook* vs_cook = shader_cook::create(
+	shader_cook* vs_cook = create_cook<shader_cook>(
 		shader_type_vertex,
 		"ui.vs",
 		0,
 		nullptr
 	);
 
-	shader_cook* ps_cook = shader_cook::create(
+	shader_cook* ps_cook = create_cook<shader_cook>(
 		shader_type_pixel,
 		"ui.ps",
 		0,

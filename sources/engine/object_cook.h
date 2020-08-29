@@ -16,8 +16,7 @@ class object;
 class object_cook : public default_resource_cook<object, object_cook>
 {
 public:
-	static object_cook* create( lib::reader const& in_config );
-	static void destroy( pointer const in_cook );
+	object_cook( lib::reader const& in_config );
 
 public:
 	enum : u32 {

@@ -10,8 +10,7 @@ namespace render {
 class render_shadowmap_effect_cook : public default_resource_cook<pipeline_state, render_shadowmap_effect_cook>
 {
 public:
-	static render_shadowmap_effect_cook* create( pipeline_state* const in_ptr, bool const in_is_directional_light );
-	static void destroy( pointer const in_cook );
+	render_shadowmap_effect_cook( pipeline_state* const in_ptr, bool const in_is_directional_light );
 
 public:
 	enum : u32 {

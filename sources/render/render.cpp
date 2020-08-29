@@ -158,7 +158,7 @@ void render::create( )
 
 	// Create font for statistics
 	{
-		ui::font_cook* const cook = ui::font_cook::create( GET_RESOURCE_PATH( "configs\\fonts\\console.font.cfg" ) );
+		ui::font_cook* const cook = create_cook<ui::font_cook>( GET_RESOURCE_PATH( "configs\\fonts\\console.font.cfg" ) );
 		cook->fill_task_info( tasks.emplace_back( ) );
 	}
 
@@ -188,42 +188,42 @@ void render::on_resources_created( queried_resources& in_resources )
 void render::fill_effect_tasks( lib::buffer_array<task_info>& in_tasks )
 {
 	{
-		gen_arg_mesh_effect_cook* const cook = gen_arg_mesh_effect_cook::create( &m_ps_gen_arg_mesh, gen_arg_mesh_effect_cook::type_mesh );
+		gen_arg_mesh_effect_cook* const cook = create_cook<gen_arg_mesh_effect_cook>( &m_ps_gen_arg_mesh, gen_arg_mesh_effect_cook::type_mesh );
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		gen_arg_mesh_effect_cook* const cook = gen_arg_mesh_effect_cook::create( &m_ps_gen_arg_sun_shadowmap, gen_arg_mesh_effect_cook::type_sun_shadowmap );
+		gen_arg_mesh_effect_cook* const cook = create_cook<gen_arg_mesh_effect_cook>( &m_ps_gen_arg_sun_shadowmap, gen_arg_mesh_effect_cook::type_sun_shadowmap );
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		render_shadowmap_effect_cook* const cook = render_shadowmap_effect_cook::create( &m_ps_render_shadowmap_directional, true );
+		render_shadowmap_effect_cook* const cook = create_cook<render_shadowmap_effect_cook>( &m_ps_render_shadowmap_directional, true );
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		render_shadowmap_effect_cook* const cook = render_shadowmap_effect_cook::create( &m_ps_render_shadowmap, false );
+		render_shadowmap_effect_cook* const cook = create_cook<render_shadowmap_effect_cook>( &m_ps_render_shadowmap, false );
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		render_mesh_effect_cook* const cook = render_mesh_effect_cook::create( &m_ps_render_mesh );
+		render_mesh_effect_cook* const cook = create_cook<render_mesh_effect_cook>( &m_ps_render_mesh );
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		shade_effect_cook* const cook = shade_effect_cook::create( &m_ps_shade );
+		shade_effect_cook* const cook = create_cook<shade_effect_cook>( &m_ps_shade );
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		resolve_effect_cook* const cook = resolve_effect_cook::create( &m_ps_resolve );
+		resolve_effect_cook* const cook = create_cook<resolve_effect_cook>( &m_ps_resolve );
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		render_ui_effect_cook* const cook = render_ui_effect_cook::create( &m_ps_render_ui );
+		render_ui_effect_cook* const cook = create_cook<render_ui_effect_cook>( &m_ps_render_ui );
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 }

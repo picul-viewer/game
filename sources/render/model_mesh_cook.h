@@ -14,8 +14,8 @@ class model_mesh;
 class model_mesh_cook : public shared_resource_cook<model_mesh, model_mesh_cook>
 {
 public:
-	static model_mesh_cook* create( pcstr const in_path );
-	static void destroy( pointer const in_cook );
+	model_mesh_cook( pcstr const in_path );
+	static uptr size( pcstr const in_path );
 
 public:
 	enum : u32 {
@@ -23,6 +23,9 @@ public:
 	};
 
 	void create_resource( );
+
+private:
+	u32 create( pcstr const in_path );
 
 private:
 	void query_file( model_mesh* const in_resource_ptr );

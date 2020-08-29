@@ -13,25 +13,25 @@
 
 namespace render {
 
-texture_cook* texture_cook::create( pcstr const in_path )
+texture_cook::texture_cook( pcstr const in_path ) :
+	shared_resource_cook( create( in_path ) )
+{ }
+
+u32 texture_cook::create( pcstr const in_path )
 {
 	uptr const length = strings::length( in_path );
 	uptr const size = length + 1;
 
-	texture_cook* const result = std_allocator( ).allocate( sizeof(texture_cook) + size );
+	m_length = length;
+	strings::copy_n( m_path, in_path, size );
 
-	u32 const id = lib::hash32( in_path, length );
-	result->init( id );
-
-	result->m_length = length;
-	strings::copy_n( result->m_path, in_path, size );
-
-	return result;
+	return lib::hash32( in_path, length );
 }
 
-void texture_cook::destroy( pointer const in_cook )
+uptr texture_cook::size( pcstr const in_path )
 {
-	std_allocator( ).deallocate( in_cook );
+	uptr const length = strings::length( in_path );
+	return sizeof(texture_cook) + length + 1;
 }
 
 void texture_cook::create_resource( )
@@ -43,14 +43,13 @@ void texture_cook::query_file( texture* const in_resource_ptr )
 {
 	m_result = in_resource_ptr;
 
-	raw_data_cook* const cook = raw_data_cook::create( m_path );
+	raw_data_cook* const cook = create_cook<raw_data_cook>( m_path );
 
 	create_child_resources( callback_task<&texture_cook::on_file_loaded>( engine_helper_thread_0 ), cook );
 }
 
 void texture_cook::on_file_loaded( queried_resources& in_queried )
 {
-	m_raw_data.reset( );
 	m_raw_data = in_queried.get_resource<raw_data::ptr>( );
 	ASSERT( m_raw_data != nullptr );
 
@@ -77,8 +76,6 @@ void texture_cook::on_file_loaded( queried_resources& in_queried )
 
 void texture_cook::on_gpu_upload_finished( )
 {
-	m_raw_data.reset( );
-
 	finish( m_result );
 }
 

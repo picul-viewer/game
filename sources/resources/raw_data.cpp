@@ -30,7 +30,7 @@ uptr raw_data::size( ) const
 }
 
 
-raw_data_cook* raw_data_cook::create( pcstr const in_path )
+raw_data_cook::raw_data_cook( pcstr const in_path )
 {
 #ifdef DEBUG
 	{
@@ -42,17 +42,13 @@ raw_data_cook* raw_data_cook::create( pcstr const in_path )
 #endif // #ifdef DEBUG
 
 	uptr const size = strings::length( in_path ) + 1;
-
-	raw_data_cook* const result = std_allocator( ).allocate( sizeof(raw_data_cook) + size );
-	result->init( );
-	strings::copy_n( result->m_path, in_path, size );
-
-	return result;
+	strings::copy_n( m_path, in_path, size );
 }
 
-void raw_data_cook::destroy( pointer const in_cook )
+uptr raw_data_cook::size( pcstr const in_path )
 {
-	std_allocator( ).deallocate( in_cook );
+	uptr const length = strings::length( in_path );
+	return sizeof(raw_data_cook) + length + 1;
 }
 
 void raw_data_cook::create_resource( )

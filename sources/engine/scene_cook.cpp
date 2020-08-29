@@ -6,21 +6,9 @@
 
 namespace engine {
 
-scene_cook* scene_cook::create( lib::reader const& in_config )
-{
-	scene_cook* const result = std_allocator( ).allocate( sizeof(scene_cook) );
-
-	result->init( );
-
-	result->m_config = in_config;
-
-	return result;
-}
-
-void scene_cook::destroy( pointer const in_cook )
-{
-	std_allocator( ).deallocate( in_cook );
-}
+scene_cook::scene_cook( lib::reader const& in_config ) :
+	m_config( in_config )
+{ }
 
 void scene_cook::create_resource( )
 {
@@ -29,7 +17,7 @@ void scene_cook::create_resource( )
 	u32 const render_size = m_config.read<u32>( );
 	pvoid const render_data = m_config.read_data( render_size );
 
-	render::scene_cook* const render_cook = render::scene_cook::create(
+	render::scene_cook* const render_cook = create_cook<render::scene_cook>(
 		&m_result->m_render,
 		lib::reader( render_data, render_size )
 	);

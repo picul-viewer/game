@@ -17,8 +17,7 @@ class scene;
 class scene_cook : public default_resource_cook<scene, scene_cook>
 {
 public:
-	static scene_cook* create( scene* const in_resource_ptr, lib::reader const& in_config );
-	static void destroy( pointer const in_cook );
+	scene_cook( scene* const in_resource_ptr, lib::reader const& in_config );
 
 public:
 	enum : u32 {

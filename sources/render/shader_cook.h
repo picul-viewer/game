@@ -21,13 +21,18 @@ struct shader_define
 class shader_cook : public default_resource_cook<raw_data, shader_cook>
 {
 public:
-	static shader_cook* create(
+	shader_cook(
 		shader_type const in_type,
 		pcstr const in_name,
 		u32 const in_defines_count,
 		shader_define* const in_defines
 	);
-	static void destroy( pointer const in_cook );
+	static uptr size(
+		shader_type const in_type,
+		pcstr const in_name,
+		u32 const in_defines_count,
+		shader_define* const in_defines
+	);
 
 public:
 	enum : u32 {

@@ -7,18 +7,9 @@
 
 namespace render {
 
-shade_effect_cook* shade_effect_cook::create( pipeline_state* const in_ptr )
-{
-	shade_effect_cook* const result = std_allocator( ).allocate( sizeof(shade_effect_cook) );
-	result->init( );
-	result->m_result = in_ptr;
-	return result;
-}
-
-void shade_effect_cook::destroy( pointer const in_cook )
-{
-	std_allocator( ).deallocate( in_cook );
-}
+shade_effect_cook::shade_effect_cook( pipeline_state* const in_ptr ) :
+	m_result( in_ptr )
+{ }
 
 void shade_effect_cook::create_resource( )
 {
@@ -26,7 +17,7 @@ void shade_effect_cook::create_resource( )
 	defines[0].name = "SUN_SHADOWMAP_DIMENSION";
 	defines[0].value = format( "%d", resources::sun_shadowmap_dimension );
 
-	shader_cook* cs_cook = shader_cook::create(
+	shader_cook* cs_cook = create_cook<shader_cook>(
 		shader_type_compute,
 		"shade.cs",
 		(u32)array_size( defines ),

@@ -33,7 +33,7 @@ void world::create( )
 {
 	m_ready = false;
 
-	raw_data_cook* const cook = raw_data_cook::create( GET_RESOURCE_PATH( "configs/render/scenes/sponza_lit.scene.cfg" ) );
+	raw_data_cook* const cook = create_cook<raw_data_cook>( GET_RESOURCE_PATH( "configs/render/scenes/sponza_lit.scene.cfg" ) );
 
 	resource_system::create_resources(
 		resource_system::user_callback_task<world, &world::on_scene_loaded>( this ),
@@ -45,9 +45,9 @@ void world::on_scene_loaded( queried_resources& in_queried )
 {
 	m_scene_data = in_queried.get_resource<raw_data::ptr>( );
 
-	ui::font_cook* const font_cook = ui::font_cook::create( GET_RESOURCE_PATH( "configs/fonts/console.font.cfg" ) );
+	ui::font_cook* const font_cook = create_cook<ui::font_cook>( GET_RESOURCE_PATH( "configs/fonts/console.font.cfg" ) );
 
-	engine::scene_cook* const scene_cook = engine::scene_cook::create( lib::reader( m_scene_data->data( ), m_scene_data->size( ) ) );
+	engine::scene_cook* const scene_cook = create_cook<engine::scene_cook>( lib::reader( m_scene_data->data( ), m_scene_data->size( ) ) );
 
 	resource_system::create_resources(
 		resource_system::user_callback_task<world, &world::on_resources_ready>( this ),

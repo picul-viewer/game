@@ -13,13 +13,13 @@ class raw_data;
 class raw_data_cook : public default_resource_cook<raw_data, raw_data_cook>
 {
 public:
+	raw_data_cook( pcstr const in_path );
+	static uptr size( pcstr const in_path );
+
+public:
 	enum : u32 {
 		create_thread_index = engine_thread_fs,
 	};
-
-public:
-	static raw_data_cook* create( pcstr const in_path );
-	static void destroy( pointer const in_cook );
 
 	void create_resource( );
 

@@ -12,7 +12,7 @@ void render_object_mesh::create( lib::reader& in_reader, lib::buffer_array<task_
 	ASSERT( aligned( this, 16 ) );
 
 	pcstr const model_path = in_reader.read_str( );
-	model_mesh_cook* const model_cook = model_mesh_cook::create( get_resource_path( model_path ).c_str( ) );
+	model_mesh_cook* const model_cook = create_cook<model_mesh_cook>( get_resource_path( model_path ).c_str( ) );
 
 	task_info& model_query = in_queries.emplace_back( );
 	model_cook->fill_task_info( model_query );

@@ -18,8 +18,8 @@ class texture;
 class texture_cook : public shared_resource_cook<texture, texture_cook>
 {
 public:
-	static texture_cook* create( pcstr const in_path );
-	static void destroy( pointer const in_cook );
+	texture_cook( pcstr const in_path );
+	static uptr size( pcstr const in_path );
 
 public:
 	enum : u32 {
@@ -27,6 +27,9 @@ public:
 	};
 
 	void create_resource( );
+
+private:
+	u32 create( pcstr const in_path );
 
 private:
 	void query_file( texture* const in_resource_ptr );

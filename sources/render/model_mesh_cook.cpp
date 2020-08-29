@@ -13,25 +13,25 @@
 
 namespace render {
 
-model_mesh_cook* model_mesh_cook::create( pcstr const in_path )
+model_mesh_cook::model_mesh_cook( pcstr const in_path ) :
+	shared_resource_cook( create( in_path ) )
+{ }
+
+u32 model_mesh_cook::create( pcstr const in_path )
 {
 	uptr const length = strings::length( in_path );
 	uptr const size = length + 1;
 
-	model_mesh_cook* const result = std_allocator( ).allocate( sizeof(model_mesh_cook) + size );
+	m_length = length;
+	strings::copy_n( m_path, in_path, size );
 
-	u32 const id = lib::hash32( in_path, length );
-	result->init( id );
-
-	result->m_length = length;
-	strings::copy_n( result->m_path, in_path, size );
-
-	return result;
+	return lib::hash32( in_path, length );
 }
 
-void model_mesh_cook::destroy( pointer const in_cook )
+uptr model_mesh_cook::size( pcstr const in_path )
 {
-	std_allocator( ).deallocate( in_cook );
+	uptr const length = strings::length( in_path );
+	return sizeof(model_mesh_cook) + length + 1;
 }
 
 void model_mesh_cook::create_resource( )
@@ -43,7 +43,7 @@ void model_mesh_cook::query_file( model_mesh* const in_resource_ptr )
 {
 	m_result = in_resource_ptr;
 
-	raw_data_cook* const cook = raw_data_cook::create( m_path );
+	raw_data_cook* const cook = create_cook<raw_data_cook>( m_path );
 
 	create_child_resources( callback_task<&model_mesh_cook::on_file_loaded>( ), cook );
 }
@@ -66,21 +66,21 @@ void model_mesh_cook::on_file_loaded( queried_resources& in_queried )
 	// Mesh.
 	{
 		pcstr const path	= r.read_str( );
-		mesh_cook* cook		= mesh_cook::create( get_resource_path( path ).c_str( ) );
+		mesh_cook* cook		= create_cook<mesh_cook>( get_resource_path( path ).c_str( ) );
 		cook->fill_task_info( queries[query_count++] );
 	}
 	
 	// Albedo texture.
 	{
 		pcstr const path	= r.read_str( );
-		texture_cook* cook	= texture_cook::create( get_resource_path( path ).c_str( ) );
+		texture_cook* cook	= create_cook<texture_cook>( get_resource_path( path ).c_str( ) );
 		cook->fill_task_info( queries[query_count++] );
 	}
 
 	// Metalness/roughness texture.
 	{
 		pcstr const path	= r.read_str( );
-		texture_cook* cook	= texture_cook::create( get_resource_path( path ).c_str( ) );
+		texture_cook* cook	= create_cook<texture_cook>( get_resource_path( path ).c_str( ) );
 		cook->fill_task_info( queries[query_count++] );
 	}
 

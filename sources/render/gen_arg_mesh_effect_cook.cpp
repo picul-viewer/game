@@ -5,19 +5,10 @@
 
 namespace render {
 
-gen_arg_mesh_effect_cook* gen_arg_mesh_effect_cook::create( pipeline_state* const in_ptr, type const in_type )
-{
-	gen_arg_mesh_effect_cook* const result = std_allocator( ).allocate( sizeof(gen_arg_mesh_effect_cook) );
-	result->init( );
-	result->m_result = in_ptr;
-	result->m_type = in_type;
-	return result;
-}
-
-void gen_arg_mesh_effect_cook::destroy( pointer const in_cook )
-{
-	std_allocator( ).deallocate( in_cook );
-}
+gen_arg_mesh_effect_cook::gen_arg_mesh_effect_cook( pipeline_state* const in_ptr, type const in_type ) :
+	m_result( in_ptr ),
+	m_type( in_type )
+{ }
 
 void gen_arg_mesh_effect_cook::create_resource( )
 {
@@ -25,7 +16,7 @@ void gen_arg_mesh_effect_cook::create_resource( )
 	defines[0].name = "GEN_ARG_TYPE";
 	defines[0].value = format( "%d", m_type );
 
-	shader_cook* cook = shader_cook::create(
+	shader_cook* cook = create_cook<shader_cook>(
 		shader_type_compute,
 		"gen_arg.cs",
 		(u32)array_size( defines ),

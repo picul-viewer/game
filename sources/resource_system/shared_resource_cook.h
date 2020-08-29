@@ -12,7 +12,7 @@ template<typename Resource, typename ResourceCook>
 class shared_resource_cook : public default_resource_cook<Resource, ResourceCook>
 {
 protected:
-	void init( shared_resource_id const in_id );
+	shared_resource_cook( shared_resource_id const in_id );
 
 	void check_resource_exists(
 		void ( ResourceCook::*in_callback )( Resource* const )

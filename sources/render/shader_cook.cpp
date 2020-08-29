@@ -7,28 +7,28 @@
 
 namespace render {
 
-shader_cook* shader_cook::create(
+shader_cook::shader_cook(
 	shader_type const in_type,
 	pcstr const in_name,
 	u32 const in_defines_count,
 	shader_define* const in_defines
-)
+) :
+	m_type( in_type ),
+	m_name( in_name ),
+	m_defines_count( in_defines_count )
 {
-	uptr const size = sizeof(shader_cook) + in_defines_count * sizeof(shader_define);
-	shader_cook* const result = std_allocator( ).allocate( size );
-	result->init( );
-	result->m_type = in_type;
-	result->m_name = in_name;
-	result->m_defines_count = in_defines_count;
 	if ( in_defines != nullptr )
-		memory::copy( result->m_defines, in_defines, in_defines_count * sizeof(shader_define) );
-
-	return result;
+		memory::copy( m_defines, in_defines, in_defines_count * sizeof(shader_define) );
 }
 
-void shader_cook::destroy( pointer const in_cook )
+uptr shader_cook::size(
+	shader_type const,
+	pcstr const,
+	u32 const in_defines_count,
+	shader_define* const
+)
 {
-	std_allocator( ).deallocate( in_cook );
+	return sizeof(shader_cook) + in_defines_count * sizeof(shader_define);
 }
 
 void shader_cook::create_resource( )
@@ -36,7 +36,7 @@ void shader_cook::create_resource( )
 	m_source_path = GET_RESOURCE_SOURCE_PATH( "shaders\\" );
 	m_source_path += m_name;
 
-	raw_data_cook* const cook = raw_data_cook::create( m_source_path.c_str( ) );
+	raw_data_cook* const cook = create_cook<raw_data_cook>( m_source_path.c_str( ) );
 
 	create_child_resources(
 		resource_system::user_callback_task<shader_cook, &shader_cook::compile_shader>( this ), cook

@@ -4,11 +4,9 @@
 namespace resource_system {
 
 template<typename Resource, typename ResourceCook>
-void
 shared_resource_cook<Resource, ResourceCook>::
-init( shared_resource_id const in_id )
+shared_resource_cook( shared_resource_id const in_id )
 {
-	default_resource_cook<Resource, ResourceCook>::init( );
 	m_id = in_id;
 	m_next_subscriber = nullptr;
 	m_initial_ref_count = 1;
