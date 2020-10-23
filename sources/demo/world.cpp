@@ -6,9 +6,6 @@
 
 #include <render/api.h>
 
-#include <lib/allocator.h>
-#include <lib/dynamic_writer.h>
-
 #include <math/math_3d.h>
 
 #include <system/input.h>
@@ -22,12 +19,7 @@
 #include <resource_system/api.h>
 #include <resources/raw_data.h>
 
-#include <system/file.h>
-
 namespace game {
-
-char scene_cook_data[256];
-char object_cook_data[1 * Mb];
 
 void world::create( )
 {
