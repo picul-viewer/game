@@ -25,7 +25,7 @@ vertex_data_unpacked interpolate_vertex_data( vertex_data_unpacked v0, vertex_da
 [numthreads( 16, 16, 1 )]
 void main( uint3 id : SV_DispatchThreadID )
 {
-	if ( any( id.xy >= uint2( g_constant_buffer.viewport_size.xy ) ) )
+	if ( any( id.xy >= g_constant_buffer.viewport_size_uint.xy ) )
 		return;
 
 	const uint2 polygon_id = g_polygon_id.Load( uint3( id.xy, 0 ) );
@@ -60,7 +60,7 @@ void main( uint3 id : SV_DispatchThreadID )
 	const vertex_data_unpacked v2_info = unpack_vertex_data( g_vertex_data[mesh.vertex_buffer_offset + ind.z] );
 
 	const float3 barycentrics = compute_barycentrics( g_constant_buffer.world_camera_position.xyz, world_camera_ray.xyz, v0.xyz, v1.xyz, v2.xyz );
-	const float3 v = barycentrics.x * v0 + barycentrics.y * v1 + barycentrics.z * v2;
+	const float3 pixel_world_position = barycentrics.x * v0 + barycentrics.y * v1 + barycentrics.z * v2;
 	const vertex_data_unpacked data = interpolate_vertex_data( v0_info, v1_info, v2_info, barycentrics );
 
 	const vertex_data_unpacked data_right = interpolate_vertex_data( v0_info, v1_info, v2_info, compute_barycentrics( g_constant_buffer.world_camera_position.xyz, world_camera_ray_right.xyz, v0.xyz, v1.xyz, v2.xyz ) );
@@ -76,12 +76,12 @@ void main( uint3 id : SV_DispatchThreadID )
 	const float3 geom_n = cross( v1 - v0, v2 - v0 );
 	const float3 i = normalize( -world_camera_ray );
 
-	float3 result = shade_sun( albedo, metalness_roughness, v, n, geom_n, i );
+	float3 result = shade_sun( albedo, metalness_roughness, pixel_world_position, n, geom_n, i );
 
 	for ( uint li = 0; li < point_light_list_size( ); ++li )
 	{
 		uint light_index = g_point_light_list[li];
-		result += shade_point( albedo, metalness_roughness, n, i, v, g_point_light_objects[light_index] );
+		result += shade_point( albedo, metalness_roughness, n, i, pixel_world_position, g_point_light_objects[light_index] );
 	}
 
 	g_radiance_uav[id.xy] = float4( result, 0.0f );

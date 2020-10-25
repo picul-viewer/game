@@ -875,6 +875,7 @@ void render::prepare_frame( )
 
 	m_render_camera.fill_constant_buffer( cpu_constant_buffer );
 	cpu_constant_buffer.viewport_size = math::float4( g_parameters.screen_resolution.x, g_parameters.screen_resolution.y, 1.0f / g_parameters.screen_resolution.x, 1.0f / g_parameters.screen_resolution.y );
+	cpu_constant_buffer.viewport_size_uint = math::u32x4( g_parameters.screen_resolution.x, g_parameters.screen_resolution.y, 0, 0 );
 
 	if ( m_scene )
 	{

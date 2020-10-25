@@ -47,6 +47,7 @@ struct constant_buffer
 	float4 viewport_size;
 	float4 sun_direction;
 	float4 sun_radiance;
+	uint4 viewport_size_uint;
 
 	// Mesh count, sun shadowmap mesh count, point light count, UI batch count
 	uint4 indirect_params_0;
