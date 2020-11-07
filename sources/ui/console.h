@@ -19,12 +19,13 @@ public:
 public:
 	void create( ui::font::ptr in_font );
 	void destroy( );
-	
+
 	void on_char( u32 const in_key );
 	void on_input( );
 
 	void render( ) const;
-	
+
+	void print( pcstr const in_string );
 	void print( pcstr const in_string, uptr const in_length );
 	template<typename ... Args>
 	inline void printf( pcstr const in_mask, Args const& ... args );
@@ -62,7 +63,7 @@ private:
 	math::half4 m_edit_text_color;
 	math::half4 m_selection_color;
 	math::half4 m_cursor_color;
-	
+
 	text_edit_controller m_text_edit;
 	char m_text_edit_memory[text_edit_memory_size];
 
@@ -72,7 +73,7 @@ private:
 	font::ptr m_font;
 
 	callback_type m_callback;
-	
+
 	math::u16x4 m_background_position;
 	math::u16x4 m_edit_background_position;
 	math::u16x2 m_text_position;

@@ -37,6 +37,8 @@ private:
 	void initialize_console( );
 	static void on_console_command( pcstr const str );
 
+	void log_camera( );
+
 	void on_scene_loaded( queried_resources& in_queried );
 	void on_resources_ready( queried_resources& in_queried );
 

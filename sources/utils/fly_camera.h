@@ -18,6 +18,9 @@ public:
 	void update( float delta_time );
 	math::float4x3 get_view_matrix( ) const;
 
+	inline math::float3 position( ) const { return m_position; }
+	inline math::float2 rotation( ) const { return m_rotation; }
+
 protected:
 	math::float3 m_position;
 	math::float2 m_rotation;

@@ -151,6 +151,11 @@ void console::render( ) const
 	render::ui_next_level( );
 }
 
+void console::print( pcstr const in_string )
+{
+	print( in_string, strings::length( in_string ) );
+}
+
 void console::print( pcstr const in_string, uptr const in_length )
 {
 	pstr const line_start = m_text.allocate( in_length );

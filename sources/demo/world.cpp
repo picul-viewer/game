@@ -85,6 +85,8 @@ void world::on_console_command( pcstr const str )
 {
 	if ( strings::equal( str, "quit" ) )
 		engine::g_world.exit( );
+	else if ( strings::equal( str, "log camera" ) )
+		game::g_world.log_camera( );
 }
 
 void world::update( )
@@ -178,6 +180,12 @@ void world::window_input( )
 		else if ( m_console_visible )
 			m_console.on_input( );
 	}
+}
+
+void world::log_camera( )
+{
+	m_console.printf( "Camera position: %6.6f %6.6f %6.6f\n", m_camera.position( ).x, m_camera.position( ).y, m_camera.position( ).z );
+	m_console.printf( "Camera rotation: %6.6f %6.6f\n", m_camera.rotation( ).x, m_camera.rotation( ).y );
 }
 
 world g_world;
