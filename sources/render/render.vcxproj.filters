@@ -46,12 +46,6 @@
     <Filter Include="dx12\utils">
       <UniqueIdentifier>{cfe69b90-2e66-4539-88f4-f6ccdb75669d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="dx12\utils\pipeline_state">
-      <UniqueIdentifier>{9e1e6db6-c9ec-4b3a-9359-6ee4903fefcb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dx12\utils\pipeline_state\shader_cook">
-      <UniqueIdentifier>{cf150dde-3566-47e9-8d29-b46c5dd30b35}</UniqueIdentifier>
-    </Filter>
     <Filter Include="dx12\utils\uploader">
       <UniqueIdentifier>{b778a57f-2396-4486-b447-5796771dd0b6}</UniqueIdentifier>
     </Filter>
@@ -169,6 +163,18 @@
     <Filter Include="render\effects\render_mesh">
       <UniqueIdentifier>{81eca212-0038-48d5-ba8b-d7524b2b16aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="render\utils">
+      <UniqueIdentifier>{3e34bbd1-d617-4ea5-b2e9-ea40fc89533b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\utils\pipeline_state">
+      <UniqueIdentifier>{9e1e6db6-c9ec-4b3a-9359-6ee4903fefcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\utils\pipeline_state\shader_cook">
+      <UniqueIdentifier>{cf150dde-3566-47e9-8d29-b46c5dd30b35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\utils\barrier_builder">
+      <UniqueIdentifier>{b57650f9-2514-40a6-8c0e-e618431b9f9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mesh.cpp">
@@ -256,10 +262,10 @@
       <Filter>dx12\wrappers\command_signature</Filter>
     </ClCompile>
     <ClCompile Include="shader_cook.cpp">
-      <Filter>dx12\utils\pipeline_state\shader_cook</Filter>
+      <Filter>render\utils\pipeline_state\shader_cook</Filter>
     </ClCompile>
     <ClCompile Include="pipeline_state.cpp">
-      <Filter>dx12\utils\pipeline_state</Filter>
+      <Filter>render\utils\pipeline_state</Filter>
     </ClCompile>
     <ClCompile Include="gpu_uploader.cpp">
       <Filter>dx12\utils\uploader</Filter>
@@ -311,6 +317,9 @@
     </ClCompile>
     <ClCompile Include="gen_arg_mesh_effect_cook.cpp">
       <Filter>render\effects\gen_arg_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="barrier_builder.cpp">
+      <Filter>render\utils\barrier_builder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -408,10 +417,10 @@
       <Filter>dx12\wrappers\command_signature</Filter>
     </ClInclude>
     <ClInclude Include="shader_cook.h">
-      <Filter>dx12\utils\pipeline_state\shader_cook</Filter>
+      <Filter>render\utils\pipeline_state\shader_cook</Filter>
     </ClInclude>
     <ClInclude Include="pipeline_state.h">
-      <Filter>dx12\utils\pipeline_state</Filter>
+      <Filter>render\utils\pipeline_state</Filter>
     </ClInclude>
     <ClInclude Include="gpu_uploader.h">
       <Filter>dx12\utils\uploader</Filter>
@@ -475,6 +484,9 @@
     </ClInclude>
     <ClInclude Include="gen_arg_mesh_effect_cook.h">
       <Filter>render\effects\gen_arg_mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="barrier_builder.h">
+      <Filter>render\utils\barrier_builder</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

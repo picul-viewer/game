@@ -89,6 +89,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="api.h" />
+    <ClInclude Include="barrier_builder.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="dds_loader.h" />
     <ClInclude Include="dx.h" />
@@ -145,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="api.cpp" />
+    <ClCompile Include="barrier_builder.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="dds_loader.cpp" />
     <ClCompile Include="dx.cpp" />

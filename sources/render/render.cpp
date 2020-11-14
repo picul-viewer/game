@@ -11,6 +11,7 @@
 #include "resources.h"
 #include "scene.h"
 #include "render_object_mesh.h"
+#include "barrier_builder.h"
 #include "statistics.h"
 
 #include "gen_arg_mesh_effect_cook.h"
@@ -258,37 +259,27 @@ void render::record_render( )
 				PROFILE_EVENT( list, j, Frame );
 
 				{
-					D3D12_RESOURCE_BARRIER barriers[4];
-
-					barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[0].Transition.pResource = m_scene_mesh_indirect_buffer;
-					barriers[0].Transition.Subresource = 0;
-					barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
-					barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-
-					barriers[1].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[1].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[1].Transition.pResource = m_scene_mesh_transforms_buffer;
-					barriers[1].Transition.Subresource = 0;
-					barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
-					barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-
-					barriers[2].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[2].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[2].Transition.pResource = m_sun_shadow_mesh_indirect_buffer;
-					barriers[2].Transition.Subresource = 0;
-					barriers[2].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
-					barriers[2].Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-
-					barriers[3].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[3].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[3].Transition.pResource = m_sun_shadow_mesh_transforms_buffer;
-					barriers[3].Transition.Subresource = 0;
-					barriers[3].Transition.StateBefore = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
-					barriers[3].Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-
-					list->ResourceBarrier( (u32)array_size( barriers ), barriers );
+					barrier_builder bb( list );
+					bb.transition(
+						m_scene_mesh_indirect_buffer,
+						D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+					);
+					bb.transition(
+						m_scene_mesh_transforms_buffer,
+						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+					);
+					bb.transition(
+						m_sun_shadow_mesh_indirect_buffer,
+						D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+					);
+					bb.transition(
+						m_sun_shadow_mesh_transforms_buffer,
+						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+					);
 				}
 
 				{
@@ -326,51 +317,37 @@ void render::record_render( )
 				}
 
 				{
-					D3D12_RESOURCE_BARRIER barriers[6];
-
-					barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[0].Transition.pResource = m_scene_mesh_indirect_buffer;
-					barriers[0].Transition.Subresource = 0;
-					barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-					barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
-
-					barriers[1].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[1].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[1].Transition.pResource = m_scene_mesh_transforms_buffer;
-					barriers[1].Transition.Subresource = 0;
-					barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-					barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
-
-					barriers[2].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[2].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[2].Transition.pResource = m_sun_shadow_mesh_indirect_buffer;
-					barriers[2].Transition.Subresource = 0;
-					barriers[2].Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-					barriers[2].Transition.StateAfter = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
-
-					barriers[3].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[3].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[3].Transition.pResource = m_sun_shadow_mesh_transforms_buffer;
-					barriers[3].Transition.Subresource = 0;
-					barriers[3].Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-					barriers[3].Transition.StateAfter = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
-
-					barriers[4].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[4].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[4].Transition.pResource = g_resources.image( image_v_buffer_polygon_id );
-					barriers[4].Transition.Subresource = 0;
-					barriers[4].Transition.StateBefore = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-					barriers[4].Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-
-					barriers[5].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[5].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[5].Transition.pResource = g_resources.image( image_sun_shadowmap );
-					barriers[5].Transition.Subresource = 0;
-					barriers[5].Transition.StateBefore = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-					barriers[5].Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
-
-					list->ResourceBarrier( (u32)array_size( barriers ), barriers );
+					barrier_builder bb( list );
+					bb.transition(
+						m_scene_mesh_indirect_buffer,
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+						D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
+					);
+					bb.transition(
+						m_scene_mesh_transforms_buffer,
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER
+					);
+					bb.transition(
+						m_sun_shadow_mesh_indirect_buffer,
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+						D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
+					);
+					bb.transition(
+						m_sun_shadow_mesh_transforms_buffer,
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER
+					);
+					bb.transition(
+						g_resources.image( image_v_buffer_polygon_id ),
+						D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
+						D3D12_RESOURCE_STATE_RENDER_TARGET
+					);
+					bb.transition(
+						g_resources.image( image_sun_shadowmap ),
+						D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
+						D3D12_RESOURCE_STATE_DEPTH_WRITE
+					);
 				}
 
 				{
@@ -447,44 +424,32 @@ void render::record_render( )
 				}
 
 				{
-					D3D12_RESOURCE_BARRIER barriers[5];
-
-					barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[0].Transition.pResource = g_resources.image( image_v_buffer_polygon_id );
-					barriers[0].Transition.Subresource = 0;
-					barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-					barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-
-					barriers[1].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[1].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[1].Transition.pResource = g_resources.index_buffer( );
-					barriers[1].Transition.Subresource = 0;
-					barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_INDEX_BUFFER;
-					barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-
-					barriers[2].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[2].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[2].Transition.pResource = g_resources.vertex_buffer( );
-					barriers[2].Transition.Subresource = 0;
-					barriers[2].Transition.StateBefore = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
-					barriers[2].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-
-					barriers[3].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[3].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[3].Transition.pResource = g_dx.swap_chain_buffer( i );
-					barriers[3].Transition.Subresource = 0;
-					barriers[3].Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON;
-					barriers[3].Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-
-					barriers[4].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[4].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[4].Transition.pResource = g_resources.image( image_sun_shadowmap );
-					barriers[4].Transition.Subresource = 0;
-					barriers[4].Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_WRITE;
-					barriers[4].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-
-					list->ResourceBarrier( (u32)array_size( barriers ), barriers );
+					barrier_builder bb( list );
+					bb.transition(
+						g_resources.image( image_v_buffer_polygon_id ),
+						D3D12_RESOURCE_STATE_RENDER_TARGET,
+						D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
+					);
+					bb.transition(
+						g_resources.index_buffer( ),
+						D3D12_RESOURCE_STATE_INDEX_BUFFER,
+						D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
+					);
+					bb.transition(
+						g_resources.vertex_buffer( ),
+						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+						D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
+					);
+					bb.transition(
+						g_dx.swap_chain_buffer( i ),
+						D3D12_RESOURCE_STATE_COMMON,
+						D3D12_RESOURCE_STATE_RENDER_TARGET
+					);
+					bb.transition(
+						g_resources.image( image_sun_shadowmap ),
+						D3D12_RESOURCE_STATE_DEPTH_WRITE,
+						D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
+					);
 				}
 
 				{
@@ -512,16 +477,12 @@ void render::record_render( )
 				}
 
 				{
-					D3D12_RESOURCE_BARRIER barriers[1];
-
-					barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[0].Transition.pResource = g_resources.image( image_radiance );
-					barriers[0].Transition.Subresource = 0;
-					barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-					barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-
-					list->ResourceBarrier( (u32)array_size( barriers ), barriers );
+					barrier_builder bb( list );
+					bb.transition(
+						g_resources.image( image_radiance ),
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+						D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+					);
 				}
 
 				{
@@ -544,16 +505,12 @@ void render::record_render( )
 				}
 
 				{
-					D3D12_RESOURCE_BARRIER barriers[1];
-
-					barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[0].Transition.pResource = g_resources.image( image_radiance );
-					barriers[0].Transition.Subresource = 0;
-					barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-					barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-
-					list->ResourceBarrier( (u32)array_size( barriers ), barriers );
+					barrier_builder bb( list );
+					bb.transition(
+						g_resources.image( image_radiance ),
+						D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+					);
 				}
 
 				{
@@ -587,16 +544,12 @@ void render::record_render( )
 				}
 
 				{
-					D3D12_RESOURCE_BARRIER barriers[1];
-
-					barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-					barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-					barriers[0].Transition.pResource = g_dx.swap_chain_buffer( i );
-					barriers[0].Transition.Subresource = 0;
-					barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-					barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-
-					list->ResourceBarrier( (u32)array_size( barriers ), barriers );
+					barrier_builder bb( list );
+					bb.transition(
+						g_dx.swap_chain_buffer( i ),
+						D3D12_RESOURCE_STATE_RENDER_TARGET,
+						D3D12_RESOURCE_STATE_PRESENT
+					);
 				}
 			}
 
