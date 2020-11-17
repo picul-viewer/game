@@ -78,7 +78,8 @@ public:
 	};
 
 	enum : u32 {
-		hlsl_images_space = 8,
+		hlsl_table_space_start = 8,
+		hlsl_images_space = hlsl_table_space_start,
 		hlsl_textures_space = 9
 	};
 

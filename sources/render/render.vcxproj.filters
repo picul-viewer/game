@@ -121,12 +121,6 @@
     <Filter Include="dx12\utils\allocators\double_pool">
       <UniqueIdentifier>{53bd9fdf-bbaa-4a9e-b639-fb59fa44280e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="render\effects">
-      <UniqueIdentifier>{119aa326-0705-4729-99be-e6d2d63adc88}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="render\effects\shade">
-      <UniqueIdentifier>{3cc97134-59d2-49a6-ad75-3954c1f771f0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="api">
       <UniqueIdentifier>{eb12d2bc-2196-4b2c-99a4-b942efaacedf}</UniqueIdentifier>
     </Filter>
@@ -135,9 +129,6 @@
     </Filter>
     <Filter Include="resources\render_allocator">
       <UniqueIdentifier>{670cc264-7622-4f51-b2f5-663c51a6cacd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="render\effects\render_ui">
-      <UniqueIdentifier>{37d4cd46-a147-4153-94bd-0a31e7056000}</UniqueIdentifier>
     </Filter>
     <Filter Include="render\statistics">
       <UniqueIdentifier>{7d865498-6e3f-4efe-a460-cf3c06f0cfec}</UniqueIdentifier>
@@ -151,18 +142,6 @@
     <Filter Include="resources\gpu_object_manager">
       <UniqueIdentifier>{d6b40d71-3aa2-4b01-8321-79a07967b0e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="render\effects\resolve">
-      <UniqueIdentifier>{4f329643-54c1-4d0f-b38c-d67a0c0155b2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="render\effects\gen_arg_mesh">
-      <UniqueIdentifier>{b0a944b5-5553-4c21-bc67-029a78b03bb9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="render\effects\render_shadowmap">
-      <UniqueIdentifier>{ec9a72e6-cc22-43ea-a753-b21f11bed2d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="render\effects\render_mesh">
-      <UniqueIdentifier>{81eca212-0038-48d5-ba8b-d7524b2b16aa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="render\utils">
       <UniqueIdentifier>{3e34bbd1-d617-4ea5-b2e9-ea40fc89533b}</UniqueIdentifier>
     </Filter>
@@ -174,6 +153,9 @@
     </Filter>
     <Filter Include="render\utils\barrier_builder">
       <UniqueIdentifier>{b57650f9-2514-40a6-8c0e-e618431b9f9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\utils\command_list_builder">
+      <UniqueIdentifier>{64ab0f85-42e4-47ac-843b-8c021f08faa4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -282,9 +264,6 @@
     <ClCompile Include="gpu_double_pool_allocator.cpp">
       <Filter>dx12\utils\allocators\double_pool</Filter>
     </ClCompile>
-    <ClCompile Include="shade_effect_cook.cpp">
-      <Filter>render\effects\shade</Filter>
-    </ClCompile>
     <ClCompile Include="api.cpp">
       <Filter>api</Filter>
     </ClCompile>
@@ -293,9 +272,6 @@
     </ClCompile>
     <ClCompile Include="ui_processor.cpp">
       <Filter>render\ui_processor</Filter>
-    </ClCompile>
-    <ClCompile Include="render_ui_effect_cook.cpp">
-      <Filter>render\effects\render_ui</Filter>
     </ClCompile>
     <ClCompile Include="statistics.cpp">
       <Filter>render\statistics</Filter>
@@ -306,20 +282,11 @@
     <ClCompile Include="render_object_point_light.cpp">
       <Filter>resources\classes\object\render_objects\point_light</Filter>
     </ClCompile>
-    <ClCompile Include="resolve_effect_cook.cpp">
-      <Filter>render\effects\resolve</Filter>
-    </ClCompile>
-    <ClCompile Include="render_shadowmap_effect_cook.cpp">
-      <Filter>render\effects\render_shadowmap</Filter>
-    </ClCompile>
-    <ClCompile Include="render_mesh_effect_cook.cpp">
-      <Filter>render\effects\render_mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="gen_arg_mesh_effect_cook.cpp">
-      <Filter>render\effects\gen_arg_mesh</Filter>
-    </ClCompile>
     <ClCompile Include="barrier_builder.cpp">
       <Filter>render\utils\barrier_builder</Filter>
+    </ClCompile>
+    <ClCompile Include="command_list_builder.cpp">
+      <Filter>render\utils\command_list_builder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -440,9 +407,6 @@
     <ClInclude Include="gpu_double_pool_allocator.h">
       <Filter>dx12\utils\allocators\double_pool</Filter>
     </ClInclude>
-    <ClInclude Include="shade_effect_cook.h">
-      <Filter>render\effects\shade</Filter>
-    </ClInclude>
     <ClInclude Include="api.h">
       <Filter>api</Filter>
     </ClInclude>
@@ -454,9 +418,6 @@
     </ClInclude>
     <ClInclude Include="ui_processor.h">
       <Filter>render\ui_processor</Filter>
-    </ClInclude>
-    <ClInclude Include="render_ui_effect_cook.h">
-      <Filter>render\effects\render_ui</Filter>
     </ClInclude>
     <ClInclude Include="statistics.h">
       <Filter>render\statistics</Filter>
@@ -473,20 +434,11 @@
     <ClInclude Include="gpu_object_manager_inline.h">
       <Filter>resources\gpu_object_manager</Filter>
     </ClInclude>
-    <ClInclude Include="resolve_effect_cook.h">
-      <Filter>render\effects\resolve</Filter>
-    </ClInclude>
-    <ClInclude Include="render_shadowmap_effect_cook.h">
-      <Filter>render\effects\render_shadowmap</Filter>
-    </ClInclude>
-    <ClInclude Include="render_mesh_effect_cook.h">
-      <Filter>render\effects\render_mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="gen_arg_mesh_effect_cook.h">
-      <Filter>render\effects\gen_arg_mesh</Filter>
-    </ClInclude>
     <ClInclude Include="barrier_builder.h">
       <Filter>render\utils\barrier_builder</Filter>
+    </ClInclude>
+    <ClInclude Include="command_list_builder.h">
+      <Filter>render\utils\command_list_builder</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

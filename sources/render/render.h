@@ -81,14 +81,14 @@ private:
 
 	ui_processor m_ui_processor;
 
-	pipeline_state m_ps_gen_arg_mesh;
-	pipeline_state m_ps_gen_arg_sun_shadowmap;
-	pipeline_state m_ps_render_shadowmap_directional;
-	pipeline_state m_ps_render_shadowmap;
-	pipeline_state m_ps_render_mesh;
-	pipeline_state m_ps_shade;
-	pipeline_state m_ps_resolve;
-	pipeline_state m_ps_render_ui;
+	compute_ps m_ps_gen_arg_mesh;
+	compute_ps m_ps_gen_arg_sun_shadowmap;
+	graphics_ps m_ps_render_shadowmap_directional;
+	graphics_ps m_ps_render_shadowmap;
+	graphics_ps m_ps_render_mesh;
+	compute_ps m_ps_shade;
+	graphics_ps m_ps_resolve;
+	graphics_ps m_ps_render_ui;
 
 	dx_resource m_scene_mesh_indirect_buffer;
 	dx_resource m_sun_shadow_mesh_indirect_buffer;

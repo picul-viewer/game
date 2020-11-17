@@ -10,7 +10,7 @@ StructuredBuffer<vertex_data>			g_vertex_data			: register( t3 );
 StructuredBuffer<float4x3>				g_transforms			: register( t4 );
 StructuredBuffer<point_light_object>	g_point_light_objects	: register( t5 );
 StructuredBuffer<uint>					g_point_light_list		: register( t6 );
-SamplerState							g_sampler				: register( s0 );
+SamplerState							g_texture_sampler		: register( s0 );
 
 vertex_data_unpacked interpolate_vertex_data( vertex_data_unpacked v0, vertex_data_unpacked v1, vertex_data_unpacked v2, float3 barycentrics )
 {
@@ -69,8 +69,8 @@ void main( uint3 id : SV_DispatchThreadID )
 	const float2 texcoord_ddx = data_right.texcoord.xy - data.texcoord.xy;
 	const float2 texcoord_ddy = data_bottom.texcoord.xy - data.texcoord.xy;
 
-	const float3 albedo = g_textures[NonUniformResourceIndex(mesh.albedo_texture_index)].SampleGrad( g_sampler, data.texcoord, texcoord_ddx, texcoord_ddy ).xyz;
-	const float2 metalness_roughness = g_textures[NonUniformResourceIndex(mesh.metal_rough_texture_index)].SampleGrad( g_sampler, data.texcoord, texcoord_ddx, texcoord_ddy ).zy;
+	const float3 albedo = g_textures[NonUniformResourceIndex(mesh.albedo_texture_index)].SampleGrad( g_texture_sampler, data.texcoord, texcoord_ddx, texcoord_ddy ).xyz;
+	const float2 metalness_roughness = g_textures[NonUniformResourceIndex(mesh.metal_rough_texture_index)].SampleGrad( g_texture_sampler, data.texcoord, texcoord_ddx, texcoord_ddy ).zy;
 
 	const float3 n = normalize( mul( transpose( transform ), float4( data.normal.xyz, 0.0f ) ).xyz );
 	const float3 geom_n = cross( v1 - v0, v2 - v0 );

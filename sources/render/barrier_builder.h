@@ -11,7 +11,7 @@ namespace render {
 class barrier_builder
 {
 public:
-	barrier_builder( dx_command_list& in_cmd_list );
+	barrier_builder( dx_command_list const in_cmd_list );
 	~barrier_builder( );
 
 	void transition( ID3D12Resource* const in_resource, D3D12_RESOURCE_STATES const in_before_state, D3D12_RESOURCE_STATES const in_after_state, u32 const in_subresource = 0 );
@@ -27,7 +27,7 @@ private:
 
 private:
 	D3D12_RESOURCE_BARRIER m_data[max_barriers];
-	dx_command_list& m_cmd_list;
+	dx_command_list const m_cmd_list;
 	u32 m_count = 0;
 
 };

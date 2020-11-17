@@ -11,7 +11,7 @@ shader_cook::shader_cook(
 	shader_type const in_type,
 	pcstr const in_name,
 	u32 const in_defines_count,
-	shader_define* const in_defines
+	shader_define const* const in_defines
 ) :
 	m_type( in_type ),
 	m_name( in_name ),
@@ -25,7 +25,7 @@ uptr shader_cook::size(
 	shader_type const,
 	pcstr const,
 	u32 const in_defines_count,
-	shader_define* const
+	shader_define const* const
 )
 {
 	return sizeof(shader_cook) + in_defines_count * sizeof(shader_define);

@@ -20,17 +20,25 @@ void dx_pipeline_state::graphics_cook::create( )
 	desc.StreamOutput.pBufferStrides = nullptr;
 	desc.StreamOutput.NumStrides = 0;
 	desc.StreamOutput.RasterizedStream = 0;
+	set_blend( );
+	set_blend_for_rt( 0 );
 	desc.SampleMask = 0xFFFFFFFF;
+	set_rasterizer_state( );
+	set_depth( );
+	set_stencil( );
+	set_input_layout( 0, nullptr );
 	desc.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
+	set_primitive_topology( D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE );
+	set_rtv_count( 0 );
+	for (u32 i = 0; i < max_rt_count; ++i)
+		desc.RTVFormats[i] = DXGI_FORMAT_UNKNOWN;
+	set_dsv_format( DXGI_FORMAT_UNKNOWN );
 	desc.SampleDesc.Count = 1;
 	desc.SampleDesc.Quality = 0;
 	desc.NodeMask = 0;
 	desc.CachedPSO.CachedBlobSizeInBytes = 0;
 	desc.CachedPSO.pCachedBlob = nullptr;
 	desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-
-	for (u32 i = 0; i < max_rt_count; ++i)
-		desc.RTVFormats[i] = DXGI_FORMAT_UNKNOWN;
 }
 
 void dx_pipeline_state::graphics_cook::set_root_signature(

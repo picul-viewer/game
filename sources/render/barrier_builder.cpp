@@ -2,7 +2,7 @@
 
 namespace render {
 
-barrier_builder::barrier_builder( dx_command_list& in_cmd_list ) :
+barrier_builder::barrier_builder( dx_command_list const in_cmd_list ) :
 	m_cmd_list( in_cmd_list )
 { }
 

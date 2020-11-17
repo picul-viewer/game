@@ -25,13 +25,13 @@ public:
 		shader_type const in_type,
 		pcstr const in_name,
 		u32 const in_defines_count,
-		shader_define* const in_defines
+		shader_define const* const in_defines
 	);
 	static uptr size(
 		shader_type const in_type,
 		pcstr const in_name,
 		u32 const in_defines_count,
-		shader_define* const in_defines
+		shader_define const* const in_defines
 	);
 
 public:

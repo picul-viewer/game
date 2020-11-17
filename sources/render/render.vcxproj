@@ -91,6 +91,7 @@
     <ClInclude Include="api.h" />
     <ClInclude Include="barrier_builder.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="command_list_builder.h" />
     <ClInclude Include="dds_loader.h" />
     <ClInclude Include="dx.h" />
     <ClInclude Include="dx12.h" />
@@ -103,7 +104,6 @@
     <ClInclude Include="dx_query_heap.h" />
     <ClInclude Include="dx_resource.h" />
     <ClInclude Include="dx_root_signature.h" />
-    <ClInclude Include="gen_arg_mesh_effect_cook.h" />
     <ClInclude Include="gpu_double_pool_allocator.h" />
     <ClInclude Include="gpu_heap_allocator.h" />
     <ClInclude Include="gpu_object_manager.h" />
@@ -125,20 +125,15 @@
     <ClInclude Include="dx_pipeline_state.h" />
     <ClInclude Include="pipeline_state.h" />
     <ClInclude Include="render.h" />
-    <ClInclude Include="render_mesh_effect_cook.h" />
     <ClInclude Include="render_object_point_light.h" />
-    <ClInclude Include="render_ui_effect_cook.h" />
-    <ClInclude Include="resolve_effect_cook.h" />
     <ClInclude Include="scene_cook.h" />
     <ClInclude Include="shader_cook.h" />
-    <ClInclude Include="shade_effect_cook.h" />
     <ClInclude Include="render_allocator.h" />
     <ClInclude Include="model_mesh.h" />
     <ClInclude Include="render_object_mesh.h" />
     <ClInclude Include="parameters_manager.h" />
     <ClInclude Include="resources.h" />
     <ClInclude Include="scene.h" />
-    <ClInclude Include="render_shadowmap_effect_cook.h" />
     <ClInclude Include="statistics.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="texture_cook.h" />
@@ -148,6 +143,7 @@
     <ClCompile Include="api.cpp" />
     <ClCompile Include="barrier_builder.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="command_list_builder.cpp" />
     <ClCompile Include="dds_loader.cpp" />
     <ClCompile Include="dx.cpp" />
     <ClCompile Include="dx12.cpp" />
@@ -160,7 +156,6 @@
     <ClCompile Include="dx_query_heap.cpp" />
     <ClCompile Include="dx_resource.cpp" />
     <ClCompile Include="dx_root_signature.cpp" />
-    <ClCompile Include="gen_arg_mesh_effect_cook.cpp" />
     <ClCompile Include="gpu_double_pool_allocator.cpp" />
     <ClCompile Include="gpu_heap_allocator.cpp" />
     <ClCompile Include="gpu_pool_allocator.cpp" />
@@ -174,13 +169,9 @@
     <ClCompile Include="dx_pipeline_state.cpp" />
     <ClCompile Include="pipeline_state.cpp" />
     <ClCompile Include="render.cpp" />
-    <ClCompile Include="render_mesh_effect_cook.cpp" />
     <ClCompile Include="render_object_point_light.cpp" />
-    <ClCompile Include="render_ui_effect_cook.cpp" />
-    <ClCompile Include="resolve_effect_cook.cpp" />
     <ClCompile Include="scene_cook.cpp" />
     <ClCompile Include="shader_cook.cpp" />
-    <ClCompile Include="shade_effect_cook.cpp" />
     <ClCompile Include="model_mesh.cpp" />
     <ClCompile Include="render_allocator.cpp" />
     <ClCompile Include="parameters.cpp" />
@@ -188,7 +179,6 @@
     <ClCompile Include="parameters_manager.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="scene.cpp" />
-    <ClCompile Include="render_shadowmap_effect_cook.cpp" />
     <ClCompile Include="statistics.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="texture_cook.cpp" />

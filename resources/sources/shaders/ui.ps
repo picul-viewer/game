@@ -1,6 +1,6 @@
 #include "layout.h"
 
-SamplerState g_sampler : register( s0 );
+SamplerState g_ui_sampler : register( s0 );
 
 void main(
 	in	float4		in_position		: SV_Position,
@@ -17,5 +17,5 @@ void main(
 	if ( in_texture_id >= g_max_textures )
 		out_color = in_add_color;
 	else
-		out_color = in_mult_color * g_textures[in_texture_id].Sample( g_sampler, in_texcoord ).rgba + in_add_color;
+		out_color = in_mult_color * g_textures[in_texture_id].Sample( g_ui_sampler, in_texcoord ).rgba + in_add_color;
 }

@@ -12,14 +12,8 @@
 #include "scene.h"
 #include "render_object_mesh.h"
 #include "barrier_builder.h"
+#include "command_list_builder.h"
 #include "statistics.h"
-
-#include "gen_arg_mesh_effect_cook.h"
-#include "render_shadowmap_effect_cook.h"
-#include "render_mesh_effect_cook.h"
-#include "shade_effect_cook.h"
-#include "resolve_effect_cook.h"
-#include "render_ui_effect_cook.h"
 
 namespace render {
 
@@ -177,7 +171,7 @@ void render::on_resources_created( queried_resources& in_resources )
 
 	for ( u32 i = 1; i < in_resources.count( ); ++i )
 	{
-		pipeline_state* result = in_resources.get_resource<pipeline_state*>( );
+		pvoid const result = in_resources.get_resource<pvoid>( );
 		ASSERT( result );
 	}
 
@@ -189,42 +183,147 @@ void render::on_resources_created( queried_resources& in_resources )
 void render::fill_effect_tasks( lib::buffer_array<task_info>& in_tasks )
 {
 	{
-		gen_arg_mesh_effect_cook* const cook = create_cook<gen_arg_mesh_effect_cook>( &m_ps_gen_arg_mesh, gen_arg_mesh_effect_cook::type_mesh );
+		shader_define const define = { "GEN_ARG_TYPE", "0" };
+		shader_cook* const shader = create_cook<shader_cook>( shader_type_compute, "gen_arg.cs", 1, &define );
+
+		compute_ps_cook* const cook = create_cook<compute_ps_cook>( &m_ps_gen_arg_mesh, shader );
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		gen_arg_mesh_effect_cook* const cook = create_cook<gen_arg_mesh_effect_cook>( &m_ps_gen_arg_sun_shadowmap, gen_arg_mesh_effect_cook::type_sun_shadowmap );
+		shader_define const define = { "GEN_ARG_TYPE", "1" };
+		shader_cook* const shader = create_cook<shader_cook>(
+			shader_type_compute, "gen_arg.cs", 1, &define
+		);
+
+		compute_ps_cook* const cook = create_cook<compute_ps_cook>( &m_ps_gen_arg_sun_shadowmap, shader );
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		render_shadowmap_effect_cook* const cook = create_cook<render_shadowmap_effect_cook>( &m_ps_render_shadowmap_directional, true );
+		shader_define const define = { "DIRECTIONAL_LIGHT", "" };
+		shader_cook* const vs_cook = create_cook<shader_cook>(
+			shader_type_vertex, "shadowmap.vs", 1, &define
+		);
+
+		D3D12_INPUT_ELEMENT_DESC const input_layout[] = {
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+			{ "TRANSFORM", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 },
+			{ "TRANSFORM", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 },
+			{ "TRANSFORM", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 },
+			{ "TRANSFORM", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 }
+		};
+
+		graphics_ps_cook* const cook = create_cook<graphics_ps_cook>( &m_ps_render_shadowmap_directional );
+		cook->set_vs( vs_cook );
+		cook->set_depth( true, true, D3D12_COMPARISON_FUNC_LESS_EQUAL );
+		cook->set_input_layout( (u32)array_size( input_layout ), input_layout );
+		cook->set_primitive_topology( D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE );
+		cook->set_rtv_count( 0 );
+		cook->set_dsv_format( DXGI_FORMAT_D16_UNORM );
+
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		render_shadowmap_effect_cook* const cook = create_cook<render_shadowmap_effect_cook>( &m_ps_render_shadowmap, false );
+		shader_cook* const vs_cook = create_cook<shader_cook>( shader_type_vertex, "shadowmap.vs", 0, nullptr );
+
+		D3D12_INPUT_ELEMENT_DESC const input_layout[] = {
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+			{ "TRANSFORM", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 },
+			{ "TRANSFORM", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 },
+			{ "TRANSFORM", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 },
+			{ "TRANSFORM", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 }
+		};
+
+		graphics_ps_cook* const cook = create_cook<graphics_ps_cook>( &m_ps_render_shadowmap );
+		cook->set_vs( vs_cook );
+		cook->set_depth( true, true, D3D12_COMPARISON_FUNC_LESS_EQUAL );
+		cook->set_input_layout( (u32)array_size( input_layout ), input_layout );
+		cook->set_primitive_topology( D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE );
+		cook->set_rtv_count( 0 );
+		cook->set_dsv_format( DXGI_FORMAT_D16_UNORM );
+
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		render_mesh_effect_cook* const cook = create_cook<render_mesh_effect_cook>( &m_ps_render_mesh );
+		shader_cook* const vs_cook = create_cook<shader_cook>( shader_type_vertex, "visibility.vs", 0, nullptr );
+		shader_cook* const ps_cook = create_cook<shader_cook>( shader_type_pixel, "visibility.ps", 0, nullptr );
+
+		D3D12_INPUT_ELEMENT_DESC const input_layout[] = {
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+			{ "TRANSFORM", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 },
+			{ "TRANSFORM", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 },
+			{ "TRANSFORM", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 },
+			{ "TRANSFORM", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 },
+			{ "INSTANCE_ID", 0, DXGI_FORMAT_R32_UINT, 2, 0, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 }
+		};
+
+		graphics_ps_cook* const cook = create_cook<graphics_ps_cook>( &m_ps_render_mesh );
+		cook->set_vs( vs_cook );
+		cook->set_ps( ps_cook );
+		cook->set_depth( true, true, D3D12_COMPARISON_FUNC_LESS_EQUAL );
+		cook->set_input_layout( (u32)array_size( input_layout ), input_layout );
+		cook->set_primitive_topology( D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE );
+		cook->set_rtv_count( 1 );
+		cook->set_rtv_format( 0, DXGI_FORMAT_R32G32_UINT );
+		cook->set_dsv_format( DXGI_FORMAT_D32_FLOAT );
+
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		shade_effect_cook* const cook = create_cook<shade_effect_cook>( &m_ps_shade );
+		shader_define const define = { "SUN_SHADOWMAP_DIMENSION", format( "%d", resources::sun_shadowmap_dimension ) };
+		shader_cook* const shader = create_cook<shader_cook>(
+			shader_type_compute, "shade.cs", 1, &define
+		);
+
+		compute_ps_cook* const cook = create_cook<compute_ps_cook>( &m_ps_shade, shader );
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		resolve_effect_cook* const cook = create_cook<resolve_effect_cook>( &m_ps_resolve );
+		shader_cook* const vs_cook = create_cook<shader_cook>( shader_type_vertex, "fullscreen.vs", 0, nullptr );
+		shader_cook* const ps_cook = create_cook<shader_cook>( shader_type_pixel, "resolve.ps", 0, nullptr );
+
+		graphics_ps_cook* const cook = create_cook<graphics_ps_cook>( &m_ps_resolve );
+		cook->set_vs( vs_cook );
+		cook->set_ps( ps_cook );
+		cook->set_primitive_topology( D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE );
+		cook->set_rtv_count( 1 );
+		cook->set_rtv_format( 0, g_dx.back_buffer_format );
+		cook->set_dsv_format( DXGI_FORMAT_UNKNOWN );
+
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 
 	{
-		render_ui_effect_cook* const cook = create_cook<render_ui_effect_cook>( &m_ps_render_ui );
+		shader_cook* const vs_cook = create_cook<shader_cook>( shader_type_vertex, "ui.vs", 0, nullptr );
+		shader_cook* const ps_cook = create_cook<shader_cook>( shader_type_pixel, "ui.ps", 0, nullptr );
+
+		D3D12_INPUT_ELEMENT_DESC const input_layout[] = {
+			{ "POSITION", 0, DXGI_FORMAT_R16G16_SNORM, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R16G16_UNORM, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+			{ "COLOR", 0, DXGI_FORMAT_R16G16B16A16_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+			{ "COLOR", 1, DXGI_FORMAT_R16G16B16A16_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+			{ "TEXTURE_ID", 0, DXGI_FORMAT_R32_UINT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+		};
+
+		graphics_ps_cook* const cook = create_cook<graphics_ps_cook>( &m_ps_render_ui );
+		cook->set_vs( vs_cook );
+		cook->set_ps( ps_cook );
+		cook->set_blend_for_rt(
+			0, true, false,
+			D3D12_BLEND_SRC_ALPHA, D3D12_BLEND_INV_SRC_ALPHA, D3D12_BLEND_OP_ADD,
+			D3D12_BLEND_ZERO, D3D12_BLEND_ONE, D3D12_BLEND_OP_ADD );
+		cook->set_rasterizer_state( D3D12_FILL_MODE_SOLID, D3D12_CULL_MODE_NONE );
+		cook->set_input_layout( (u32)array_size( input_layout ), input_layout );
+		cook->set_primitive_topology( D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE );
+		cook->set_rtv_count( 1 );
+		cook->set_rtv_format( 0, g_dx.back_buffer_format );
+		cook->set_dsv_format( DXGI_FORMAT_UNKNOWN );
+
 		cook->fill_task_info( in_tasks.emplace_back( ) );
 	}
 }
@@ -251,9 +350,11 @@ void render::record_render( )
 	{
 		for ( u32 j = 0; j < max_frame_delay; ++j )
 		{
-			dx_command_list& list = m_cmd_lists[i][j];
-			list.create( D3D12_COMMAND_LIST_TYPE_DIRECT, m_cmd_allocator, nullptr );
-			set_dx_name( list, format( "cmd_list[%d][%d]", i, j ) );
+			dx_command_list& dx_list = m_cmd_lists[i][j];
+			dx_list.create( D3D12_COMMAND_LIST_TYPE_DIRECT, m_cmd_allocator, nullptr );
+			set_dx_name( dx_list, format( "cmd_list[%d][%d]", i, j ) );
+			
+			command_list_builder list( dx_list );
 
 			{
 				PROFILE_EVENT( list, j, Frame );
@@ -285,15 +386,14 @@ void render::record_render( )
 				{
 					PROFILE_EVENT( list, j, gen_arg_mesh );
 
-					list->SetComputeRootSignature( m_ps_gen_arg_mesh.rs( ) );
-					list->SetPipelineState( m_ps_gen_arg_mesh.ps( ) );
+					list.bind_pipeline( m_ps_gen_arg_mesh );
 
-					list->SetComputeRootConstantBufferView( 0, g_resources.constant_buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 1, m_mesh_list[j]->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 2, g_resources.mesh_object_buffer( )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 3, g_resources.transforms( ).buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootUnorderedAccessView( 4, m_scene_mesh_indirect_buffer->GetGPUVirtualAddress( ) );
-					list->SetComputeRootUnorderedAccessView( 5, m_scene_mesh_transforms_buffer->GetGPUVirtualAddress( ) );
+					list.bind_cbv( 0, g_resources.constant_buffer( j ) );
+					list.bind_srv( 0, m_mesh_list[j] );
+					list.bind_srv( 1, g_resources.mesh_object_buffer( ) );
+					list.bind_srv( 2, g_resources.transforms( ).buffer( j ) );
+					list.bind_uav( 0, m_scene_mesh_indirect_buffer );
+					list.bind_uav( 1, m_scene_mesh_transforms_buffer );
 
 					u32 const dispatch_size_offset = offsetof( gpu::constant_buffer, indirect_params_1.x );
 					list->ExecuteIndirect( m_dispatch_cs, 1, g_resources.constant_buffer( j ), dispatch_size_offset, nullptr, 0 );
@@ -302,15 +402,14 @@ void render::record_render( )
 				{
 					PROFILE_EVENT( list, j, gen_arg_sun_shadowmap );
 
-					list->SetComputeRootSignature( m_ps_gen_arg_sun_shadowmap.rs( ) );
-					list->SetPipelineState( m_ps_gen_arg_sun_shadowmap.ps( ) );
+					list.bind_pipeline( m_ps_gen_arg_sun_shadowmap );
 
-					list->SetComputeRootConstantBufferView( 0, g_resources.constant_buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 1, m_sun_shadow_mesh_list[j]->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 2, g_resources.mesh_object_buffer( )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 3, g_resources.transforms( ).buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootUnorderedAccessView( 4, m_sun_shadow_mesh_indirect_buffer->GetGPUVirtualAddress( ) );
-					list->SetComputeRootUnorderedAccessView( 5, m_sun_shadow_mesh_transforms_buffer->GetGPUVirtualAddress( ) );
+					list.bind_cbv( 0, g_resources.constant_buffer( j ) );
+					list.bind_srv( 0, m_sun_shadow_mesh_list[j] );
+					list.bind_srv( 1, g_resources.mesh_object_buffer( ) );
+					list.bind_srv( 2, g_resources.transforms( ).buffer( j ) );
+					list.bind_uav( 0, m_sun_shadow_mesh_indirect_buffer );
+					list.bind_uav( 1, m_sun_shadow_mesh_transforms_buffer );
 
 					u32 const dispatch_size_offset = offsetof( gpu::constant_buffer, indirect_params_2.x );
 					list->ExecuteIndirect( m_dispatch_cs, 1, g_resources.constant_buffer( j ), dispatch_size_offset, nullptr, 0 );
@@ -353,10 +452,8 @@ void render::record_render( )
 				{
 					PROFILE_EVENT( list, j, render_mesh );
 
-					list.cmd_set_viewport_and_scissors( math::u32x2( g_parameters.screen_resolution ) );
-
-					list->SetGraphicsRootSignature( m_ps_render_mesh.rs( ) );
-					list->SetPipelineState( m_ps_render_mesh.ps( ) );
+					list.bind_pipeline( m_ps_render_mesh );
+					list.set_viewport_and_scissors( math::u32x2( g_parameters.screen_resolution ) );
 
 					D3D12_CPU_DESCRIPTOR_HANDLE const rtv = g_resources.rtv( image_rtv_v_buffer_polygon_id );
 					D3D12_CPU_DESCRIPTOR_HANDLE const dsv = g_resources.dsv( image_dsv_screen );
@@ -392,10 +489,8 @@ void render::record_render( )
 				{
 					PROFILE_EVENT( list, j, render_sun_shadowmap );
 
-					list.cmd_set_viewport_and_scissors( math::u32x2( resources::sun_shadowmap_dimension ) );
-
-					list->SetGraphicsRootSignature( m_ps_render_shadowmap_directional.rs( ) );
-					list->SetPipelineState( m_ps_render_shadowmap_directional.ps( ) );
+					list.bind_pipeline( m_ps_render_shadowmap_directional );
+					list.set_viewport_and_scissors( math::u32x2( resources::sun_shadowmap_dimension ) );
 
 					D3D12_CPU_DESCRIPTOR_HANDLE const dsv = g_resources.dsv( image_dsv_sun_shadowmap );
 					list->OMSetRenderTargets( 0, nullptr, FALSE, &dsv );
@@ -455,21 +550,16 @@ void render::record_render( )
 				{
 					PROFILE_EVENT( list, j, shade );
 
-					list->SetComputeRootSignature( m_ps_shade.rs( ) );
-					list->SetPipelineState( m_ps_shade.ps( ) );
+					list.bind_pipeline( m_ps_shade );
 
-					ID3D12DescriptorHeap* const heap = g_resources.srv_uav_heap( );
-					list->SetDescriptorHeaps( 1, &heap );
-
-					list->SetComputeRootConstantBufferView( 0, g_resources.constant_buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 1, g_resources.mesh_object_buffer( )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 2, g_resources.index_buffer( )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 3, g_resources.vertex_buffer( )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 4, g_resources.vertex_data_buffer( )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 5, g_resources.transforms( ).buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 6, g_resources.point_lights( ).buffer( j )->GetGPUVirtualAddress( ) );
-					list->SetComputeRootShaderResourceView( 7, m_point_light_list[j]->GetGPUVirtualAddress( ) );
-					list->SetComputeRootDescriptorTable( 8, g_resources.srv_uav_heap( )->GetGPUDescriptorHandleForHeapStart( ) );
+					list.bind_cbv( 0, g_resources.constant_buffer( j ) );
+					list.bind_srv( 0, g_resources.mesh_object_buffer( ) );
+					list.bind_srv( 1, g_resources.index_buffer( ) );
+					list.bind_srv( 2, g_resources.vertex_buffer( ) );
+					list.bind_srv( 3, g_resources.vertex_data_buffer( ) );
+					list.bind_srv( 4, g_resources.transforms( ).buffer( j ) );
+					list.bind_srv( 5, g_resources.point_lights( ).buffer( j ) );
+					list.bind_srv( 6, m_point_light_list[j] );
 
 					u16 const tile_size = 16;
 					math::u16x2 const group_count = ( g_parameters.screen_resolution + math::u16x2( tile_size - 1 ) ) / tile_size;
@@ -488,15 +578,8 @@ void render::record_render( )
 				{
 					PROFILE_EVENT( list, j, resolve );
 
-					list.cmd_set_viewport_and_scissors( math::u32x2( g_parameters.screen_resolution ) );
-
-					list->SetGraphicsRootSignature( m_ps_resolve.rs( ) );
-					list->SetPipelineState( m_ps_resolve.ps( ) );
-
-					ID3D12DescriptorHeap* const heap = g_resources.srv_uav_heap( );
-					list->SetDescriptorHeaps( 1, &heap );
-
-					list->SetGraphicsRootDescriptorTable( 0, g_resources.srv_uav_heap( )->GetGPUDescriptorHandleForHeapStart( ) );
+					list.bind_pipeline( m_ps_resolve );
+					list.set_viewport_and_scissors( math::u32x2( g_parameters.screen_resolution ) );
 
 					D3D12_CPU_DESCRIPTOR_HANDLE const rtv = g_resources.rtv( image_rtv_output_0 + i );
 					list->OMSetRenderTargets( 1, &rtv, TRUE, nullptr );
@@ -516,15 +599,8 @@ void render::record_render( )
 				{
 					PROFILE_EVENT( list, j, render_ui );
 
-					list.cmd_set_viewport_and_scissors( math::u32x2( g_parameters.screen_resolution ) );
-
-					list->SetGraphicsRootSignature( m_ps_render_ui.rs( ) );
-					list->SetPipelineState( m_ps_render_ui.ps( ) );
-
-					ID3D12DescriptorHeap* const heap = g_resources.srv_uav_heap( );
-					list->SetDescriptorHeaps( 1, &heap );
-
-					list->SetGraphicsRootDescriptorTable( 0, g_resources.srv_uav_heap( )->GetGPUDescriptorHandleForHeapStart( ) );
+					list.bind_pipeline( m_ps_render_ui );
+					list.set_viewport_and_scissors( math::u32x2( g_parameters.screen_resolution ) );
 
 					D3D12_CPU_DESCRIPTOR_HANDLE const rtv = g_resources.rtv( image_rtv_output_0 + i );
 					list->OMSetRenderTargets( 1, &rtv, FALSE, nullptr );
@@ -556,8 +632,6 @@ void render::record_render( )
 #ifdef USE_RENDER_PROFILING
 			g_statistics.resolve( list, j );
 #endif // #ifdef USE_RENDER_PROFILING
-
-			DX12_CHECK_RESULT( list->Close( ) );
 		}
 	}
 }
