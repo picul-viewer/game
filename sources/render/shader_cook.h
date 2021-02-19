@@ -24,14 +24,14 @@ public:
 	shader_cook(
 		shader_type const in_type,
 		pcstr const in_name,
-		u32 const in_defines_count,
-		shader_define const* const in_defines
+		u32 const in_defines_count = 0,
+		shader_define const* const in_defines = nullptr
 	);
 	static uptr size(
 		shader_type const in_type,
 		pcstr const in_name,
-		u32 const in_defines_count,
-		shader_define const* const in_defines
+		u32 const in_defines_count = 0,
+		shader_define const* const in_defines = nullptr
 	);
 
 public:

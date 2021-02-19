@@ -226,7 +226,7 @@ void render::fill_effect_tasks( lib::buffer_array<task_info>& in_tasks )
 	}
 
 	{
-		shader_cook* const vs_cook = create_cook<shader_cook>( shader_type_vertex, "shadowmap.vs", 0, nullptr );
+		shader_cook* const vs_cook = create_cook<shader_cook>( shader_type_vertex, "shadowmap.vs" );
 
 		D3D12_INPUT_ELEMENT_DESC const input_layout[] = {
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -248,8 +248,8 @@ void render::fill_effect_tasks( lib::buffer_array<task_info>& in_tasks )
 	}
 
 	{
-		shader_cook* const vs_cook = create_cook<shader_cook>( shader_type_vertex, "visibility.vs", 0, nullptr );
-		shader_cook* const ps_cook = create_cook<shader_cook>( shader_type_pixel, "visibility.ps", 0, nullptr );
+		shader_cook* const vs_cook = create_cook<shader_cook>( shader_type_vertex, "visibility.vs" );
+		shader_cook* const ps_cook = create_cook<shader_cook>( shader_type_pixel, "visibility.ps" );
 
 		D3D12_INPUT_ELEMENT_DESC const input_layout[] = {
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -284,8 +284,8 @@ void render::fill_effect_tasks( lib::buffer_array<task_info>& in_tasks )
 	}
 
 	{
-		shader_cook* const vs_cook = create_cook<shader_cook>( shader_type_vertex, "fullscreen.vs", 0, nullptr );
-		shader_cook* const ps_cook = create_cook<shader_cook>( shader_type_pixel, "resolve.ps", 0, nullptr );
+		shader_cook* const vs_cook = create_cook<shader_cook>( shader_type_vertex, "fullscreen.vs" );
+		shader_cook* const ps_cook = create_cook<shader_cook>( shader_type_pixel, "resolve.ps" );
 
 		graphics_ps_cook* const cook = create_cook<graphics_ps_cook>( &m_ps_resolve );
 		cook->set_vs( vs_cook );
@@ -299,8 +299,8 @@ void render::fill_effect_tasks( lib::buffer_array<task_info>& in_tasks )
 	}
 
 	{
-		shader_cook* const vs_cook = create_cook<shader_cook>( shader_type_vertex, "ui.vs", 0, nullptr );
-		shader_cook* const ps_cook = create_cook<shader_cook>( shader_type_pixel, "ui.ps", 0, nullptr );
+		shader_cook* const vs_cook = create_cook<shader_cook>( shader_type_vertex, "ui.vs" );
+		shader_cook* const ps_cook = create_cook<shader_cook>( shader_type_pixel, "ui.ps" );
 
 		D3D12_INPUT_ELEMENT_DESC const input_layout[] = {
 			{ "POSITION", 0, DXGI_FORMAT_R16G16_SNORM, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },

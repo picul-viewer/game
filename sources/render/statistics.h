@@ -44,7 +44,7 @@ public:
 
 private:
 	enum : u32 {
-		max_events = 8
+		max_events = 16
 	};
 
 	struct event_data
