@@ -53,6 +53,24 @@ void compute_ps::destroy( )
 	m_rs.destroy( );
 }
 
+u32 compute_ps::calculate_groups_count( u32 const in_dimensions )
+{
+	ASSERT( m_group_dims.y == 1 );
+	ASSERT( m_group_dims.z == 1 );
+	return ( in_dimensions + m_group_dims.x - 1 ) / m_group_dims.x;
+}
+
+math::u32x2 compute_ps::calculate_groups_count( math::u32x2 const in_dimensions )
+{
+	ASSERT( m_group_dims.z == 1 );
+	return ( in_dimensions + math::u32x2( m_group_dims ) - math::u32x2( 1 ) ) / math::u32x2( m_group_dims );
+}
+
+math::u32x3 compute_ps::calculate_groups_count( math::u32x3 const in_dimensions )
+{
+	return ( in_dimensions + math::u32x3( m_group_dims ) - math::u32x3( 1 ) ) / math::u32x3( m_group_dims );
+}
+
 void compute_ps::bind_cbv( dx_command_list const in_cmd_list, u32 const in_register, D3D12_GPU_VIRTUAL_ADDRESS const in_address ) const
 {
 	u32 const root_index = m_offsets[0] + in_register;
@@ -519,6 +537,11 @@ void compute_ps_cook::on_shader_ready( queried_resources& in_resources )
 	DX12_CHECK_RESULT( D3DReflect( shader->data( ), shader->size( ), IID_PPV_ARGS( &reflection ) ) );
 	D3D12_SHADER_DESC shader_desc;
 	DX12_CHECK_RESULT( reflection->GetDesc( &shader_desc ) );
+
+	math::u32x3 group_dimensions;
+	u32 const group_size = reflection->GetThreadGroupSize( &group_dimensions.x, &group_dimensions.y, &group_dimensions.z );
+
+	m_result->m_group_dims = math::u16x4( group_dimensions.x, group_dimensions.y, group_dimensions.z, group_size );
 
 	u32 resource_count, sampler_count;
 	bool need_descriptor_table;

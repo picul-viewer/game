@@ -561,8 +561,7 @@ void render::record_render( )
 					list.bind_srv( 5, g_resources.point_lights( ).buffer( j ) );
 					list.bind_srv( 6, m_point_light_list[j] );
 
-					u16 const tile_size = 16;
-					math::u16x2 const group_count = ( g_parameters.screen_resolution + math::u16x2( tile_size - 1 ) ) / tile_size;
+					math::u16x2 const group_count = m_ps_shade.calculate_groups_count( g_parameters.screen_resolution );
 					list->Dispatch( group_count.x, group_count.y, 1 );
 				}
 

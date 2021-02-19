@@ -2,6 +2,7 @@
 #define GUARD_RENDER_PIPELINE_STATE_H_INCLUDED
 
 #include <types.h>
+#include <math/vector.h>
 #include <resource_system/default_resource.h>
 #include <resource_system/default_resource_cook.h>
 #include <utils/engine_threads.h>
@@ -54,6 +55,10 @@ public:
 
 	void destroy( );
 
+	u32 calculate_groups_count( u32 const in_dimensions );
+	math::u32x2 calculate_groups_count( math::u32x2 const in_dimensions );
+	math::u32x3 calculate_groups_count( math::u32x3 const in_dimensions );
+
 private:
 	inline dx_root_signature const& rs( ) const { return m_rs; }
 	inline dx_pipeline_state const& ps( ) const { return m_ps; }
@@ -68,6 +73,7 @@ private:
 	dx_root_signature m_rs;
 	dx_pipeline_state m_ps;
 	u16 m_offsets[4];
+	math::u16x4 m_group_dims;
 
 };
 
