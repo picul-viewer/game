@@ -235,9 +235,7 @@ void gpu_uploader::push_tasks( gpu_upload_task* const in_tasks, u32 const in_cou
 
 void gpu_uploader::process_tasks( )
 {
-	ASSERT( m_created );
-
-	if ( m_fence->GetCompletedValue( ) < m_fence_value )
+	if ( !m_created || ( m_fence->GetCompletedValue( ) < m_fence_value ) )
 		return;
 
 	while ( gpu_upload_task* const task = m_queue.pop( ) )

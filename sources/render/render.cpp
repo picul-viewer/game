@@ -664,7 +664,7 @@ void render::destroy( )
 	m_ready = false;
 
 	// Wait for GPU.
-	render_wait( [this]( ) { return m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index; } );
+	render_wait( [this]( ) { return m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index - 1; } );
 
 	m_scene_mesh_indirect_buffer.destroy( );
 	m_scene_mesh_transforms_buffer.destroy( );
@@ -788,15 +788,12 @@ void render::push_cmd_lists( )
 
 	DX12_CHECK_RESULT( g_dx.queue_graphics( )->Wait( m_copy_fence, m_frame_index ) );
 	g_dx.queue_graphics( )->ExecuteCommandLists( 1, &current_cmd_list );
-	DX12_CHECK_RESULT( g_dx.queue_graphics( )->Signal( m_gpu_frame_index, m_frame_index ) );
 	DX12_CHECK_RESULT( g_dx.swap_chain( )->Present( 0, 0 ) );
+	DX12_CHECK_RESULT( g_dx.queue_graphics( )->Signal( m_gpu_frame_index, m_frame_index ) );
 }
 
 void render::update( )
 {
-	// Wait for previous frame.
-	render_wait( [this]( ) { return m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index - max_frame_delay; } );
-
 	if ( !m_need_to_record_render )
 	{
 		// Wait for the submition we are going to replace.
