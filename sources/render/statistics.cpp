@@ -32,8 +32,12 @@ void statistics::create( )
 	m_query_count = 0;
 	m_stack_index = 0;
 
-	m_frame_ticker.tick( );
+	m_last_tick = sys::time::now( );
+	m_last_smoothed_tick = m_last_tick;
+
 	m_current_cpu_frame_time = 0.0f;
+	m_smoothed_current_frame_time = 0.0f;
+	m_smoothed_frame_count = 0.0f;
 }
 
 void statistics::destroy( )
@@ -54,10 +58,24 @@ void statistics::process( pstr const out_string, uptr const in_max_chars )
 {
 	lib::text_writer w( out_string, in_max_chars );
 
-	float elapsed_time = (float)m_frame_ticker.tick( );
-	m_current_cpu_frame_time = m_current_cpu_frame_time == 0.0f ? elapsed_time : math::lerp( elapsed_time, m_current_cpu_frame_time, adaptation_speed );
+	sys::time const tick = sys::time::now( );
+	float const cpu_frame_time = (float)( tick - m_last_tick );
+	m_current_cpu_frame_time = m_current_cpu_frame_time == 0.0f ? cpu_frame_time : math::lerp( cpu_frame_time, m_current_cpu_frame_time, adaptation_speed );
+	m_last_tick = tick;
 
-	w.write_mask( TEXT_WRITER_MASK( "FPS: %4.1f\nCPU frame time: %4.3f ms\n" ), 1.0f / m_current_cpu_frame_time, 1000.0f * m_current_cpu_frame_time );
+	m_smoothed_frame_count += 1.0f;
+	if ( tick - m_last_smoothed_tick >= 1.0 )
+	{
+		m_smoothed_current_frame_time = (float)( tick - m_last_smoothed_tick ) / m_smoothed_frame_count;
+		m_last_smoothed_tick = tick;
+		m_smoothed_frame_count = 0.0f;
+	}
+
+	w.write_mask(
+		TEXT_WRITER_MASK( "Avg FPS: %4.1f\nFPS: %4.1f\nAvg CPU frame time: %4.3f ms\nCPU frame time: %4.3f ms\n" ),
+		1.0f / m_smoothed_current_frame_time, 1.0f / m_current_cpu_frame_time,
+		1000.0f * m_smoothed_current_frame_time, 1000.0f * m_current_cpu_frame_time
+	);
 
 	u32 const frame_index = ( g_render.frame_index( ) + max_frame_delay - 1 ) % max_frame_delay;
 	D3D12_RANGE const range = { sizeof(u64) * 2 * max_events * frame_index, sizeof(u64) * 2 * ( max_events * frame_index + m_query_count ) };

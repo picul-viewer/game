@@ -79,8 +79,12 @@ private:
 
 	event_data* m_root;
 
-	sys::ticker m_frame_ticker;
+	sys::time m_last_tick;
+	sys::time m_last_smoothed_tick;
+
 	float m_current_cpu_frame_time;
+	float m_smoothed_current_frame_time;
+	float m_smoothed_frame_count;
 
 	double m_inv_frequency;
 
