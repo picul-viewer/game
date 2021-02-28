@@ -13,7 +13,7 @@
 
 namespace render {
 
-class gpu_upload_task
+class gpu_upload_data
 {
 public:
 	void set_source_data(
@@ -32,9 +32,25 @@ public:
 		D3D12_SUBRESOURCE_FOOTPRINT const& in_footprint
 	);
 
-	void set_task_context( custom_task_context const in_context );
-
 	bool is_texture_copy( ) const;
+
+	bool record( pbyte const in_staging_data, uptr const in_staging_size, uptr& in_staging_offset, dx_command_list& in_cmd_list, dx_resource in_staging ) const;
+
+private:
+	D3D12_SUBRESOURCE_FOOTPRINT footprint;
+	pcvoid data;
+	uptr data_size;
+	u64 source_row_pitch;
+	dx_resource destination;
+	u64 destination_buffer_offset;
+	u32 subresource_index;
+
+};
+
+class gpu_upload_task : public gpu_upload_data
+{
+public:
+	void set_task_context( custom_task_context const in_context );
 
 private:
 	friend class gpu_uploader;
@@ -42,14 +58,7 @@ private:
 	void finish( );
 
 private:
-	D3D12_SUBRESOURCE_FOOTPRINT footprint;
 	custom_task_context task_context;
-	pcvoid data;
-	uptr data_size;
-	u64 source_row_pitch;
-	dx_resource destination;
-	u64 destination_buffer_offset;
-	u32 subresource_index;
 
 };
 
@@ -97,25 +106,22 @@ public:
 	void create( );
 	void destroy( );
 
-	void push_immediate_tasks( gpu_upload_task* const in_tasks, u32 const in_count );
-	void push_background_tasks( gpu_upload_task* const in_tasks, u32 const in_count );
+	void push_tasks( gpu_upload_task* const in_tasks, u32 const in_count );
 
 	void copy_thread_job( u32 const in_thread_index, volatile bool& in_alive_flag );
 
 private:
 	void process_tasks( );
-	bool process_task( gpu_upload_task* const in_task, uptr& buffer_size );
 
 private:
-	gpu_uploader_queue m_immediate_queue;
-	gpu_uploader_queue m_background_queue;
-	sys::system_event m_event;
+	gpu_uploader_queue m_queue;
 	dx_resource m_staging;
 	pbyte m_staging_data;
 	dx_command_allocator m_cmd_allocator;
 	dx_command_list m_cmd_list;
 	dx_fence m_fence;
 	u64 m_fence_value;
+	sys::system_event m_event;
 	volatile bool m_event_created = false;
 	volatile bool m_created = false;
 

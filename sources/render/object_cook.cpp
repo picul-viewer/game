@@ -72,7 +72,7 @@ void object_cook::on_child_resources_ready( queried_resources& in_queried )
 		in_task.set_task_context( context );
 	} );
 
-	g_gpu_uploader.push_background_tasks( tasks.data( ), (u32)tasks.size( ) );
+	g_gpu_uploader.push_tasks( tasks.data( ), (u32)tasks.size( ) );
 }
 
 void object_cook::on_copy_tasks_finished( )

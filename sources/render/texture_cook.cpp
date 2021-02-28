@@ -71,7 +71,7 @@ void texture_cook::on_file_loaded( queried_resources& in_queried )
 	for ( u32 i = 0; i < upload_tasks.size( ); ++i )
 		upload_tasks[i].set_task_context( task_context );
 
-	g_gpu_uploader.push_background_tasks( upload_tasks.data( ), (u32)upload_tasks.size( ) );
+	g_gpu_uploader.push_tasks( upload_tasks.data( ), (u32)upload_tasks.size( ) );
 }
 
 void texture_cook::on_gpu_upload_finished( )

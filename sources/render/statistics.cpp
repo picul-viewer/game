@@ -33,7 +33,7 @@ void statistics::create( )
 	m_stack_index = 0;
 
 	m_frame_ticker.tick( );
-	m_current_cpu_frame_time = 0.0;
+	m_current_cpu_frame_time = 0.0f;
 }
 
 void statistics::destroy( )
@@ -55,7 +55,7 @@ void statistics::process( pstr const out_string, uptr const in_max_chars )
 	lib::text_writer w( out_string, in_max_chars );
 
 	float elapsed_time = (float)m_frame_ticker.tick( );
-	m_current_cpu_frame_time = math::lerp( elapsed_time, m_current_cpu_frame_time, adaptation_speed );
+	m_current_cpu_frame_time = m_current_cpu_frame_time == 0.0f ? elapsed_time : math::lerp( elapsed_time, m_current_cpu_frame_time, adaptation_speed );
 
 	w.write_mask( TEXT_WRITER_MASK( "FPS: %4.1f\nCPU frame time: %4.3f ms\n" ), 1.0f / m_current_cpu_frame_time, 1000.0f * m_current_cpu_frame_time );
 
@@ -85,7 +85,8 @@ void statistics::process_event_data( event_data* const in_data, lib::text_writer
 	u64 const end_tick = math::max( in_query_result[in_data->m_query_index * 2 + 1], begin_tick );
 	float const elapsed_time = (float)( (double)( end_tick - begin_tick ) * m_inv_frequency );
 
-	in_data->m_current_value = math::lerp( in_data->m_current_value, elapsed_time, adaptation_speed );
+	float& current_value = in_data->m_current_value;
+	current_value = current_value == 0.0f ? elapsed_time : math::lerp( current_value, elapsed_time, adaptation_speed );
 
 	s32 const max_caption_width = 30;
 	s32 const pre_identation = 2 * in_depth;

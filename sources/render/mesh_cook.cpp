@@ -94,7 +94,7 @@ void mesh_cook::on_file_loaded( queried_resources& in_queried )
 	upload_tasks[2].set_buffer_upload( g_resources.vertex_data_buffer( ), vertex_buffer_offset * ( sizeof(gpu::vertex_data) ) );
 	upload_tasks[2].set_task_context( task_context );
 
-	g_gpu_uploader.push_background_tasks( upload_tasks.data( ), upload_count );
+	g_gpu_uploader.push_tasks( upload_tasks.data( ), upload_count );
 }
 
 void mesh_cook::on_gpu_upload_finished( )

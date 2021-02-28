@@ -20,7 +20,6 @@ namespace render {
 void render::create( )
 {
 	m_ready = false;
-	m_copy_finished = true;
 	m_need_to_record_render = false;
 
 	m_scene = nullptr;
@@ -29,6 +28,31 @@ void render::create( )
 	g_dx.create( );
 
 	g_gpu_uploader.create( );
+
+	{
+		uptr const upload_buffer_size = 1 * Mb;
+
+		dx_resource::cook cook;
+		cook.create_buffer( upload_buffer_size * max_frame_delay, false, false, false, false );
+		cook.set_heap_type( D3D12_HEAP_TYPE_UPLOAD );
+		cook.set_initial_state( D3D12_RESOURCE_STATE_GENERIC_READ );
+
+		m_copy_staging.create( cook );
+		set_dx_name( m_copy_staging, "staging_copy_buffer" );
+
+		D3D12_RANGE const range = { 0, 0 }; // Do not read
+		DX12_CHECK_RESULT( m_copy_staging->Map( 0, &range, (pvoid*)&m_copy_staging_data ) );
+
+		m_copy_fence.create( max_frame_delay - 1 );
+
+		for ( u32 i = 0; i < max_frame_delay; ++i )
+		{
+			m_copy_cmd_allocators[i].create( D3D12_COMMAND_LIST_TYPE_COPY );
+			m_copy_cmd_lists[i].create( D3D12_COMMAND_LIST_TYPE_COPY, m_copy_cmd_allocators[i], nullptr );
+			DX12_CHECK_RESULT( m_copy_cmd_lists[i]->Close( ) );
+			set_dx_name( m_copy_cmd_lists[i], "copy_cmd_list" );
+		}
+	}
 
 	g_resources.create( );
 
@@ -39,9 +63,9 @@ void render::create( )
 #endif // #ifdef USE_RENDER_PROFILING
 
 	{
-		m_frame_index = 0;
+		m_frame_index = max_frame_delay;
 
-		m_gpu_frame_index.create( 0 );
+		m_gpu_frame_index.create( max_frame_delay - 1 );
 		set_dx_name( m_gpu_frame_index, "gpu_frame_event" );
 
 		m_gpu_frame_event.create( false, false );
@@ -649,6 +673,14 @@ void render::destroy( )
 
 	destroy_effects( );
 
+	m_copy_staging.destroy( );
+	m_copy_fence.destroy( );
+	for ( u32 i = 0; i < max_frame_delay; ++i )
+	{
+		m_copy_cmd_allocators[i].destroy( );
+		m_copy_cmd_lists[i].destroy( );
+	}
+
 	resource_system::destroy_resources(
 		resource_system::user_callback_task<render, &render::on_resources_destroyed>( this ),
 		m_debug_font.get( )
@@ -749,57 +781,53 @@ void render::render_wait( Functor const& in_functor )
 void render::push_cmd_lists( )
 {
 	u32 const swap_chain_buffer_index = g_dx.swap_chain( )->GetCurrentBackBufferIndex( );
-	u32 const frame_list_index = ( m_frame_index + max_frame_delay - 1 ) % max_frame_delay;
-	ID3D12CommandList* const current_cmd_list = m_cmd_lists[swap_chain_buffer_index][frame_list_index];
+	u32 const cmd_index = m_frame_index % max_frame_delay;
+	ID3D12CommandList* const current_cmd_list = m_cmd_lists[swap_chain_buffer_index][cmd_index];
+
+	m_gpu_frame_index->SetEventOnCompletion( m_frame_index, m_gpu_frame_event.get_handle( ) );
+
+	DX12_CHECK_RESULT( g_dx.queue_graphics( )->Wait( m_copy_fence, m_frame_index ) );
 	g_dx.queue_graphics( )->ExecuteCommandLists( 1, &current_cmd_list );
+	DX12_CHECK_RESULT( g_dx.queue_graphics( )->Signal( m_gpu_frame_index, m_frame_index ) );
+	DX12_CHECK_RESULT( g_dx.swap_chain( )->Present( 0, 0 ) );
 }
 
 void render::update( )
 {
-	// Wait for copy tasks for current frame.
+	// Wait for previous frame.
+	render_wait( [this]( ) { return m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index - max_frame_delay; } );
+
 	if ( !m_need_to_record_render )
 	{
-		render_wait( [this]( ) { return m_copy_finished; } );
-
-		// Push GPU commands for current frame.
-		push_cmd_lists( );
-
-		// Wait for previous frame.
-		render_wait( [this]( ) { return m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index; } );
+		// Wait for the submition we are going to replace.
+		render_wait( [this]( ) { return m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index - max_frame_delay; } );
 	}
 	else
 	{
-		render_wait( [this]( ) { return m_copy_finished && ( m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index ); } );
+		// Wait for everything.
+		render_wait( [this]( ) { return m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index - 1; } );
 
 		reload_render( );
 		render_wait( [this]( ) { return ready( ); } );
+
 		// This was set, but might not be reset (if WaitForMultipleObjects wasn't called).
 		m_rs_queue_event.reset( );
 		m_need_to_record_render = false;
-
-		// Push GPU commands for current frame.
-		push_cmd_lists( );
 	}
 
-	// Present (previous frame).
-	DX12_CHECK_RESULT( g_dx.swap_chain( )->Present( 0, 0 ) );
-
-	DX12_CHECK_RESULT( g_dx.queue_graphics( )->Signal( m_gpu_frame_index, m_frame_index + 1 ) );
-	m_gpu_frame_index->SetEventOnCompletion( m_frame_index + 1, m_gpu_frame_event.get_handle( ) );
-
-	// Prepeare next frame on CPU.
+	// Prepare frame on the CPU.
 	m_scene = m_next_scene;
 	g_parameters_manager.update( );
 
 	prepare_frame( );
+
+	push_cmd_lists( );
 
 	++m_frame_index;
 }
 
 void render::prepare_frame( )
 {
-	m_copy_finished = false;
-
 	u32 const cmd_index = m_frame_index % max_frame_delay;
 
 	// Initialize render camera.
@@ -814,8 +842,6 @@ void render::prepare_frame( )
 	copy_task_count = g_resources.point_lights( ).need_gpu_update( )	? copy_task_count + 1 : copy_task_count;
 
 	ASSERT_CMP( copy_task_count, <=, max_copy_task_count );
-
-	custom_task_context const context = resource_system::create_custom_tasks( copy_task_count, resource_system::user_callback_task<render, &render::prepare_frame_copy>( this ) );
 	lib::buffer_array<gpu_upload_task> copy_tasks( m_copy_tasks, copy_task_count );
 
 	u32 mesh_list_size = 0;
@@ -950,11 +976,7 @@ void render::prepare_frame( )
 #endif // #ifdef USE_RENDER_PROFILING
 
 	ASSERT_CMP( copy_tasks.size( ), ==, copy_task_count );
-
-	for ( u32 i = 0; i < copy_tasks.size( ); ++i )
-		copy_tasks[i].set_task_context( context );
-
-	g_gpu_uploader.push_immediate_tasks( m_copy_tasks, copy_task_count );
+	push_frame_copy( copy_tasks );
 }
 
 void render::process_statistics( )
@@ -971,10 +993,33 @@ void render::process_statistics( )
 	}
 }
 
-void render::prepare_frame_copy( )
+void render::push_frame_copy( lib::buffer_array<gpu_upload_task> in_tasks )
 {
-	m_copy_finished = true;
-	m_gpu_frame_event.set( );
+	if ( in_tasks.size( ) == 0 )
+		return;
+
+	u32 const cmd_index = m_frame_index % max_frame_delay;
+
+	dx_command_allocator cmd_allocator = m_copy_cmd_allocators[cmd_index];
+	dx_command_list cmd_list = m_copy_cmd_lists[cmd_index];
+
+	DX12_CHECK_RESULT( cmd_allocator->Reset( ) );
+	DX12_CHECK_RESULT( cmd_list->Reset( cmd_allocator, nullptr ) );
+
+	uptr staging_size = 0;
+
+	for ( u32 i = 0; i < in_tasks.size( ); ++i )
+	{
+		bool const result = in_tasks[i].record( m_copy_staging_data, 1 * Mb, staging_size, cmd_list, m_copy_staging );
+		ASSERT( result );
+	}
+
+	DX12_CHECK_RESULT( cmd_list->Close( ) );
+
+	ASSERT( staging_size != 0 );
+
+	g_dx.queue_copy( )->ExecuteCommandLists( 1, (ID3D12CommandList**)&cmd_list );
+	DX12_CHECK_RESULT( g_dx.queue_copy( )->Signal( m_copy_fence, m_frame_index ) );
 }
 
 void render::ui_add_quad(

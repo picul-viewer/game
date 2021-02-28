@@ -65,9 +65,8 @@ private:
 	void push_cmd_lists( );
 
 	void prepare_frame( );
-	void prepare_frame_copy( );
-
 	void process_statistics( );
+	void push_frame_copy( lib::buffer_array<gpu_upload_task> in_tasks );
 
 private:
 	enum { max_copy_task_count = 8 };
@@ -77,7 +76,7 @@ private:
 	u32 m_cpu_sun_shadow_mesh_lists[max_frame_delay][max_mesh_list_size];
 	u32 m_cpu_point_light_lists[max_frame_delay][max_point_light_list_size];
 	gpu::constant_buffer m_cpu_constant_buffers[max_frame_delay];
-	gpu_upload_task m_copy_tasks[max_copy_task_count];
+	gpu_upload_data m_copy_tasks[max_copy_task_count];
 
 	ui_processor m_ui_processor;
 
@@ -114,13 +113,18 @@ private:
 	dx_command_signature m_draw_cs;
 	dx_command_signature m_draw_indexed_cs;
 
+	dx_command_allocator m_copy_cmd_allocators[max_frame_delay];
+	dx_command_list m_copy_cmd_lists[max_frame_delay];
+	dx_resource m_copy_staging;
+	pbyte m_copy_staging_data;
+	dx_fence m_copy_fence;
+
 	scene*	m_scene;
 	scene*	m_next_scene;
 
 	ui::font::ptr m_debug_font;
 
 	bool volatile m_ready;
-	bool volatile m_copy_finished;
 	bool volatile m_need_to_record_render;
 
 };
