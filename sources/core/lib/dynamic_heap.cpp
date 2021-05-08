@@ -171,7 +171,7 @@ pointer dynamic_heap::allocate( uptr size )
 
 	u32 const request_size_index = get_size_index_for_query( request_size );
 
-	// If such block is not exists.
+	// If such block exists.
 	if ( request_size_index != invalid_size_index )
 	{
 		// If such block exists, use it to allocate memory.
