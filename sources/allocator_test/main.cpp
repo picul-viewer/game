@@ -88,7 +88,7 @@ int main( )
 	// Dynamic heap allocator.
 	if ( g_test_dynamic_heap )
 	{
-		u32 const heap_size = 2 * Gb;
+		uptr const heap_size = 8 * Gb;
 		pvoid const heap_memory = virtual_allocator( ).reserve( nullptr, heap_size );
 
 		dynamic_heap h;
