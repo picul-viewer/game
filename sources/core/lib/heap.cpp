@@ -114,7 +114,6 @@ u32 heap::list_pop( u32 const list_index )
 	cell* const result = m_memory + result_index;
 	block_data* const data = get_block_data_for_pointer( result );
 
-	ASSERT_CMP( data->list_prev_index, ==, invalid_size_index );
 	u32 const list_next_index = data->list_next_index;
 
 	if ( list_next_index == invalid_size_index )

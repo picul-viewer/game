@@ -46,7 +46,6 @@ private:
 	// size(2 * i + 1)	= size( 2 * i ) * 1.5
 	u32 m_size_pointers[sizes_count];
 	cell* m_memory;
-	cell* m_memory_index;
 	cell* m_memory_end;
 	cell* m_free_pointer;
 	u64 m_size_flags;
