@@ -4,6 +4,7 @@
 #include <lib/allocator.h>
 #include <lib/heap.h>
 #include <lib/dynamic_heap.h>
+#include <lib/mt_heap.h>
 #include <system/interlocked.h>
 #include <system/thread.h>
 #include <system/time.h>
@@ -15,6 +16,8 @@ utils::cmd_arg_bool g_test_std( "test_std", true );
 utils::cmd_arg_bool g_test_mt_std( "test_mt_std", true );
 utils::cmd_arg_bool g_test_heap( "test_heap", true );
 utils::cmd_arg_bool g_test_dynamic_heap( "test_dynamic_heap", true );
+utils::cmd_arg_bool g_test_mt_heap_st( "test_mt_heap_st", true );
+utils::cmd_arg_bool g_test_mt_heap_mt( "test_mt_heap_mt", true );
 
 utils::cmd_arg_u32 g_seed( "seed", 1 );
 utils::cmd_arg_u32 g_ptrs_count( "ptrs_count", 1024 );
@@ -205,4 +208,29 @@ int main( )
 
 		virtual_allocator( ).release( heap_memory );
 	}
+
+	uptr const heap_size = 8 * Gb;
+	pvoid const heap_memory = virtual_allocator( ).allocate( heap_size );
+
+	// Multithreaded heap allocator ( singlethreaded test ).
+	if ( g_test_mt_heap_st )
+	{
+		mt_heap h;
+		h.create( heap_memory, heap_size );
+
+		double const time = perf_test( h );
+		printf( "MT heap allocator (ST) time = %3.9lf seconds\n", time );
+	}
+
+	// Multithreaded heap allocator ( multithreaded test ).
+	if ( g_test_mt_heap_mt )
+	{
+		mt_heap h;
+		h.create( heap_memory, heap_size );
+
+		double const time = mt_perf_test( h );
+		printf( "MT heap allocator (MT) time = %3.9lf seconds\n", time );
+	}
+
+	virtual_allocator( ).deallocate( heap_memory );
 }
