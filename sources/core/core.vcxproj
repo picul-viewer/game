@@ -124,6 +124,7 @@
     <ClInclude Include="lib\linear_allocator_inline.h" />
     <ClInclude Include="lib\memory.h" />
     <ClInclude Include="lib\memory_block.h" />
+    <ClInclude Include="lib\mt_heap.h" />
     <ClInclude Include="lib\pool_allocator.h" />
     <ClInclude Include="lib\pool_array_allocator.h" />
     <ClInclude Include="lib\pool_allocator_inline.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="lib\dynamic_writer.cpp" />
     <ClCompile Include="lib\heap.cpp" />
     <ClCompile Include="lib\linear_allocator.cpp" />
+    <ClCompile Include="lib\mt_heap.cpp" />
     <ClCompile Include="lib\reader.cpp" />
     <ClCompile Include="lib\strings.cpp" />
     <ClCompile Include="lib\hash.cpp" />

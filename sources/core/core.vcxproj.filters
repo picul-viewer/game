@@ -440,6 +440,9 @@
     <ClInclude Include="math\bvh.h">
       <Filter>math\collision\bvh</Filter>
     </ClInclude>
+    <ClInclude Include="lib\mt_heap.h">
+      <Filter>lib\memory\allocators\heap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lib\alloc_string.cpp">
@@ -535,6 +538,9 @@
     </ClCompile>
     <ClCompile Include="math\bvh.cpp">
       <Filter>math\collision\bvh</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\mt_heap.cpp">
+      <Filter>lib\memory\allocators\heap</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
