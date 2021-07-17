@@ -42,7 +42,7 @@ struct block_data
 		mt_u64 size_data;
 	};
 	// If current block is allocated, these are invalid.
-	// This is pointers for double-linked list of the blocks with equal size.
+	// These are pointers for double-linked list of the blocks with equal size.
 	mt_u32 list_prev_index;
 	mt_u32 list_next_index;
 };

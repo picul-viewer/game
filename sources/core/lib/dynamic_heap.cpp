@@ -9,9 +9,10 @@ enum { invalid_size_index = 0xFFFFFFFF };
 void dynamic_heap::create( pointer const reserved_memory, uptr const size )
 {
 	ASSERT_CMP( size, <, ( 1ull << representative_size_bits ) * min_allocation_size );
+	ASSERT( ( size % min_allocation_size ) == 0 );
 
 	m_memory = reserved_memory;
-	m_memory_end = m_memory + size;
+	m_memory_end = m_memory + size / min_allocation_size;
 	m_free_pointer = m_memory;
 	m_size_flags = 0;
 
@@ -35,7 +36,7 @@ struct block_data
 	// MSB is free flag for previous block, other bits represent size of current block.
 	u32 this_size_data;
 	// If current block is allocated, these are invalid.
-	// This is pointers for double-linked list of the blocks with equal size.
+	// These are pointers for double-linked list of the blocks with equal size.
 	u32 list_prev_index;
 	u32 list_next_index;
 };
@@ -89,7 +90,6 @@ u32 dynamic_heap::get_size_index_for_block( u32 const size_in_cells )
 void dynamic_heap::list_push( u32 const list_index, u32 const block_index )
 {
 	u32 const size_list_value = m_size_pointers[list_index];
-	block_data* const data = get_block_data_for_pointer( m_memory + block_index );
 
 	if ( size_list_value == invalid_size_index )
 	{
@@ -101,6 +101,7 @@ void dynamic_heap::list_push( u32 const list_index, u32 const block_index )
 		next_data->list_prev_index = block_index;
 	}
 
+	block_data* const data = get_block_data_for_pointer( m_memory + block_index );
 	data->list_next_index = size_list_value;
 	m_size_pointers[list_index] = block_index;
 }
@@ -148,7 +149,6 @@ void dynamic_heap::list_remove( u32 const list_index, u32 const block_index )
 		size_flags_unset = 0;
 	}
 
-	ASSERT( list_prev_index != invalid_size_index );
 	if ( size_list_value != block_index )
 	{
 		block_data* const list_prev_data = get_block_data_for_pointer( m_memory + list_prev_index );
