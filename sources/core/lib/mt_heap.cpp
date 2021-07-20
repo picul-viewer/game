@@ -3,7 +3,10 @@
 #include <math/math_common.h>
 #include <intrin.h>
 
-enum { invalid_size_index = 0xFFFFFFFF };
+enum : u32 {
+	invalid_size_index = 0xFFFFFFFF,
+	list_lock_value = 0xFFFFFFFE
+};
 
 void mt_heap::create( pointer const memory, uptr const size )
 {
@@ -92,56 +95,29 @@ u32 mt_heap::list_pop_for_query( u32 const size_in_cells, mt_u32*& block_this_si
 
 	for ( u32 list_index = desired_size_index; list_index < sizes_count; ++list_index )
 	{
-		u32 size_list_value = m_size_pointers[list_index];
-
-		while ( size_list_value != invalid_size_index )
+		while ( true )
 		{
-			if ( size_list_value == invalid_size_index - 1 )
-			{
-				do
-				{
-					PAUSE( );
-					size_list_value = m_size_pointers[list_index];
-				}
-				while ( size_list_value == invalid_size_index - 1 );
-
-				continue;
-			}
-
-			if ( interlocked_compare_exchange( m_size_pointers[list_index],
-				invalid_size_index - 1, size_list_value ) != size_list_value )
-			{
-				PAUSE( );
-				size_list_value = m_size_pointers[list_index];
-				continue;
-			}
+			PAUSE( );
+			u32 const size_list_value = m_size_pointers[list_index];
+			
+			if ( size_list_value == invalid_size_index )
+				break;
 
 			block_data* const block = get_block_data_for_pointer( m_memory + size_list_value );
-			mt_u32& this_size_data_ref = size_list_value ? block->this_size_data : m_first_size;
+			mt_u32& this_size_data_ref = ( size_list_value != 0 ) ? block->this_size_data : m_first_size;
 			u32 const this_size_data = this_size_data_ref;
 			bool const block_not_locked = ( this_size_data & this_block_size_mask ) != 0;
 
 			if ( block_not_locked && ( interlocked_compare_exchange( this_size_data_ref,
 				this_size_data & ~this_block_size_mask, this_size_data ) == this_size_data ) )
 			{
+				list_remove( list_index, size_list_value );
+
 				block_this_size_data_ref = &this_size_data_ref;
 				block_this_size_data = this_size_data;
-				m_size_pointers[list_index] = block->list_next_index;
+
 				return size_list_value;
 			}
-
-			m_size_pointers[list_index] = size_list_value;
-
-			u32 new_size_list_value;
-
-			do
-			{
-				PAUSE( );
-				new_size_list_value = m_size_pointers[list_index];
-			}
-			while ( size_list_value == new_size_list_value );
-
-			size_list_value = new_size_list_value;
 		}
 	}
 
@@ -150,69 +126,99 @@ u32 mt_heap::list_pop_for_query( u32 const size_in_cells, mt_u32*& block_this_si
 
 void mt_heap::list_push( u32 const list_index, u32 const block_index )
 {
+	block_data* const data = get_block_data_for_pointer( m_memory + block_index );
+	data->list_prev_index = invalid_size_index;
+
 	u32 size_list_value;
 
 	do
 	{
-		do
-		{
-			PAUSE( );
-			size_list_value = m_size_pointers[list_index];
-		}
-		while ( size_list_value == invalid_size_index - 1 );
+		PAUSE( );
+
+		size_list_value = m_size_pointers[list_index];
+		data->list_next_index = size_list_value;
 	}
-	while ( interlocked_compare_exchange( m_size_pointers[list_index], invalid_size_index - 1, size_list_value ) != size_list_value );
+	while ( interlocked_compare_exchange( m_size_pointers[list_index], block_index, size_list_value ) != size_list_value );
 
 	if ( size_list_value != invalid_size_index )
 	{
-		block_data* const next_data = get_block_data_for_pointer( m_memory + size_list_value );
-		next_data->list_prev_index = block_index;
+		block_data* const head_data = get_block_data_for_pointer( m_memory + size_list_value );
+		head_data->list_prev_index = block_index;
 	}
-
-	block_data* const data = get_block_data_for_pointer( m_memory + block_index );
-	data->list_next_index = size_list_value;
-	m_size_pointers[list_index] = block_index;
 }
 
 void mt_heap::list_remove( u32 const list_index, u32 const block_index )
 {
-	u32 size_list_value;
+	block_data* const data = get_block_data_for_pointer( m_memory + block_index );
+	block_data* next_data = nullptr;
+	u32 this_next, this_prev, next_next;
+
+	while ( true )
+	{
+		PAUSE( );
+
+		this_next = data->list_next_index;
+		if ( this_next == list_lock_value )
+			continue;
+
+		if ( interlocked_compare_exchange( data->list_next_index, list_lock_value, this_next ) != this_next )
+			continue;
+
+		if ( this_next == invalid_size_index )
+			break;
+
+		next_data = get_block_data_for_pointer( m_memory + this_next );
+		next_next = next_data->list_next_index;
+		if ( next_next == list_lock_value )
+		{
+			data->list_next_index = this_next;
+			continue;
+		}
+
+		if ( interlocked_compare_exchange( next_data->list_next_index, list_lock_value, next_next ) != next_next )
+		{
+			data->list_next_index = this_next;
+			continue;
+		}
+
+		next_data->list_prev_index = invalid_size_index;
+		break;
+	}
+
+	do
+	{
+		PAUSE( );
+
+		if ( interlocked_compare_exchange( m_size_pointers[list_index], this_next, block_index ) == block_index )
+		{
+			if ( next_data )
+				next_data->list_next_index = next_next;
+			return;
+		}
+
+		this_prev = data->list_prev_index;
+	}
+	while ( this_prev == invalid_size_index );
+
+	if ( next_data )
+		next_data->list_prev_index = this_prev;
+
+	block_data* const prev_data = get_block_data_for_pointer( m_memory + this_prev );
+	u32 prev_next;
 
 	do
 	{
 		do
 		{
 			PAUSE( );
-			size_list_value = m_size_pointers[list_index];
+			prev_next = prev_data->list_next_index;
 		}
-		while ( size_list_value == invalid_size_index - 1 );
+		while ( prev_next == list_lock_value );
 	}
-	while ( interlocked_compare_exchange( m_size_pointers[list_index], invalid_size_index - 1, size_list_value ) != size_list_value );
+	while ( interlocked_compare_exchange( prev_data->list_next_index, this_next, prev_next ) != prev_next );
 
-	ASSERT( size_list_value != invalid_size_index );
-
-	block_data* const data = get_block_data_for_pointer( m_memory + block_index );
-
-	u32 const list_next_index = data->list_next_index;
-	u32 const list_prev_index = data->list_prev_index;
-
-	u64 size_flags_unset = 1;
-
-	if ( list_next_index != invalid_size_index )
-	{
-		block_data* const list_next_data = get_block_data_for_pointer( m_memory + list_next_index );
-		list_next_data->list_prev_index = data->list_prev_index;
-		size_flags_unset = 0;
-	}
-
-	if ( size_list_value != block_index )
-	{
-		block_data* const list_prev_data = get_block_data_for_pointer( m_memory + list_prev_index );
-		list_prev_data->list_next_index = data->list_next_index;
-	}
-
-	size_list_value = ( size_list_value != block_index ) ? size_list_value : list_next_index;
-	m_size_pointers[list_index] = size_list_value;
+	if ( next_data )
+		next_data->list_next_index = next_next;
 }
 
 pointer mt_heap::allocate( uptr size )
@@ -608,9 +614,7 @@ void mt_heap::dump( )
 		{
 			block_data* const data = get_block_data_for_pointer( m_memory + j );
 
-			// Do not care about first element prev index.
-			if (prev_j != invalid_size_index)
-				ASSERT_CMP( data->list_prev_index, ==, prev_j );
+			ASSERT_CMP( data->list_prev_index, ==, prev_j );
 
 			LOG( "%d ", j );
 			++free_count_in_lists;
