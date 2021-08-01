@@ -42,37 +42,37 @@ void command_list_builder::bind_pipeline( compute_ps const& in_ps )
 	m_cps->set_descriptor_table( m_cmd_list, g_resources.srv_uav_heap( )->GetGPUDescriptorHandleForHeapStart( ) );
 }
 
-void command_list_builder::bind_cbv( shader_type const in_shader_type, u32 const in_register, ID3D12Resource* const in_resource )
+void command_list_builder::bind_cbv( shader_type const in_shader_type, u32 const in_register, dx_resource const in_resource )
 {
 	ASSERT( m_gps );
 	m_gps->bind_cbv( in_shader_type, m_cmd_list, in_register, in_resource->GetGPUVirtualAddress( ) );
 }
 
-void command_list_builder::bind_srv( shader_type const in_shader_type, u32 const in_register, ID3D12Resource* const in_resource )
+void command_list_builder::bind_srv( shader_type const in_shader_type, u32 const in_register, dx_resource const in_resource )
 {
 	ASSERT( m_gps );
 	m_gps->bind_srv( in_shader_type, m_cmd_list, in_register, in_resource->GetGPUVirtualAddress( ) );
 }
 
-void command_list_builder::bind_uav( shader_type const in_shader_type, u32 const in_register, ID3D12Resource* const in_resource )
+void command_list_builder::bind_uav( shader_type const in_shader_type, u32 const in_register, dx_resource const in_resource )
 {
 	ASSERT( m_gps );
 	m_gps->bind_uav( in_shader_type, m_cmd_list, in_register, in_resource->GetGPUVirtualAddress( ) );
 }
 
-void command_list_builder::bind_cbv( u32 const in_register, ID3D12Resource* const in_resource )
+void command_list_builder::bind_cbv( u32 const in_register, dx_resource const in_resource )
 {
 	ASSERT( m_cps );
 	m_cps->bind_cbv( m_cmd_list, in_register, in_resource->GetGPUVirtualAddress( ) );
 }
 
-void command_list_builder::bind_srv( u32 const in_register, ID3D12Resource* const in_resource )
+void command_list_builder::bind_srv( u32 const in_register, dx_resource const in_resource )
 {
 	ASSERT( m_cps );
 	m_cps->bind_srv( m_cmd_list, in_register, in_resource->GetGPUVirtualAddress( ) );
 }
 
-void command_list_builder::bind_uav( u32 const in_register, ID3D12Resource* const in_resource )
+void command_list_builder::bind_uav( u32 const in_register, dx_resource const in_resource )
 {
 	ASSERT( m_cps );
 	m_cps->bind_uav( m_cmd_list, in_register, in_resource->GetGPUVirtualAddress( ) );

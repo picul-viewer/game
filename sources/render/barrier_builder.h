@@ -14,13 +14,13 @@ public:
 	barrier_builder( dx_command_list const in_cmd_list );
 	~barrier_builder( );
 
-	void transition( ID3D12Resource* const in_resource, D3D12_RESOURCE_STATES const in_before_state, D3D12_RESOURCE_STATES const in_after_state, u32 const in_subresource = 0 );
-	void transition_begin( ID3D12Resource* const in_resource, D3D12_RESOURCE_STATES const in_before_state, D3D12_RESOURCE_STATES const in_after_state, u32 const in_subresource = 0 );
-	void transition_end( ID3D12Resource* const in_resource, D3D12_RESOURCE_STATES const in_before_state, D3D12_RESOURCE_STATES const in_after_state, u32 const in_subresource = 0 );
+	void transition( dx_resource const in_resource, D3D12_RESOURCE_STATES const in_before_state, D3D12_RESOURCE_STATES const in_after_state, u32 const in_subresource = 0 );
+	void transition_begin( dx_resource const in_resource, D3D12_RESOURCE_STATES const in_before_state, D3D12_RESOURCE_STATES const in_after_state, u32 const in_subresource = 0 );
+	void transition_end( dx_resource const in_resource, D3D12_RESOURCE_STATES const in_before_state, D3D12_RESOURCE_STATES const in_after_state, u32 const in_subresource = 0 );
 
-	void aliasing( ID3D12Resource* const in_resource_before, ID3D12Resource* const in_resource_after );
+	void aliasing( dx_resource const in_resource_before, dx_resource const in_resource_after );
 
-	void uav( ID3D12Resource* const in_resource );
+	void uav( dx_resource const in_resource );
 
 private:
 	enum { max_barriers = 16 };

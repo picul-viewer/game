@@ -169,6 +169,10 @@ void dx_resource::cook::set_clear_value( DXGI_FORMAT const in_format, float cons
 }
 
 
+dx_resource::dx_resource( ID3D12Resource* in_resource ) : 
+	m_resource( in_resource )
+{ }
+
 void dx_resource::create( cook const& in_cook )
 {
 	DX12_CHECK_RESULT(

@@ -69,6 +69,9 @@ public:
 		bool has_optimal_clear = false;
 	};
 
+	dx_resource( ) = default;
+	dx_resource( ID3D12Resource* in_resource );
+
 	void create( cook const& in_cook );
 	void destroy( );
 

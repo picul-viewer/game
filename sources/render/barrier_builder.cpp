@@ -11,7 +11,7 @@ barrier_builder::~barrier_builder( )
 	m_cmd_list->ResourceBarrier( m_count, m_data );
 }
 
-void barrier_builder::transition( ID3D12Resource* const in_resource, D3D12_RESOURCE_STATES const in_before_state, D3D12_RESOURCE_STATES const in_after_state, u32 const in_subresource )
+void barrier_builder::transition( dx_resource const in_resource, D3D12_RESOURCE_STATES const in_before_state, D3D12_RESOURCE_STATES const in_after_state, u32 const in_subresource )
 {
 	ASSERT( m_count < max_barriers );
 	D3D12_RESOURCE_BARRIER& desc = m_data[m_count++];
@@ -23,7 +23,7 @@ void barrier_builder::transition( ID3D12Resource* const in_resource, D3D12_RESOU
 	desc.Transition.StateAfter = in_after_state;
 }
 
-void barrier_builder::transition_begin( ID3D12Resource* const in_resource, D3D12_RESOURCE_STATES const in_before_state, D3D12_RESOURCE_STATES const in_after_state, u32 const in_subresource )
+void barrier_builder::transition_begin( dx_resource const in_resource, D3D12_RESOURCE_STATES const in_before_state, D3D12_RESOURCE_STATES const in_after_state, u32 const in_subresource )
 {
 	ASSERT( m_count < max_barriers );
 	D3D12_RESOURCE_BARRIER& desc = m_data[m_count++];
@@ -35,7 +35,7 @@ void barrier_builder::transition_begin( ID3D12Resource* const in_resource, D3D12
 	desc.Transition.StateAfter = in_after_state;
 }
 
-void barrier_builder::transition_end( ID3D12Resource* const in_resource, D3D12_RESOURCE_STATES const in_before_state, D3D12_RESOURCE_STATES const in_after_state, u32 const in_subresource )
+void barrier_builder::transition_end( dx_resource const in_resource, D3D12_RESOURCE_STATES const in_before_state, D3D12_RESOURCE_STATES const in_after_state, u32 const in_subresource )
 {
 	ASSERT( m_count < max_barriers );
 	D3D12_RESOURCE_BARRIER& desc = m_data[m_count++];
@@ -47,7 +47,7 @@ void barrier_builder::transition_end( ID3D12Resource* const in_resource, D3D12_R
 	desc.Transition.StateAfter = in_after_state;
 }
 
-void barrier_builder::aliasing( ID3D12Resource* const in_resource_before, ID3D12Resource* const in_resource_after )
+void barrier_builder::aliasing( dx_resource const in_resource_before, dx_resource const in_resource_after )
 {
 	ASSERT( m_count < max_barriers );
 	D3D12_RESOURCE_BARRIER& desc = m_data[m_count++];
@@ -57,7 +57,7 @@ void barrier_builder::aliasing( ID3D12Resource* const in_resource_before, ID3D12
 	desc.Aliasing.pResourceAfter = in_resource_after;
 }
 
-void barrier_builder::uav( ID3D12Resource* const in_resource )
+void barrier_builder::uav( dx_resource const in_resource )
 {
 	ASSERT( m_count < max_barriers );
 	D3D12_RESOURCE_BARRIER& desc = m_data[m_count++];

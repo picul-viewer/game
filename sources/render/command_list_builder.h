@@ -4,6 +4,7 @@
 #include <types.h>
 #include "dx12.h"
 #include "dx_command_list.h"
+#include "dx_resource.h"
 #include "pipeline_state.h"
 
 namespace render {
@@ -18,14 +19,14 @@ public:
 	void bind_pipeline( compute_ps const& in_ps );
 
 	// Valid for graphics pipeline.
-	void bind_cbv( shader_type const in_shader_type, u32 const in_register, ID3D12Resource* const in_resource );
-	void bind_srv( shader_type const in_shader_type, u32 const in_register, ID3D12Resource* const in_resource );
-	void bind_uav( shader_type const in_shader_type, u32 const in_register, ID3D12Resource* const in_resource );
+	void bind_cbv( shader_type const in_shader_type, u32 const in_register, dx_resource const in_resource );
+	void bind_srv( shader_type const in_shader_type, u32 const in_register, dx_resource const in_resource );
+	void bind_uav( shader_type const in_shader_type, u32 const in_register, dx_resource const in_resource );
 
 	// Valid for compute pipeline.
-	void bind_cbv( u32 const in_register, ID3D12Resource* const in_resource );
-	void bind_srv( u32 const in_register, ID3D12Resource* const in_resource );
-	void bind_uav( u32 const in_register, ID3D12Resource* const in_resource );
+	void bind_cbv( u32 const in_register, dx_resource const in_resource );
+	void bind_srv( u32 const in_register, dx_resource const in_resource );
+	void bind_uav( u32 const in_register, dx_resource const in_resource );
 
 	void set_viewport_and_scissors(
 		math::u32x2 const& in_screen_dimensions,
