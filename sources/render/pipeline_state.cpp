@@ -236,23 +236,6 @@ void serialize_rs_parameters(
 	}
 }
 
-void serialize_descriptor_table_binding( dx_root_signature::root_parameter& in_parameter, D3D12_SHADER_VISIBILITY const in_visibility )
-{
-	static struct descriptor_ranges
-	{
-		dx_root_signature::descriptor_range data[3];
-
-		descriptor_ranges( )
-		{
-			data[0].create( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, resources::hlsl_images_space, image_srv_count );
-			data[1].create( D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 0, resources::hlsl_images_space, image_uav_count );
-			data[2].create( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, resources::hlsl_textures_space, resources::texture_descriptors_count );
-		}
-	} ranges;
-
-	in_parameter.create_descriptor_table( ranges.data, (u32)array_size( ranges.data ), in_visibility );
-}
-
 
 graphics_ps_cook::graphics_ps_cook( graphics_ps* const in_ptr ) :
 	m_result( in_ptr )
@@ -462,7 +445,8 @@ void graphics_ps_cook::on_shaders_ready( queried_resources& in_resources )
 	for ( u32 i = 0; i < 5; ++i )
 	{
 		if ( m_shader_cooks[i] && need_descriptor_table[i] )
-			serialize_descriptor_table_binding( rs_params[bindings_offset++], (D3D12_SHADER_VISIBILITY)( D3D12_SHADER_VISIBILITY_VERTEX + i ) );
+			g_resources.serialize_descriptor_table_binding( rs_params[bindings_offset++],
+				(D3D12_SHADER_VISIBILITY)( D3D12_SHADER_VISIBILITY_VERTEX + i ) );
 	}
 
 	for ( u32 i = 0; i < 5; ++i )
@@ -553,7 +537,7 @@ void compute_ps_cook::on_shader_ready( queried_resources& in_resources )
 	dx_root_signature::static_sampler* const rs_sampler_params = (dx_root_signature::static_sampler*)alloca( sampler_count * sizeof(dx_root_signature::static_sampler) );
 
 	if ( need_descriptor_table )
-		serialize_descriptor_table_binding( rs_params[0], D3D12_SHADER_VISIBILITY_ALL );
+		g_resources.serialize_descriptor_table_binding( rs_params[0], D3D12_SHADER_VISIBILITY_ALL );
 
 	serialize_rs_parameters(
 		shader_desc.BoundResources, reflection,

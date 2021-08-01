@@ -104,6 +104,7 @@
     <ClInclude Include="dx_query_heap.h" />
     <ClInclude Include="dx_resource.h" />
     <ClInclude Include="dx_root_signature.h" />
+    <ClInclude Include="dx_views.h" />
     <ClInclude Include="gpu_double_pool_allocator.h" />
     <ClInclude Include="gpu_heap_allocator.h" />
     <ClInclude Include="gpu_object_manager.h" />
@@ -156,6 +157,7 @@
     <ClCompile Include="dx_query_heap.cpp" />
     <ClCompile Include="dx_resource.cpp" />
     <ClCompile Include="dx_root_signature.cpp" />
+    <ClCompile Include="dx_views.cpp" />
     <ClCompile Include="gpu_double_pool_allocator.cpp" />
     <ClCompile Include="gpu_heap_allocator.cpp" />
     <ClCompile Include="gpu_pool_allocator.cpp" />

@@ -157,6 +157,9 @@
     <Filter Include="render\utils\command_list_builder">
       <UniqueIdentifier>{64ab0f85-42e4-47ac-843b-8c021f08faa4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dx12\wrappers\views">
+      <UniqueIdentifier>{07122bee-4bb5-4b0a-b5b2-8fa927b06d3a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mesh.cpp">
@@ -287,6 +290,9 @@
     </ClCompile>
     <ClCompile Include="command_list_builder.cpp">
       <Filter>render\utils\command_list_builder</Filter>
+    </ClCompile>
+    <ClCompile Include="dx_views.cpp">
+      <Filter>dx12\wrappers\views</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -439,6 +445,9 @@
     </ClInclude>
     <ClInclude Include="command_list_builder.h">
       <Filter>render\utils\command_list_builder</Filter>
+    </ClInclude>
+    <ClInclude Include="dx_views.h">
+      <Filter>dx12\wrappers\views</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

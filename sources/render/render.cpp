@@ -54,7 +54,7 @@ void render::create( )
 		}
 	}
 
-	g_resources.create( );
+	g_resources.create( image_srv_count, image_rtv_count, image_uav_count, image_dsv_count );
 
 	m_ui_processor.create( );
 
@@ -168,6 +168,107 @@ void render::create( )
 		set_dx_name( m_scene_mesh_transforms_buffer, "scene_mesh_transforms_buffer" );
 		m_sun_shadow_mesh_transforms_buffer.create( cook );
 		set_dx_name( m_sun_shadow_mesh_transforms_buffer, "sun_shadow_mesh_transforms_buffer" );
+	}
+
+	// Images.
+	{
+		{
+			dx_resource::cook resource_cook;
+			resource_cook.create_texture2d(
+				DXGI_FORMAT_R32G32_UINT,
+				g_parameters.screen_resolution.x, g_parameters.screen_resolution.y, 1, 1,
+				true, false, true, false, false
+			);
+			resource_cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
+			resource_cook.set_initial_state( D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE );
+			resource_cook.set_clear_value( DXGI_FORMAT_R32G32_UINT, math::float4( 0.0f, 0.0f, 0.0f, 0.0f ) );
+
+			m_image_v_buffer_polygon_id.create( resource_cook );
+			set_dx_name( m_image_v_buffer_polygon_id, "render_target_v_buffer_polygon_id" );
+
+			g_resources.create_srv( image_srv_v_buffer_polygon_id, m_image_v_buffer_polygon_id,
+				dx_srv_create_texture2d( DXGI_FORMAT_R32G32_UINT ) );
+
+			g_resources.create_rtv( image_rtv_v_buffer_polygon_id, m_image_v_buffer_polygon_id,
+				dx_rtv_create_texture2d( DXGI_FORMAT_R32G32_UINT ) );
+		}
+
+		{
+			dx_resource::cook resource_cook;
+			resource_cook.create_texture2d(
+				DXGI_FORMAT_R16G16B16A16_FLOAT,
+				g_parameters.screen_resolution.x, g_parameters.screen_resolution.y, 1, 1,
+				true, true, false, false, false
+			);
+			resource_cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
+			resource_cook.set_initial_state( D3D12_RESOURCE_STATE_UNORDERED_ACCESS );
+
+			m_image_radiance.create( resource_cook );
+			set_dx_name( m_image_radiance, "render_target_radiance" );
+
+			g_resources.create_srv( image_srv_radiance, m_image_radiance,
+				dx_srv_create_texture2d( DXGI_FORMAT_R16G16B16A16_FLOAT ) );
+
+			g_resources.create_uav( image_uav_radiance, m_image_radiance,
+				dx_uav_create_texture2d( DXGI_FORMAT_R16G16B16A16_FLOAT ) );
+		}
+
+		{
+			dx_resource::cook resource_cook;
+			resource_cook.create_texture2d(
+				DXGI_FORMAT_R32_TYPELESS,
+				g_parameters.screen_resolution.x, g_parameters.screen_resolution.y, 1, 1,
+				true, false, false, true, false
+			);
+			resource_cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
+			resource_cook.set_initial_state( D3D12_RESOURCE_STATE_DEPTH_WRITE );
+			resource_cook.set_clear_value( DXGI_FORMAT_D32_FLOAT, 1.0f, 0u );
+
+			m_image_depth_buffer.create( resource_cook );
+			set_dx_name( m_image_depth_buffer, "depth_buffer" );
+
+			g_resources.create_dsv( image_dsv_screen, m_image_depth_buffer,
+				dx_dsv_create_texture2d( DXGI_FORMAT_D32_FLOAT ) );
+
+			g_resources.create_dsv( image_dsv_screen_readonly, m_image_depth_buffer,
+				dx_dsv_create_texture2d( DXGI_FORMAT_D32_FLOAT, 0, true, false ) );
+
+			g_resources.create_srv( image_srv_depth_buffer, m_image_depth_buffer,
+				dx_srv_create_texture2d( DXGI_FORMAT_R32_FLOAT ) );
+		}
+
+		{
+			dx_resource::cook resource_cook;
+			resource_cook.create_texture2d(
+				DXGI_FORMAT_R16_TYPELESS,
+				sun_shadowmap_dimension, sun_shadowmap_dimension, 1, 1,
+				true, false, false, true, false
+			);
+			resource_cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
+			resource_cook.set_initial_state( D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE );
+			resource_cook.set_clear_value( DXGI_FORMAT_D16_UNORM, 1.0f, 0u );
+
+			m_image_sun_shadowmap.create( resource_cook );
+			set_dx_name( m_image_sun_shadowmap, "sun_shadowmap" );
+
+			g_resources.create_dsv( image_dsv_sun_shadowmap, m_image_sun_shadowmap,
+				dx_dsv_create_texture2d( DXGI_FORMAT_D16_UNORM ) );
+
+			g_resources.create_srv( image_srv_sun_shadowmap, m_image_sun_shadowmap,
+				dx_srv_create_texture2d( DXGI_FORMAT_R16_UNORM ) );
+		}
+
+		{
+			D3D12_RENDER_TARGET_VIEW_DESC rtv_desc;
+			rtv_desc.Format = g_dx.back_buffer_format;
+			rtv_desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+			rtv_desc.Texture2D.MipSlice = 0;
+			rtv_desc.Texture2D.PlaneSlice = 0;
+
+			for ( u32 i = 0; i < max_frame_delay; ++i )
+				g_resources.create_rtv( image_rtv_output_0 + i, g_dx.swap_chain_buffer( i ),
+					dx_rtv_create_texture2d( g_dx.back_buffer_format ) );
+		}
 	}
 
 	m_debug_font.reset( );
@@ -298,7 +399,7 @@ void render::fill_effect_tasks( lib::buffer_array<task_info>& in_tasks )
 	}
 
 	{
-		shader_define const define = { "SUN_SHADOWMAP_DIMENSION", format( "%d", resources::sun_shadowmap_dimension ) };
+		shader_define const define = { "SUN_SHADOWMAP_DIMENSION", format( "%d", sun_shadowmap_dimension ) };
 		shader_cook* const shader = create_cook<shader_cook>(
 			shader_type_compute, "shade.cs", 1, &define
 		);
@@ -462,12 +563,12 @@ void render::record_render( )
 						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER
 					);
 					bb.transition(
-						g_resources.image( image_v_buffer_polygon_id ),
+						m_image_v_buffer_polygon_id,
 						D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
 						D3D12_RESOURCE_STATE_RENDER_TARGET
 					);
 					bb.transition(
-						g_resources.image( image_sun_shadowmap ),
+						m_image_sun_shadowmap,
 						D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
 						D3D12_RESOURCE_STATE_DEPTH_WRITE
 					);
@@ -514,7 +615,7 @@ void render::record_render( )
 					PROFILE_EVENT( list, j, render_sun_shadowmap );
 
 					list.bind_pipeline( m_ps_render_shadowmap_directional );
-					list.set_viewport_and_scissors( math::u32x2( resources::sun_shadowmap_dimension ) );
+					list.set_viewport_and_scissors( math::u32x2( sun_shadowmap_dimension ) );
 
 					D3D12_CPU_DESCRIPTOR_HANDLE const dsv = g_resources.dsv( image_dsv_sun_shadowmap );
 					list->OMSetRenderTargets( 0, nullptr, FALSE, &dsv );
@@ -545,7 +646,7 @@ void render::record_render( )
 				{
 					barrier_builder bb( list );
 					bb.transition(
-						g_resources.image( image_v_buffer_polygon_id ),
+						m_image_v_buffer_polygon_id,
 						D3D12_RESOURCE_STATE_RENDER_TARGET,
 						D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
 					);
@@ -565,7 +666,7 @@ void render::record_render( )
 						D3D12_RESOURCE_STATE_RENDER_TARGET
 					);
 					bb.transition(
-						g_resources.image( image_sun_shadowmap ),
+						m_image_sun_shadowmap,
 						D3D12_RESOURCE_STATE_DEPTH_WRITE,
 						D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
 					);
@@ -592,7 +693,7 @@ void render::record_render( )
 				{
 					barrier_builder bb( list );
 					bb.transition(
-						g_resources.image( image_radiance ),
+						m_image_radiance,
 						D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 						D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
 					);
@@ -613,7 +714,7 @@ void render::record_render( )
 				{
 					barrier_builder bb( list );
 					bb.transition(
-						g_resources.image( image_radiance ),
+						m_image_radiance,
 						D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 						D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 					);
@@ -680,6 +781,11 @@ void render::destroy( )
 		m_copy_cmd_allocators[i].destroy( );
 		m_copy_cmd_lists[i].destroy( );
 	}
+
+	m_image_v_buffer_polygon_id.destroy( );
+	m_image_radiance.destroy( );
+	m_image_depth_buffer.destroy( );
+	m_image_sun_shadowmap.destroy( );
 
 	resource_system::destroy_resources(
 		resource_system::user_callback_task<render, &render::on_resources_destroyed>( this ),

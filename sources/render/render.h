@@ -70,6 +70,43 @@ private:
 
 private:
 	enum { max_copy_task_count = 8 };
+	enum : u32 { sun_shadowmap_dimension = 4096 };
+
+	enum image_srvs
+	{
+		image_srv_v_buffer_polygon_id = 0,
+		image_srv_depth_buffer,
+		image_srv_radiance,
+		image_srv_sun_shadowmap,
+
+		image_srv_count
+	};
+
+	enum image_rtvs
+	{
+		image_rtv_v_buffer_polygon_id = 0,
+
+		image_rtv_output_0,
+		image_rtv_output_1,
+
+		image_rtv_count
+	};
+
+	enum image_uavs
+	{
+		image_uav_radiance = 0,
+
+		image_uav_count
+	};
+
+	enum image_dsvs
+	{
+		image_dsv_screen = 0,
+		image_dsv_screen_readonly,
+		image_dsv_sun_shadowmap,
+
+		image_dsv_count
+	};
 
 private:
 	u32 m_cpu_mesh_lists[max_frame_delay][max_mesh_list_size];
@@ -96,6 +133,11 @@ private:
 	dx_resource m_mesh_list[max_frame_delay];
 	dx_resource m_sun_shadow_mesh_list[max_frame_delay];
 	dx_resource m_point_light_list[max_frame_delay];
+
+	dx_resource m_image_v_buffer_polygon_id;
+	dx_resource m_image_radiance;
+	dx_resource m_image_depth_buffer;
+	dx_resource m_image_sun_shadowmap;
 
 	camera m_render_camera;
 

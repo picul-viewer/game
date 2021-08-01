@@ -17,55 +17,11 @@
 
 #include "dx_resource.h"
 #include "dx_descriptor_heap.h"
+#include "dx_views.h"
 
 #include "render_allocator.h"
 
 namespace render {
-
-enum images
-{
-	image_v_buffer_polygon_id = 0,
-	image_radiance,
-	image_depth_buffer,
-	image_sun_shadowmap,
-
-	image_count
-};
-
-enum image_srv_uavs
-{
-	image_srv_v_buffer_polygon_id = 0,
-	image_srv_depth_buffer,
-	image_srv_radiance,
-	image_srv_sun_shadowmap,
-
-	image_srv_count,
-
-	image_uav_radiance = image_srv_count,
-
-	image_srv_uav_count,
-
-	image_uav_count = image_srv_uav_count - image_srv_count
-};
-
-enum image_rtvs
-{
-	image_rtv_v_buffer_polygon_id = 0,
-
-	image_rtv_output_0,
-	image_rtv_output_1,
-
-	image_rtv_count
-};
-
-enum image_dsvs
-{
-	image_dsv_screen = 0,
-	image_dsv_screen_readonly,
-	image_dsv_sun_shadowmap,
-
-	image_dsv_count
-};
 
 class resources
 {
@@ -83,15 +39,12 @@ public:
 		hlsl_textures_space = 9
 	};
 
-	enum : u32 {
-		sun_shadowmap_dimension = 4096
-	};
-
 	typedef gpu_object_manager<math::float4x3> transforms_type;
 	typedef gpu_object_manager<gpu::point_light_object> point_lights_type;
 
 public:
-	void create( );
+	void create( u32 const in_render_srv_count, u32 const in_render_rtv_count,
+		u32 const in_render_uav_count, u32 const in_render_dsv_count );
 	void destroy( );
 	
 
@@ -123,20 +76,24 @@ public:
 	D3D12_VERTEX_BUFFER_VIEW vertex_buffer_view( ) const;
 	D3D12_VERTEX_BUFFER_VIEW vertex_data_buffer_view( ) const;
 
-	dx_resource const& image( u32 const in_index ) const;
+	inline render_allocator& render_allocator( ) { return m_render_allocator; }
+
+	void create_srv( u32 const in_index, dx_resource const in_resource, dx_srv_cook const& in_cook );
+	void create_rtv( u32 const in_index, dx_resource const in_resource, dx_rtv_cook const& in_cook );
+	void create_uav( u32 const in_index, dx_resource const in_resource, dx_uav_cook const& in_cook );
+	void create_uav( u32 const in_index, dx_resource const in_resource, dx_resource const in_counter_buffer, dx_uav_cook const& in_cook );
+	void create_dsv( u32 const in_index, dx_resource const in_resource, dx_dsv_cook const& in_cook );
+
 	D3D12_CPU_DESCRIPTOR_HANDLE srv( u32 const in_index ) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtv( u32 const in_index ) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE uav( u32 const in_index ) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE dsv( u32 const in_index ) const;
 
-	inline render_allocator& render_allocator( ) { return m_render_allocator; }
+	void serialize_descriptor_table_binding( dx_root_signature::root_parameter& in_parameter, D3D12_SHADER_VISIBILITY const in_visibility );
 
 private:
 	void create_resources( );
 	void destroy_resources( );
-
-	void create_images( );
-	void destroy_images( );
 
 private:
 	transforms_type m_transforms;
@@ -147,15 +104,23 @@ private:
 	gpu_heap_allocator m_mesh_vertex_allocator;
 	gpu_pool_allocator m_mesh_object_allocator;
 
-	dx_resource m_images[image_count];
 	dx_resource m_index_buffer;
 	dx_resource m_vertex_buffer;
 	dx_resource m_vertex_data_buffer;
 	dx_resource m_mesh_object_buffer;
+
 	dx_resource m_constant_buffers[max_frame_delay];
+
 	dx_descriptor_heap m_srv_uav_heap;
 	dx_descriptor_heap m_rtv_heap;
 	dx_descriptor_heap m_dsv_heap;
+	u32 m_render_srv_uav_count;
+	u32 m_render_srv_count;
+	u32 m_render_rtv_count;
+	u32 m_render_uav_count;
+	u32 m_render_dsv_count;
+
+	dx_root_signature::descriptor_range m_descriptor_ranges[3];
 
 	::render::render_allocator m_render_allocator;
 
