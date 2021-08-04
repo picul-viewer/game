@@ -138,22 +138,6 @@ void resources::create_resources( )
 		m_mesh_object_buffer.create( cook );
 		set_dx_name( m_mesh_object_buffer, "mesh_object_buffer" );
 	}
-
-	{
-		dx_resource::cook cook;
-		cook.create_buffer(
-			sizeof(gpu::constant_buffer),
-			true, false, false, false
-		);
-		cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
-		cook.set_initial_state( D3D12_RESOURCE_STATE_COMMON );
-
-		for ( u32 i = 0; i < max_frame_delay; ++i )
-		{
-			m_constant_buffers[i].create( cook );
-			set_dx_name( m_constant_buffers[i], format( "constant_buffer #%d", i ) );
-		}
-	}
 }
 
 void resources::destroy_resources( )
@@ -170,9 +154,6 @@ void resources::destroy_resources( )
 	m_vertex_buffer.destroy( );
 	m_vertex_data_buffer.destroy( );
 	m_mesh_object_buffer.destroy( );
-
-	for ( u32 i = 0; i < max_frame_delay; ++i )
-		m_constant_buffers[i].destroy( );
 }
 
 u32 resources::create_texture( dx_resource const in_texture, D3D12_SHADER_RESOURCE_VIEW_DESC const& in_srv_desc )

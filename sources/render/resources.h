@@ -67,7 +67,6 @@ public:
 	inline dx_resource const& vertex_buffer( ) const { return m_vertex_buffer; }
 	inline dx_resource const& vertex_data_buffer( ) const { return m_vertex_data_buffer; }
 	inline dx_resource const& mesh_object_buffer( ) const { return m_mesh_object_buffer; }
-	inline dx_resource const& constant_buffer( u32 const in_index ) const { ASSERT_CMP( in_index, <, max_frame_delay ); return m_constant_buffers[in_index]; }
 
 	inline transforms_type& transforms( ) { return m_transforms; }
 	inline point_lights_type& point_lights( ) { return m_point_lights; }
@@ -108,8 +107,6 @@ private:
 	dx_resource m_vertex_buffer;
 	dx_resource m_vertex_data_buffer;
 	dx_resource m_mesh_object_buffer;
-
-	dx_resource m_constant_buffers[max_frame_delay];
 
 	dx_descriptor_heap m_srv_uav_heap;
 	dx_descriptor_heap m_rtv_heap;

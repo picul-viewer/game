@@ -139,6 +139,8 @@ private:
 	dx_resource m_image_depth_buffer;
 	dx_resource m_image_sun_shadowmap;
 
+	dx_resource m_constant_buffers[max_frame_delay];
+
 	camera m_render_camera;
 
 	u64 m_frame_index;

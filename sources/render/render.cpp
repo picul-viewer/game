@@ -271,6 +271,22 @@ void render::create( )
 		}
 	}
 
+	{
+		dx_resource::cook cook;
+		cook.create_buffer(
+			sizeof(gpu::constant_buffer),
+			true, false, false, false
+		);
+		cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
+		cook.set_initial_state( D3D12_RESOURCE_STATE_COMMON );
+
+		for ( u32 i = 0; i < max_frame_delay; ++i )
+		{
+			m_constant_buffers[i].create( cook );
+			set_dx_name( m_constant_buffers[i], format( "constant_buffer #%d", i ) );
+		}
+	}
+
 	m_debug_font.reset( );
 	u32 const max_task_count = 20;
 	task_info tasks_memory[max_task_count];
@@ -513,7 +529,7 @@ void render::record_render( )
 
 					list.bind_pipeline( m_ps_gen_arg_mesh );
 
-					list.bind_cbv( 0, g_resources.constant_buffer( j ) );
+					list.bind_cbv( 0, m_constant_buffers[j] );
 					list.bind_srv( 0, m_mesh_list[j] );
 					list.bind_srv( 1, g_resources.mesh_object_buffer( ) );
 					list.bind_srv( 2, g_resources.transforms( ).buffer( j ) );
@@ -521,7 +537,7 @@ void render::record_render( )
 					list.bind_uav( 1, m_scene_mesh_transforms_buffer );
 
 					u32 const dispatch_size_offset = offsetof( gpu::constant_buffer, indirect_params_1.x );
-					list->ExecuteIndirect( m_dispatch_cs, 1, g_resources.constant_buffer( j ), dispatch_size_offset, nullptr, 0 );
+					list->ExecuteIndirect( m_dispatch_cs, 1, m_constant_buffers[j], dispatch_size_offset, nullptr, 0 );
 				}
 
 				{
@@ -529,7 +545,7 @@ void render::record_render( )
 
 					list.bind_pipeline( m_ps_gen_arg_sun_shadowmap );
 
-					list.bind_cbv( 0, g_resources.constant_buffer( j ) );
+					list.bind_cbv( 0, m_constant_buffers[j] );
 					list.bind_srv( 0, m_sun_shadow_mesh_list[j] );
 					list.bind_srv( 1, g_resources.mesh_object_buffer( ) );
 					list.bind_srv( 2, g_resources.transforms( ).buffer( j ) );
@@ -537,7 +553,7 @@ void render::record_render( )
 					list.bind_uav( 1, m_sun_shadow_mesh_transforms_buffer );
 
 					u32 const dispatch_size_offset = offsetof( gpu::constant_buffer, indirect_params_2.x );
-					list->ExecuteIndirect( m_dispatch_cs, 1, g_resources.constant_buffer( j ), dispatch_size_offset, nullptr, 0 );
+					list->ExecuteIndirect( m_dispatch_cs, 1, m_constant_buffers[j], dispatch_size_offset, nullptr, 0 );
 				}
 
 				{
@@ -607,7 +623,7 @@ void render::record_render( )
 						m_draw_indexed_cs,
 						max_mesh_list_size,
 						m_scene_mesh_indirect_buffer, 0,
-						g_resources.constant_buffer( j ), instance_count_offset
+						m_constant_buffers[j], instance_count_offset
 					);
 				}
 
@@ -639,7 +655,7 @@ void render::record_render( )
 						m_draw_indexed_cs,
 						max_mesh_list_size,
 						m_sun_shadow_mesh_indirect_buffer, 0,
-						g_resources.constant_buffer( j ), instance_count_offset
+						m_constant_buffers[j], instance_count_offset
 					);
 				}
 
@@ -677,7 +693,7 @@ void render::record_render( )
 
 					list.bind_pipeline( m_ps_shade );
 
-					list.bind_cbv( 0, g_resources.constant_buffer( j ) );
+					list.bind_cbv( 0, m_constant_buffers[j] );
 					list.bind_srv( 0, g_resources.mesh_object_buffer( ) );
 					list.bind_srv( 1, g_resources.index_buffer( ) );
 					list.bind_srv( 2, g_resources.vertex_buffer( ) );
@@ -739,7 +755,7 @@ void render::record_render( )
 						m_draw_cs,
 						ui_processor::max_batches,
 						m_ui_processor.command_buffer( j ), 0,
-						g_resources.constant_buffer( j ), instance_count_offset
+						m_constant_buffers[j], instance_count_offset
 					);
 				}
 
@@ -786,6 +802,9 @@ void render::destroy( )
 	m_image_radiance.destroy( );
 	m_image_depth_buffer.destroy( );
 	m_image_sun_shadowmap.destroy( );
+
+	for ( u32 i = 0; i < max_frame_delay; ++i )
+		m_constant_buffers[i].destroy( );
 
 	resource_system::destroy_resources(
 		resource_system::user_callback_task<render, &render::on_resources_destroyed>( this ),
@@ -1063,7 +1082,7 @@ void render::prepare_frame( )
 	cpu_constant_buffer.indirect_params_2 = math::u32x4( ( sun_shadowmap_mesh_list_size + 255 ) / 256, 1, 1, 0 );
 
 	gpu_upload_task& constants_task = copy_tasks.emplace_back( );
-	constants_task.set_buffer_upload( g_resources.constant_buffer( cmd_index ), 0 );
+	constants_task.set_buffer_upload( m_constant_buffers[cmd_index], 0 );
 	constants_task.set_source_data( &cpu_constant_buffer, sizeof(gpu::constant_buffer) );
 
 	// Update transforms.
