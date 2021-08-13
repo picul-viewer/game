@@ -1,7 +1,7 @@
 #include "structures.h"
-#include "layout.h"
 #include "common.h"
-#include "shade.h"
+
+SamplerState							g_texture_sampler		: register( s0 );
 
 StructuredBuffer<mesh_object>			g_mesh_objects			: register( t0 );
 StructuredBuffer<uint>					g_indices				: register( t1 );
@@ -10,7 +10,13 @@ StructuredBuffer<vertex_data>			g_vertex_data			: register( t3 );
 StructuredBuffer<float4x3>				g_transforms			: register( t4 );
 StructuredBuffer<point_light_object>	g_point_light_objects	: register( t5 );
 StructuredBuffer<uint>					g_point_light_list		: register( t6 );
-SamplerState							g_texture_sampler		: register( s0 );
+
+Texture2D<uint2>						g_polygon_id			: register( t0, space1 );
+Texture2D<float>						g_sun_shadowmap			: register( t1, space1 );
+
+RWTexture2D<float4>						g_radiance_uav			: register( u0, space1 );
+
+#include "shade.h"
 
 vertex_data_unpacked interpolate_vertex_data( vertex_data_unpacked v0, vertex_data_unpacked v1, vertex_data_unpacked v2, float3 barycentrics )
 {

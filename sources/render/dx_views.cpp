@@ -3,6 +3,23 @@
 
 namespace render {
 
+dx_cbv_cook dx_cbv_create(
+	dx_resource const in_buffer,
+	u32 const in_size
+)
+{
+	dx_cbv_cook result;
+	result.desc.BufferLocation = in_buffer->GetGPUVirtualAddress( );
+	result.desc.SizeInBytes = in_size;
+	return result;
+}
+
+void dx_cbv_cook::build( D3D12_CPU_DESCRIPTOR_HANDLE const in_handle ) const
+{
+	g_dx.device( )->CreateConstantBufferView( &desc, in_handle );
+}
+
+
 dx_srv_cook dx_srv_create_buffer(
 	DXGI_FORMAT const in_format,
 	u64 const in_first_element,

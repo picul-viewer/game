@@ -27,24 +27,23 @@ class resources
 {
 public:
 	enum : u32 {
-		texture_descriptors_count = 1024,
+		texture_descriptors_count = 2048,
 		mesh_objects_count = 4096,
 		transform_count = 16384,
 		point_light_count = 4096
 	};
 
 	enum : u32 {
-		hlsl_table_space_start = 8,
-		hlsl_images_space = hlsl_table_space_start,
-		hlsl_textures_space = 9
+		hlsl_root_descriptors_space = 0,
+		hlsl_table_descriptors_space = 1,
+		hlsl_textures_space = 2
 	};
 
 	typedef gpu_object_manager<math::float4x3> transforms_type;
 	typedef gpu_object_manager<gpu::point_light_object> point_lights_type;
 
 public:
-	void create( u32 const in_render_srv_count, u32 const in_render_rtv_count,
-		u32 const in_render_uav_count, u32 const in_render_dsv_count );
+	void create( u32 const in_descriptor_count, u32 const in_rtv_count, u32 const in_dsv_count );
 	void destroy( );
 	
 
@@ -61,7 +60,7 @@ public:
 	void destroy_mesh_object( u32 const in_index );
 
 
-	dx_descriptor_heap const& srv_uav_heap( ) const { return m_srv_uav_heap; }
+	dx_descriptor_heap const& descriptor_heap( ) const { return m_descriptor_heap; }
 	dx_descriptor_heap const& rtv_heap( ) const { return m_rtv_heap; }
 	inline dx_resource const& index_buffer( ) const { return m_index_buffer; }
 	inline dx_resource const& vertex_buffer( ) const { return m_vertex_buffer; }
@@ -77,18 +76,21 @@ public:
 
 	inline render_allocator& render_allocator( ) { return m_render_allocator; }
 
+	void reset_descriptors( );
+
+	D3D12_CPU_DESCRIPTOR_HANDLE create_rtv( dx_resource const in_resource, dx_rtv_cook const& in_cook );
+	D3D12_CPU_DESCRIPTOR_HANDLE create_dsv( dx_resource const in_resource, dx_dsv_cook const& in_cook );
+
+	u32 allocate_descriptors( u32 const in_descriptor_count );
+
+	void create_cbv( u32 const in_index, dx_cbv_cook const& in_cook );
 	void create_srv( u32 const in_index, dx_resource const in_resource, dx_srv_cook const& in_cook );
-	void create_rtv( u32 const in_index, dx_resource const in_resource, dx_rtv_cook const& in_cook );
 	void create_uav( u32 const in_index, dx_resource const in_resource, dx_uav_cook const& in_cook );
 	void create_uav( u32 const in_index, dx_resource const in_resource, dx_resource const in_counter_buffer, dx_uav_cook const& in_cook );
-	void create_dsv( u32 const in_index, dx_resource const in_resource, dx_dsv_cook const& in_cook );
 
-	D3D12_CPU_DESCRIPTOR_HANDLE srv( u32 const in_index ) const;
-	D3D12_CPU_DESCRIPTOR_HANDLE rtv( u32 const in_index ) const;
-	D3D12_CPU_DESCRIPTOR_HANDLE uav( u32 const in_index ) const;
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv( u32 const in_index ) const;
-
-	void serialize_descriptor_table_binding( dx_root_signature::root_parameter& in_parameter, D3D12_SHADER_VISIBILITY const in_visibility );
+	D3D12_GPU_DESCRIPTOR_HANDLE get_descriptor_table_handle( u32 const in_table ) const;
+	D3D12_GPU_DESCRIPTOR_HANDLE get_common_table_handle( ) const;
+	void serialize_common_descriptor_table_binding( dx_root_signature::root_parameter& in_parameter, D3D12_SHADER_VISIBILITY const in_visibility );
 
 private:
 	void create_resources( );
@@ -108,16 +110,17 @@ private:
 	dx_resource m_vertex_data_buffer;
 	dx_resource m_mesh_object_buffer;
 
-	dx_descriptor_heap m_srv_uav_heap;
+	dx_descriptor_heap m_descriptor_heap;
 	dx_descriptor_heap m_rtv_heap;
 	dx_descriptor_heap m_dsv_heap;
-	u32 m_render_srv_uav_count;
-	u32 m_render_srv_count;
-	u32 m_render_rtv_count;
-	u32 m_render_uav_count;
-	u32 m_render_dsv_count;
+	u32 m_descriptor_count;
+	u32 m_rtv_count;
+	u32 m_dsv_count;
+	u32 m_descriptor_offset;
+	u32 m_rtv_offset;
+	u32 m_dsv_offset;
 
-	dx_root_signature::descriptor_range m_descriptor_ranges[3];
+	dx_root_signature::descriptor_range m_common_descriptor_ranges[1];
 
 	::render::render_allocator m_render_allocator;
 

@@ -42,7 +42,7 @@ void dx_pipeline_state::graphics_cook::create( )
 }
 
 void dx_pipeline_state::graphics_cook::set_root_signature(
-	dx_root_signature const& in_signature
+	dx_root_signature const in_signature
 )
 {
 	desc.pRootSignature = in_signature;
@@ -225,7 +225,7 @@ void dx_pipeline_state::compute_cook::create( )
 }
 
 void dx_pipeline_state::compute_cook::set_root_signature(
-	dx_root_signature const& in_signature
+	dx_root_signature const in_signature
 )
 {
 	desc.pRootSignature = in_signature;

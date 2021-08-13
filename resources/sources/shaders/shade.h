@@ -2,7 +2,6 @@
 #define GUARD_SHADER_SHADE_H_INCLUDED
 
 #include "common.h"
-#include "layout.h"
 #include "structures.h"
 #include "brdf.h"
 

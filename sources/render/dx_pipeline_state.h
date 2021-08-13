@@ -29,7 +29,7 @@ public:
 		void create( );
 
 		void set_root_signature(
-			dx_root_signature const& in_signature
+			dx_root_signature const in_signature
 		);
 
 		void set_shader(
@@ -120,7 +120,7 @@ public:
 		void create( );
 
 		void set_root_signature(
-			dx_root_signature const& in_signature
+			dx_root_signature const in_signature
 		);
 
 		void set_shader(

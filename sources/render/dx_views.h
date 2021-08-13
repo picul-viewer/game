@@ -9,6 +9,19 @@
 
 namespace render {
 
+struct dx_cbv_cook
+{
+	friend dx_cbv_cook dx_cbv_create(
+		dx_resource const in_buffer,
+		u32 const in_size
+	);
+
+	void build( D3D12_CPU_DESCRIPTOR_HANDLE const in_handle ) const;
+
+private:
+	D3D12_CONSTANT_BUFFER_VIEW_DESC desc;
+};
+
 struct dx_srv_cook
 {
 	friend dx_srv_cook dx_srv_create_buffer(

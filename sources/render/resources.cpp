@@ -12,18 +12,13 @@
 
 namespace render {
 
-void resources::create( u32 const in_render_srv_count, u32 const in_render_rtv_count,
-	u32 const in_render_uav_count, u32 const in_render_dsv_count )
+void resources::create( u32 const in_descriptor_count, u32 const in_rtv_count, u32 const in_dsv_count )
 {
-	m_render_srv_uav_count = in_render_srv_count + in_render_uav_count;
-	m_render_srv_count = in_render_srv_count;
-	m_render_rtv_count = in_render_rtv_count;
-	m_render_uav_count = in_render_uav_count;
-	m_render_dsv_count = in_render_dsv_count;
+	m_descriptor_count = in_descriptor_count;
+	m_rtv_count = in_rtv_count;
+	m_dsv_count = in_dsv_count;
 
-	m_descriptor_ranges[0].create( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, resources::hlsl_images_space, m_render_srv_count );
-	m_descriptor_ranges[1].create( D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 0, resources::hlsl_images_space, m_render_uav_count );
-	m_descriptor_ranges[2].create( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, resources::hlsl_textures_space, resources::texture_descriptors_count );
+	m_common_descriptor_ranges[0].create( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, resources::hlsl_textures_space, resources::texture_descriptors_count );
 
 	m_render_allocator.create( 32 * Mb );
 
@@ -84,11 +79,11 @@ void resources::create_resources( )
 	ASSERT( m == memory + memory_size );
 
 
-	m_srv_uav_heap.create( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, m_render_srv_uav_count + texture_descriptors_count, true );
-	set_dx_name( m_srv_uav_heap, "srv_uav_heap" );
-	m_rtv_heap.create( D3D12_DESCRIPTOR_HEAP_TYPE_RTV, m_render_rtv_count, false );
+	m_descriptor_heap.create( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, m_descriptor_count + texture_descriptors_count, true );
+	set_dx_name( m_descriptor_heap, "descriptor_heap" );
+	m_rtv_heap.create( D3D12_DESCRIPTOR_HEAP_TYPE_RTV, m_rtv_count, false );
 	set_dx_name( m_rtv_heap, "rtv_heap" );
-	m_dsv_heap.create( D3D12_DESCRIPTOR_HEAP_TYPE_DSV, m_render_dsv_count, false );
+	m_dsv_heap.create( D3D12_DESCRIPTOR_HEAP_TYPE_DSV, m_dsv_count, false );
 	set_dx_name( m_dsv_heap, "dsv_heap" );
 
 	{
@@ -147,7 +142,7 @@ void resources::destroy_resources( )
 	m_transforms.destroy( );
 	m_point_lights.destroy( );
 
-	m_srv_uav_heap.destroy( );
+	m_descriptor_heap.destroy( );
 	m_rtv_heap.destroy( );
 	m_dsv_heap.destroy( );
 	m_index_buffer.destroy( );
@@ -160,8 +155,8 @@ u32 resources::create_texture( dx_resource const in_texture, D3D12_SHADER_RESOUR
 {
 	u32 const result = m_texture_descriptor_allocator.allocate( );
 
-	D3D12_CPU_DESCRIPTOR_HANDLE handle = m_srv_uav_heap->GetCPUDescriptorHandleForHeapStart( );
-	handle.ptr += g_dx.cbv_srv_uav_descriptor_size( ) * ( m_render_srv_uav_count + result );
+	D3D12_CPU_DESCRIPTOR_HANDLE handle = m_descriptor_heap->GetCPUDescriptorHandleForHeapStart( );
+	handle.ptr += g_dx.cbv_srv_uav_descriptor_size( ) * ( m_descriptor_count + result );
 
 	g_dx.device( )->CreateShaderResourceView( in_texture, &in_srv_desc, handle );
 
@@ -230,66 +225,96 @@ D3D12_VERTEX_BUFFER_VIEW resources::vertex_data_buffer_view( ) const
 	return vbv;
 }
 
-void resources::create_srv( u32 const in_index, dx_resource const in_resource, dx_srv_cook const& in_cook )
+void resources::reset_descriptors( )
 {
-	in_cook.build( in_resource, srv( in_index ) );
+	m_descriptor_offset = 0;
+	m_rtv_offset = 0;
+	m_dsv_offset = 0;
 }
 
-void resources::create_rtv( u32 const in_index, dx_resource const in_resource, dx_rtv_cook const& in_cook )
+D3D12_CPU_DESCRIPTOR_HANDLE resources::create_rtv( dx_resource const in_resource, dx_rtv_cook const& in_cook )
 {
-	in_cook.build( in_resource, rtv( in_index ) );
+	u32 const offset = m_rtv_offset++;
+	ASSERT_CMP( m_rtv_offset, <, m_rtv_count );
+
+	D3D12_CPU_DESCRIPTOR_HANDLE result = m_rtv_heap->GetCPUDescriptorHandleForHeapStart( );
+	result.ptr += g_dx.rtv_descriptor_size( ) * offset;
+
+	in_cook.build( in_resource, result );
+
+	return result;
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE resources::create_dsv( dx_resource const in_resource, dx_dsv_cook const& in_cook )
+{
+	u32 const offset = m_dsv_offset++;
+	ASSERT_CMP( m_dsv_offset, <, m_dsv_count );
+
+	D3D12_CPU_DESCRIPTOR_HANDLE result = m_dsv_heap->GetCPUDescriptorHandleForHeapStart( );
+	result.ptr += g_dx.rtv_descriptor_size( ) * offset;
+
+	in_cook.build( in_resource, result );
+
+	return result;
+}
+
+u32 resources::allocate_descriptors( u32 const in_descriptor_count )
+{
+	u32 const result = m_descriptor_offset;
+	m_descriptor_offset += in_descriptor_count;
+	ASSERT_CMP( m_descriptor_offset, <=, m_descriptor_count );
+	return result;
+}
+
+void resources::create_cbv( u32 const in_index, dx_cbv_cook const& in_cook )
+{
+	ASSERT_CMP( in_index, <, m_descriptor_count );
+	D3D12_CPU_DESCRIPTOR_HANDLE result = m_descriptor_heap->GetCPUDescriptorHandleForHeapStart( );
+	result.ptr += g_dx.cbv_srv_uav_descriptor_size( ) * in_index;
+	in_cook.build( result );
+}
+
+void resources::create_srv( u32 const in_index, dx_resource const in_resource, dx_srv_cook const& in_cook )
+{
+	ASSERT_CMP( in_index, <, m_descriptor_count );
+	D3D12_CPU_DESCRIPTOR_HANDLE result = m_descriptor_heap->GetCPUDescriptorHandleForHeapStart( );
+	result.ptr += g_dx.cbv_srv_uav_descriptor_size( ) * in_index;
+	in_cook.build( in_resource, result );
 }
 
 void resources::create_uav( u32 const in_index, dx_resource const in_resource, dx_uav_cook const& in_cook )
 {
-	in_cook.build( in_resource, uav( in_index ) );
+	ASSERT_CMP( in_index, <, m_descriptor_count );
+	D3D12_CPU_DESCRIPTOR_HANDLE result = m_descriptor_heap->GetCPUDescriptorHandleForHeapStart( );
+	result.ptr += g_dx.cbv_srv_uav_descriptor_size( ) * in_index;
+	in_cook.build( in_resource, result );
 }
 
 void resources::create_uav( u32 const in_index, dx_resource const in_resource, dx_resource const in_counter_buffer, dx_uav_cook const& in_cook )
 {
-	in_cook.build( in_resource, in_counter_buffer, uav( in_index ) );
-}
-
-void resources::create_dsv( u32 const in_index, dx_resource const in_resource, dx_dsv_cook const& in_cook )
-{
-	in_cook.build( in_resource, dsv( in_index ) );
-}
-
-D3D12_CPU_DESCRIPTOR_HANDLE resources::srv( u32 const in_index ) const
-{
-	ASSERT_CMP( in_index, <, m_render_srv_count );
-	D3D12_CPU_DESCRIPTOR_HANDLE result = m_srv_uav_heap->GetCPUDescriptorHandleForHeapStart( );
+	ASSERT_CMP( in_index, <, m_descriptor_count );
+	D3D12_CPU_DESCRIPTOR_HANDLE result = m_descriptor_heap->GetCPUDescriptorHandleForHeapStart( );
 	result.ptr += g_dx.cbv_srv_uav_descriptor_size( ) * in_index;
+	in_cook.build( in_resource, in_counter_buffer, result );
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE resources::get_descriptor_table_handle( u32 const in_table ) const
+{
+	D3D12_GPU_DESCRIPTOR_HANDLE result = m_descriptor_heap->GetGPUDescriptorHandleForHeapStart( );
+	result.ptr += g_dx.cbv_srv_uav_descriptor_size( ) * in_table;
 	return result;
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE resources::rtv( u32 const in_index ) const
+D3D12_GPU_DESCRIPTOR_HANDLE resources::get_common_table_handle( ) const
 {
-	ASSERT_CMP( in_index, <, m_render_rtv_count );
-	D3D12_CPU_DESCRIPTOR_HANDLE result = m_rtv_heap->GetCPUDescriptorHandleForHeapStart( );
-	result.ptr += g_dx.rtv_descriptor_size( ) * in_index;
+	D3D12_GPU_DESCRIPTOR_HANDLE result = m_descriptor_heap->GetGPUDescriptorHandleForHeapStart( );
+	result.ptr += g_dx.cbv_srv_uav_descriptor_size( ) * m_descriptor_count;
 	return result;
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE resources::uav( u32 const in_index ) const
+void resources::serialize_common_descriptor_table_binding( dx_root_signature::root_parameter& in_parameter, D3D12_SHADER_VISIBILITY const in_visibility )
 {
-	ASSERT_CMP( in_index, <, m_render_uav_count );
-	D3D12_CPU_DESCRIPTOR_HANDLE result = m_srv_uav_heap->GetCPUDescriptorHandleForHeapStart( );
-	result.ptr += g_dx.cbv_srv_uav_descriptor_size( ) * ( m_render_srv_count + in_index );
-	return result;
-}
-
-D3D12_CPU_DESCRIPTOR_HANDLE resources::dsv( u32 const in_index ) const
-{
-	ASSERT_CMP( in_index, <, m_render_dsv_count );
-	D3D12_CPU_DESCRIPTOR_HANDLE result = m_dsv_heap->GetCPUDescriptorHandleForHeapStart( );
-	result.ptr += g_dx.dsv_descriptor_size( ) * in_index;
-	return result;
-}
-
-void resources::serialize_descriptor_table_binding( dx_root_signature::root_parameter& in_parameter, D3D12_SHADER_VISIBILITY const in_visibility )
-{
-	in_parameter.create_descriptor_table( m_descriptor_ranges, (u32)array_size( m_descriptor_ranges ), in_visibility );
+	in_parameter.create_descriptor_table( m_common_descriptor_ranges, (u32)array_size( m_common_descriptor_ranges ), in_visibility );
 }
 
 resources g_resources;

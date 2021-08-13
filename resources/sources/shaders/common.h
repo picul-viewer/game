@@ -1,7 +1,7 @@
 #ifndef GUARD_SHADER_COMMON_H_INCLUDED
 #define GUARD_SHADER_COMMON_H_INCLUDED
 
-#include "layout.h"
+#include "common_layout.h"
 
 static const float c_pi = 3.1415926535898f;
 static const float c_inv_pi = 1.0f / c_pi;
@@ -103,14 +103,8 @@ void screen_position_to_world_rays_with_derivatives( float2 screen_uv, float2 in
 	ray_bottom = ray + g_constant_buffer.world_camera_screen_ray_y.xyz * inverse_viewport_size.y;
 }
 
-float get_depth( uint2 pixel_index )
+float get_view_depth( float hardware_depth )
 {
-	return g_depth.Load( uint3( pixel_index, 0 ) ).x;
-}
-
-float get_view_depth( uint2 pixel_index )
-{
-	float hardware_depth = get_depth( pixel_index );
 	return g_constant_buffer.deprojection_coefficients__fov_scale.y / ( hardware_depth - g_constant_buffer.deprojection_coefficients__fov_scale.x );
 }
 

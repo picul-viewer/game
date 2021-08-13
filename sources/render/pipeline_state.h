@@ -29,16 +29,23 @@ private:
 	inline dx_root_signature const& rs( ) const { return m_rs; }
 	inline dx_pipeline_state const& ps( ) const { return m_ps; }
 
-	void bind_cbv( shader_type const in_shader_type, dx_command_list const in_cmd_list, u32 const in_register, D3D12_GPU_VIRTUAL_ADDRESS const in_address ) const;
-	void bind_srv( shader_type const in_shader_type, dx_command_list const in_cmd_list, u32 const in_register, D3D12_GPU_VIRTUAL_ADDRESS const in_address ) const;
-	void bind_uav( shader_type const in_shader_type, dx_command_list const in_cmd_list, u32 const in_register, D3D12_GPU_VIRTUAL_ADDRESS const in_address ) const;
+	u32 get_cbv_root_index( shader_type const in_shader_type, u32 const in_register ) const;
+	u32 get_srv_root_index( shader_type const in_shader_type, u32 const in_register ) const;
+	u32 get_uav_root_index( shader_type const in_shader_type, u32 const in_register ) const;
 
-	void set_descriptor_table( dx_command_list const in_cmd_list, D3D12_GPU_DESCRIPTOR_HANDLE const in_table ) const;
+	u32 get_cbv_table_offset( shader_type const in_shader_type, u32 const in_register ) const;
+	u32 get_srv_table_offset( shader_type const in_shader_type, u32 const in_register ) const;
+	u32 get_uav_table_offset( shader_type const in_shader_type, u32 const in_register ) const;
+
+	u32 get_table_size( ) const;
+
+	void set_descriptor_tables( dx_command_list const in_cmd_list, u32 const in_table ) const;
 
 private:
 	dx_root_signature m_rs;
 	dx_pipeline_state m_ps;
-	u16 m_offsets[16];
+	u16 m_root_offsets[16];
+	u16 m_table_offsets[16];
 
 };
 
@@ -63,16 +70,23 @@ private:
 	inline dx_root_signature const& rs( ) const { return m_rs; }
 	inline dx_pipeline_state const& ps( ) const { return m_ps; }
 
-	void bind_cbv( dx_command_list const in_cmd_list, u32 const in_register, D3D12_GPU_VIRTUAL_ADDRESS const in_address ) const;
-	void bind_srv( dx_command_list const in_cmd_list, u32 const in_register, D3D12_GPU_VIRTUAL_ADDRESS const in_address ) const;
-	void bind_uav( dx_command_list const in_cmd_list, u32 const in_register, D3D12_GPU_VIRTUAL_ADDRESS const in_address ) const;
+	u32 get_cbv_root_index( u32 const in_register ) const;
+	u32 get_srv_root_index( u32 const in_register ) const;
+	u32 get_uav_root_index( u32 const in_register ) const;
 
-	void set_descriptor_table( dx_command_list const in_cmd_list, D3D12_GPU_DESCRIPTOR_HANDLE in_table ) const;
+	u32 get_cbv_table_offset( u32 const in_register ) const;
+	u32 get_srv_table_offset( u32 const in_register ) const;
+	u32 get_uav_table_offset( u32 const in_register ) const;
+
+	u32 get_table_size( ) const;
+
+	void set_descriptor_tables( dx_command_list const in_cmd_list, u32 const in_table ) const;
 
 private:
 	dx_root_signature m_rs;
 	dx_pipeline_state m_ps;
-	u16 m_offsets[4];
+	u16 m_root_offsets[4];
+	u16 m_table_offsets[4];
 	math::u16x4 m_group_dims;
 
 };

@@ -35,6 +35,10 @@ u32 format_get_bits_per_pixel( DXGI_FORMAT const in_format );
 DXGI_FORMAT format_make_srgb( DXGI_FORMAT const in_format );
 bool format_is_dxt( DXGI_FORMAT const in_format );
 
+bool format_is_depth( DXGI_FORMAT const in_format );
+DXGI_FORMAT format_depth_to_srv( DXGI_FORMAT const in_format );
+DXGI_FORMAT format_depth_to_stencil_srv( DXGI_FORMAT const in_format );
+
 D3D12_CPU_DESCRIPTOR_HANDLE rtv_handle_offset( D3D12_CPU_DESCRIPTOR_HANDLE const start, uptr const index );
 D3D12_CPU_DESCRIPTOR_HANDLE dsv_handle_offset( D3D12_CPU_DESCRIPTOR_HANDLE const start, uptr const index );
 D3D12_CPU_DESCRIPTOR_HANDLE cbv_srv_uav_handle_offset( D3D12_CPU_DESCRIPTOR_HANDLE const start, uptr const index );

@@ -127,6 +127,7 @@
     <ClInclude Include="pipeline_state.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="render_object_point_light.h" />
+    <ClInclude Include="render_resources.h" />
     <ClInclude Include="scene_cook.h" />
     <ClInclude Include="shader_cook.h" />
     <ClInclude Include="render_allocator.h" />
@@ -172,6 +173,7 @@
     <ClCompile Include="pipeline_state.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="render_object_point_light.cpp" />
+    <ClCompile Include="render_resources.cpp" />
     <ClCompile Include="scene_cook.cpp" />
     <ClCompile Include="shader_cook.cpp" />
     <ClCompile Include="model_mesh.cpp" />

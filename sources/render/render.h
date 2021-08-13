@@ -12,6 +12,7 @@
 #include "dx_command_signature.h"
 #include "dx_fence.h"
 #include "dx_resource.h"
+#include "render_resources.h"
 #include "gpu_structures.h"
 #include "gpu_uploader.h"
 #include "pipeline_state.h"
@@ -134,10 +135,11 @@ private:
 	dx_resource m_sun_shadow_mesh_list[max_frame_delay];
 	dx_resource m_point_light_list[max_frame_delay];
 
-	dx_resource m_image_v_buffer_polygon_id;
-	dx_resource m_image_radiance;
-	dx_resource m_image_depth_buffer;
-	dx_resource m_image_sun_shadowmap;
+	render_target_2d m_image_vbuf_polygon_id;
+	compute_target_2d m_image_radiance;
+	depth_stencil_2d m_image_depth_buffer;
+	depth_stencil_2d m_image_sun_shadowmap;
+	D3D12_CPU_DESCRIPTOR_HANDLE m_backbuffer_rts[max_frame_delay];
 
 	dx_resource m_constant_buffers[max_frame_delay];
 

@@ -160,6 +160,9 @@
     <Filter Include="dx12\wrappers\views">
       <UniqueIdentifier>{07122bee-4bb5-4b0a-b5b2-8fa927b06d3a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="render\utils\render_resources">
+      <UniqueIdentifier>{ffcf365a-442a-4b45-96b0-1cf9fc867a14}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mesh.cpp">
@@ -293,6 +296,9 @@
     </ClCompile>
     <ClCompile Include="dx_views.cpp">
       <Filter>dx12\wrappers\views</Filter>
+    </ClCompile>
+    <ClCompile Include="render_resources.cpp">
+      <Filter>render\utils\render_resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -448,6 +454,9 @@
     </ClInclude>
     <ClInclude Include="dx_views.h">
       <Filter>dx12\wrappers\views</Filter>
+    </ClInclude>
+    <ClInclude Include="render_resources.h">
+      <Filter>render\utils\render_resources</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

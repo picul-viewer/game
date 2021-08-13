@@ -13,37 +13,83 @@ void graphics_ps::destroy( )
 	m_rs.destroy( );
 }
 
-void graphics_ps::bind_cbv( shader_type const in_shader_type, dx_command_list const in_cmd_list, u32 const in_register, D3D12_GPU_VIRTUAL_ADDRESS const in_address ) const
+u32 graphics_ps::get_cbv_root_index( shader_type const in_shader_type, u32 const in_register ) const
 {
 	ASSERT( in_shader_type != shader_type_compute );
 	u32 const offset_index = in_shader_type * 3 + 0;
-	u32 const root_index = m_offsets[offset_index] + in_register;
-	ASSERT_CMP( root_index, <, m_offsets[offset_index + 1], "binding not found" );
-	in_cmd_list->SetGraphicsRootConstantBufferView( root_index, in_address );
+	u32 const root_index = m_root_offsets[offset_index] + in_register;
+	ASSERT_CMP( root_index, <, m_root_offsets[offset_index + 1], "binding not found" );
+	return root_index;
 }
 
-void graphics_ps::bind_srv( shader_type const in_shader_type, dx_command_list const in_cmd_list, u32 const in_register, D3D12_GPU_VIRTUAL_ADDRESS const in_address ) const
+u32 graphics_ps::get_srv_root_index( shader_type const in_shader_type, u32 const in_register ) const
 {
 	ASSERT( in_shader_type != shader_type_compute );
 	u32 const offset_index = in_shader_type * 3 + 1;
-	u32 const root_index = m_offsets[offset_index] + in_register;
-	ASSERT_CMP( root_index, <, m_offsets[offset_index + 1], "binding not found" );
-	in_cmd_list->SetGraphicsRootShaderResourceView( root_index, in_address );
+	u32 const root_index = m_root_offsets[offset_index] + in_register;
+	ASSERT_CMP( root_index, <, m_root_offsets[offset_index + 1], "binding not found" );
+	return root_index;
 }
 
-void graphics_ps::bind_uav( shader_type const in_shader_type, dx_command_list const in_cmd_list, u32 const in_register, D3D12_GPU_VIRTUAL_ADDRESS const in_address ) const
+u32 graphics_ps::get_uav_root_index( shader_type const in_shader_type, u32 const in_register ) const
 {
 	ASSERT( in_shader_type != shader_type_compute );
 	u32 const offset_index = in_shader_type * 3 + 2;
-	u32 const root_index = m_offsets[offset_index] + in_register;
-	ASSERT_CMP( root_index, <, m_offsets[offset_index + 1], "binding not found" );
-	in_cmd_list->SetGraphicsRootUnorderedAccessView( root_index, in_address );
+	u32 const root_index = m_root_offsets[offset_index] + in_register;
+	ASSERT_CMP( root_index, <, m_root_offsets[offset_index + 1], "binding not found" );
+	return root_index;
 }
 
-void graphics_ps::set_descriptor_table( dx_command_list const in_cmd_list, D3D12_GPU_DESCRIPTOR_HANDLE const in_table ) const
+u32 graphics_ps::get_cbv_table_offset( shader_type const in_shader_type, u32 const in_register ) const
 {
-	for ( u32 i = 0; i < m_offsets[0]; ++i )
-		in_cmd_list->SetGraphicsRootDescriptorTable( i, in_table );
+	ASSERT( in_shader_type != shader_type_compute );
+	u32 const offset_index = in_shader_type * 3 + 2;
+	u32 const table_index = m_table_offsets[offset_index] + in_register;
+	ASSERT_CMP( table_index, <, m_table_offsets[offset_index + 1], "binding not found" );
+	return table_index;
+}
+
+u32 graphics_ps::get_srv_table_offset( shader_type const in_shader_type, u32 const in_register ) const
+{
+	ASSERT( in_shader_type != shader_type_compute );
+	u32 const offset_index = in_shader_type * 3 + 0;
+	u32 const table_index = m_table_offsets[offset_index] + in_register;
+	ASSERT_CMP( table_index, <, m_table_offsets[offset_index + 1], "binding not found" );
+	return table_index;
+}
+
+u32 graphics_ps::get_uav_table_offset( shader_type const in_shader_type, u32 const in_register ) const
+{
+	ASSERT( in_shader_type != shader_type_compute );
+	u32 const offset_index = in_shader_type * 3 + 1;
+	u32 const table_index = m_table_offsets[offset_index] + in_register;
+	ASSERT_CMP( table_index, <, m_table_offsets[offset_index + 1], "binding not found" );
+	return table_index;
+}
+
+u32 graphics_ps::get_table_size( ) const
+{
+	return m_table_offsets[15];
+}
+
+void graphics_ps::set_descriptor_tables( dx_command_list const in_cmd_list, u32 const in_table ) const
+{
+	u32 root_index = 0;
+	u16 table_offset = m_table_offsets[0];
+
+	for ( u32 i = 0; i < 5; ++i )
+	{
+		u16 const next_table_offset = m_table_offsets[i * 3 + 3];
+		u32 const table_size = next_table_offset - table_offset;
+		if ( table_size )
+			in_cmd_list->SetGraphicsRootDescriptorTable( root_index++, g_resources.get_descriptor_table_handle( in_table + table_offset ) );
+	}
+
+	u16 const root_descriptos_start = m_root_offsets[0];
+	ASSERT_CMP( root_descriptos_start - root_index, <=, 5 );
+
+	for ( ; root_index < root_descriptos_start; ++root_index )
+		in_cmd_list->SetGraphicsRootDescriptorTable( root_index, g_resources.get_common_table_handle( ) );
 }
 
 
@@ -71,69 +117,122 @@ math::u32x3 compute_ps::calculate_groups_count( math::u32x3 const in_dimensions 
 	return ( in_dimensions + math::u32x3( m_group_dims ) - math::u32x3( 1 ) ) / math::u32x3( m_group_dims );
 }
 
-void compute_ps::bind_cbv( dx_command_list const in_cmd_list, u32 const in_register, D3D12_GPU_VIRTUAL_ADDRESS const in_address ) const
+u32 compute_ps::get_cbv_root_index( u32 const in_register ) const
 {
-	u32 const root_index = m_offsets[0] + in_register;
-	ASSERT_CMP( root_index, <, m_offsets[1], "binding not found" );
-	in_cmd_list->SetComputeRootConstantBufferView( root_index, in_address );
+	u32 const root_index = m_root_offsets[0] + in_register;
+	ASSERT_CMP( root_index, <, m_root_offsets[1], "binding not found" );
+	return root_index;
 }
 
-void compute_ps::bind_srv( dx_command_list const in_cmd_list, u32 const in_register, D3D12_GPU_VIRTUAL_ADDRESS const in_address ) const
+u32 compute_ps::get_srv_root_index( u32 const in_register ) const
 {
-	u32 const root_index = m_offsets[1] + in_register;
-	ASSERT_CMP( root_index, <, m_offsets[2], "binding not found" );
-	in_cmd_list->SetComputeRootShaderResourceView( root_index, in_address );
+	u32 const root_index = m_root_offsets[1] + in_register;
+	ASSERT_CMP( root_index, <, m_root_offsets[2], "binding not found" );
+	return root_index;
 }
 
-void compute_ps::bind_uav( dx_command_list const in_cmd_list, u32 const in_register, D3D12_GPU_VIRTUAL_ADDRESS const in_address ) const
+u32 compute_ps::get_uav_root_index( u32 const in_register ) const
 {
-	u32 const root_index = m_offsets[2] + in_register;
-	ASSERT_CMP( root_index, <, m_offsets[3], "binding not found" );
-	in_cmd_list->SetComputeRootUnorderedAccessView( root_index, in_address );
+	u32 const root_index = m_root_offsets[2] + in_register;
+	ASSERT_CMP( root_index, <, m_root_offsets[3], "binding not found" );
+	return root_index;
 }
 
-void compute_ps::set_descriptor_table( dx_command_list const in_cmd_list, D3D12_GPU_DESCRIPTOR_HANDLE const in_table ) const
+u32 compute_ps::get_cbv_table_offset( u32 const in_register ) const
 {
-	if ( m_offsets[0] )
-		in_cmd_list->SetComputeRootDescriptorTable( 0, in_table );
+	u32 const table_index = m_table_offsets[2] + in_register;
+	ASSERT_CMP( table_index, <, m_table_offsets[3], "binding not found" );
+	return table_index;
+}
+
+u32 compute_ps::get_srv_table_offset( u32 const in_register ) const
+{
+	u32 const table_index = m_table_offsets[0] + in_register;
+	ASSERT_CMP( table_index, <, m_table_offsets[1], "binding not found" );
+	return table_index;
+}
+
+u32 compute_ps::get_uav_table_offset( u32 const in_register ) const
+{
+	u32 const table_index = m_table_offsets[1] + in_register;
+	ASSERT_CMP( table_index, <, m_table_offsets[2], "binding not found" );
+	return table_index;
+}
+
+u32 compute_ps::get_table_size( ) const
+{
+	return m_table_offsets[3];
+}
+
+void compute_ps::set_descriptor_tables( dx_command_list const in_cmd_list, u32 const in_table ) const
+{
+	u32 root_index = 0;
+
+	if ( get_table_size( ) )
+		in_cmd_list->SetComputeRootDescriptorTable( root_index++, g_resources.get_descriptor_table_handle( in_table ) );
+
+	if ( root_index < m_root_offsets[0] )
+		in_cmd_list->SetComputeRootDescriptorTable( root_index++, g_resources.get_common_table_handle( ) );
+
+	ASSERT_CMP( root_index, ==, m_root_offsets[0] );
 }
 
 
 void calculate_rs_dimensions(
-	u32& in_resource_count, u32& in_sampler_count, bool& need_descriptor_table,
+	u32& in_root_resource_count, u32& in_table_resource_count, u32& in_sampler_count, bool& in_need_common_table,
 	ID3D12ShaderReflection* const in_refl, u32 const in_bound_resources
 )
 {
-	u32 resource_count = 0;
+	u32 root_resource_count = 0;
+	u32 table_resource_count = 0;
 	u32 sampler_count = 0;
+	bool need_common_table = false;
 
 	for ( u32 i = 0; i < in_bound_resources; ++i )
 	{
 		D3D12_SHADER_INPUT_BIND_DESC binding_desc;
 		in_refl->GetResourceBindingDesc( i, &binding_desc );
 
-		bool const is_root_resource = ( binding_desc.Space < resources::hlsl_table_space_start ) && ( binding_desc.Type != D3D_SIT_SAMPLER );
-		resource_count += is_root_resource ? 1 : 0;
+		if ( binding_desc.Type == D3D_SIT_SAMPLER )
+		{
+			// Only support root samplers until got problems.
+			++sampler_count;
+			continue;
+		}
 
-		// Only support root samplers until got problems.
-		bool const is_sampler = binding_desc.Type == D3D_SIT_SAMPLER;
-		sampler_count += is_sampler ? 1 : 0;
+		switch ( binding_desc.Space )
+		{
+			case resources::hlsl_root_descriptors_space:
+				ASSERT( binding_desc.BindCount == 1, "implementation needs to be revisited" );
+				++root_resource_count;
+				break;
+			case resources::hlsl_table_descriptors_space:
+				ASSERT( binding_desc.BindCount == 1, "implementation needs to be revisited" );
+				++table_resource_count;
+				break;
+			case resources::hlsl_textures_space:
+				need_common_table = true;
+				break;
+			default:
+				UNREACHABLE_CODE
+		}
 	}
 
-	in_resource_count = resource_count;
+	in_root_resource_count = root_resource_count;
+	in_table_resource_count = table_resource_count;
 	in_sampler_count = sampler_count;
-	need_descriptor_table = resource_count + sampler_count < in_bound_resources;
+	in_need_common_table = need_common_table;
 }
 
-D3D12_ROOT_PARAMETER_TYPE get_bind_type( D3D_SHADER_INPUT_TYPE const in_type )
+u32 get_root_bind_type_index( D3D_SHADER_INPUT_TYPE const in_type )
 {
 	switch ( in_type )
 	{
 		case D3D_SIT_CBUFFER:
-			return D3D12_ROOT_PARAMETER_TYPE_CBV;
+			return 0;
         case D3D_SIT_TBUFFER:
 		case D3D_SIT_STRUCTURED:
-			return D3D12_ROOT_PARAMETER_TYPE_SRV;
+			return 1;
 		case D3D_SIT_UAV_RWTYPED:
 		case D3D_SIT_UAV_RWSTRUCTURED:
 		case D3D_SIT_BYTEADDRESS:
@@ -141,11 +240,35 @@ D3D12_ROOT_PARAMETER_TYPE get_bind_type( D3D_SHADER_INPUT_TYPE const in_type )
 		case D3D_SIT_UAV_APPEND_STRUCTURED:
 		case D3D_SIT_UAV_CONSUME_STRUCTURED:
 		case D3D_SIT_UAV_RWSTRUCTURED_WITH_COUNTER:
-			return D3D12_ROOT_PARAMETER_TYPE_UAV;
+			return 2;
 		default: UNREACHABLE_CODE
 	}
 
-	return D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
+	return -1;
+}
+
+u32 get_table_bind_type_index( D3D_SHADER_INPUT_TYPE const in_type )
+{
+	switch ( in_type )
+	{
+        case D3D_SIT_TBUFFER:
+		case D3D_SIT_TEXTURE:
+		case D3D_SIT_STRUCTURED:
+		case D3D_SIT_BYTEADDRESS:
+			return 0;
+		case D3D_SIT_UAV_RWTYPED:
+		case D3D_SIT_UAV_RWSTRUCTURED:
+		case D3D_SIT_UAV_RWBYTEADDRESS:
+		case D3D_SIT_UAV_APPEND_STRUCTURED:
+		case D3D_SIT_UAV_CONSUME_STRUCTURED:
+		case D3D_SIT_UAV_RWSTRUCTURED_WITH_COUNTER:
+			return 1;
+		case D3D_SIT_CBUFFER:
+			return 2;
+		default: UNREACHABLE_CODE
+	}
+
+	return -1;
 }
 
 void get_sampler_for_binding( dx_root_signature::static_sampler& in_sampler_desc, D3D12_SHADER_INPUT_BIND_DESC const& in_binding_desc, D3D12_SHADER_VISIBILITY const in_visibility )
@@ -175,21 +298,24 @@ void get_sampler_for_binding( dx_root_signature::static_sampler& in_sampler_desc
 
 void serialize_rs_parameters(
 	u32 const in_bindings_count, ID3D12ShaderReflection* const in_refl,
-	u32 const in_resource_count, u32 const in_sampler_count,
-	u16* const in_binding_offsets,
-	dx_root_signature::root_parameter* const in_parameters, u32 const in_parameters_offset,
-	dx_root_signature::static_sampler* const in_samplers, u32 const in_samplers_offset,
+	u32 const in_root_resource_count, u16* const in_root_binding_offsets, u16* const in_table_binding_offsets,
+	dx_root_signature::root_parameter* const in_root_parameters, u32& in_root_parameters_offset,
+	dx_root_signature::descriptor_range* const in_table_ranges, u32& in_table_ranges_offset,
+	dx_root_signature::static_sampler* const in_samplers,
 	D3D12_SHADER_VISIBILITY const in_visibility
 )
 {
+	enum {
+		c_root_binding_type_offset = 30,
+		c_root_binding_index_mask = 0x3FFFFFFF
+	};
 
-	struct binding_data
-	{
-		D3D12_ROOT_PARAMETER_TYPE type;
-		u32 index;
-	}* data = (binding_data*)alloca( in_resource_count * sizeof(binding_data) );
+	u32* const root_data = (u32*)alloca( in_root_resource_count * sizeof(u32) );
 
-	u32 binding_index = 0;
+	u32 root_binding_types_count[3] = { };
+	u32 table_binding_types_count[3] = { };
+	u32 table_binding_max_indices[3] = { 0, 0, 0 };
+	u32 root_binding_index = 0;
 	u32 sampler_index = 0;
 
 	for ( u32 i = 0; i < in_bindings_count; ++i )
@@ -197,42 +323,83 @@ void serialize_rs_parameters(
 		D3D12_SHADER_INPUT_BIND_DESC binding_desc;
 		in_refl->GetResourceBindingDesc( i, &binding_desc );
 
-		bool const is_root_resource = ( binding_desc.Space < resources::hlsl_table_space_start ) && ( binding_desc.Type != D3D_SIT_SAMPLER );
-		bool const is_sampler = binding_desc.Type == D3D_SIT_SAMPLER;
-
-		if ( is_root_resource )
+		if ( binding_desc.Type == D3D_SIT_SAMPLER )
 		{
-			ASSERT( binding_desc.Space == 0, "custom bindings should be in space0" );
-			data[binding_index].type = get_bind_type( binding_desc.Type );
-			data[binding_index].index = binding_desc.BindPoint;
-			++binding_index;
+			get_sampler_for_binding( in_samplers[sampler_index++], binding_desc, in_visibility );
+			continue;
 		}
-		else if ( is_sampler )
+
+		switch ( binding_desc.Space )
 		{
-			get_sampler_for_binding( in_samplers[in_samplers_offset + sampler_index++], binding_desc, in_visibility );
+			case resources::hlsl_root_descriptors_space:
+			{
+				u32 const bind_type_index = get_root_bind_type_index( binding_desc.Type );
+				++root_binding_types_count[bind_type_index];
+				u32 const root_binding = ( bind_type_index << c_root_binding_type_offset ) | binding_desc.BindPoint;
+				root_data[root_binding_index++] = root_binding;
+				break;
+			}
+			case resources::hlsl_table_descriptors_space:
+			{
+				u32 const bind_index = get_table_bind_type_index( binding_desc.Type );
+				++table_binding_types_count[bind_index];
+				table_binding_max_indices[bind_index] = math::max( table_binding_max_indices[bind_index], binding_desc.BindPoint );
+				break;
+			}
+			default:
+				break;
 		}
 	}
 
-	lib::sort( data, data + in_resource_count, []( binding_data const& l, binding_data const& r )
 	{
-		if ( l.type != r.type )
-			return l.type < r.type;
-		return l.index < r.index;
-	} );
+		char const* const c_type_strings[] = { "SRV", "UAV", "CBV" };
 
-	D3D12_ROOT_PARAMETER_TYPE const types[] = { D3D12_ROOT_PARAMETER_TYPE_CBV, D3D12_ROOT_PARAMETER_TYPE_SRV, D3D12_ROOT_PARAMETER_TYPE_UAV };
+		for ( u32 i = 0; i < array_size( c_type_strings ); ++i )
+			ASSERT( table_binding_max_indices[i] == math::max( 1u, table_binding_types_count[i] ) - 1,
+				"%s bindings registers are not tightly packed", c_type_strings[i] );
+	}
 
-	u32 i = 0;
+	lib::sort( root_data, root_data + in_root_resource_count );
 
-	for ( u32 j = 0; j < 3; ++j )
 	{
-		in_binding_offsets[j] = in_parameters_offset + i;
-		while ( data[i].type == types[j] )
+		D3D12_ROOT_PARAMETER_TYPE const c_types[] = { D3D12_ROOT_PARAMETER_TYPE_CBV, D3D12_ROOT_PARAMETER_TYPE_SRV, D3D12_ROOT_PARAMETER_TYPE_UAV };
+
+		u16 curr_offset = in_root_binding_offsets[0];
+
+		for ( u32 i = 0; i < array_size( c_types ); ++i )
 		{
-			ASSERT( in_parameters_offset + i - in_binding_offsets[j] == data[i].index, "bindings' registers should be compacted" );
-			in_parameters[in_parameters_offset + i].create_descriptor( data[i].type, data[i].index, 0, in_visibility );
-			++i;
+			curr_offset += root_binding_types_count[i];
+			in_root_binding_offsets[i + 1] = curr_offset;
 		}
+
+		for ( u32 i = 0; i < in_root_resource_count; ++i )
+		{
+			in_root_parameters[in_root_parameters_offset + i].create_descriptor( c_types[root_data[i] >> c_root_binding_type_offset],
+				root_data[i] & c_root_binding_index_mask, resources::hlsl_root_descriptors_space, in_visibility );
+		}
+
+		in_root_parameters_offset += in_root_resource_count;
+	}
+
+	{
+		D3D12_DESCRIPTOR_RANGE_TYPE const c_types[] = { D3D12_DESCRIPTOR_RANGE_TYPE_SRV, D3D12_DESCRIPTOR_RANGE_TYPE_UAV, D3D12_DESCRIPTOR_RANGE_TYPE_CBV };
+
+		u16 curr_offset = in_table_binding_offsets[0];
+		u32 table_ranges_offset = in_table_ranges_offset;
+
+		for ( u32 j = 0; j < array_size( c_types ); ++j )
+		{
+			u32 const count = table_binding_types_count[j];
+
+			if ( count != 0 )
+				in_table_ranges[table_ranges_offset++].create( c_types[j], 0, resources::hlsl_table_descriptors_space, count );
+
+			curr_offset += (u16)count;
+			in_table_binding_offsets[j + 1] = curr_offset;
+			/// NOT TIGHTLY PACKED!!!
+		}
+
+		in_table_ranges_offset = table_ranges_offset;
 	}
 }
 
@@ -413,10 +580,11 @@ void graphics_ps_cook::on_shaders_ready( queried_resources& in_resources )
 	ID3D12ShaderReflection* reflections[5];
 	u32 bound_resources[5];
 
-	u32 all_bindings_count = 0;
+	u32 all_root_count = 0;
+	u32 all_table_count = 0;
 	u32 all_sampler_count = 0;
-	u32 resource_count[5], sampler_count[5];
-	bool need_descriptor_table[5];
+	u32 root_count[5], table_count[5], sampler_count[5];
+	bool need_common_table[5];
 
 	for ( u32 i = 0; i < 5; ++i )
 	{
@@ -430,53 +598,73 @@ void graphics_ps_cook::on_shaders_ready( queried_resources& in_resources )
 			DX12_CHECK_RESULT( reflections[i]->GetDesc( &desc ) );
 			bound_resources[i] = desc.BoundResources;
 
-			calculate_rs_dimensions( resource_count[i], sampler_count[i], need_descriptor_table[i], reflections[i], bound_resources[i] );
-			all_bindings_count += resource_count[i] + ( need_descriptor_table[i] ? 1 : 0 );
+			calculate_rs_dimensions( root_count[i], table_count[i], sampler_count[i], need_common_table[i], reflections[i], bound_resources[i] );
+			all_root_count += root_count[i] + ( table_count[i] ? 1 : 0 ) + ( need_common_table[i] ? 1 : 0 );
+			all_table_count += table_count[i];
 			all_sampler_count += sampler_count[i];
 		}
 	}
 
-	dx_root_signature::root_parameter* const rs_params = (dx_root_signature::root_parameter*)alloca( all_bindings_count * sizeof(dx_root_signature::root_parameter) );
+	dx_root_signature::descriptor_range descriptor_ranges[3];
+	dx_root_signature::root_parameter* const rs_params = (dx_root_signature::root_parameter*)alloca( all_root_count * sizeof(dx_root_signature::root_parameter) );
 	dx_root_signature::static_sampler* const rs_sampler_params = (dx_root_signature::static_sampler*)alloca( all_sampler_count * sizeof(dx_root_signature::static_sampler) );
 
-	u32 bindings_offset = 0;
-	u32 samplers_offset = 0;
+	u32 root_parameters_offset = 0;
+
+	u32 table_root_parameter_indices[5];
+	for ( u32 i = 0; i < 5; ++i )
+	{
+		table_root_parameter_indices[i] = root_parameters_offset;
+		root_parameters_offset += ( m_shader_cooks[i] && table_count[i] ) ? 1 : 0;
+	}
 
 	for ( u32 i = 0; i < 5; ++i )
 	{
-		if ( m_shader_cooks[i] && need_descriptor_table[i] )
-			g_resources.serialize_descriptor_table_binding( rs_params[bindings_offset++],
+		if ( m_shader_cooks[i] && need_common_table[i] )
+			g_resources.serialize_common_descriptor_table_binding( rs_params[root_parameters_offset++],
 				(D3D12_SHADER_VISIBILITY)( D3D12_SHADER_VISIBILITY_VERTEX + i ) );
 	}
+
+	m_result->m_root_offsets[0] = (u16)root_parameters_offset;
+	m_result->m_table_offsets[0] = 0;
+
+	u32 samplers_offset = 0;
 
 	for ( u32 i = 0; i < 5; ++i )
 	{
 		if ( m_shader_cooks[i] )
 		{
+			u32 descriptor_ranges_offset = 0;
+
 			serialize_rs_parameters(
 				bound_resources[i], reflections[i],
-				resource_count[i], sampler_count[i], m_result->m_offsets + i * 3,
-				rs_params, bindings_offset,
-				rs_sampler_params, samplers_offset,
+				root_count[i], m_result->m_root_offsets + i * 3, m_result->m_table_offsets + i * 3,
+				rs_params, root_parameters_offset,
+				descriptor_ranges, descriptor_ranges_offset,
+				rs_sampler_params + samplers_offset,
 				(D3D12_SHADER_VISIBILITY)( D3D12_SHADER_VISIBILITY_VERTEX + i )
 			);
 
-			bindings_offset += resource_count[i];
+			if ( table_count[i] )
+				rs_params[table_root_parameter_indices[i]].create_descriptor_table( descriptor_ranges,
+					descriptor_ranges_offset, (D3D12_SHADER_VISIBILITY)( D3D12_SHADER_VISIBILITY_VERTEX + i ) );
+
 			samplers_offset += sampler_count[i];
 		}
 		else
 		{
-			m_result->m_offsets[i * 3 + 0] = m_result->m_offsets[i * 3 - 1];
-			m_result->m_offsets[i * 3 + 1] = m_result->m_offsets[i * 3 - 1];
-			m_result->m_offsets[i * 3 + 2] = m_result->m_offsets[i * 3 - 1];
+			m_result->m_root_offsets[i * 3 + 1] = m_result->m_root_offsets[i * 3];
+			m_result->m_root_offsets[i * 3 + 2] = m_result->m_root_offsets[i * 3];
+			m_result->m_root_offsets[i * 3 + 3] = m_result->m_root_offsets[i * 3];
+			m_result->m_table_offsets[i * 3 + 1] = m_result->m_table_offsets[i * 3];
+			m_result->m_table_offsets[i * 3 + 2] = m_result->m_table_offsets[i * 3];
+			m_result->m_table_offsets[i * 3 + 3] = m_result->m_table_offsets[i * 3];
 		}
 	}
 
-	m_result->m_offsets[15] = bindings_offset;
-
 	dx_root_signature::cook rs_cook;
 	rs_cook.create(
-		all_bindings_count, rs_params,
+		all_root_count, rs_params,
 		all_sampler_count, rs_sampler_params,
 		m_desc.desc.InputLayout.NumElements != 0,
 		true, m_shader_cooks[1], m_shader_cooks[2], m_shader_cooks[3], m_shader_cooks[4], false
@@ -524,30 +712,40 @@ void compute_ps_cook::on_shader_ready( queried_resources& in_resources )
 
 	math::u32x3 group_dimensions;
 	u32 const group_size = reflection->GetThreadGroupSize( &group_dimensions.x, &group_dimensions.y, &group_dimensions.z );
-
 	m_result->m_group_dims = math::u16x4( group_dimensions.x, group_dimensions.y, group_dimensions.z, group_size );
 
-	u32 resource_count, sampler_count;
-	bool need_descriptor_table;
+	u32 root_count, table_count, sampler_count;
+	bool need_common_table;
 
-	calculate_rs_dimensions( resource_count, sampler_count, need_descriptor_table, reflection, shader_desc.BoundResources );
+	calculate_rs_dimensions( root_count, table_count, sampler_count, need_common_table, reflection, shader_desc.BoundResources );
 
-	u32 const rs_params_count = resource_count + ( need_descriptor_table ? 1 : 0 );
+	u32 const rs_params_count = root_count + ( table_count ? 1 : 0 ) + ( need_common_table ? 1 : 0 );
+	dx_root_signature::descriptor_range descriptor_ranges[3];
 	dx_root_signature::root_parameter* const rs_params = (dx_root_signature::root_parameter*)alloca( rs_params_count * sizeof(dx_root_signature::root_parameter) );
 	dx_root_signature::static_sampler* const rs_sampler_params = (dx_root_signature::static_sampler*)alloca( sampler_count * sizeof(dx_root_signature::static_sampler) );
 
-	if ( need_descriptor_table )
-		g_resources.serialize_descriptor_table_binding( rs_params[0], D3D12_SHADER_VISIBILITY_ALL );
+	u32 root_parameters_offset = 0;
+	u32 descriptor_ranges_offset = 0;
+
+	root_parameters_offset += table_count ? 1 : 0;
+
+	if ( need_common_table )
+		g_resources.serialize_common_descriptor_table_binding( rs_params[root_parameters_offset++], D3D12_SHADER_VISIBILITY_ALL );
+
+	m_result->m_root_offsets[0] = (u16)root_parameters_offset;
+	m_result->m_table_offsets[0] = 0;
 
 	serialize_rs_parameters(
 		shader_desc.BoundResources, reflection,
-		resource_count, sampler_count, m_result->m_offsets + 0,
-		rs_params, need_descriptor_table ? 1 : 0,
-		rs_sampler_params, 0,
+		root_count, m_result->m_root_offsets + 0, m_result->m_table_offsets + 0,
+		rs_params, root_parameters_offset,
+		descriptor_ranges, descriptor_ranges_offset,
+		rs_sampler_params,
 		D3D12_SHADER_VISIBILITY_ALL
 	);
 
-	m_result->m_offsets[3] = rs_params_count;
+	if ( table_count )
+		rs_params[0].create_descriptor_table( descriptor_ranges, descriptor_ranges_offset, D3D12_SHADER_VISIBILITY_ALL );
 
 	dx_root_signature::cook rs_cook;
 	rs_cook.create(
