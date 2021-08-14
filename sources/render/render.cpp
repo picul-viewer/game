@@ -172,10 +172,14 @@ void render::create( )
 
 	// Images.
 	{
-		m_image_vbuf_polygon_id.create( DXGI_FORMAT_R32G32_UINT, g_parameters.screen_resolution, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE );
-		m_image_radiance.create( DXGI_FORMAT_R16G16B16A16_FLOAT, g_parameters.screen_resolution, D3D12_RESOURCE_STATE_UNORDERED_ACCESS );
-		m_image_depth_buffer.create( DXGI_FORMAT_D32_FLOAT, g_parameters.screen_resolution, D3D12_RESOURCE_STATE_DEPTH_WRITE, 1.0f, 0, true, false );
-		m_image_sun_shadowmap.create( DXGI_FORMAT_D16_UNORM, math::u32x2( sun_shadowmap_dimension ), D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, 1.0f, 0, true, false );
+		m_image_vbuf_polygon_id.create( "image_vbuf_polygon_id", DXGI_FORMAT_R32G32_UINT,
+			g_parameters.screen_resolution, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE );
+		m_image_radiance.create( "image_radiance", DXGI_FORMAT_R16G16B16A16_FLOAT,
+			g_parameters.screen_resolution, D3D12_RESOURCE_STATE_UNORDERED_ACCESS );
+		m_image_depth_buffer.create( "image_depth_buffer", DXGI_FORMAT_D32_FLOAT,
+			g_parameters.screen_resolution, D3D12_RESOURCE_STATE_DEPTH_WRITE, 1.0f, 0, true, false );
+		m_image_sun_shadowmap.create( "image_sun_shadowmap", DXGI_FORMAT_D16_UNORM,
+			math::u32x2( sun_shadowmap_dimension ), D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, 1.0f, 0, true, false );
 
 		for ( u32 i = 0; i < max_frame_delay; ++i )
 			m_backbuffer_rts[i] = g_resources.create_rtv(

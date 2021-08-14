@@ -4,6 +4,7 @@
 namespace render {
 
 void render_target_2d::create(
+	pcstr const in_name,
 	DXGI_FORMAT in_format,
 	math::u32x2 const in_size,
 	D3D12_RESOURCE_STATES const in_initial_state,
@@ -21,6 +22,7 @@ void render_target_2d::create(
 	resource_cook.set_initial_state( in_initial_state );
 	resource_cook.set_clear_value( in_format, in_clear_value );
 	m_resource.create( resource_cook );
+	set_dx_name( m_resource, in_name );
 
 	m_rtv = g_resources.create_rtv( m_resource, dx_rtv_create_texture2d( in_format ) );
 
@@ -39,6 +41,7 @@ dx_srv_cook render_target_2d::srv_cook( ) const
 
 
 void depth_stencil_2d::create(
+	pcstr const in_name,
 	DXGI_FORMAT in_format,
 	math::u32x2 const in_size,
 	D3D12_RESOURCE_STATES const in_initial_state,
@@ -61,6 +64,7 @@ void depth_stencil_2d::create(
 	resource_cook.set_initial_state( in_initial_state );
 	resource_cook.set_clear_value( in_format, in_clear_depth, in_clear_stencil );
 	m_resource.create( resource_cook );
+	set_dx_name( m_resource, in_name );
 
 	m_dsv = g_resources.create_dsv( m_resource, dx_dsv_create_texture2d( in_format ) );
 	if ( in_need_read_only_dsv )
@@ -81,6 +85,7 @@ dx_srv_cook depth_stencil_2d::srv_cook( ) const
 
 
 void compute_target_2d::create(
+	pcstr const in_name,
 	DXGI_FORMAT in_format,
 	math::u32x2 const in_size,
 	D3D12_RESOURCE_STATES const in_initial_state
@@ -94,6 +99,7 @@ void compute_target_2d::create(
 	resource_cook.set_heap_type( D3D12_HEAP_TYPE_DEFAULT );
 	resource_cook.set_initial_state( in_initial_state );
 	m_resource.create( resource_cook );
+	set_dx_name( m_resource, in_name );
 
 	m_format = in_format;
 }

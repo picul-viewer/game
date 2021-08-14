@@ -12,6 +12,7 @@ class render_target_2d
 {
 public:
 	void create(
+		pcstr const in_name,
 		DXGI_FORMAT in_format,
 		math::u32x2 const in_size,
 		D3D12_RESOURCE_STATES const in_initial_state,
@@ -37,6 +38,7 @@ class depth_stencil_2d
 {
 public:
 	void create(
+		pcstr const in_name,
 		DXGI_FORMAT in_format,
 		math::u32x2 const in_size,
 		D3D12_RESOURCE_STATES const in_initial_state,
@@ -67,6 +69,7 @@ class compute_target_2d
 {
 public:
 	void create(
+		pcstr const in_name,
 		DXGI_FORMAT in_format,
 		math::u32x2 const in_size,
 		D3D12_RESOURCE_STATES const in_initial_state

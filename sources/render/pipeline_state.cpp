@@ -352,7 +352,7 @@ void serialize_rs_parameters(
 	}
 
 	{
-		char const* const c_type_strings[] = { "SRV", "UAV", "CBV" };
+		pcstr const c_type_strings[] = { "SRV", "UAV", "CBV" };
 
 		for ( u32 i = 0; i < array_size( c_type_strings ); ++i )
 			ASSERT( table_binding_max_indices[i] == math::max( 1u, table_binding_types_count[i] ) - 1,
