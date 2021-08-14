@@ -26,7 +26,7 @@ void config_compiler::compile( u64 const relevant_date, pcstr const input_file_n
 {
 	pcstr const extension = sys::path::get_file_extension( input_file_name );
 
-	little_string file_name = sys::path::get_file_name( input_file_name );
+	str256 file_name = sys::path::get_file_name( input_file_name );
 	sys::path::remove_file_extension( file_name );
 	little_string const config_type = sys::path::get_file_extension( file_name ) + 1;
 	sys::path output_path = str512( output_directory );

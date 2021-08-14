@@ -222,7 +222,7 @@ void gltf_compiler::compile( u64 relevant_date, weak_const_string input_file_nam
 {
 	ASSERT( strings::equal( sys::path::get_file_extension( input_file_name ), ".gltf" ), "wrong file extension: %s", sys::path::get_file_extension( input_file_name ) );
 
-	little_string file_name = sys::path::get_file_name( input_file_name );
+	str256 file_name = sys::path::get_file_name( input_file_name );
 	sys::path::remove_file_extension( file_name.data( ) );
 
 	sys::path scene_path = output_directory;

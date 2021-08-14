@@ -162,7 +162,7 @@ void write_model_mesh_to_file(
 
 	if ( in_albedo_name )
 	{
-		little_string albedo_name = in_albedo_name;
+		str256 albedo_name = in_albedo_name;
 		sys::path::remove_file_extension( albedo_name );
 		albedo_name += ".dds";
 		albedo = in_textures_path + albedo_name;
@@ -172,7 +172,7 @@ void write_model_mesh_to_file(
 
 	if ( in_metal_rough_name )
 	{
-		little_string metal_rough_name = in_metal_rough_name;
+		str256 metal_rough_name = in_metal_rough_name;
 		sys::path::remove_file_extension( metal_rough_name );
 		metal_rough_name += ".dds";
 		metal_rough = in_textures_path + metal_rough_name;
@@ -219,7 +219,7 @@ scene_compiler::scene_compiler( pcstr const in_input_path, pcstr const in_output
 
 	ASSERT_CMP( p, ==, m_data + memory_size );
 
-	little_string file_name = sys::path::get_file_name( in_input_path );
+	str256 file_name = sys::path::get_file_name( in_input_path );
 	sys::path::remove_file_extension( file_name.data( ) );
 
 	m_scene_path = in_output_path;

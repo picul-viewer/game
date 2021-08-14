@@ -25,7 +25,7 @@ void texture_compiler::compile( u64 const relevant_date, pcstr const input_file_
 		return;
 	}
 	
-	little_string file_name = sys::path::get_file_name( input_file_name );
+	str256 file_name = sys::path::get_file_name( input_file_name );
 	sys::path::remove_file_extension( file_name );
 	sys::path output_path( output_directory );
 	output_path += file_name + ".dds";
