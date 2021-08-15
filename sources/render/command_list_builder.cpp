@@ -52,98 +52,112 @@ void command_list_builder::bind_root_cbv( shader_type const in_shader_type, u32 
 {
 	ASSERT( m_gps );
 	u32 const index = m_gps->get_cbv_root_index( in_shader_type, in_register );
-	m_cmd_list->SetComputeRootConstantBufferView( index, in_resource->GetGPUVirtualAddress( ) );
+	if ( index != -1 )
+		m_cmd_list->SetComputeRootConstantBufferView( index, in_resource->GetGPUVirtualAddress( ) );
 }
 
 void command_list_builder::bind_root_srv( shader_type const in_shader_type, u32 const in_register, dx_resource const in_resource )
 {
 	ASSERT( m_gps );
 	u32 const index = m_gps->get_srv_root_index( in_shader_type, in_register );
-	m_cmd_list->SetComputeRootShaderResourceView( index, in_resource->GetGPUVirtualAddress( ) );
+	if ( index != -1 )
+		m_cmd_list->SetComputeRootShaderResourceView( index, in_resource->GetGPUVirtualAddress( ) );
 }
 
 void command_list_builder::bind_root_uav( shader_type const in_shader_type, u32 const in_register, dx_resource const in_resource )
 {
 	ASSERT( m_gps );
 	u32 const index = m_gps->get_uav_root_index( in_shader_type, in_register );
-	m_cmd_list->SetComputeRootUnorderedAccessView( index, in_resource->GetGPUVirtualAddress( ) );
+	if ( index != -1 )
+		m_cmd_list->SetComputeRootUnorderedAccessView( index, in_resource->GetGPUVirtualAddress( ) );
 }
 
 void command_list_builder::bind_table_cbv( shader_type const in_shader_type, u32 const in_register, dx_cbv_cook const& in_cook )
 {
 	ASSERT( m_gps );
 	u32 const offset = m_gps->get_cbv_table_offset( in_shader_type, in_register );
-	g_resources.create_cbv( m_current_table + offset, in_cook );
+	if ( offset != -1 )
+		g_resources.create_cbv( m_current_table + offset, in_cook );
 }
 
 void command_list_builder::bind_table_srv( shader_type const in_shader_type, u32 const in_register, dx_resource const in_resource, dx_srv_cook const& in_cook )
 {
 	ASSERT( m_gps );
 	u32 const offset = m_gps->get_srv_table_offset( in_shader_type, in_register );
-	g_resources.create_srv( m_current_table + offset, in_resource, in_cook );
+	if ( offset != -1 )
+		g_resources.create_srv( m_current_table + offset, in_resource, in_cook );
 }
 
 void command_list_builder::bind_table_uav( shader_type const in_shader_type, u32 const in_register, dx_resource const in_resource, dx_uav_cook const& in_cook )
 {
 	ASSERT( m_gps );
 	u32 const offset = m_gps->get_uav_table_offset( in_shader_type, in_register );
-	g_resources.create_uav( m_current_table + offset, in_resource, in_cook );
+	if ( offset != -1 )
+		g_resources.create_uav( m_current_table + offset, in_resource, in_cook );
 }
 
 void command_list_builder::bind_table_uav( shader_type const in_shader_type, u32 const in_register, dx_resource const in_resource, dx_resource const in_counter_resource, dx_uav_cook const& in_cook )
 {
 	ASSERT( m_gps );
 	u32 const offset = m_gps->get_uav_table_offset( in_shader_type, in_register );
-	g_resources.create_uav( m_current_table + offset, in_resource, in_counter_resource, in_cook );
+	if ( offset != -1 )
+		g_resources.create_uav( m_current_table + offset, in_resource, in_counter_resource, in_cook );
 }
 
 void command_list_builder::bind_root_cbv( u32 const in_register, dx_resource const in_resource )
 {
 	ASSERT( m_cps );
 	u32 const index = m_cps->get_cbv_root_index( in_register );
-	m_cmd_list->SetComputeRootConstantBufferView( index, in_resource->GetGPUVirtualAddress( ) );
+	if ( index != -1 )
+		m_cmd_list->SetComputeRootConstantBufferView( index, in_resource->GetGPUVirtualAddress( ) );
 }
 
 void command_list_builder::bind_root_srv( u32 const in_register, dx_resource const in_resource )
 {
 	ASSERT( m_cps );
 	u32 const index = m_cps->get_srv_root_index( in_register );
-	m_cmd_list->SetComputeRootShaderResourceView( index, in_resource->GetGPUVirtualAddress( ) );
+	if ( index != -1 )
+		m_cmd_list->SetComputeRootShaderResourceView( index, in_resource->GetGPUVirtualAddress( ) );
 }
 
 void command_list_builder::bind_root_uav( u32 const in_register, dx_resource const in_resource )
 {
 	ASSERT( m_cps );
 	u32 const index = m_cps->get_uav_root_index( in_register );
-	m_cmd_list->SetComputeRootUnorderedAccessView( index, in_resource->GetGPUVirtualAddress( ) );
+	if ( index != -1 )
+		m_cmd_list->SetComputeRootUnorderedAccessView( index, in_resource->GetGPUVirtualAddress( ) );
 }
 
 void command_list_builder::bind_table_cbv( u32 const in_register, dx_cbv_cook const& in_cook )
 {
 	ASSERT( m_cps );
 	u32 const offset = m_cps->get_cbv_table_offset( in_register );
-	g_resources.create_cbv( m_current_table + offset, in_cook );
+	if ( offset != -1 )
+		g_resources.create_cbv( m_current_table + offset, in_cook );
 }
 
 void command_list_builder::bind_table_srv( u32 const in_register, dx_resource const in_resource, dx_srv_cook const& in_cook )
 {
 	ASSERT( m_cps );
 	u32 const offset = m_cps->get_srv_table_offset( in_register );
-	g_resources.create_srv( m_current_table + offset, in_resource, in_cook );
+	if ( offset != -1 )
+		g_resources.create_srv( m_current_table + offset, in_resource, in_cook );
 }
 
 void command_list_builder::bind_table_uav( u32 const in_register, dx_resource const in_resource, dx_uav_cook const& in_cook )
 {
 	ASSERT( m_cps );
 	u32 const offset = m_cps->get_uav_table_offset( in_register );
-	g_resources.create_uav( m_current_table + offset, in_resource, in_cook );
+	if ( offset != -1 )
+		g_resources.create_uav( m_current_table + offset, in_resource, in_cook );
 }
 
 void command_list_builder::bind_table_uav( u32 const in_register, dx_resource const in_resource, dx_resource const in_counter_resource, dx_uav_cook const& in_cook )
 {
 	ASSERT( m_cps );
 	u32 const offset = m_cps->get_uav_table_offset( in_register );
-	g_resources.create_uav( m_current_table + offset, in_resource, in_counter_resource, in_cook );
+	if ( offset != -1 )
+		g_resources.create_uav( m_current_table + offset, in_resource, in_counter_resource, in_cook );
 }
 
 void command_list_builder::set_viewport_and_scissors(
