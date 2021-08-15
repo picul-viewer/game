@@ -25,7 +25,7 @@ void world::create( )
 {
 	m_ready = false;
 
-	raw_data_cook* const cook = create_cook<raw_data_cook>( GET_RESOURCE_PATH( "configs/render/scenes/sponza_lit.scene.cfg" ) );
+	raw_data_cook* const cook = create_cook<raw_data_cook>( GET_RESOURCE_PATH( "configs/render/scenes/bistro.scene.cfg" ) );
 
 	resource_system::create_resources(
 		resource_system::user_callback_task<world, &world::on_scene_loaded>( this ),

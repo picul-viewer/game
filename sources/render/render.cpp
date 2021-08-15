@@ -871,19 +871,14 @@ void render::prepare_frame( )
 {
 	u32 const cmd_index = m_frame_index % max_frame_delay;
 
+	bool const scene_has_sun = m_scene->get_sun_radiance( ) != math::float3( 0.0f );
+
 	// Initialize render camera.
 	m_render_camera.set_view( g_parameters.camera.view );
 	m_render_camera.set_perspective( g_parameters.camera.fov, (float)g_parameters.screen_resolution.x / (float)g_parameters.screen_resolution.y, 0.1f, 1000.0f );
 	m_render_camera.update( );
 
-	u32 copy_task_count = 1; // Constant buffer.
-	copy_task_count += m_ui_processor.upload_task_count_needed( );
-	copy_task_count = m_scene											? copy_task_count + 3 : copy_task_count;
-	copy_task_count = g_resources.transforms( ).need_gpu_update( )		? copy_task_count + 1 : copy_task_count;
-	copy_task_count = g_resources.point_lights( ).need_gpu_update( )	? copy_task_count + 1 : copy_task_count;
-
-	ASSERT_CMP( copy_task_count, <=, max_copy_task_count );
-	lib::buffer_array<gpu_upload_task> copy_tasks( m_copy_tasks, copy_task_count );
+	lib::buffer_array<gpu_upload_task> copy_tasks( m_copy_tasks, max_copy_task_count );
 
 	u32 mesh_list_size = 0;
 	u32 point_light_list_size = 0;
@@ -918,27 +913,28 @@ void render::prepare_frame( )
 		mesh_list_task.set_buffer_upload( m_mesh_list[cmd_index], 0 );
 		mesh_list_task.set_source_data( cpu_mesh_object_list.data( ), mesh_list_size * sizeof(u32) );
 
-
-		lib::buffer_array<u32> cpu_sun_shadowmap_mesh_object_list( m_cpu_sun_shadow_mesh_lists[cmd_index], max_mesh_list_size );
-
-		static_mesh_container.for_each( [&cpu_sun_shadowmap_mesh_object_list]( math::bvh::object_handle const in_handle )
+		if ( scene_has_sun )
 		{
-			render_object_mesh* const obj = g_resources.render_allocator( ).offset_to_ptr( in_handle );
-			cpu_sun_shadowmap_mesh_object_list.push_back( obj->m_object_handle + 1 );
-		} );
+			lib::buffer_array<u32> cpu_sun_shadowmap_mesh_object_list( m_cpu_sun_shadow_mesh_lists[cmd_index], max_mesh_list_size );
 
-		dynamic_mesh_container.for_each( [&cpu_sun_shadowmap_mesh_object_list]( math::bvh::object_handle const in_handle )
-		{
-			render_object_mesh* const obj = g_resources.render_allocator( ).offset_to_ptr( in_handle );
-			cpu_sun_shadowmap_mesh_object_list.push_back( obj->m_object_handle + 1 );
-		} );
+			static_mesh_container.for_each( [&cpu_sun_shadowmap_mesh_object_list]( math::bvh::object_handle const in_handle )
+			{
+				render_object_mesh* const obj = g_resources.render_allocator( ).offset_to_ptr( in_handle );
+				cpu_sun_shadowmap_mesh_object_list.push_back( obj->m_object_handle + 1 );
+			} );
 
-		sun_shadowmap_mesh_list_size = (u32)cpu_sun_shadowmap_mesh_object_list.size( );
+			dynamic_mesh_container.for_each( [&cpu_sun_shadowmap_mesh_object_list]( math::bvh::object_handle const in_handle )
+			{
+				render_object_mesh* const obj = g_resources.render_allocator( ).offset_to_ptr( in_handle );
+				cpu_sun_shadowmap_mesh_object_list.push_back( obj->m_object_handle + 1 );
+			} );
 
-		gpu_upload_task& sun_shadowmap_mesh_list_task = copy_tasks.emplace_back( );
-		sun_shadowmap_mesh_list_task.set_buffer_upload( m_sun_shadow_mesh_list[cmd_index], 0 );
-		sun_shadowmap_mesh_list_task.set_source_data( cpu_sun_shadowmap_mesh_object_list.data( ), sun_shadowmap_mesh_list_size * sizeof(u32) );
+			sun_shadowmap_mesh_list_size = (u32)cpu_sun_shadowmap_mesh_object_list.size( );
 
+			gpu_upload_task& sun_shadowmap_mesh_list_task = copy_tasks.emplace_back( );
+			sun_shadowmap_mesh_list_task.set_buffer_upload( m_sun_shadow_mesh_list[cmd_index], 0 );
+			sun_shadowmap_mesh_list_task.set_source_data( cpu_sun_shadowmap_mesh_object_list.data( ), sun_shadowmap_mesh_list_size * sizeof(u32) );
+		}
 
 		auto const& static_point_light_container = m_scene->static_point_light_container( );
 
@@ -976,24 +972,27 @@ void render::prepare_frame( )
 		cpu_constant_buffer.sun_radiance.vx = m_scene->get_sun_radiance( );
 		cpu_constant_buffer.sun_radiance.w = ( m_scene->get_sun_radiance( ) == math::float3( 0.0f ) ) ? 0.0f : 1.0f;
 
-		ASSERT( m_scene->get_sun_direction( ).y > 0.0f );
-		math::aabb scene_aabb = m_scene->static_mesh_container( ).get_aabb( );
-		scene_aabb.m_min -= math::float3( 0.1f );
-		scene_aabb.m_max += math::float3( 0.1f );
-		math::float3 const& offset = scene_aabb.radius( ).y / m_scene->get_sun_direction( ).y * m_scene->get_sun_direction( );
-		math::float3 shadow_origin = scene_aabb.center( ) + offset;
-		math::float3 shadow_size = scene_aabb.radius( ) + math::abs( offset );
+		if ( scene_has_sun )
+		{
+			ASSERT( m_scene->get_sun_direction( ).y > 0.0f );
+			math::aabb scene_aabb = m_scene->static_mesh_container( ).get_aabb( );
+			scene_aabb.m_min -= math::float3( 0.1f );
+			scene_aabb.m_max += math::float3( 0.1f );
+			math::float3 const& offset = scene_aabb.radius( ).y / m_scene->get_sun_direction( ).y * m_scene->get_sun_direction( );
+			math::float3 shadow_origin = scene_aabb.center( ) + offset;
+			math::float3 shadow_size = scene_aabb.radius( ) + math::abs( offset );
 
-		math::float4x4 sun_shadow_basis;
-		sun_shadow_basis.l0 = math::float4( shadow_size.x, 0.0f, 0.0f, 0.0f );
-		sun_shadow_basis.l1 = math::float4( 0.0f, 0.0f, shadow_size.z, 0.0f );
-		sun_shadow_basis.l2 = math::float4( -2.0f * offset, 0.0f );
-		sun_shadow_basis.l3 = math::float4( shadow_origin, 1.0f );
-		cpu_constant_buffer.sun_view_projection = math::inverse( math::transpose( sun_shadow_basis ) );
+			math::float4x4 sun_shadow_basis;
+			sun_shadow_basis.l0 = math::float4( shadow_size.x, 0.0f, 0.0f, 0.0f );
+			sun_shadow_basis.l1 = math::float4( 0.0f, 0.0f, shadow_size.z, 0.0f );
+			sun_shadow_basis.l2 = math::float4( -2.0f * offset, 0.0f );
+			sun_shadow_basis.l3 = math::float4( shadow_origin, 1.0f );
+			cpu_constant_buffer.sun_view_projection = math::inverse( math::transpose( sun_shadow_basis ) );
 
-		// Avoid full matrix multiplication.
-		cpu_constant_buffer.sun_view_projection_inv_transp_0 = math::float4( -2.0f * offset, shadow_size.x );
-		cpu_constant_buffer.sun_view_projection_inv_transp_1 = math::float4( shadow_origin, shadow_size.z );
+			// Avoid full matrix multiplication.
+			cpu_constant_buffer.sun_view_projection_inv_transp_0 = math::float4( -2.0f * offset, shadow_size.x );
+			cpu_constant_buffer.sun_view_projection_inv_transp_1 = math::float4( shadow_origin, shadow_size.z );
+		}
 	}
 
 	cpu_constant_buffer.indirect_params_0 = math::u32x4( mesh_list_size, sun_shadowmap_mesh_list_size, point_light_list_size, ui_dispatch_dimension );
@@ -1016,7 +1015,6 @@ void render::prepare_frame( )
 	process_statistics( );
 #endif // #ifdef USE_RENDER_PROFILING
 
-	ASSERT_CMP( copy_tasks.size( ), ==, copy_task_count );
 	push_frame_copy( copy_tasks );
 }
 
