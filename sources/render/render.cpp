@@ -871,7 +871,7 @@ void render::prepare_frame( )
 {
 	u32 const cmd_index = m_frame_index % max_frame_delay;
 
-	bool const scene_has_sun = m_scene->get_sun_radiance( ) != math::float3( 0.0f );
+	bool const scene_has_sun = ( m_scene != nullptr ) && ( m_scene->get_sun_radiance( ) != math::float3( 0.0f ) );
 
 	// Initialize render camera.
 	m_render_camera.set_view( g_parameters.camera.view );
