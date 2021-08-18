@@ -63,6 +63,8 @@ private:
 
 	template<typename Functor>
 	void render_wait( Functor const& in_functor );
+	void render_wait( u64 const in_frame_index );
+
 	void push_cmd_lists( );
 
 	void prepare_frame( );

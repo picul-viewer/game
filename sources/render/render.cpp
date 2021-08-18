@@ -700,7 +700,7 @@ void render::destroy( )
 	m_ready = false;
 
 	// Wait for GPU.
-	render_wait( [this]( ) { return m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index - 1; } );
+	render_wait( m_frame_index - 1 );
 
 	m_scene_mesh_indirect_buffer.destroy( );
 	m_scene_mesh_transforms_buffer.destroy( );
@@ -809,16 +809,27 @@ void render::on_effects_created( )
 template<typename Functor>
 void render::render_wait( Functor const& in_functor )
 {
-	sys::system_event const events[] = { m_gpu_frame_event, m_rs_queue_event };
-
 	while ( !in_functor( ) )
 	{
 		bool const rs_queue_processed = resource_system::process_task( engine_thread_main );
-
 		if ( rs_queue_processed )
 			continue;
 
-		sys::system_event::wait_any( (u32)array_size( events ), events );
+		m_rs_queue_event.wait( );
+	}
+}
+
+void render::render_wait( u64 const in_frame_index )
+{
+	m_gpu_frame_index->SetEventOnCompletion( in_frame_index, m_gpu_frame_event.get_handle( ) );
+
+	sys::system_event const events[] = { m_gpu_frame_event, m_rs_queue_event };
+	u32 wait_index = sys::system_event::wait_any( (u32)array_size( events ), events );
+
+	while ( wait_index != 0 )
+	{
+		while ( resource_system::process_task( engine_thread_main ) );
+		wait_index = sys::system_event::wait_any( (u32)array_size( events ), events );
 	}
 }
 
@@ -828,12 +839,10 @@ void render::push_cmd_lists( )
 	u32 const cmd_index = m_frame_index % max_frame_delay;
 	ID3D12CommandList* const current_cmd_list = m_cmd_lists[swap_chain_buffer_index][cmd_index];
 
-	m_gpu_frame_index->SetEventOnCompletion( m_frame_index, m_gpu_frame_event.get_handle( ) );
-
 	DX12_CHECK_RESULT( g_dx.queue_graphics( )->Wait( m_copy_fence, m_frame_index ) );
 	g_dx.queue_graphics( )->ExecuteCommandLists( 1, &current_cmd_list );
-	DX12_CHECK_RESULT( g_dx.swap_chain( )->Present( 0, 0 ) );
 	DX12_CHECK_RESULT( g_dx.queue_graphics( )->Signal( m_gpu_frame_index, m_frame_index ) );
+	DX12_CHECK_RESULT( g_dx.swap_chain( )->Present( 0, 0 ) );
 }
 
 void render::update( )
@@ -841,12 +850,12 @@ void render::update( )
 	if ( !m_need_to_record_render )
 	{
 		// Wait for the submition we are going to replace.
-		render_wait( [this]( ) { return m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index - max_frame_delay; } );
+		render_wait( m_frame_index - max_frame_delay );
 	}
 	else
 	{
 		// Wait for everything.
-		render_wait( [this]( ) { return m_gpu_frame_index->GetCompletedValue( ) >= m_frame_index - 1; } );
+		render_wait( m_frame_index - 1 );
 
 		reload_render( );
 		render_wait( [this]( ) { return ready( ); } );
