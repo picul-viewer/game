@@ -235,6 +235,8 @@ void gpu_uploader::push_tasks( gpu_upload_task* const in_tasks, u32 const in_cou
 
 void gpu_uploader::process_tasks( )
 {
+	m_event.reset( );
+
 	if ( !m_created || ( m_fence->GetCompletedValue( ) < m_fence_value ) )
 		return;
 
@@ -265,7 +267,6 @@ void gpu_uploader::process_tasks( )
 	ASSERT( staging_size != 0 );
 
 	++m_fence_value;
-	m_event.reset( );
 	DX12_CHECK_RESULT( m_fence->SetEventOnCompletion( m_fence_value, m_event.get_handle( ) ) );
 
 	g_dx.queue_copy( )->ExecuteCommandLists( 1, (ID3D12CommandList**)&m_cmd_list );
