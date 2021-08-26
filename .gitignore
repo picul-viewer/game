@@ -1,0 +1,8 @@
+.vs
+build
+*.vcxproj.user
+*/trash
+*.VC.db
+*.VC.opendb
+
+vtune

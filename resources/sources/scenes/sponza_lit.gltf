@@ -18,7 +18,7 @@
                         1,
                         0.75
                     ],
-                    "intensity" : 1,
+                    "intensity" : 10,
                     "type" : "directional",
                     "name" : "Sun"
                 },
@@ -28,7 +28,7 @@
                         0,
                         0
                     ],
-                    "intensity" : 10,
+                    "intensity" : 30,
                     "range" : 15,
                     "type" : "point",
                     "name" : "Point"
@@ -39,7 +39,7 @@
                         1,
                         0
                     ],
-                    "intensity" : 10,
+                    "intensity" : 30,
                     "range" : 15,
                     "type" : "point",
                     "name" : "Point.001"
@@ -50,7 +50,7 @@
                         0,
                         1
                     ],
-                    "intensity" : 10,
+                    "intensity" : 30,
                     "range" : 15,
                     "type" : "point",
                     "name" : "Point.002"
